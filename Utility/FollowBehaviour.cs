@@ -1,0 +1,190 @@
+﻿using UnityEngine;
+
+namespace WarWolfWorks.Utility
+{
+    using static Hooks.Vectors;
+    using System.Collections.Generic;
+    using System;
+
+    /// <summary>
+    /// Behaviour used to make an object follow a list of transforms. Useful for cameras.
+    /// (Explicitly convertible to <see cref="Transform"/>)
+    /// </summary>
+    [AddComponentMenu("WWW/Utility/Follow Behaviour")]
+    public sealed class FollowBehaviour : MonoBehaviour
+    {
+        private Rigidbody2D rb;
+        public Rigidbody2D RigidBody
+        {
+            get
+            {
+                if (rb == null)
+                    rb = GetComponent<Rigidbody2D>();
+                return rb;
+            }
+        }
+
+
+        [SerializeField]
+        private List<Transform> FollowObjects = new List<Transform>();
+
+        [SerializeField]
+        private float speed = 1;
+        [SerializeField]
+        private float acceleration = .2f;
+        [SerializeField]
+        private bool accelerateWhenFar = false;
+        [SerializeField]
+        private bool isFollowing = true;
+
+        [SerializeField]
+        private Vector3 positionBlocker = Vector3.zero;
+
+        [SerializeField]
+        private bool blockX = false;
+        [SerializeField]
+        private bool blockY = false;
+        [SerializeField]
+        private bool blockZ = false;
+
+        public bool UsesRigidbody;
+
+        /// <summary>
+        /// When active, it forces the follow behaviour to loop through it's position calculation again 
+        /// as long as it returns an exception, and tries to fix it at the same time. 
+        /// If you're using this, make sure all follow objects
+        /// cannot be null, that the list is not empty and that all followed objects aren't re-instantiated.
+        /// </summary>
+        [Header("DO NOT ACTIVATE IF YOU DO NOT KNOW WHAT YOU'RE DOING; THIS CAN FREEZE THE GAME (refer to code comment for more info).")]
+        public bool AllowConsistentFollow = false;
+
+        /// <summary>
+        /// All objects followed by this FollowBehaviour.
+        /// </summary>
+        public Transform[] FollowedObjects => FollowObjects.ToArray();
+        /// <summary>
+        /// Speed at which this script follows <see cref="FollowedObjects"/>.
+        /// </summary>
+        public float Speed { get { return speed; } private set { speed = value; } }
+        /// <summary>
+        /// Speed at which this behaviour accelerates based on distance.
+        /// </summary>
+        public float Acceleration { get { return acceleration; } set { acceleration = value; } }
+        /// <summary>
+        /// Decides if this behaviour accelerates when further away from the object.
+        /// </summary>
+        public bool AccelerateWhenFar => accelerateWhenFar;
+        /// <summary>
+        /// If false, this behaviour will stop following.
+        /// </summary>
+        public bool IsFollowing
+        {
+            get => isFollowing;
+            private set => isFollowing = value;
+        }
+        /// <summary>
+        /// Position at which this behaviour will be blocked in based on BlocksX, BlocksY and BlocksZ.
+        /// </summary>
+        public Vector3 PositionBlocker => positionBlocker;
+        public bool BlocksX => blockX;
+        public bool BlocksY => blockY;
+        public bool BlocksZ => blockZ;
+
+        private Vector3 MoveVector(Vector3 destination)
+        {
+            Vector3 toReturn = accelerateWhenFar ? MoveTowardsAccelerated(transform.position, destination, Speed, Acceleration) : Vector3.MoveTowards(transform.position, destination, Speed);
+            if (!blockX && !blockY && !blockZ)
+                return toReturn;
+            toReturn = new Vector3(blockX ? PositionBlocker.x : toReturn.x, blockY ? PositionBlocker.y : toReturn.y, blockZ ? PositionBlocker.z : toReturn.z);
+            return toReturn;
+        }
+
+        /// <summary>
+        /// Adds a Transform to the list of followed objects.
+        /// </summary>
+        /// <param name="t"></param>
+        public void AddFollower(Transform t) => FollowObjects.Add(t);
+
+        /// <summary>
+        /// Removes an existing Transform from the list of followed objects.
+        /// </summary>
+        /// <param name="t"></param>
+        public void RemoveFollower(Transform t) => FollowObjects.Remove(t);
+
+        private void FixedUpdate()
+        {
+            if (!IsFollowing)
+                return;
+
+            if (FollowObjects.Count == 1)
+                FollowSingleObject(0);
+            else if (FollowObjects.Count > 1) FollowAllObjects();
+        }
+
+        private void FollowSingleObject(int index)
+        {
+            try
+            {
+                if (!UsesRigidbody) transform.position = MoveVector(FollowObjects[index].position);
+                else RigidBody.MovePosition(MoveVector(FollowObjects[index].position));
+            }
+            catch
+            {
+                return;
+            }
+        }
+
+        public void ChangeBlock(int position, bool block)
+        {
+            switch (position)
+            {
+                default: blockZ = block; return;
+                case 0: blockX = block; return;
+                case 1: blockY = block; return;
+            }
+        }
+
+        public void ChangeBlock(int position, float value)
+        {
+            positionBlocker = new Vector3(position == 0 ? value : positionBlocker.x, position == 1 ? value : positionBlocker.y, position == 2 ? value : positionBlocker.z);
+        }
+
+        private void FollowAllObjects()
+        {
+        Begin:
+            try
+            {
+                Vector3 toUse = Vector3.zero;
+                foreach (Transform t in FollowObjects)
+                {
+                    toUse += t.position;
+                }
+
+                toUse /= FollowObjects.Count;
+
+                if (!UsesRigidbody) transform.position = MoveVector(toUse);
+                else RigidBody.MovePosition(MoveVector(toUse));
+            }
+            catch (MissingReferenceException)
+            {
+                FollowObjects.RemoveAll(t => t == null);
+                if(AllowConsistentFollow) goto Begin;
+            }
+            catch(NullReferenceException)
+            {
+                FollowObjects = new List<Transform>(new Transform[] { transform });
+                if (AllowConsistentFollow) goto Begin;
+            }
+            catch
+            {
+                if (AllowConsistentFollow) goto Begin;
+
+                return;
+            }
+        }
+
+        public static explicit operator Transform(FollowBehaviour fb)
+            => fb.transform;
+
+    }
+}
