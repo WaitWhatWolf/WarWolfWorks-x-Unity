@@ -22,3 +22,7 @@ all customizable through the WarWolfWorks>Settings unity editor menu.
 
 - (currently in the process of being deprecated, avoid usage) Map system which is a way of loading a full list of objects into a scene,
 without using the extremely painfull and bad Unity scene system.
+
+- Console. Yup. In-Game console, you can make a custom UI for it, or leave it to the
+default graphic; When used with AdvancedDebug you can debug information to the console.
+Also can add console commands.
