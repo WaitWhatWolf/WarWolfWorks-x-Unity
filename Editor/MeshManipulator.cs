@@ -20,7 +20,7 @@ namespace WarWolfWorks.EditorBase
         private Vector3 finalRotation;
         private bool recalculateNormals;
 
-        [MenuItem("WWWLibrary/Mesh Resizer")]
+        [MenuItem("WarWolfWorks/Mesh Resizer")]
         public static void ShowWindow()
         {
             MeshManipulator window = GetWindow<MeshManipulator>(WindowName);

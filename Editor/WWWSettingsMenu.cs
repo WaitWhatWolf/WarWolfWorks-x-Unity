@@ -35,10 +35,10 @@ namespace WarWolfWorks.EditorBase
         private GUIStyle TitleStyle;
         private GUIStyle GrayedStyle;
 
-        [MenuItem("WWWLibrary/WWW Settings")]
+        [MenuItem("WarWolfWorks/Settings")]
         public static void WWWSettingsMenuInit()
         {
-            GetWindow<WWWSettingsMenu>("WWW Settings").Show();
+            GetWindow<WWWSettingsMenu>("Settings").Show();
         }
 
         private void OnEnable()

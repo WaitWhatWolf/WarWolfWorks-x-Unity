@@ -7,6 +7,7 @@ namespace WarWolfWorks.EditorBase
 {
     public class MapManagerWindow : EditorWindow
     {
+#if !WWW_2_0_OR_HIGHER
         private const string WindowName = "Map Manager";
 
         private static readonly string SavePath = Hooks.Streaming.GetStreamingAssetsFilePath("Maps.kfidk");
@@ -23,7 +24,7 @@ namespace WarWolfWorks.EditorBase
 
         private RuntimeInitializeLoadType rilt;
 
-        [MenuItem("WWWLibrary/Map Manager")]
+        [MenuItem("WarWolfWorks/Map Manager")]
         public static void ShowWindow()
         {
             MapManagerWindow window = EditorWindow.GetWindow<MapManagerWindow>("Map Manager");
@@ -72,5 +73,6 @@ namespace WarWolfWorks.EditorBase
             Hooks.Streaming.Save(SavePath, CategoryName, "LoadsStartingMap", pop.ToString());
         }
 
+#endif
     }
 }

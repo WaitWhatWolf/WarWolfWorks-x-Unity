@@ -9,7 +9,7 @@ namespace WarWolfWorks.EditorBase
 {
     public class EnumListDisplayer : EditorWindow
     {
-        [MenuItem("WWWLibrary/Enum Displayer")]
+        [MenuItem("WarWolfWorks/Enum Displayer")]
         public static void Enable()
         {
             GetWindow<EnumListDisplayer>("Enum List Displayer").Show();

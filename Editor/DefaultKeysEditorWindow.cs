@@ -27,7 +27,7 @@ namespace WarWolfWorks.EditorBase
 
         private (string, KeyCode)[] Keys;
 
-        [MenuItem("WWWLibrary/Default Keys Customizer")]
+        [MenuItem("WarWolfWorks/Default Keys Customizer")]
         public static void ShowWindow()
         {
             KeyCodeEditorWindow window = EditorWindow.GetWindow<KeyCodeEditorWindow>("Default Keys Customizer");

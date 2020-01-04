@@ -29,7 +29,7 @@ namespace WarWolfWorks.EditorBase
         /// <summary>
         /// Creates the missing file to the selected file's folder.
         /// </summary>
-        [MenuItem(itemName: "WWWLibrary/Create Missing ScriptableObject")]
+        [MenuItem(itemName: "WarWolfWorks/Create Missing ScriptableObject")]
         public static void Create()
         {
             //Gets the selected object inside Assets/Project window.
