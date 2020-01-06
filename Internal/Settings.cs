@@ -61,18 +61,18 @@ namespace WarWolfWorks.Internal
         /// Gets the <see cref="UtilityCanvasType"/> read directly from the WWWSettings.ini file.
         /// </summary>
         public static UtilityCanvasType GetUtilityCanvasType()
-            => Hooks.Parse<UtilityCanvasType>(Load(SettingsPath, CanvasCategoryName, CanvasNames[0], UtilityCanvasType.FIRST_FOUND.ToString()));
+            => Hooks.Parse<UtilityCanvasType>(Load(Catalog.Loader(SettingsPath, CanvasCategoryName, CanvasNames[0], UtilityCanvasType.FIRST_FOUND.ToString(), true)));
         /// <summary>
         /// If the <see cref="GetUtilityCanvasType"/> is <see cref="UtilityCanvasType.PREFABBED"/>, it will return the path to the object it was set to.
         /// </summary>
         public static string GetUtilityCanvasResourcesPath()
-            => Load(SettingsPath, CanvasCategoryName, CanvasNames[1], default);
+            => Load(Catalog.Loader(SettingsPath, CanvasCategoryName, CanvasNames[1], default, true));
         /// <summary>
         /// If the <see cref="GetUtilityCanvasType"/> is <see cref="UtilityCanvasType.BY_NAME_IN_SCENE"/>, it will return the name of the object that will be searched for in the scene.
         /// </summary>
         /// <returns></returns>
         public static string GetUtilityCanvasNameLoad()
-            => Load(SettingsPath, CanvasCategoryName, CanvasNames[2], default);
+            => Load(Catalog.Loader(SettingsPath, CanvasCategoryName, CanvasNames[2], default, true));
         #endregion
 
         #region Debug Settings
@@ -120,7 +120,7 @@ namespace WarWolfWorks.Internal
         /// Gets the <see cref="DebugStyle"/> read directly from WWWSettings.ini.
         /// </summary>
         /// <returns></returns>
-        public static DebugStyle GetDebugStyle() => Hooks.Parse<DebugStyle>(Load(SettingsPath, DebugCategoryName, DebugNames[1], DebugStyle.EDITOR_GAME_DEBUG.ToString()));
+        public static DebugStyle GetDebugStyle() => Hooks.Parse<DebugStyle>(Load(Catalog.Loader(SettingsPath, DebugCategoryName, DebugNames[1], DebugStyle.EDITOR_GAME_DEBUG.ToString(), true)));
         /// <summary>
         /// Gets the debug layer read directly from WWWSettings.ini.
         /// </summary>
@@ -141,7 +141,7 @@ namespace WarWolfWorks.Internal
                         break;
                 }
 
-                string[] splits = Load(SettingsPath, DebugCategoryName, $"{DebugNames[0]}_{i}", baseName).Split(LayerVarSeparator);
+                string[] splits = Load(Catalog.Loader(SettingsPath, DebugCategoryName, $"{DebugNames[0]}_{i}", baseName, true)).Split(LayerVarSeparator);
                 toReturn[i] = new DebugLayer(splits[0], Convert.ToBoolean(splits[1]));
             }
 
@@ -165,7 +165,7 @@ namespace WarWolfWorks.Internal
                     break;
             }
 
-            split = Load(SettingsPath, DebugCategoryName, DebugNames[loadex], "1;1;1").Split(';');
+            split = Load(Catalog.Loader(SettingsPath, DebugCategoryName, DebugNames[loadex], "1;1;1", true)).Split(';');
 
             r = float.Parse(split[0]);
             g = float.Parse(split[1]);

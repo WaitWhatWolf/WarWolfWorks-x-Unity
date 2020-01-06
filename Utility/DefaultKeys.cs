@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using static WarWolfWorks.Utility.Hooks.Streaming;
 
 namespace WarWolfWorks.Utility
 {
@@ -81,7 +82,7 @@ namespace WarWolfWorks.Utility
         /// <returns></returns>
         public static KeyCode GetDatabaseKey(string key)
         {
-            return IsOptimized ? OptimizedKeys[key] : Hooks.Parse<KeyCode>(Hooks.Streaming.Load(KeysPath, CategoryName, key));
+            return IsOptimized ? OptimizedKeys[key] : Hooks.Parse<KeyCode>(Load(Catalog.Loader(KeysPath, CategoryName, key)));
         }
 
         /// <summary>
@@ -193,7 +194,7 @@ namespace WarWolfWorks.Utility
             }
             else
             {
-                string[] allVariablesFromCategory = Hooks.Streaming.LoadAll(KeysPath, CategoryName, true).ToArray();
+                string[] allVariablesFromCategory = LoadAll(Catalog.Loader(KeysPath, CategoryName, null), true).ToArray();
                 string[] array2 = new string[allVariablesFromCategory.Length];
                 KeyCode[] array3 = new KeyCode[allVariablesFromCategory.Length];
                 for (int j = 0; j < allVariablesFromCategory.Length; j++)
@@ -228,7 +229,7 @@ namespace WarWolfWorks.Utility
         {
             if (!IsOptimized)
             {
-                return Hooks.Streaming.Load(KeysPath, CategoryName, keyName) != string.Empty;
+                return Load(Catalog.Loader(KeysPath, CategoryName, keyName)) != string.Empty;
             }
             return OptimizedKeys.ContainsKey(keyName);
         }
@@ -243,8 +244,8 @@ namespace WarWolfWorks.Utility
             {
                 try
                 {
-                    Hooks.Streaming.CreateFolder(KeysPath);
-                    Hooks.Streaming.Save(KeysPath, CategoryName, key.Item1, key.Item2.ToString());
+                    CreateFolder(KeysPath);
+                    Save(Catalog.Saver(KeysPath, CategoryName, key.Item1, key.Item2.ToString()));
                     Debug.Log($"{key} Key was successfully saved in: {KeysPath}");
                 }
                 catch (Exception ex)
@@ -292,10 +293,10 @@ namespace WarWolfWorks.Utility
         {
             if (!IsOptimizedCheck())
             {
-                KeyCode keyCode = Hooks.Parse<KeyCode>(Hooks.Streaming.Load(KeysPath, CategoryName, key.Item1));
+                KeyCode keyCode = Hooks.Parse<KeyCode>(Load(Catalog.Loader(KeysPath, CategoryName, key.Item1)));
                 if (keyCode != key.Item2)
                 {
-                    Hooks.Streaming.Save(KeysPath, CategoryName, key.Item1, key.Item2.ToString());
+                    Save(Catalog.Saver(KeysPath, CategoryName, key.Item1, key.Item2.ToString()));
                     AdvancedDebug.Log($"{key.Item1} was successfully changed from {keyCode} to {key.Item2}", AdvancedDebug.WWWInfoLayerIndex);
                 }
             }
@@ -318,7 +319,7 @@ namespace WarWolfWorks.Utility
         {
             if (!IsOptimizedCheck())
             {
-                Hooks.Streaming.Remove(KeysPath, CategoryName, key);
+                Remove(Catalog.Loader(KeysPath, CategoryName, key));
             }
         }
 

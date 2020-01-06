@@ -114,7 +114,7 @@ namespace WarWolfWorks.EditorBase
             if (GUILayout.Button("Apply Changes"))
             {
                 CanvasValues = new string[] { CanvasType.ToString(), CanvasResourcesPath, CanvasNameLoad };
-                SaveAll(Settings.SettingsPath, Settings.CanvasCategoryName, CanvasNames, CanvasValues);
+                SaveAll(Catalog.Savers(Settings.SettingsPath, Settings.CanvasCategoryName, CanvasNames, CanvasValues));
 
                 for(int i = 0; i < Layers.Length; i++)
                 {
@@ -124,12 +124,12 @@ namespace WarWolfWorks.EditorBase
                         case ExceptionLayerIndex: toUse = Settings.LayerToSavableString(ExceptionLayerName, Layers[i].Active); break;
                         case WWWInfoLayerIndex: toUse = Settings.LayerToSavableString(WWWInfoLayerName, Layers[i].Active); break;
                     }
-                    Save(Settings.SettingsPath, Settings.DebugCategoryName, $"{DebugNames[0]}_{i}", toUse);
+                    Save(Catalog.Saver(Settings.SettingsPath, Settings.DebugCategoryName, $"{DebugNames[0]}_{i}", toUse));
                 }
                 DebugValues = new string[] { "Kept for compatibility, ignore plz", DebugStyle.ToString(),
                     ColorSaver(LogColor), ColorSaver(WarningColor), ColorSaver(ErrorColor) };
 
-                SaveAll(Settings.SettingsPath, Settings.DebugCategoryName, DebugNames, DebugValues);
+                SaveAll(Catalog.Savers(Settings.SettingsPath, Settings.DebugCategoryName, DebugNames, DebugValues));
                 RefreshDebugger();
             }
         }

@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using WarWolfWorks.Internal;
 using WarWolfWorks.Utility;
+using static WarWolfWorks.Utility.Hooks.Streaming;
 
 namespace WarWolfWorks.EditorBase
 {
@@ -59,7 +60,7 @@ namespace WarWolfWorks.EditorBase
 
         private void SetEntries()
         {
-            try { PreviousEntries = Hooks.Streaming.LoadAll(Settings.SettingsPath, Category, false).ToArray(); }
+            try { PreviousEntries = LoadAll(Catalog.Loader(Settings.SettingsPath, Category, null), false).ToArray(); }
             catch { goto DefaultSetter; }
 
             if (PreviousEntries != null)
@@ -88,7 +89,7 @@ namespace WarWolfWorks.EditorBase
                             Type underlyingType = Enum.GetUnderlyingType(CurrentType);
                             CurrentIntType = underlyingType == typeof(int) ? IntType.int32 :
                                 underlyingType == typeof(short) ? IntType.int16 : IntType.int64;
-                            if(PreviousEntries == null || !PreviousEntries.Contains(ParsedType)) Hooks.Streaming.Save(Settings.SettingsPath, Category, $"Entry{PreviousEntries.Length}", ParsedType);
+                            if(PreviousEntries == null || !PreviousEntries.Contains(ParsedType)) Save(Catalog.Saver(Settings.SettingsPath, Category, $"Entry{PreviousEntries.Length}", ParsedType));
                             switch (CurrentIntType)
                             {
                                 default:

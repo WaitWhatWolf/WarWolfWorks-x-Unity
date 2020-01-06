@@ -489,13 +489,13 @@
             <param name="layer"></param>
             <param name="args"></param>
         </member>
-        <member name="M:WarWolfWorks.AdvancedDebug.DebugDelegate(System.Delegate)">
+        <member name="M:WarWolfWorks.AdvancedDebug.LogDelegate(System.Delegate)">
             <summary>
             Uses <see cref="M:WarWolfWorks.AdvancedDebug.Log(System.Object,System.Int32)"/> to debug all delegates inside a <see cref="T:System.Delegate"/>.
             </summary>
             <param name="delegate"></param>
         </member>
-        <member name="M:WarWolfWorks.AdvancedDebug.DebugEnumerable``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+        <member name="M:WarWolfWorks.AdvancedDebug.LogIEnumerable``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
             <summary>
             Uses <see cref="M:WarWolfWorks.AdvancedDebug.Log(System.Object,System.Int32)"/> to debug all elements inside a IEnumerable using T.ToString().
             </summary>
@@ -503,7 +503,7 @@
             <param name="enumerable"></param>
             <param name="layer"></param>
         </member>
-        <member name="M:WarWolfWorks.AdvancedDebug.DebugEnumerable``1(System.Collections.Generic.IEnumerable{``0},System.String)">
+        <member name="M:WarWolfWorks.AdvancedDebug.LogIEnumerable``1(System.Collections.Generic.IEnumerable{``0},System.String)">
             <summary>
             Uses <see cref="M:WarWolfWorks.AdvancedDebug.Log(System.Object,System.String)"/> to debug all elements inside a IEnumerable using T.ToString().
             </summary>
@@ -638,57 +638,6 @@
             Confirms the current input of the console.
             </summary>
         </member>
-        <member name="T:WarWolfWorks.Internal.RijndaelStreamingException">
-            <summary>
-            Exception thrown in case of an error in <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming"/>.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.Internal.RijndaelStreamingException.Message">
-            <summary>
-            Message thrown based on <see cref="T:WarWolfWorks.Internal.RijndaelStreamingResult"/>.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.Internal.RijndaelStreamingException.Result">
-            <summary>
-            Result of this exception.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Internal.RijndaelStreamingException.#ctor(WarWolfWorks.Internal.RijndaelStreamingResult)">
-            <summary>
-            Throws a <see cref="T:WarWolfWorks.Internal.RijndaelStreamingException"/> based on given <see cref="T:WarWolfWorks.Internal.RijndaelStreamingResult"/>.
-            </summary>
-            <param name="result"></param>
-        </member>
-        <member name="T:WarWolfWorks.Internal.RijndaelStreamingResult">
-            <summary>
-            Code of a <see cref="T:WarWolfWorks.Internal.RijndaelStreamingException"/>.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Internal.RijndaelStreamingResult.OK">
-            <summary>
-            No exception.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Internal.RijndaelStreamingResult.CATEGORY_PASSWORD_MISSMATCH">
-            <summary>
-            The category's password was not the same as it's variable.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Internal.RijndaelStreamingResult.DEFAULT_PATH_NULL">
-            <summary>
-            The category's default path was used without being set.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Internal.RijndaelStreamingResult.INVALID_ARG">
-            <summary>
-            One or more string values given inside a <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog"/> were invalid or null.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Internal.RijndaelStreamingResult.INVALID_CATALOG">
-            <summary>
-            A saving catalog was used to load a variable or vice-versa.
-            </summary>
-        </member>
         <member name="T:WarWolfWorks.Internal.Settings">
             <summary>
             General settings of the WWWLibrary.
@@ -809,6 +758,77 @@
             Gets the LogError <see cref="T:UnityEngine.Color"/> read directly from WWWSettings.ini.
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:WarWolfWorks.Internal.StreamingException">
+            <summary>
+            Exception thrown in case of an error in <see cref="!:WarWolfWorks.Utility.Hooks.RijndaelStreaming"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Internal.StreamingException.Message">
+            <summary>
+            Message thrown based on <see cref="T:WarWolfWorks.Internal.StreamingResult"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Internal.StreamingException.Result">
+            <summary>
+            Result of this exception.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Internal.StreamingException.#ctor(WarWolfWorks.Internal.StreamingResult)">
+            <summary>
+            Throws a <see cref="T:WarWolfWorks.Internal.StreamingException"/> based on given <see cref="T:WarWolfWorks.Internal.StreamingResult"/>.
+            </summary>
+            <param name="result"></param>
+        </member>
+        <member name="T:WarWolfWorks.Internal.StreamingResult">
+            <summary>
+            Code of a <see cref="T:WarWolfWorks.Internal.StreamingException"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Internal.StreamingResult.OK">
+            <summary>
+            No exception.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Internal.StreamingResult.CATEGORY_PASSWORD_MISSMATCH">
+            <summary>
+            The category's password was not the same as it's variable.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Internal.StreamingResult.DEFAULT_PATH_NULL">
+            <summary>
+            The category's default path was used without being set.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Internal.StreamingResult.INVALID_ARG">
+            <summary>
+            One or more string values given inside a <see cref="T:WarWolfWorks.Utility.Hooks.Streaming.Catalog"/> were invalid or null.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Internal.StreamingResult.INVALID_CATALOG">
+            <summary>
+            A saving catalog was used to load a variable or vice-versa.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Internal.StreamingResult.CATALOG_MISSMATCH_CATEGORY">
+            <summary>
+            A SaveAll method was called where all catalogs did not have the same Category value.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Internal.StreamingResult.CATALOG_MISSMATCH_PASSWORD">
+            <summary>
+            A SaveAll method was called where all catalogs did not have the same Password value.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Internal.StreamingResult.CATALOG_MISSMATCH_FILEPATH">
+            <summary>
+            A SaveAll method was called where all catalogs did not have the same Path value.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Internal.StreamingResult.INVALID_CATALOG_COLLECTION_SIZE">
+            <summary>
+            A SaveAll method was called where the catalog collection size was null or lesser than 2.
+            </summary>
         </member>
         <member name="T:WarWolfWorks.EntitiesSystem.Attacking.Attack">
             <summary>
@@ -3590,23 +3610,6 @@
             Equivalent to <see cref="T:UnityEngine.MonoBehaviour"/>.Update().
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Maps.MapManager.DisableMap(System.String)">
-            <summary>
-            Disables all objects instantiated by specified map.
-            </summary>
-            <param name="mapName"></param>
-        </member>
-        <member name="M:WarWolfWorks.Maps.MapManager.DisableAllMaps">
-            <summary>
-            Disables all objects which were instantiated by maps.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Maps.MapManager.ResetManager(System.Boolean)">
-            <summary>
-            Resets all variables of the MapManager.
-            </summary>
-            <param name="forceDestroyAll">If true, all objects spawned by the manager will be destroyed.</param>
-        </member>
         <member name="T:WarWolfWorks.Security.Cryptography.TwofishManaged">
             <summary>
             Twofish algorithm implementation.
@@ -4844,60 +4847,207 @@
             Subclass with all streaming and saving/loading methods.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Save(System.String,System.String,System.String,System.String)">
+        <member name="T:WarWolfWorks.Utility.Hooks.Streaming.Catalog">
             <summary>
-            Saves a value to a folder file under category.
+            A series of string values used to save/load from <see cref="T:WarWolfWorks.Utility.Hooks.Streaming"/>.
             </summary>
-            <param name="filePath">File path to save it into. (Must include file name and extention)</param>
-            <param name="category">Under which [category] would it be stored.</param>
-            <param name="name">Name of the variable.</param>
-            <param name="value">It's value.</param>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.SaveAll(System.String,System.String,System.String[],System.String[])">
+        <member name="F:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Path">
             <summary>
-            Saves all given values under category file. (Reminder: Index is used identically for names and values, so make sure the order is correct.)
+            File path towards which this catalog will be saved.
             </summary>
-            <param name="filePath"></param>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Category">
+            <summary>
+            Category in which this catalog will be stored.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Name">
+            <summary>
+            Name of the variable saved by this catalog.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Value">
+            <summary>
+            Value in string of the saved catalog.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Streaming.Catalog.UsesDefaultValue">
+            <summary>
+            If true, this catalog's value will be used as DefaultValue.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Password">
+            <summary>
+            Password used for encryption.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Protected">
+            <summary>
+            Determines if this category is protected by a password.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Encrypt(System.String)">
+            <summary>
+            Encrypts a string value with this catalog's password.
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Decrypt(System.String)">
+            <summary>
+            Decrypts a string value with this catalog's password.
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Catalog.DefaultSaver(System.String,System.String,System.String)">
+            <summary>
+            Creates a <see cref="T:WarWolfWorks.Utility.Hooks.Streaming.Catalog"/> using the default password and path.
+            </summary>
             <param name="category"></param>
-            <param name="names"></param>
-            <param name="values"></param>
+            <param name="name"></param>
+            <param name="value"></param>
+            <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Load(System.String,System.String,System.String)">
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Saver(System.String,System.String,System.String,System.String)">
             <summary>
-            Loads a value previously saved using <see cref="M:WarWolfWorks.Utility.Hooks.Streaming.Save(System.String,System.String,System.String,System.String)"/> or <see cref="M:WarWolfWorks.Utility.Hooks.Streaming.SaveAll(System.String,System.String,System.String[],System.String[])"/>.
+            Creates a <see cref="T:WarWolfWorks.Utility.Hooks.Streaming.Catalog"/> used to save a value.
             </summary>
-            <param name="filePath"></param>
+            <param name="path"></param>
+            <param name="category"></param>
+            <param name="name"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Saver(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Creates a <see cref="T:WarWolfWorks.Utility.Hooks.Streaming.Catalog"/> used to save a value.
+            </summary>
+            <param name="path"></param>
+            <param name="category"></param>
+            <param name="name"></param>
+            <param name="value"></param>
+            <param name="password"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Catalog.DefaultLoader(System.String,System.String)">
+            <summary>
+            Creates a <see cref="T:WarWolfWorks.Utility.Hooks.Streaming.Catalog"/> to load a variable with the path and password being default.
+            </summary>
             <param name="category"></param>
             <param name="name"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Load(System.String,System.String,System.String,System.String)">
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Loader(System.String,System.String,System.String)">
             <summary>
-            Loads a value previously saved using <see cref="M:WarWolfWorks.Utility.Hooks.Streaming.Save(System.String,System.String,System.String,System.String)"/> or <see cref="M:WarWolfWorks.Utility.Hooks.Streaming.SaveAll(System.String,System.String,System.String[],System.String[])"/>.
-            If the value requested does not exist, it will instead be saved with defaultValue.
+            Creates a <see cref="T:WarWolfWorks.Utility.Hooks.Streaming.Catalog"/> to load or remove a value.
             </summary>
-            <param name="filePath"></param>
+            <param name="path"></param>
+            <param name="category"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Loader(System.String,System.String,System.String,System.String,System.Boolean)">
+            <summary>
+            Creates a <see cref="T:WarWolfWorks.Utility.Hooks.Streaming.Catalog"/> to load or remove a value.
+            </summary>
+            <param name="path"></param>
             <param name="category"></param>
             <param name="name"></param>
             <param name="defaultValue"></param>
+            <param name="useDefaultValue"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.LoadAll(System.String,System.String,System.Boolean)">
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Loader(System.String,System.String,System.String,System.String,System.Boolean,System.String)">
             <summary>
-            Loads all variables inside given file category. In case of an exception, returns null.
+            Creates a <see cref="T:WarWolfWorks.Utility.Hooks.Streaming.Catalog"/> to load or remove a value.
             </summary>
-            <param name="filePath"></param>
-            <param name="category"></param>
-            <param name="includeName"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Remove(System.String,System.String,System.String)">
-            <summary>
-            Removes a value under catergory file previously set with <see cref="M:WarWolfWorks.Utility.Hooks.Streaming.Save(System.String,System.String,System.String,System.String)"/> or <see cref="M:WarWolfWorks.Utility.Hooks.Streaming.SaveAll(System.String,System.String,System.String[],System.String[])"/>.
-            </summary>
-            <param name="filePath"></param>
+            <param name="path"></param>
             <param name="category"></param>
             <param name="name"></param>
+            <param name="defaultValue"></param>
+            <param name="useDefaultValue"></param>
+            <param name="password"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Loader(System.String,System.String,System.String,System.String)">
+            <summary>
+            Creates a <see cref="T:WarWolfWorks.Utility.Hooks.Streaming.Catalog"/> to load or remove a value.
+            </summary>
+            <param name="path"></param>
+            <param name="category"></param>
+            <param name="name"></param>
+            <param name="password"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.SetDefaultPassword(System.String)">
+            <summary>
+            Sets the default password for use with <see cref="T:WarWolfWorks.Utility.Hooks.Streaming.Catalog"/>.
+            </summary>
+            <param name="to"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.GetDefaultPassword">
+            <summary>
+            Gets the current Default password.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.SetDefaultPath(System.String)">
+            <summary>
+            Sets the default path for use with <see cref="T:WarWolfWorks.Utility.Hooks.Streaming.Catalog"/>.
+            </summary>
+            <param name="to"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.GetDefaultPath">
+            <summary>
+            Gets the current Default path.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.ValueSaver(WarWolfWorks.Utility.Hooks.Streaming.Catalog)">
+            <summary>
+            Returns a catalog's name with <see cref="F:WarWolfWorks.Utility.Hooks.Streaming.STREAM_VALUE_POINTER"/> and it's value. (e.g: Score = 25)
+            </summary>
+            <param name="catalog"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.NameNoValSaver(WarWolfWorks.Utility.Hooks.Streaming.Catalog)">
+            <summary>
+            Returns a catalog's name with <see cref="F:WarWolfWorks.Utility.Hooks.Streaming.STREAM_VALUE_POINTER"/>. (e.g: Score =)
+            </summary>
+            <param name="catalog"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Save(WarWolfWorks.Utility.Hooks.Streaming.Catalog)">
+            <summary>
+            Saves a value to a folder file under category.
+            </summary>
+            <param name="saver"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.SaveAll(WarWolfWorks.Utility.Hooks.Streaming.Catalog[])">
+            <summary>
+            Saves all given values under category file. All categories inside a catalog must be the same value.
+            </summary>
+            <param name="catalogs"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Load(WarWolfWorks.Utility.Hooks.Streaming.Catalog)">
+            <summary>
+            Loads a variable previously saved using <see cref="T:WarWolfWorks.Utility.Hooks.Streaming"/>.
+            </summary>
+            <param name="catalog"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.LoadAll(WarWolfWorks.Utility.Hooks.Streaming.Catalog,System.Boolean)">
+            <summary>
+            Loads all variables inside given catalog's file category. In case of an exception, returns null.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Remove(WarWolfWorks.Utility.Hooks.Streaming.Catalog)">
+            <summary>
+            Removes a value under catergory file of the given catalog.
+            </summary>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Streaming.CreateFolder(System.String)">
@@ -4945,294 +5095,6 @@
             Returns a merged path between <see cref="P:WarWolfWorks.Utility.Hooks.Streaming.AssetsPath"/> and fileName given.
             </summary>
             <param name="fileName"></param>
-            <returns></returns>
-        </member>
-        <member name="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming">
-            <summary>
-            Subclass with all streaming and saving/loading methods which encrypt data using a Rijndael algorithm before being saved/loaded.
-            </summary>
-        </member>
-        <member name="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog">
-            <summary>
-            A series of string values used to save/load from <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming"/>.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog.Path">
-            <summary>
-            File path towards which everything will be saved.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog.Category">
-            <summary>
-            Category used inside the file.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog.Name">
-            <summary>
-            Name of the value to be saved.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog.Value">
-            <summary>
-            Value to be saved.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog.Password">
-            <summary>
-            Password used for encryption.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog.DefaultSaver(System.String,System.String,System.String)">
-            <summary>
-            Creates a <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog"/> using the default password and path.
-            </summary>
-            <param name="category"></param>
-            <param name="name"></param>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog.Saver(System.String,System.String,System.String,System.String,System.String)">
-            <summary>
-            Creates a <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog"/> used to save a value.
-            </summary>
-            <param name="path"></param>
-            <param name="category"></param>
-            <param name="name"></param>
-            <param name="value"></param>
-            <param name="password"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog.DefaultLoader(System.String,System.String)">
-            <summary>
-            Creates a <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog"/> to load a variable with the path and password being default.
-            </summary>
-            <param name="category"></param>
-            <param name="name"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog.Loader(System.String,System.String,System.String,System.String)">
-            <summary>
-            Creates a <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog"/> to load a value.
-            </summary>
-            <param name="path"></param>
-            <param name="category"></param>
-            <param name="name"></param>
-            <param name="password"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelStreaming.SetDefaultPassword(System.String)">
-            <summary>
-            Sets the default password for use with <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog"/>.
-            </summary>
-            <param name="to"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelStreaming.GetDefaultPassword">
-            <summary>
-            Gets the current Default password.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Save(WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog)">
-            <summary>
-            Saves a variable using a custom <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog"/>. 
-            </summary>
-            <param name="saver"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Save(System.String,System.String,System.String)">
-            <summary>
-            Saves a variable using a pre-made catalog with given values.
-            </summary>
-            <param name="category"></param>
-            <param name="name"></param>
-            <param name="value"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Save(System.String,System.String,System.String,System.String,System.String)">
-            <summary>
-            Saves a variable using a pre-made catalog with given values.
-            </summary>
-            <param name="filePath"></param>
-            <param name="category"></param>
-            <param name="name"></param>
-            <param name="value"></param>
-            <param name="password"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Load(WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog,System.String)">
-            <summary>
-            Loads a string value previously saved with a <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming"/> save method, using a custom catalog.
-            </summary>
-            <param name="loader"></param>
-            <param name="defaultValue"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Load(WarWolfWorks.Utility.Hooks.RijndaelStreaming.Catalog)">
-            <summary>
-            Loads a string value previously saved with a <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming"/> save method, using a custom catalog.
-            </summary>
-            <param name="loader"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Load(System.String,System.String,System.String)">
-            <summary>
-            Loads a string value previously saved with a <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming"/> save method, using a pre-made Catalog with given values.
-            </summary>
-            <param name="category"></param>
-            <param name="name"></param>
-            <param name="defaultValue"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Load(System.String,System.String)">
-            <summary>
-            Loads a string value previously saved with a <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming"/> save method, using a pre-made Catalog with given values.
-            </summary>
-            <param name="category"></param>
-            <param name="name"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Load(System.String,System.String,System.String,System.String,System.String)">
-            <summary>
-            Loads a string value previously saved with a <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming"/> save method, using a pre-made Catalog with given values.
-            </summary>
-            <param name="filePath"></param>
-            <param name="category"></param>
-            <param name="name"></param>
-            <param name="password"></param>
-            <param name="defaultValue"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelStreaming.Load(System.String,System.String,System.String,System.String)">
-            <summary>
-            Loads a string value previously saved with a <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming"/> save method, using a pre-made Catalog with given values.
-            </summary>
-            <param name="filePath"></param>
-            <param name="category"></param>
-            <param name="name"></param>
-            <param name="password"></param>
-            <returns></returns>
-        </member>
-        <member name="T:WarWolfWorks.Utility.Hooks.LocalStreaming.Catalog">
-            <summary>
-            A series of string values used to save/load from <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming"/>.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.LocalStreaming.Catalog.Path">
-            <summary>
-            File path towards which everything will be saved.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.LocalStreaming.Catalog.Category">
-            <summary>
-            Category used inside the file.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.LocalStreaming.Catalog.Name">
-            <summary>
-            Name of the value to be saved.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.LocalStreaming.Catalog.Value">
-            <summary>
-            Value to be saved.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.LocalStreaming.Catalog.DefaultSaver(System.String,System.String,System.String)">
-            <summary>
-            Creates a <see cref="T:WarWolfWorks.Utility.Hooks.LocalStreaming.Catalog"/> using the default password and path.
-            </summary>
-            <param name="category"></param>
-            <param name="name"></param>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.LocalStreaming.Catalog.Saver(System.String,System.String,System.String,System.String)">
-            <summary>
-            Creates a <see cref="T:WarWolfWorks.Utility.Hooks.LocalStreaming.Catalog"/> used to save a value.
-            </summary>
-            <param name="path"></param>
-            <param name="category"></param>
-            <param name="name"></param>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.LocalStreaming.Catalog.DefaultLoader(System.String,System.String)">
-            <summary>
-            Creates a <see cref="T:WarWolfWorks.Utility.Hooks.LocalStreaming.Catalog"/> to load a variable with the path and password being default.
-            </summary>
-            <param name="category"></param>
-            <param name="name"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.LocalStreaming.Catalog.Loader(System.String,System.String,System.String)">
-            <summary>
-            Creates a <see cref="T:WarWolfWorks.Utility.Hooks.LocalStreaming.Catalog"/> to load a value.
-            </summary>
-            <param name="path"></param>
-            <param name="category"></param>
-            <param name="name"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.LocalStreaming.Save(WarWolfWorks.Utility.Hooks.LocalStreaming.Catalog)">
-            <summary>
-            Saves a variable using a custom <see cref="T:WarWolfWorks.Utility.Hooks.LocalStreaming.Catalog"/>. 
-            </summary>
-            <param name="saver"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.LocalStreaming.Save(System.String,System.String,System.String)">
-            <summary>
-            Saves a variable using a pre-made catalog with given values.
-            </summary>
-            <param name="category"></param>
-            <param name="name"></param>
-            <param name="value"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.LocalStreaming.Save(System.String,System.String,System.String,System.String)">
-            <summary>
-            Saves a variable using a pre-made catalog with given values.
-            </summary>
-            <param name="filePath"></param>
-            <param name="category"></param>
-            <param name="name"></param>
-            <param name="value"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.LocalStreaming.Load(WarWolfWorks.Utility.Hooks.LocalStreaming.Catalog,System.String)">
-            <summary>
-            Loads a string value previously saved with a <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming"/> save method, using a custom catalog.
-            </summary>
-            <param name="loader"></param>
-            <param name="defaultValue"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.LocalStreaming.Load(WarWolfWorks.Utility.Hooks.LocalStreaming.Catalog)">
-            <summary>
-            Loads a string value previously saved with a <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming"/> save method, using a custom catalog.
-            </summary>
-            <param name="loader"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.LocalStreaming.Load(System.String,System.String,System.String)">
-            <summary>
-            Loads a string value previously saved with a <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming"/> save method, using a pre-made Catalog with given values.
-            </summary>
-            <param name="category"></param>
-            <param name="name"></param>
-            <param name="defaultValue"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.LocalStreaming.Load(System.String,System.String)">
-            <summary>
-            Loads a string value previously saved with a <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming"/> save method, using a pre-made Catalog with given values.
-            </summary>
-            <param name="category"></param>
-            <param name="name"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.LocalStreaming.Load(System.String,System.String,System.String,System.String)">
-            <summary>
-            Loads a string value previously saved with a <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelStreaming"/> save method, using a pre-made Catalog with given values.
-            </summary>
-            <param name="filePath"></param>
-            <param name="category"></param>
-            <param name="name"></param>
-            <param name="defaultValue"></param>
             <returns></returns>
         </member>
         <member name="T:WarWolfWorks.Utility.Hooks.Encryption`1">
@@ -5317,6 +5179,19 @@
             </summary>
             <param name="input"></param>
             <param name="password"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WarWolfWorks.Utility.Hooks.Ciphers">
+            <summary>
+            Cipher algorithms.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Ciphers.Caesar(System.String,System.Int32)">
+            <summary>
+            Ceasar cipher which delays each character in a string by shift.
+            </summary>
+            <param name="source"></param>
+            <param name="shift"></param>
             <returns></returns>
         </member>
         <member name="T:WarWolfWorks.Utility.Hooks.Cursor">

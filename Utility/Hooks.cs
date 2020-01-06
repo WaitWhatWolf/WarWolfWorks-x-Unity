@@ -115,19 +115,391 @@ namespace WarWolfWorks.Utility
         }
 
 #if WWW2_5_OR_HIGHER
-        private const char STREAM_CATEGORY_WRAPPER_START = '[';
-        private const char STREAM_CATEGORY_WRAPPER_END = ']';
-        private const char STREAM_CATEGORY_END = '/';
-        private const char STREAM_VALUE_POINTER = '=';
-
+        
         /// <summary>
         /// Subclass with all streaming and saving/loading methods.
         /// </summary>
         public static class Streaming
         {
-            internal static string CategoryWrapper(string category) => Text.StringWrapper(category, STREAM_CATEGORY_WRAPPER_START, STREAM_CATEGORY_WRAPPER_END);
-            internal static string CategoryEndWrapper(string category) => Text.StringWrapper($"{STREAM_CATEGORY_END}{category}", STREAM_CATEGORY_WRAPPER_START, STREAM_CATEGORY_WRAPPER_END);
-            internal static string ValueSaver(string name, string value) => $"{name}{STREAM_VALUE_POINTER}{value}";
+            internal const char STREAM_CATEGORY_WRAPPER_START = '[';
+            internal const char STREAM_CATEGORY_WRAPPER_END = ']';
+            internal const char STREAM_CATEGORY_END = '/';
+            internal static readonly string[] STREAM_VALUE_POINTER = new string[] { " IS " };
+
+            private static string DefaultPassword = "MereoleonaBestGrill";
+            private static string DefaultPath = string.Empty;
+            /// <summary>
+            /// A series of string values used to save/load from <see cref="Streaming"/>.
+            /// </summary>
+            public struct Catalog
+            {
+                /// <summary>
+                /// File path towards which this catalog will be saved.
+                /// </summary>
+                public string Path;
+
+                /// <summary>
+                /// Category in which this catalog will be stored.
+                /// </summary>
+                public string Category;
+                /// <summary>
+                /// Name of the variable saved by this catalog.
+                /// </summary>
+                public string Name;
+                /// <summary>
+                /// Value in string of the saved catalog.
+                /// </summary>
+                public string Value;
+
+                /// <summary>
+                /// If true, this catalog's value will be used as DefaultValue.
+                /// </summary>
+                public bool UsesDefaultValue;
+
+                /// <summary>
+                /// Password used for encryption.
+                /// </summary>
+                public string Password;
+
+                /// <summary>
+                /// Determines if this category is protected by a password.
+                /// </summary>
+                public bool Protected => !string.IsNullOrEmpty(Password);
+
+                /// <summary>
+                /// Encrypts a string value with this catalog's password.
+                /// </summary>
+                /// <param name="input"></param>
+                /// <returns></returns>
+                public string Encrypt(string input)
+                    => RijndaelEncryption.Encrypt(input, Password);
+
+                /// <summary>
+                /// Decrypts a string value with this catalog's password.
+                /// </summary>
+                /// <param name="input"></param>
+                /// <returns></returns>
+                public string Decrypt(string input)
+                    => RijndaelEncryption.Decrypt(input, Password);
+
+                /// <summary>
+                /// Creates a <see cref="Catalog"/> using the default password and path.
+                /// </summary>
+                /// <param name="category"></param>
+                /// <param name="name"></param>
+                /// <param name="value"></param>
+                /// <returns></returns>
+                public static Catalog DefaultSaver(string category, string name, string value)
+                {
+                    if (DefaultPath.Length == 0)
+                        throw new StreamingException(StreamingResult.DEFAULT_PATH_NULL);
+
+                    if (category == null || name == null || value == null)
+                        throw new StreamingException(StreamingResult.INVALID_ARG);
+
+                    return new Catalog()
+                    {
+                        Path = DefaultPath,
+                        Category = category,
+                        Name = name,
+                        Value = value,
+                        Password = DefaultPassword,
+                    };
+                }
+
+                /// <summary>
+                /// Creates a <see cref="Catalog"/> used to save a value.
+                /// </summary>
+                /// <param name="path"></param>
+                /// <param name="category"></param>
+                /// <param name="name"></param>
+                /// <param name="value"></param>
+                /// <returns></returns>
+                public static Catalog Saver(string path, string category, string name, string value)
+                {
+                    if (path == null || category == null || name == null
+                        || value == null)
+                        throw new StreamingException(StreamingResult.INVALID_ARG);
+
+                    return new Catalog()
+                    {
+                        Path = path,
+                        Category = category,
+                        Name = name,
+                        Value = value,
+                        Password = null,
+                        UsesDefaultValue = false
+                    };
+                }
+
+                /// <summary>
+                /// Creates a <see cref="Catalog"/> used to save a value.
+                /// </summary>
+                /// <param name="path"></param>
+                /// <param name="category"></param>
+                /// <param name="name"></param>
+                /// <param name="value"></param>
+                /// <param name="password"></param>
+                /// <returns></returns>
+                public static Catalog Saver(string path, string category, string name, string value, string password)
+                {
+                    if (path == null || category == null || name == null
+                        || value == null || password == null)
+                        throw new StreamingException(StreamingResult.INVALID_ARG);
+
+                    return new Catalog()
+                    {
+                        Path = path,
+                        Category = category,
+                        Name = name,
+                        Value = value,
+                        Password = password,
+                        UsesDefaultValue = false
+                    };
+                }
+
+                /// <summary>
+                /// Creates a collection of catalogs with the same path and category.
+                /// </summary>
+                /// <param name="path"></param>
+                /// <param name="category"></param>
+                /// <param name="names"></param>
+                /// <param name="values"></param>
+                /// <returns></returns>
+                public static Catalog[] Savers(string path, string category, string[] names, string[] values)
+                {
+                    if (path == null || category == null || names == null || values == null)
+                        throw new StreamingException(StreamingResult.INVALID_ARG);
+
+                    if (names.Length != values.Length)
+                        throw new StreamingException(StreamingResult.INVALID_COLLECTION_SIZE);
+
+                    Catalog[] toReturn = new Catalog[names.Length];
+
+                    for(int i = 0; i < toReturn.Length; i++)
+                    {
+                        toReturn[i] = new Catalog()
+                        {
+                            Path = path,
+                            Category = category,
+                            Name = names[i],
+                            Value = values[i],
+                            Password = null,
+                            UsesDefaultValue = false
+                        };
+                    }
+
+                    return toReturn;
+                }
+
+                /// <summary>
+                /// Creates a collection of catalogs with the same path, category and password.
+                /// </summary>
+                /// <param name="path"></param>
+                /// <param name="category"></param>
+                /// <param name="names"></param>
+                /// <param name="values"></param>
+                /// <param name="password"></param>
+                /// <returns></returns>
+                public static Catalog[] Savers(string path, string category, string[] names, string[] values, string password)
+                {
+                    if (path == null || category == null || names == null || values == null)
+                        throw new StreamingException(StreamingResult.INVALID_ARG);
+
+                    if (names.Length != values.Length)
+                        throw new StreamingException(StreamingResult.INVALID_COLLECTION_SIZE);
+
+                    Catalog[] toReturn = new Catalog[names.Length];
+
+                    for (int i = 0; i < toReturn.Length; i++)
+                    {
+                        toReturn[i] = new Catalog()
+                        {
+                            Path = path,
+                            Category = category,
+                            Name = names[i],
+                            Value = values[i],
+                            Password = password,
+                            UsesDefaultValue = false
+                        };
+                    }
+
+                    return toReturn;
+                }
+
+                /// <summary>
+                /// Creates a <see cref="Catalog"/> to load a variable with the path and password being default.
+                /// </summary>
+                /// <param name="category"></param>
+                /// <param name="name"></param>
+                /// <returns></returns>
+                public static Catalog DefaultLoader(string category, string name)
+                {
+                    if (DefaultPath.Length == 0)
+                        throw new StreamingException(StreamingResult.DEFAULT_PATH_NULL);
+
+                    if (category == null || name == null)
+                        throw new StreamingException(StreamingResult.INVALID_ARG);
+
+                    return new Catalog()
+                    {
+                        Path = DefaultPath,
+                        Category = category,
+                        Name = name,
+                        Value = null,
+                        Password = DefaultPassword,
+                        UsesDefaultValue = false
+                    };
+                }
+
+                /// <summary>
+                /// Creates a <see cref="Catalog"/> to load or remove a value.
+                /// </summary>
+                /// <param name="path"></param>
+                /// <param name="category"></param>
+                /// <param name="name"></param>
+                /// <returns></returns>
+                public static Catalog Loader(string path, string category, string name)
+                {
+                    if (path == null || category == null || name == null)
+                        throw new StreamingException(StreamingResult.INVALID_ARG);
+
+                    return new Catalog()
+                    {
+                        Path = path,
+                        Category = category,
+                        Name = name,
+                        Value = null,
+                        Password = null,
+                    };
+                }
+
+                /// <summary>
+                /// Creates a <see cref="Catalog"/> to load or remove a value.
+                /// </summary>
+                /// <param name="path"></param>
+                /// <param name="category"></param>
+                /// <param name="name"></param>
+                /// <param name="defaultValue"></param>
+                /// <param name="useDefaultValue"></param>
+                /// <returns></returns>
+                public static Catalog Loader(string path, string category, string name, string defaultValue, bool useDefaultValue)
+                {
+                    if (path == null || category == null || name == null)
+                        throw new StreamingException(StreamingResult.INVALID_ARG);
+
+                    return new Catalog()
+                    {
+                        Path = path,
+                        Category = category,
+                        Name = name,
+                        Value = defaultValue,
+                        Password = null,
+                        UsesDefaultValue = useDefaultValue
+                    };
+                }
+
+                /// <summary>
+                /// Creates a <see cref="Catalog"/> to load or remove a value.
+                /// </summary>
+                /// <param name="path"></param>
+                /// <param name="category"></param>
+                /// <param name="name"></param>
+                /// <param name="defaultValue"></param>
+                /// <param name="useDefaultValue"></param>
+                /// <param name="password"></param>
+                /// <returns></returns>
+                public static Catalog Loader(string path, string category, string name, string defaultValue, bool useDefaultValue, string password)
+                {
+                    if (path == null || category == null || name == null || password == null)
+                        throw new StreamingException(StreamingResult.INVALID_ARG);
+
+                    return new Catalog()
+                    {
+                        Path = path,
+                        Category = category,
+                        Name = name,
+                        Value = defaultValue,
+                        Password = DefaultPassword,
+                        UsesDefaultValue = useDefaultValue
+                    };
+                }
+
+                /// <summary>
+                /// Creates a <see cref="Catalog"/> to load or remove a value.
+                /// </summary>
+                /// <param name="path"></param>
+                /// <param name="category"></param>
+                /// <param name="name"></param>
+                /// <param name="password"></param>
+                /// <returns></returns>
+                public static Catalog Loader(string path, string category, string name, string password)
+                {
+                    if (path == null || category == null || name == null || password == null)
+                        throw new StreamingException(StreamingResult.INVALID_ARG);
+
+                    return new Catalog()
+                    {
+                        Path = path,
+                        Category = category,
+                        Name = name,
+                        Value = null,
+                        Password = DefaultPassword,
+                    };
+                }
+            }
+
+            /// <summary>
+            /// Sets the default password for use with <see cref="Catalog"/>.
+            /// </summary>
+            /// <param name="to"></param>
+            public static void SetDefaultPassword(string to)
+            {
+                DefaultPassword = to;
+            }
+
+            /// <summary>
+            /// Gets the current Default password.
+            /// </summary>
+            /// <returns></returns>
+            public static string GetDefaultPassword() => DefaultPassword;
+
+            /// <summary>
+            /// Sets the default path for use with <see cref="Catalog"/>.
+            /// </summary>
+            /// <param name="to"></param>
+            public static void SetDefaultPath(string to)
+            {
+                DefaultPath = to;
+            }
+
+            /// <summary>
+            /// Gets the current Default path.
+            /// </summary>
+            /// <returns></returns>
+            public static string GetDefaultPath() => DefaultPath;
+
+            internal static string CategoryWrapper(Catalog catalog) 
+                => Text.StringWrapper(catalog.Category, STREAM_CATEGORY_WRAPPER_START, STREAM_CATEGORY_WRAPPER_END);
+            internal static string CategoryEndWrapper(Catalog catalog) 
+                => Text.StringWrapper(
+                    $"{STREAM_CATEGORY_END}{catalog.Category}", 
+                    STREAM_CATEGORY_WRAPPER_START, 
+                    STREAM_CATEGORY_WRAPPER_END);
+
+            /// <summary>
+            /// Returns a catalog's name with <see cref="STREAM_VALUE_POINTER"/> and it's value. (e.g: Score = 25)
+            /// </summary>
+            /// <param name="catalog"></param>
+            /// <returns></returns>
+            internal static string ValueSaver(Catalog catalog) => $"{catalog.Name}{STREAM_VALUE_POINTER[0]}{catalog.Value}";
+
+            /// <summary>
+            /// Returns a catalog's name with <see cref="STREAM_VALUE_POINTER"/>. (e.g: Score =)
+            /// </summary>
+            /// <param name="catalog"></param>
+            /// <returns></returns>
+            internal static string NameNoValSaver(Catalog catalog) => $"{catalog.Name}{STREAM_VALUE_POINTER[0]}";
 
             internal static void CheckCategoryFileValidity(string filePath, out bool folderNull, out bool fileNull)
             {
@@ -150,137 +522,128 @@ namespace WarWolfWorks.Utility
                 }
             }
 
-            private static void InternalSave(string filePath, string category, string name, string value)
+            private static void InternalSave(Catalog catalog)
             {
-                CheckCategoryFileValidity(filePath, out _, out _);
+                CheckCategoryFileValidity(catalog.Path, out _, out _);
 
-                List<string> lines = new List<string>(File.ReadAllLines(filePath));
-                string categoryNameFull = CategoryWrapper(category), categoryNameEndFull = CategoryEndWrapper(category);
-                int categoryIndex = lines.IndexOf(categoryNameFull);
-                int categoryEndIndex = lines.IndexOf(categoryNameEndFull);
-                if (categoryIndex == -1)
+                List<string> lines = new List<string>(File.ReadAllLines(catalog.Path));
+                string categoryStartName = CategoryWrapper(catalog), categoryEndName = CategoryEndWrapper(catalog);
+                int startIndex = lines.FindIndex(l => (catalog.Protected ? catalog.Decrypt(l) : l) == categoryStartName);
+                int endIndex = lines.FindIndex(l => (catalog.Protected ? catalog.Decrypt(l) : l) == categoryEndName);
+
+                if (startIndex == -1 || endIndex == -1)
                 {
-                    AdvancedDebug.Log($"{category} category was not found, creating new...", AdvancedDebug.WWWInfoLayerIndex);
-                    categoryIndex = 0;
-                    categoryEndIndex = categoryIndex + 1;
-                    lines.Insert(categoryIndex, categoryNameFull);
-                    lines.Insert(categoryEndIndex, categoryNameEndFull);
+                    startIndex = 0;
+                    endIndex = startIndex + 1;
+                    lines.Insert(startIndex, catalog.Protected ? catalog.Encrypt(categoryStartName) : categoryStartName);
+                    lines.Insert(endIndex, catalog.Protected ? catalog.Encrypt(categoryEndName) : categoryEndName);
                 }
 
-                int writeIndex = lines.FindIndex(categoryIndex, categoryEndIndex - categoryIndex, s => s.Contains($"{name}{STREAM_VALUE_POINTER}"));
+                int writeIndex = lines.FindIndex(startIndex, endIndex - startIndex, 
+                    s => (catalog.Protected ? catalog.Decrypt(s) : s).Contains(NameNoValSaver(catalog)));
                 if (writeIndex == -1)
-                    lines.Insert(categoryIndex + 1, ValueSaver(name, value));
+                    lines.Insert(startIndex + 1, catalog.Protected ? catalog.Encrypt(ValueSaver(catalog)) : ValueSaver(catalog));
                 else
-                    lines[writeIndex] = ValueSaver(name, value);
+                    lines[writeIndex] = catalog.Protected ? catalog.Encrypt(ValueSaver(catalog)) : ValueSaver(catalog);
 
-                File.WriteAllLines(filePath, lines);
+                File.WriteAllLines(catalog.Path, lines);
             }
             
             /// <summary>
             /// Saves a value to a folder file under category.
             /// </summary>
-            /// <param name="filePath">File path to save it into. (Must include file name and extention)</param>
-            /// <param name="category">Under which [category] would it be stored.</param>
-            /// <param name="name">Name of the variable.</param>
-            /// <param name="value">It's value.</param>
-            public static void Save(string filePath, string category, string name, string value)
+            /// <param name="saver"></param>
+            public static void Save(Catalog saver)
             {
-                InternalSave(filePath, category, name, value);
+                InternalSave(saver);
             }
 
-            internal static void InternalSaveAll(string filePath, string category, string[] names, string[] values)
+            internal static void InternalSaveAll(Catalog[] catalogs)
             {
-                CheckCategoryFileValidity(filePath, out _, out _);
+                if (catalogs == null || catalogs.Length < 2)
+                    throw new StreamingException(StreamingResult.INVALID_CATALOG_COLLECTION_SIZE);
 
-                List<string> lines = new List<string>(File.ReadAllLines(filePath));
-                string categoryStartName = CategoryWrapper(category), categoryEndName = CategoryEndWrapper(category);
-                int startIndex = lines.IndexOf(categoryStartName);
-                int endIndex = lines.IndexOf(categoryEndName);
+                Catalog reference = catalogs[0];
+                for(int i = 1; i < catalogs.Length; i++)
+                {
+                    if (!catalogs[i].Category.Equals(reference.Category))
+                        throw new StreamingException(StreamingResult.CATALOG_MISSMATCH_CATEGORY);
+
+                    if (!catalogs[i].Password.Equals(reference.Password))
+                        throw new StreamingException(StreamingResult.CATALOG_MISSMATCH_PASSWORD);
+
+                    if(!catalogs[i].Path.Equals(reference.Path))
+                        throw new StreamingException(StreamingResult.CATALOG_MISSMATCH_FILEPATH);
+                }
+
+                CheckCategoryFileValidity(reference.Path, out _, out _);
+
+                List<string> lines = new List<string>(File.ReadAllLines(reference.Path));
+                string categoryStartName = CategoryWrapper(reference), categoryEndName = CategoryEndWrapper(reference);
+                int startIndex = lines.FindIndex(l => (reference.Protected ? reference.Decrypt(l) : l) == categoryStartName);
+                int endIndex = lines.FindIndex(l => (reference.Protected ? reference.Decrypt(l) : l) == categoryEndName);
                 if (startIndex == -1 || endIndex == -1)
                 {
                     startIndex = 0;
                     endIndex = startIndex + 1;
-                    lines.Insert(startIndex, categoryStartName);
-                    lines.Insert(endIndex, categoryEndName);
+                    lines.Insert(startIndex, reference.Protected ? reference.Encrypt(categoryStartName) : categoryStartName);
+                    lines.Insert(endIndex, reference.Protected ? reference.Encrypt(categoryEndName) : categoryEndName);
                 }
-                for (int i = 0; i < names.Length; i++)
+                for (int i = 0; i < catalogs.Length; i++)
                 {
-                    int varIndex = lines.FindLastIndex(endIndex, (endIndex - startIndex).ToPositive(), s => s.Contains(names[i]));
+                    int varIndex = lines.FindLastIndex(endIndex, (endIndex - startIndex).ToPositive(), 
+                        s => (catalogs[i].Protected ? catalogs[i].Decrypt(s) : s).Contains(catalogs[i].Name));
                     if (varIndex == -1)
                     {
-                        lines.Insert(startIndex + 1, ValueSaver(names[i], values[i]));
+                        lines.Insert(startIndex + 1, catalogs[i].Protected ? catalogs[i].Encrypt(ValueSaver(catalogs[i])) : ValueSaver(catalogs[i]));
                         endIndex += 1;
                     }
-                    else lines[varIndex] = ValueSaver(names[i], values[i]);
+                    else lines[varIndex] = catalogs[i].Protected ? catalogs[i].Encrypt(ValueSaver(catalogs[i])) : ValueSaver(catalogs[i]);
                 }
 
-                File.WriteAllLines(filePath, lines);
+                File.WriteAllLines(reference.Path, lines);
             }
 
             /// <summary>
-            /// Saves all given values under category file. (Reminder: Index is used identically for names and values, so make sure the order is correct.)
+            /// Saves all given values under category file. All categories inside a catalog must be the same value.
             /// </summary>
-            /// <param name="filePath"></param>
-            /// <param name="category"></param>
-            /// <param name="names"></param>
-            /// <param name="values"></param>
-            public static void SaveAll(string filePath, string category, string[] names, string[] values)
+            /// <param name="catalogs"></param>
+            public static void SaveAll(Catalog[] catalogs)
             {
-                InternalSaveAll(filePath, category, names, values);
+                InternalSaveAll(catalogs);
             }
 
-            private static void LoadLines(out List<string> list, string path, string category)
+            private static void LoadLines(out List<string> list, Catalog catalog)
             {
-                list = new List<string>(File.ReadAllLines(path));
+                list = new List<string>(File.ReadAllLines(catalog.Path));
 
-                int start = list.FindIndex(s => s == CategoryWrapper(category));
-                int end = list.FindIndex(s => s == CategoryEndWrapper(category));
+                int start = list.FindIndex(s => (catalog.Protected ? catalog.Decrypt(s) : s) == CategoryWrapper(catalog));
+                int end = list.FindIndex(s => (catalog.Protected ? catalog.Decrypt(s) : s) == CategoryEndWrapper(catalog));
 
                 list.RemoveRange(end, list.Count - end);
                 list.RemoveRange(0, start + 1);
             }
 
-            private static void LoadLines(out List<string> list, out int start, out int end, string path, string category)
+            private static void LoadLines(out List<string> list, out int start, out int end, Catalog catalog)
             {
-                list = new List<string>(File.ReadAllLines(path));
+                list = new List<string>(File.ReadAllLines(catalog.Path));
 
-                start = list.FindIndex(s => s == CategoryWrapper(category));
-                end = list.FindIndex(s => s == CategoryEndWrapper(category));
+                start = list.FindIndex(s => (catalog.Protected ? catalog.Decrypt(s) : s) == CategoryWrapper(catalog));
+                end = list.FindIndex(s => (catalog.Protected ? catalog.Decrypt(s) : s) == CategoryEndWrapper(catalog));
             }
-
-            /// <summary>
-            /// Loads a value previously saved using <see cref="Save(string, string, string, string)"/> or <see cref="SaveAll(string, string, string[], string[])"/>.
-            /// </summary>
-            /// <param name="filePath"></param>
-            /// <param name="category"></param>
-            /// <param name="name"></param>
-            /// <returns></returns>
-            public static string Load(string filePath, string category, string name)
-                => Load(filePath, category, name, null, false);
-
-            /// <summary>
-            /// Loads a value previously saved using <see cref="Save(string, string, string, string)"/> or <see cref="SaveAll(string, string, string[], string[])"/>.
-            /// If the value requested does not exist, it will instead be saved with defaultValue.
-            /// </summary>
-            /// <param name="filePath"></param>
-            /// <param name="category"></param>
-            /// <param name="name"></param>
-            /// <param name="defaultValue"></param>
-            /// <returns></returns>
-            public static string Load(string filePath, string category, string name, string defaultValue)
-                => Load(filePath, category, name, defaultValue, true);
-
-            private static string Load(string filePath, string category, string name, string defaultValue, bool saves)
+            
+            private static string LoadInternal(Catalog catalog)
             {
                 try
                 {
                     List<string> lines;
-                    LoadLines(out lines, filePath, category);
-                    int index = lines.FindIndex(s => s.Contains($"{name}{STREAM_VALUE_POINTER}"));
+                    LoadLines(out lines, catalog);
+                    int index = lines.FindIndex(s => (catalog.Protected ? catalog.Decrypt(s) : s).Contains(ValueSaver(catalog)));
                     if (index == -1)
                         goto Saver;
 
-                    return lines[index].Split(STREAM_VALUE_POINTER)[1];
+                    return (catalog.Protected ? catalog.Decrypt(lines[index]) : lines[index])
+                        .Split(STREAM_VALUE_POINTER, StringSplitOptions.None)[1];
                 }
                 catch
                 {
@@ -288,28 +651,37 @@ namespace WarWolfWorks.Utility
                 }
 
             Saver:
-                if (saves)
+                if (catalog.UsesDefaultValue)
                 {
-                    Save(filePath, category, name, defaultValue);
-                    return defaultValue;
+                    Save(catalog);
+                    return catalog.Value;
                 }
                 else return string.Empty;
             }
 
-            private static IEnumerable<string> InternalLoadAll(string filePath, string category, bool includeName)
+            /// <summary>
+            /// Loads a variable previously saved using <see cref="Streaming"/>.
+            /// </summary>
+            /// <param name="catalog"></param>
+            /// <returns></returns>
+            public static string Load(Catalog catalog)
+            {
+                return LoadInternal(catalog);
+            }
+
+            private static IEnumerable<string> InternalLoadAll(Catalog catalog, bool includeName)
             {
                 try
                 {
                     List<string> lines;
-                    LoadLines(out lines, filePath, category);
+                    LoadLines(out lines, catalog);
 
-                    if (!includeName)
+                    for (int i = 0; i < lines.Count; i++)
                     {
-                        for (int i = 0; i < lines.Count; i++)
-                        {
-                            lines[i] = lines[i].Split(STREAM_VALUE_POINTER)[1];
-                        }
+                        if (catalog.Protected) lines[i] = catalog.Decrypt(lines[i]);
+                        if (!includeName) lines[i] = lines[i].Split(STREAM_VALUE_POINTER, StringSplitOptions.None)[1];
                     }
+                    
 
                     return lines;
                 }
@@ -320,33 +692,30 @@ namespace WarWolfWorks.Utility
             }
 
             /// <summary>
-            /// Loads all variables inside given file category. In case of an exception, returns null.
+            /// Loads all variables inside given catalog's file category. In case of an exception, returns null.
             /// </summary>
-            /// <param name="filePath"></param>
-            /// <param name="category"></param>
-            /// <param name="includeName"></param>
             /// <returns></returns>
-            public static IEnumerable<string> LoadAll(string filePath, string category, bool includeName)
+            public static IEnumerable<string> LoadAll(Catalog catalog, bool includeName)
             {
-                return InternalLoadAll(filePath, category, includeName);
+                return InternalLoadAll(catalog, includeName);
             }
 
-            private static bool InternalRemove(string filePath, string category, string name)
+            private static bool InternalRemove(Catalog catalog)
             {
                 try
                 {
                     List<string> lines;
                     int catStart;
                     int catEnd;
-                    LoadLines(out lines, out catStart, out catEnd, filePath, category);
+                    LoadLines(out lines, out catStart, out catEnd, catalog);
 
-                    int index = lines.FindIndex(s => s.Contains(name));
+                    int index = lines.FindIndex(s => (catalog.Protected ? catalog.Decrypt(s) : s).Contains(catalog.Name));
                     if (index == -1 || index > catEnd || index < catStart)
                         return false;
 
                     lines.RemoveAt(index);
 
-                    File.WriteAllLines(filePath, lines);
+                    File.WriteAllLines(catalog.Path, lines);
 
                     return true;
                 }
@@ -357,15 +726,12 @@ namespace WarWolfWorks.Utility
             }
 
             /// <summary>
-            /// Removes a value under catergory file previously set with <see cref="Save(string, string, string, string)"/> or <see cref="SaveAll(string, string, string[], string[])"/>.
+            /// Removes a value under catergory file of the given catalog.
             /// </summary>
-            /// <param name="filePath"></param>
-            /// <param name="category"></param>
-            /// <param name="name"></param>
             /// <returns></returns>
-            public static bool Remove(string filePath, string category, string name)
+            public static bool Remove(Catalog loader)
             {
-                return InternalRemove(filePath, category, name);
+                return InternalRemove(loader);
             }
 
             /// <summary>
@@ -448,596 +814,6 @@ namespace WarWolfWorks.Utility
             /// <param name="fileName"></param>
             /// <returns></returns>
             public static string GetAssetsFilePath(string fileName) => Path.Combine(AssetsPath, fileName);
-        }
-
-        /// <summary>
-        /// Subclass with all streaming and saving/loading methods which encrypt data using a Rijndael algorithm before being saved/loaded.
-        /// </summary>
-        [Obsolete("Currently doesn't work as intended. Use at your own risk. WIP")]
-        public static class RijndaelStreaming
-        {
-            private static string DefaultPassword = "MereoleonaBestGrill";
-            private static string DefaultPath = string.Empty;
-            /// <summary>
-            /// A series of string values used to save/load from <see cref="RijndaelStreaming"/>.
-            /// </summary>
-            public struct Catalog
-            {
-                /// <summary>
-                /// File path towards which everything will be saved.
-                /// </summary>
-                public string Path;
-                /// <summary>
-                /// Category used inside the file.
-                /// </summary>
-                public string Category;
-                /// <summary>
-                /// Name of the value to be saved.
-                /// </summary>
-                public string Name;
-                /// <summary>
-                /// Value to be saved.
-                /// </summary>
-                public string Value;
-                /// <summary>
-                /// Password used for encryption.
-                /// </summary>
-                public string Password;
-
-                /// <summary>
-                /// Creates a <see cref="Catalog"/> using the default password and path.
-                /// </summary>
-                /// <param name="category"></param>
-                /// <param name="name"></param>
-                /// <param name="value"></param>
-                /// <returns></returns>
-                public static Catalog DefaultSaver(string category, string name, string value)
-                {
-                    if (DefaultPath.Length == 0)
-                        throw new RijndaelStreamingException(RijndaelStreamingResult.DEFAULT_PATH_NULL);
-
-                    if (category == null || name == null || value == null)
-                        throw new RijndaelStreamingException(RijndaelStreamingResult.INVALID_ARG);
-
-                    return new Catalog()
-                    {
-                        Path = DefaultPath,
-                        Category = category,
-                        Name = name,
-                        Value = value,
-                        Password = DefaultPassword
-                    };
-                }
-
-                /// <summary>
-                /// Creates a <see cref="Catalog"/> used to save a value.
-                /// </summary>
-                /// <param name="path"></param>
-                /// <param name="category"></param>
-                /// <param name="name"></param>
-                /// <param name="value"></param>
-                /// <param name="password"></param>
-                /// <returns></returns>
-                public static Catalog Saver(string path, string category, string name, string value, string password)
-                {
-                    if (path == null || category == null || name == null
-                        || value == null || password == null)
-                        throw new RijndaelStreamingException(RijndaelStreamingResult.INVALID_ARG);
-
-                    return new Catalog()
-                    {
-                        Path = path,
-                        Category = category,
-                        Name = name,
-                        Value = value,
-                        Password = password
-                    };
-                }
-
-                /// <summary>
-                /// Creates a <see cref="Catalog"/> to load a variable with the path and password being default.
-                /// </summary>
-                /// <param name="category"></param>
-                /// <param name="name"></param>
-                /// <returns></returns>
-                public static Catalog DefaultLoader(string category, string name)
-                {
-                    if (DefaultPath.Length == 0)
-                        throw new RijndaelStreamingException(RijndaelStreamingResult.DEFAULT_PATH_NULL);
-
-                    if (category == null || name == null)
-                        throw new RijndaelStreamingException(RijndaelStreamingResult.INVALID_ARG);
-
-                    return new Catalog()
-                    {
-                        Path = DefaultPath,
-                        Category = category,
-                        Name = name,
-                        Value = null,
-                        Password = DefaultPassword
-                    };
-                }
-
-                /// <summary>
-                /// Creates a <see cref="Catalog"/> to load a value.
-                /// </summary>
-                /// <param name="path"></param>
-                /// <param name="category"></param>
-                /// <param name="name"></param>
-                /// <param name="password"></param>
-                /// <returns></returns>
-                public static Catalog Loader(string path, string category, string name, string password)
-                {
-                    if (path == null || category == null || name == null || password == null)
-                        throw new RijndaelStreamingException(RijndaelStreamingResult.INVALID_ARG);
-
-                    return new Catalog()
-                    {
-                        Path = path,
-                        Category = category,
-                        Name = name,
-                        Value = null,
-                        Password = DefaultPassword
-                    };
-                }
-            }
-
-
-            /// <summary>
-            /// Sets the default password for use with <see cref="Catalog"/>.
-            /// </summary>
-            /// <param name="to"></param>
-            public static void SetDefaultPassword(string to)
-            {
-                DefaultPassword = to;
-            }
-
-            /// <summary>
-            /// Gets the current Default password.
-            /// </summary>
-            /// <returns></returns>
-            public static string GetDefaultPassword() => DefaultPassword;
-
-            private static void LoadLines(out List<string> list, string path, string category, string password)
-            {
-                list = new List<string>(File.ReadAllLines(path));
-
-                int start = list.FindIndex(s => Streaming.CategoryWrapper(category) == RijndaelEncryption.Decrypt(s, password));
-                int end = list.FindIndex(s => Streaming.CategoryEndWrapper(category) == RijndaelEncryption.Decrypt(s, password));
-
-                list.RemoveRange(end, list.Count - end);
-                list.RemoveRange(0, start + 1);
-            }
-
-            private static void LoadLines(out List<string> list, out int start, out int end, string path, string category, string password)
-            {
-                list = new List<string>(File.ReadAllLines(path));
-
-                start = list.FindIndex(s => Streaming.CategoryWrapper(category) == RijndaelEncryption.Decrypt(s, password));
-                end = list.FindIndex(s => Streaming.CategoryEndWrapper(category) == RijndaelEncryption.Decrypt(s, password));
-            }
-
-            private static void InternalSave(Catalog saver)
-            {
-                if (saver.Value == null)
-                    throw new RijndaelStreamingException(RijndaelStreamingResult.INVALID_CATALOG);
-
-                Streaming.CheckCategoryFileValidity(saver.Path, out _, out _);
-
-                List<string> lines = new List<string>(File.ReadAllLines(saver.Path));
-
-                string categoryNameFull = RijndaelEncryption.Encrypt(Streaming.CategoryWrapper(saver.Category), saver.Password),
-                    categoryNameEndFull = RijndaelEncryption.Encrypt(Streaming.CategoryEndWrapper(saver.Category), saver.Password);
-
-                int categoryIndex = lines.IndexOf(categoryNameFull);
-                int categoryEndIndex = lines.IndexOf(categoryNameEndFull);
-
-                if (categoryIndex == -1)
-                {
-                    AdvancedDebug.Log($"{saver.Category} category was not found, creating new...", AdvancedDebug.WWWInfoLayerIndex);
-                    categoryIndex = 0;
-                    categoryEndIndex = categoryIndex + 1;
-                    lines.Insert(categoryIndex, categoryNameFull);
-                    lines.Insert(categoryEndIndex, categoryNameEndFull);
-                }
-
-                int writeIndex = lines.FindIndex(categoryIndex, categoryEndIndex - categoryIndex,
-                    s => RijndaelEncryption.Decrypt(s, saver.Password).Contains($"{saver.Name}{STREAM_VALUE_POINTER}"));
-
-                string toSave = RijndaelEncryption.Encrypt(Streaming.ValueSaver(saver.Name, saver.Value), saver.Password);
-                if (writeIndex == -1)
-                    lines.Insert(categoryIndex + 1, toSave);
-                else
-                    lines[writeIndex] = toSave;
-
-                File.WriteAllLines(saver.Path, lines);
-            }
-
-            /// <summary>
-            /// Saves a variable using a custom <see cref="Catalog"/>. 
-            /// </summary>
-            /// <param name="saver"></param>
-            public static void Save(Catalog saver) => InternalSave(saver);
-            /// <summary>
-            /// Saves a variable using a pre-made catalog with given values.
-            /// </summary>
-            /// <param name="category"></param>
-            /// <param name="name"></param>
-            /// <param name="value"></param>
-            public static void Save(string category, string name, string value) => InternalSave(Catalog.DefaultSaver(category, name, value));
-            /// <summary>
-            /// Saves a variable using a pre-made catalog with given values.
-            /// </summary>
-            /// <param name="filePath"></param>
-            /// <param name="category"></param>
-            /// <param name="name"></param>
-            /// <param name="value"></param>
-            /// <param name="password"></param>
-            public static void Save(string filePath, string category, string name, string value, string password)
-                => InternalSave(Catalog.Saver(filePath, category, name, value, password));
-
-            private static string InternalLoad(Catalog loader, string defaultValue)
-            {
-                try
-                {
-                    if (!string.IsNullOrEmpty(loader.Value))
-                        throw new RijndaelStreamingException(RijndaelStreamingResult.INVALID_CATALOG);
-
-                    List<string> lines;
-                    LoadLines(out lines, loader.Path, loader.Category, loader.Password);
-                    int index = lines.FindIndex(s => RijndaelEncryption.Decrypt(s, loader.Password).Contains($"{loader.Name}{STREAM_VALUE_POINTER}"));
-                    if (index == -1)
-                        goto Saver;
-
-                    return RijndaelEncryption.Decrypt(lines[index], loader.Password).Split(STREAM_VALUE_POINTER)[1];
-                }
-                catch
-                {
-                    goto Saver;
-                }
-
-                Saver:
-                if (!string.IsNullOrEmpty(defaultValue))
-                {
-                    Save(loader.Path, loader.Category, loader.Name, defaultValue, loader.Password);
-                    return defaultValue;
-                }
-
-                return string.Empty;
-            }
-
-            /// <summary>
-            /// Loads a string value previously saved with a <see cref="RijndaelStreaming"/> save method, using a custom catalog.
-            /// </summary>
-            /// <param name="loader"></param>
-            /// <param name="defaultValue"></param>
-            /// <returns></returns>
-            public static string Load(Catalog loader, string defaultValue)
-                => InternalLoad(loader, defaultValue);
-
-            /// <summary>
-            /// Loads a string value previously saved with a <see cref="RijndaelStreaming"/> save method, using a custom catalog.
-            /// </summary>
-            /// <param name="loader"></param>
-            /// <returns></returns>
-            public static string Load(Catalog loader)
-                => InternalLoad(loader, null);
-
-            /// <summary>
-            /// Loads a string value previously saved with a <see cref="RijndaelStreaming"/> save method, using a pre-made Catalog with given values.
-            /// </summary>
-            /// <param name="category"></param>
-            /// <param name="name"></param>
-            /// <param name="defaultValue"></param>
-            /// <returns></returns>
-            public static string Load(string category, string name, string defaultValue)
-                => InternalLoad(Catalog.DefaultLoader(category, name), defaultValue);
-
-            /// <summary>
-            /// Loads a string value previously saved with a <see cref="RijndaelStreaming"/> save method, using a pre-made Catalog with given values.
-            /// </summary>
-            /// <param name="category"></param>
-            /// <param name="name"></param>
-            /// <returns></returns>
-            public static string Load(string category, string name)
-                => InternalLoad(Catalog.DefaultLoader(category, name), null);
-
-            /// <summary>
-            /// Loads a string value previously saved with a <see cref="RijndaelStreaming"/> save method, using a pre-made Catalog with given values.
-            /// </summary>
-            /// <param name="filePath"></param>
-            /// <param name="category"></param>
-            /// <param name="name"></param>
-            /// <param name="password"></param>
-            /// <param name="defaultValue"></param>
-            /// <returns></returns>
-            public static string Load(string filePath, string category, string name, string password, string defaultValue)
-                => InternalLoad(Catalog.Loader(filePath, category, name, password), defaultValue);
-
-            /// <summary>
-            /// Loads a string value previously saved with a <see cref="RijndaelStreaming"/> save method, using a pre-made Catalog with given values.
-            /// </summary>
-            /// <param name="filePath"></param>
-            /// <param name="category"></param>
-            /// <param name="name"></param>
-            /// <param name="password"></param>
-            /// <returns></returns>
-            public static string Load(string filePath, string category, string name, string password)
-                => InternalLoad(Catalog.Loader(filePath, category, name, password), null);
-        }
-
-        public static class LocalStreaming
-        {
-            private static string DefaultPath = string.Empty;
-            /// <summary>
-            /// A series of string values used to save/load from <see cref="RijndaelStreaming"/>.
-            /// </summary>
-            public struct Catalog
-            {
-                /// <summary>
-                /// File path towards which everything will be saved.
-                /// </summary>
-                public string Path;
-                /// <summary>
-                /// Category used inside the file.
-                /// </summary>
-                public string Category;
-                /// <summary>
-                /// Name of the value to be saved.
-                /// </summary>
-                public string Name;
-                /// <summary>
-                /// Value to be saved.
-                /// </summary>
-                public string Value;
-
-                /// <summary>
-                /// Creates a <see cref="Catalog"/> using the default password and path.
-                /// </summary>
-                /// <param name="category"></param>
-                /// <param name="name"></param>
-                /// <param name="value"></param>
-                /// <returns></returns>
-                public static Catalog DefaultSaver(string category, string name, string value)
-                {
-                    if (DefaultPath.Length == 0)
-                        throw new RijndaelStreamingException(RijndaelStreamingResult.DEFAULT_PATH_NULL);
-
-                    if (category == null || name == null || value == null)
-                        throw new RijndaelStreamingException(RijndaelStreamingResult.INVALID_ARG);
-
-                    return new Catalog()
-                    {
-                        Path = DefaultPath,
-                        Category = category,
-                        Name = name,
-                        Value = value,
-                    };
-                }
-
-                /// <summary>
-                /// Creates a <see cref="Catalog"/> used to save a value.
-                /// </summary>
-                /// <param name="path"></param>
-                /// <param name="category"></param>
-                /// <param name="name"></param>
-                /// <param name="value"></param>
-                /// <returns></returns>
-                public static Catalog Saver(string path, string category, string name, string value)
-                {
-                    if (path == null || category == null || name == null
-                        || value == null)
-                        throw new RijndaelStreamingException(RijndaelStreamingResult.INVALID_ARG);
-
-                    return new Catalog()
-                    {
-                        Path = path,
-                        Category = category,
-                        Name = name,
-                        Value = value
-                    };
-                }
-
-                /// <summary>
-                /// Creates a <see cref="Catalog"/> to load a variable with the path and password being default.
-                /// </summary>
-                /// <param name="category"></param>
-                /// <param name="name"></param>
-                /// <returns></returns>
-                public static Catalog DefaultLoader(string category, string name)
-                {
-                    if (DefaultPath.Length == 0)
-                        throw new RijndaelStreamingException(RijndaelStreamingResult.DEFAULT_PATH_NULL);
-
-                    if (category == null || name == null)
-                        throw new RijndaelStreamingException(RijndaelStreamingResult.INVALID_ARG);
-
-                    return new Catalog()
-                    {
-                        Path = DefaultPath,
-                        Category = category,
-                        Name = name,
-                        Value = null
-                    };
-                }
-
-                /// <summary>
-                /// Creates a <see cref="Catalog"/> to load a value.
-                /// </summary>
-                /// <param name="path"></param>
-                /// <param name="category"></param>
-                /// <param name="name"></param>
-                /// <returns></returns>
-                public static Catalog Loader(string path, string category, string name)
-                {
-                    if (path == null || category == null || name == null)
-                        throw new RijndaelStreamingException(RijndaelStreamingResult.INVALID_ARG);
-
-                    return new Catalog()
-                    {
-                        Path = path,
-                        Category = category,
-                        Name = name,
-                        Value = null
-                    };
-                }
-            }
-
-            private static void LoadLines(out List<string> list, string path, string category)
-            {
-                list = new List<string>(File.ReadAllLines(path));
-
-                int start = list.FindIndex(s => Streaming.CategoryWrapper(category) == LocalEncryption.Decrypt(s));
-                int end = list.FindIndex(s => Streaming.CategoryEndWrapper(category) == LocalEncryption.Decrypt(s));
-
-                list.RemoveRange(end, list.Count - end);
-                list.RemoveRange(0, start + 1);
-            }
-
-            private static void LoadLines(out List<string> list, out int start, out int end, string path, string category, string password)
-            {
-                list = new List<string>(File.ReadAllLines(path));
-
-                start = list.FindIndex(s => Streaming.CategoryWrapper(category) == LocalEncryption.Decrypt(s));
-                end = list.FindIndex(s => Streaming.CategoryEndWrapper(category) == LocalEncryption.Decrypt(s));
-            }
-
-            private static void InternalSave(Catalog saver)
-            {
-                if (saver.Value == null)
-                    throw new RijndaelStreamingException(RijndaelStreamingResult.INVALID_CATALOG);
-
-                Streaming.CheckCategoryFileValidity(saver.Path, out _, out _);
-
-                List<string> lines = new List<string>(File.ReadAllLines(saver.Path));
-
-                string categoryNameFull = LocalEncryption.Encrypt(Streaming.CategoryWrapper(saver.Category)),
-                    categoryNameEndFull = LocalEncryption.Encrypt(Streaming.CategoryEndWrapper(saver.Category));
-
-                int categoryIndex = lines.IndexOf(categoryNameFull);
-                int categoryEndIndex = lines.IndexOf(categoryNameEndFull);
-
-                if (categoryIndex == -1)
-                {
-                    AdvancedDebug.Log($"{saver.Category} category was not found, creating new...", AdvancedDebug.WWWInfoLayerIndex);
-                    categoryIndex = 0;
-                    categoryEndIndex = categoryIndex + 1;
-                    lines.Insert(categoryIndex, categoryNameFull);
-                    lines.Insert(categoryEndIndex, categoryNameEndFull);
-                }
-
-                int writeIndex = lines.FindIndex(categoryIndex, categoryEndIndex - categoryIndex,
-                    s => LocalEncryption.Decrypt(s).Contains($"{saver.Name}{STREAM_VALUE_POINTER}"));
-
-                string toSave = LocalEncryption.Encrypt(Streaming.ValueSaver(saver.Name, saver.Value));
-                if (writeIndex == -1)
-                    lines.Insert(categoryIndex + 1, toSave);
-                else
-                    lines[writeIndex] = toSave;
-
-                File.WriteAllLines(saver.Path, lines);
-            }
-
-            /// <summary>
-            /// Saves a variable using a custom <see cref="Catalog"/>. 
-            /// </summary>
-            /// <param name="saver"></param>
-            public static void Save(Catalog saver) => InternalSave(saver);
-
-            /// <summary>
-            /// Saves a variable using a pre-made catalog with given values.
-            /// </summary>
-            /// <param name="category"></param>
-            /// <param name="name"></param>
-            /// <param name="value"></param>
-            public static void Save(string category, string name, string value) => InternalSave(Catalog.DefaultSaver(category, name, value));
-
-            /// <summary>
-            /// Saves a variable using a pre-made catalog with given values.
-            /// </summary>
-            /// <param name="filePath"></param>
-            /// <param name="category"></param>
-            /// <param name="name"></param>
-            /// <param name="value"></param>
-            public static void Save(string filePath, string category, string name, string value)
-                => InternalSave(Catalog.Saver(filePath, category, name, value));
-
-            private static string InternalLoad(Catalog loader, string defaultValue)
-            {
-                try
-                {
-                    if (!string.IsNullOrEmpty(loader.Value))
-                        throw new RijndaelStreamingException(RijndaelStreamingResult.INVALID_CATALOG);
-
-                    List<string> lines;
-                    LoadLines(out lines, loader.Path, loader.Category);
-                    int index = lines.FindIndex(s => LocalEncryption.Decrypt(s).Contains($"{loader.Name}{STREAM_VALUE_POINTER}"));
-                    if (index == -1)
-                        goto Saver;
-
-                    return LocalEncryption.Decrypt(lines[index]).Split(STREAM_VALUE_POINTER)[1];
-                }
-                catch
-                {
-                    goto Saver;
-                }
-
-                Saver:
-                if (!string.IsNullOrEmpty(defaultValue))
-                {
-                    Save(loader.Path, loader.Category, loader.Name, defaultValue);
-                    return defaultValue;
-                }
-
-                return string.Empty;
-            }
-
-            /// <summary>
-            /// Loads a string value previously saved with a <see cref="RijndaelStreaming"/> save method, using a custom catalog.
-            /// </summary>
-            /// <param name="loader"></param>
-            /// <param name="defaultValue"></param>
-            /// <returns></returns>
-            public static string Load(Catalog loader, string defaultValue)
-                => InternalLoad(loader, defaultValue);
-
-            /// <summary>
-            /// Loads a string value previously saved with a <see cref="RijndaelStreaming"/> save method, using a custom catalog.
-            /// </summary>
-            /// <param name="loader"></param>
-            /// <returns></returns>
-            public static string Load(Catalog loader)
-                => InternalLoad(loader, null);
-
-            /// <summary>
-            /// Loads a string value previously saved with a <see cref="RijndaelStreaming"/> save method, using a pre-made Catalog with given values.
-            /// </summary>
-            /// <param name="category"></param>
-            /// <param name="name"></param>
-            /// <param name="defaultValue"></param>
-            /// <returns></returns>
-            public static string Load(string category, string name, string defaultValue)
-                => InternalLoad(Catalog.DefaultLoader(category, name), defaultValue);
-
-            /// <summary>
-            /// Loads a string value previously saved with a <see cref="RijndaelStreaming"/> save method, using a pre-made Catalog with given values.
-            /// </summary>
-            /// <param name="category"></param>
-            /// <param name="name"></param>
-            /// <returns></returns>
-            public static string Load(string category, string name)
-                => InternalLoad(Catalog.DefaultLoader(category, name), null);
-
-            /// <summary>
-            /// Loads a string value previously saved with a <see cref="RijndaelStreaming"/> save method, using a pre-made Catalog with given values.
-            /// </summary>
-            /// <param name="filePath"></param>
-            /// <param name="category"></param>
-            /// <param name="name"></param>
-            /// <param name="defaultValue"></param>
-            /// <returns></returns>
-            public static string Load(string filePath, string category, string name, string defaultValue)
-                => InternalLoad(Catalog.Loader(filePath, category, name), defaultValue);
         }
 #else
         /// <summary>
@@ -1901,15 +1677,31 @@ namespace WarWolfWorks.Utility
         internal static class EncryptionUtilityInternal
         {
             internal const int Keysize = 256;
-            internal const int DerivationIterations = 100;
+            internal const int DerivationIterations = 1000;
             internal static byte[] Generate256BitsOfRandomEntropy()
             {
-                byte[] array = new byte[32];
-                using (RNGCryptoServiceProvider rNGCryptoServiceProvider = new RNGCryptoServiceProvider())
+                byte[] randomBytes = new byte[32]; // 32 Bytes => 256 bits.
+                using (RNGCryptoServiceProvider rngCsp = new RNGCryptoServiceProvider())
                 {
-                    rNGCryptoServiceProvider.GetBytes(array);
+                    rngCsp.GetBytes(randomBytes);
                 }
-                return array;
+                return randomBytes;
+            }
+
+            internal static string EncryptingKey(string value)
+            {
+                StringBuilder Sb = new StringBuilder();
+
+                using (SHA256 hash = SHA256Managed.Create())
+                {
+                    Encoding enc = Encoding.UTF8;
+                    Byte[] result = hash.ComputeHash(enc.GetBytes(value));
+
+                    foreach (Byte b in result)
+                        Sb.Append(b.ToString("x2"));
+                }
+
+                return Sb.ToString();
             }
         }
 
@@ -1926,31 +1718,33 @@ namespace WarWolfWorks.Utility
             /// <returns></returns>
             public static string Encrypt(string input, string password)
             {
-                byte[] array = EncryptionUtilityInternal.Generate256BitsOfRandomEntropy();
-                byte[] array2 = EncryptionUtilityInternal.Generate256BitsOfRandomEntropy();
-                byte[] bytes = Encoding.UTF8.GetBytes(input);
-                using (Rfc2898DeriveBytes rfc2898DeriveBytes = new Rfc2898DeriveBytes(password, array, EncryptionUtilityInternal.DerivationIterations))
+                password = EncryptionUtilityInternal.EncryptingKey(password);
+
+                byte[] saltStringBytes = EncryptionUtilityInternal.Generate256BitsOfRandomEntropy();
+                byte[] ivStringBytes = EncryptionUtilityInternal.Generate256BitsOfRandomEntropy();
+                byte[] plainTextBytes = Encoding.UTF8.GetBytes(input);
+                using (Rfc2898DeriveBytes passwordIntern = new Rfc2898DeriveBytes(password, saltStringBytes, EncryptionUtilityInternal.DerivationIterations))
                 {
-                    byte[] bytes2 = rfc2898DeriveBytes.GetBytes(32);
-                    using (RijndaelManaged rijndaelManaged = new RijndaelManaged())
+                    byte[] keyBytes = passwordIntern.GetBytes(EncryptionUtilityInternal.Keysize / 8);
+                    using (RijndaelManaged symmetricKey = new RijndaelManaged())
                     {
-                        rijndaelManaged.BlockSize = EncryptionUtilityInternal.Keysize;
-                        rijndaelManaged.Mode = CipherMode.CBC;
-                        rijndaelManaged.Padding = PaddingMode.PKCS7;
-                        using (ICryptoTransform transform = rijndaelManaged.CreateEncryptor(bytes2, array2))
+                        symmetricKey.BlockSize = EncryptionUtilityInternal.Keysize;
+                        symmetricKey.Mode = CipherMode.CBC;
+                        symmetricKey.Padding = PaddingMode.PKCS7;
+                        using (ICryptoTransform encryptor = symmetricKey.CreateEncryptor(keyBytes, ivStringBytes))
                         {
                             using (MemoryStream memoryStream = new MemoryStream())
                             {
-                                using (CryptoStream cryptoStream = new CryptoStream(memoryStream, transform, CryptoStreamMode.Write))
+                                using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
                                 {
-                                    cryptoStream.Write(bytes, 0, bytes.Length);
+                                    cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
                                     cryptoStream.FlushFinalBlock();
-                                    byte[] first = array;
-                                    first = first.Concat(array2).ToArray();
-                                    first = first.Concat(memoryStream.ToArray()).ToArray();
+                                    byte[] cipherTextBytes = saltStringBytes;
+                                    cipherTextBytes = cipherTextBytes.Concat(ivStringBytes).ToArray();
+                                    cipherTextBytes = cipherTextBytes.Concat(memoryStream.ToArray()).ToArray();
                                     memoryStream.Close();
                                     cryptoStream.Close();
-                                    return Convert.ToBase64String(first);
+                                    return Convert.ToBase64String(cipherTextBytes);
                                 }
                             }
                         }
@@ -1966,32 +1760,32 @@ namespace WarWolfWorks.Utility
             /// <returns></returns>
             public static string Decrypt(string input, string password)
             {
-                if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(password))
-                    return string.Empty;
+                password = EncryptionUtilityInternal.EncryptingKey(password);
 
-                byte[] array = Convert.FromBase64String(input);
-                byte[] salt = array.Take(32).ToArray();
-                byte[] rgbIV = array.Skip(32).Take(32).ToArray();
-                byte[] array2 = array.Skip(64).Take(array.Length - 64).ToArray();
-                using (Rfc2898DeriveBytes rfc2898DeriveBytes = new Rfc2898DeriveBytes(password, salt, 1000))
+                byte[] cipherTextBytesWithSaltAndIv = Convert.FromBase64String(input);
+                byte[] saltStringBytes = cipherTextBytesWithSaltAndIv.Take(EncryptionUtilityInternal.Keysize / 8).ToArray();
+                byte[] ivStringBytes = cipherTextBytesWithSaltAndIv.Skip(EncryptionUtilityInternal.Keysize / 8).Take(EncryptionUtilityInternal.Keysize / 8).ToArray();
+                byte[] cipherTextBytes = cipherTextBytesWithSaltAndIv.Skip((EncryptionUtilityInternal.Keysize / 8) * 2).Take(cipherTextBytesWithSaltAndIv.Length - ((EncryptionUtilityInternal.Keysize / 8) * 2)).ToArray();
+
+                using (Rfc2898DeriveBytes passwordInternal = new Rfc2898DeriveBytes(password, saltStringBytes, EncryptionUtilityInternal.DerivationIterations))
                 {
-                    byte[] bytes = rfc2898DeriveBytes.GetBytes(32);
-                    using (RijndaelManaged rijndaelManaged = new RijndaelManaged())
+                    byte[] keyBytes = passwordInternal.GetBytes(EncryptionUtilityInternal.Keysize / 8);
+                    using (RijndaelManaged symmetricKey = new RijndaelManaged())
                     {
-                        rijndaelManaged.BlockSize = 256;
-                        rijndaelManaged.Mode = CipherMode.CBC;
-                        rijndaelManaged.Padding = PaddingMode.PKCS7;
-                        using (ICryptoTransform transform = rijndaelManaged.CreateDecryptor(bytes, rgbIV))
+                        symmetricKey.BlockSize = EncryptionUtilityInternal.Keysize;
+                        symmetricKey.Mode = CipherMode.CBC;
+                        symmetricKey.Padding = PaddingMode.PKCS7;
+                        using (ICryptoTransform decryptor = symmetricKey.CreateDecryptor(keyBytes, ivStringBytes))
                         {
-                            using (MemoryStream memoryStream = new MemoryStream(array2))
+                            using (MemoryStream memoryStream = new MemoryStream(cipherTextBytes))
                             {
-                                using (CryptoStream cryptoStream = new CryptoStream(memoryStream, transform, CryptoStreamMode.Read))
+                                using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
                                 {
-                                    byte[] array3 = new byte[array2.Length];
-                                    int count = cryptoStream.Read(array3, 0, array3.Length);
+                                    byte[] plainTextBytes = new byte[cipherTextBytes.Length];
+                                    int decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
                                     memoryStream.Close();
                                     cryptoStream.Close();
-                                    return Encoding.UTF8.GetString(array3, 0, count);
+                                    return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount);
                                 }
                             }
                         }
@@ -2121,6 +1915,43 @@ namespace WarWolfWorks.Utility
                         }
                     }
                 }
+            }
+        }
+        /// <summary>
+        /// Cipher algorithms.
+        /// </summary>
+        public static class Ciphers
+        {
+            /// <summary>
+            /// Ceasar cipher which delays each character in a string by shift.
+            /// </summary>
+            /// <param name="source"></param>
+            /// <param name="shift"></param>
+            /// <returns></returns>
+            public static string Caesar(string source, int shift)
+            {
+                var maxChar = Convert.ToInt32(char.MaxValue);
+                var minChar = Convert.ToInt32(char.MinValue);
+
+                var buffer = source.ToCharArray();
+
+                for (var i = 0; i < buffer.Length; i++)
+                {
+                    var shifted = Convert.ToInt32(buffer[i]) + shift;
+
+                    if (shifted > maxChar)
+                    {
+                        shifted -= maxChar;
+                    }
+                    else if (shifted < minChar)
+                    {
+                        shifted += maxChar;
+                    }
+
+                    buffer[i] = Convert.ToChar(shifted);
+                }
+
+                return new string(buffer);
             }
         }
 
