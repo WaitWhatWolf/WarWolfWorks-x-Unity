@@ -57,18 +57,17 @@ namespace WarWolfWorks.EntitiesSystem
         }
 
         /// <summary>
-        /// Gets the closest <see cref="Entity"/> to position of specified type.
+        /// Gets the closest <see cref="Entity"/> to position of specified T type.
         /// </summary>
         /// <param name="position"></param>
-        /// <param name="of"></param>
         /// <returns></returns>
-        public static Entity GetClosestEntity(Vector3 position, Type of)
+        public static Entity GetClosestEntity<T>(Vector3 position)
         {
             float lastDist = Mathf.Infinity;
             Entity toReturb = null;
             foreach (Entity e in InitiatedEntities)
             {
-                if (e.EntityType != of)
+                if (!(e.EntityType is T))
                     continue;
                 float curDist = Vector3.Distance(e.Position, position);
                 if (lastDist > curDist)
@@ -109,15 +108,14 @@ namespace WarWolfWorks.EntitiesSystem
         /// </summary>
         /// <param name="within"></param>
         /// <param name="position"></param>
-        /// <param name="type"></param>
         /// <returns></returns>
-        public static Entity GetClosestEntity(float within, Vector3 position, Type type)
+        public static Entity GetClosestEntity<T>(float within, Vector3 position)
         {
             float lastDist = within;
             Entity toReturn = null;
             foreach (Entity e in InitiatedEntities)
             {
-                if (e.EntityType != type)
+                if (!(e.EntityType is T))
                     continue;
                 float curDist = Vector3.Distance(e.Position, position);
                 if (lastDist > curDist)
@@ -162,7 +160,7 @@ namespace WarWolfWorks.EntitiesSystem
         /// <param name="within"></param>
         /// <param name="position"></param>
         /// <returns></returns>
-        public static IEnumerable<Entity> GetClosestEntities(float within, Vector3 position)
+        public static List<Entity> GetClosestEntities(float within, Vector3 position)
         {
             var entities = InitiatedEntities.FindAll(t =>
             Vector3.Distance(position, t.Position) <= within);
@@ -176,7 +174,7 @@ namespace WarWolfWorks.EntitiesSystem
         /// <param name="position"></param>
         /// <param name="ofTypes"></param>
         /// <returns></returns>
-        public static IEnumerable<Entity> GetClosestEntities(float within, Vector3 position, IEnumerable<Type> ofTypes)
+        public static List<Entity> GetClosestEntities(float within, Vector3 position, IEnumerable<Type> ofTypes)
         {
             var entities = InitiatedEntities.FindAll(t =>
             Vector3.Distance(position, t.Position) <= within &&
@@ -190,12 +188,11 @@ namespace WarWolfWorks.EntitiesSystem
         /// </summary>
         /// <param name="within"></param>
         /// <param name="position"></param>
-        /// <param name="ofType"></param>
         /// <returns></returns>
-        public static IEnumerable<Entity> GetClosestEntities(float within, Vector3 position, Type ofType)
+        public static List<Entity> GetClosestEntities<T>(float within, Vector3 position)
         {
             var entities = InitiatedEntities.FindAll(t =>
-            Vector3.Distance(position, t.Position) <= within && t.EntityType == ofType);
+            Vector3.Distance(position, t.Position) <= within && t.EntityType is T);
             return entities;
         }
 
@@ -205,7 +202,7 @@ namespace WarWolfWorks.EntitiesSystem
         /// </summary>
         /// <param name="from"></param>
         /// <returns></returns>
-        public static IEnumerable<Entity> GetAllWithinView(Camera from)
+        public static List<Entity> GetAllWithinView(Camera from)
         {
             List<Entity> toReturn = new List<Entity>();
             foreach (Entity e in InitiatedEntities)
@@ -214,6 +211,27 @@ namespace WarWolfWorks.EntitiesSystem
                     continue;
 
                 toReturn.Add(e);
+            }
+
+            return toReturn;
+        }
+
+        /// <summary>
+        /// Returns all entities of given T type visible to a camera. Only works on entities with a renderer component.
+        /// Rather slow, avoid using on any Update method.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <returns></returns>
+        public static List<Entity> GetAllWithinView<T>(Camera from)
+        {
+            List<Entity> toReturn = new List<Entity>();
+            foreach (Entity e in InitiatedEntities)
+            {
+                if (!Hooks.Rendering.IsVisibleFrom(e.GetComponent<Renderer>(), from))
+                    continue;
+
+                if (e.EntityType is T)
+                    toReturn.Add(e);
             }
 
             return toReturn;
@@ -252,6 +270,7 @@ namespace WarWolfWorks.EntitiesSystem
         /// Gets all entities currently inside the scene (Includes inactive/disabled Entities).
         /// </summary>
         public static Entity[] GetAllEntities => InitiatedEntities.ToArray();
+
         /// <summary>
         /// Gets all entities currently inside the scene into a <see cref="IList{T}"/> (Includes inactive/disabled Entities).
         /// </summary>
@@ -266,15 +285,6 @@ namespace WarWolfWorks.EntitiesSystem
         /// Gets all enabled entites inside the scene.
         /// </summary>
         public static Entity[] GetAllEnabledEntities => InitiatedEntities.FindAll(e => e.enabled && e.gameObject.activeSelf).ToArray();
-
-#if !WWW2_5_OR_HIGHER
-        /// <summary>
-        /// Calculus which all WWWLibrary <see cref="ILockable"/> components use.
-        /// </summary>
-        /// <param name="locks"></param>
-        /// <returns></returns>
-        public static float BaseILockableCalculator(List<float> locks) => Mathf.Clamp(1 - Utilities.ListSender(locks), 0, 1);
-#endif
 
         /// <summary>
         /// Returns the oldest parent of an Entity with <see cref="IEntityParentable"/> interface.
