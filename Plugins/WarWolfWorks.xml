@@ -1949,12 +1949,11 @@
             <param name="position"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntity(UnityEngine.Vector3,System.Type)">
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntity``1(UnityEngine.Vector3)">
             <summary>
-            Gets the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> to position of specified type.
+            Gets the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> to position of specified T type.
             </summary>
             <param name="position"></param>
-            <param name="of"></param>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntity(System.Single,UnityEngine.Vector3)">
@@ -1965,13 +1964,12 @@
             <param name="position"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntity(System.Single,UnityEngine.Vector3,System.Type)">
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntity``1(System.Single,UnityEngine.Vector3)">
             <summary>
             Gets the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> in within range from position of given type.
             </summary>
             <param name="within"></param>
             <param name="position"></param>
-            <param name="type"></param>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntity(System.Single,UnityEngine.Vector3,System.Collections.Generic.IEnumerable{System.Type})">
@@ -2000,18 +1998,25 @@
             <param name="ofTypes"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntities(System.Single,UnityEngine.Vector3,System.Type)">
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntities``1(System.Single,UnityEngine.Vector3)">
             <summary>
             Gets all entities in within range from position of given type.
             </summary>
             <param name="within"></param>
             <param name="position"></param>
-            <param name="ofType"></param>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetAllWithinView(UnityEngine.Camera)">
             <summary>
             Returns all entities visible to a camera. Only works on entities with a renderer component.
+            Rather slow, avoid using on any Update method.
+            </summary>
+            <param name="from"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetAllWithinView``1(UnityEngine.Camera)">
+            <summary>
+            Returns all entities of given T type visible to a camera. Only works on entities with a renderer component.
             Rather slow, avoid using on any Update method.
             </summary>
             <param name="from"></param>
