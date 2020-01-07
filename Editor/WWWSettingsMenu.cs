@@ -45,6 +45,12 @@ namespace WarWolfWorks.EditorBase
         {
             TitleStyle = new GUIStyle() { fontSize = 20, richText = true };
             GrayedStyle = new GUIStyle() { richText = true };
+
+            LoadVars();
+        }
+
+        private void LoadVars()
+        {
             CanvasType = Settings.GetUtilityCanvasType();
             CanvasResourcesPath = Settings.GetUtilityCanvasResourcesPath();
             CanvasNameLoad = Settings.GetUtilityCanvasNameLoad();
@@ -111,10 +117,17 @@ namespace WarWolfWorks.EditorBase
             WarningColor = EditorGUILayout.ColorField(new GUIContent("Warning Color"), WarningColor, true, false, false);
             ErrorColor = EditorGUILayout.ColorField(new GUIContent("Error Color"), ErrorColor, true, false, false);
 
+            if(GUILayout.Button("Refresh"))
+            {
+                LoadVars();
+            }
+
             if (GUILayout.Button("Apply Changes"))
             {
                 CanvasValues = new string[] { CanvasType.ToString(), CanvasResourcesPath, CanvasNameLoad };
-                SaveAll(Catalog.Savers(Settings.SettingsPath, Settings.CanvasCategoryName, CanvasNames, CanvasValues));
+
+                Catalog[] canvasSavers = Catalog.Savers(Settings.SettingsPath, Settings.CanvasCategoryName, CanvasNames, CanvasValues);
+                SaveAll(canvasSavers);
 
                 for(int i = 0; i < Layers.Length; i++)
                 {
@@ -129,7 +142,10 @@ namespace WarWolfWorks.EditorBase
                 DebugValues = new string[] { "Kept for compatibility, ignore plz", DebugStyle.ToString(),
                     ColorSaver(LogColor), ColorSaver(WarningColor), ColorSaver(ErrorColor) };
 
-                SaveAll(Catalog.Savers(Settings.SettingsPath, Settings.DebugCategoryName, DebugNames, DebugValues));
+
+                Catalog[] debugSavers = Catalog.Savers(Settings.SettingsPath, Settings.DebugCategoryName, DebugNames, DebugValues);
+
+                SaveAll(debugSavers);
                 RefreshDebugger();
             }
         }

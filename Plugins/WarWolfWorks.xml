@@ -830,6 +830,12 @@
             A SaveAll method was called where the catalog collection size was null or lesser than 2.
             </summary>
         </member>
+        <member name="F:WarWolfWorks.Internal.StreamingResult.INVALID_COLLECTION_SIZE">
+            <summary>
+            Attempted to create multiple catalogs using <see cref="M:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Savers(System.String,System.String,System.String[],System.String[])"/> where 
+            the length of names did not match the length of values.
+            </summary>
+        </member>
         <member name="T:WarWolfWorks.EntitiesSystem.Attacking.Attack">
             <summary>
             Base scriptable object to use with the <see cref="T:WarWolfWorks.EntitiesSystem.Attacking.EntityAttack"/> component.
@@ -4879,7 +4885,7 @@
         </member>
         <member name="F:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Password">
             <summary>
-            Password used for encryption.
+            Password used for encryption. NOTE: VERY heavy, use only on high-end pc's or small save sections.
             </summary>
         </member>
         <member name="P:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Protected">
@@ -4931,12 +4937,41 @@
             <param name="password"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Savers(System.String,System.String,System.String[],System.String[])">
+            <summary>
+            Creates a collection of catalogs with the same path and category.
+            </summary>
+            <param name="path"></param>
+            <param name="category"></param>
+            <param name="names"></param>
+            <param name="values"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Savers(System.String,System.String,System.String[],System.String[],System.String)">
+            <summary>
+            Creates a collection of catalogs with the same path, category and password.
+            </summary>
+            <param name="path"></param>
+            <param name="category"></param>
+            <param name="names"></param>
+            <param name="values"></param>
+            <param name="password"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Catalog.DefaultLoader(System.String,System.String)">
             <summary>
             Creates a <see cref="T:WarWolfWorks.Utility.Hooks.Streaming.Catalog"/> to load a variable with the path and password being default.
             </summary>
             <param name="category"></param>
             <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Catalog.LoaderFull(System.String,System.String)">
+            <summary>
+            To be used with <see cref="M:WarWolfWorks.Utility.Hooks.Streaming.LoadAll(WarWolfWorks.Utility.Hooks.Streaming.Catalog,System.Boolean)"/>
+            </summary>
+            <param name="path"></param>
+            <param name="category"></param>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Loader(System.String,System.String,System.String)">
@@ -5066,6 +5101,22 @@
             <param name="includeFolderPath"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.EncryptFile(System.String,System.String)">
+            <summary>
+            Encrypts all contents of a file using <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelEncryption"/>.
+            </summary>
+            <param name="path"></param>
+            <param name="password"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.DecryptFile(System.String,System.String)">
+            <summary>
+            Decrypts all contents of a file using <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelEncryption"/>, assuming it was previously encrypted using <see cref="M:WarWolfWorks.Utility.Hooks.Streaming.EncryptFile(System.String,System.String)"/>.
+            </summary>
+            <param name="path"></param>
+            <param name="password"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Streaming.GetAllStreamedLines(System.IO.StreamReader)">
             <summary>
             Gets all lines from a StreamReader and returns them as a string array. (THIS METHOD DOES NOT FLUSH OR DISPOSE THE STREAMREADER)
@@ -5126,18 +5177,56 @@
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.RijndaelEncryption.Encrypt(System.String,System.String)">
             <summary>
-            Returns an encrypted version of this string using the given password.
+            Returns an encrypted version of this string using the given password; CipherMode is set to CBC and PaddingMode to PKCS7.
             </summary>
             <param name="input"></param>
             <param name="password"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelEncryption.Decrypt(System.String,System.String)">
+        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelEncryption.Encrypt(System.String,System.String,System.Security.Cryptography.CipherMode)">
             <summary>
-            Decrypts a string previously encrypted using <see cref="M:WarWolfWorks.Utility.Hooks.RijndaelEncryption.Encrypt(System.String,System.String)"/>.
+            Returns an encrypted version of this string using the given password; PaddingMode is set to PKCS7.
             </summary>
             <param name="input"></param>
             <param name="password"></param>
+            <param name="mode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelEncryption.Encrypt(System.String,System.String,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode)">
+            <summary>
+            Returns an encrypted version of this string using the given password.
+            </summary>
+            <param name="input"></param>
+            <param name="password"></param>
+            <param name="mode"></param>
+            <param name="padding"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelEncryption.Decrypt(System.String,System.String)">
+            <summary>
+            Decrypts a string previously encrypted using <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelEncryption"/>; CipherMode is set to CBC and PaddingMode to PKCS7.
+            </summary>
+            <param name="input"></param>
+            <param name="password"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelEncryption.Decrypt(System.String,System.String,System.Security.Cryptography.CipherMode)">
+            <summary>
+            Decrypts a string previously encrypted using <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelEncryption"/>; PaddingMode is set to PKCS7.
+            </summary>
+            <param name="input"></param>
+            <param name="password"></param>
+            <param name="mode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RijndaelEncryption.Decrypt(System.String,System.String,System.Security.Cryptography.CipherMode,System.Security.Cryptography.PaddingMode)">
+            <summary>
+            Decrypts a string previously encrypted using <see cref="T:WarWolfWorks.Utility.Hooks.RijndaelEncryption"/>.
+            </summary>
+            <param name="input"></param>
+            <param name="password"></param>
+            <param name="mode"></param>
+            <param name="padding"></param>
             <returns></returns>
         </member>
         <member name="T:WarWolfWorks.Utility.Hooks.LocalEncryption">
@@ -5721,6 +5810,80 @@
             Contains all methods Raycast and Physics related.
             </summary>
         </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSingle(UnityEngine.Vector2,UnityEngine.Vector2,System.Single,System.String[])">
+            <summary>
+            Casts a single 2D raycast.
+            </summary>
+            <param name="startingPos"></param>
+            <param name="direction"></param>
+            <param name="distance"></param>
+            <param name="layerMasks"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSingle(UnityEngine.Vector3,UnityEngine.Vector3,System.Single,System.String[])">
+            <summary>
+            Casts a single raycast.
+            </summary>
+            <param name="startingPos"></param>
+            <param name="direction"></param>
+            <param name="distance"></param>
+            <param name="layerMasks"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSides(UnityEngine.Vector2,UnityEngine.Vector2[],System.Single,System.String[])">
+            <summary>
+            Casts multiple 2D raycasts.
+            </summary>
+            <param name="startingPos"></param>
+            <param name="directions"></param>
+            <param name="distance"></param>
+            <param name="layerMasks"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSides(UnityEngine.Vector3,UnityEngine.Vector3[],System.Single,System.String[])">
+            <summary>
+            Casts multiple raycasts.
+            </summary>
+            <param name="startingPos"></param>
+            <param name="directions"></param>
+            <param name="distance"></param>
+            <param name="layerMasks"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSides(UnityEngine.Vector2,UnityEngine.Vector2[],System.Single,System.String[],System.Int32@)">
+            <summary>
+            Casts multiple 2D raycasts; If multiple raycasts hit, closestIndex will return the index of the closest hit to the startingPos.
+            </summary>
+            <param name="startingPos"></param>
+            <param name="directions"></param>
+            <param name="distance"></param>
+            <param name="layerMasks"></param>
+            <param name="closestIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSides(UnityEngine.Transform,UnityEngine.Vector2[],System.Single,System.String[],System.Boolean)">
+            <summary>
+            Casts multiple 2D raycasts where a transform's position is the center.
+            </summary>
+            <param name="startingPos"></param>
+            <param name="directions"></param>
+            <param name="distance"></param>
+            <param name="layerMasks"></param>
+            <param name="local"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSides(UnityEngine.Transform,UnityEngine.Vector2[],System.Single,System.String[],System.Boolean,System.Int32@)">
+            <summary>
+            Casts multiple 2D raycasts where a transform's position is the center; If multiple raycasts hit, closestIndex will return the index of the closest hit to the startingPos.
+            </summary>
+            <param name="startingPos"></param>
+            <param name="directions"></param>
+            <param name="distance"></param>
+            <param name="layerMasks"></param>
+            <param name="local"></param>
+            <param name="closestIndex"></param>
+            <returns></returns>
+        </member>
         <member name="T:WarWolfWorks.Utility.Hooks.WWWMath">
             <summary>
             Contains all methods Math related.
@@ -5741,6 +5904,14 @@
             <param name="angle"></param>
             <param name="from"></param>
             <param name="to"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampAngle(System.Single,WarWolfWorks.Utility.FloatRange)">
+            <summary>
+            Attempts to clamp a euler rotation value.
+            </summary>
+            <param name="angle"></param>
+            <param name="range"></param>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.Truncate(System.Single,System.Int32)">
@@ -5827,6 +5998,14 @@
             <exception cref="T:WarWolfWorks.Internal.WWWException"/>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampRounded(System.Single,WarWolfWorks.Utility.FloatRange)">
+            <summary>
+            Clamps a value between min and max, and if the value goes outside the boundries, it goes back to it's opposite boundry and starts counting from it.
+            </summary>
+            <param name="value"></param>
+            <param name="range"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampRounded(System.Int32,System.Int32,System.Int32)">
             <summary>
             Clamps a value between min and max, and if the value goes outside the boundries, it goes back to it's opposite boundry and starts counting from it.
@@ -5840,6 +6019,40 @@
         <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampRounded(System.Int32,WarWolfWorks.Utility.IntRange)">
             <summary>
             Clamps a value between min and max, and if the value goes outside the boundries, it goes back to it's opposite boundry and starts counting from it.
+            </summary>
+            <param name="value"></param>
+            <param name="range"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampPingPong(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Clamps a value between min and max; When a value reaches min or max, it will start counting towards the opposite direction in a "ping-pong" style.
+            </summary>
+            <param name="value"></param>
+            <param name="min"></param>
+            <param name="max"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampPingPong(System.Int32,WarWolfWorks.Utility.IntRange)">
+            <summary>
+            Clamps a value between min and max; When a value reaches min or max, it will start counting towards the opposite direction in a "ping-pong" style.
+            </summary>
+            <param name="value"></param>
+            <param name="range"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampPingPong(System.Single,System.Single,System.Single)">
+            <summary>
+            Clamps a value between min and max; When a value reaches min or max, it will start counting towards the opposite direction in a "ping-pong" style.
+            </summary>
+            <param name="value"></param>
+            <param name="min"></param>
+            <param name="max"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampPingPong(System.Single,WarWolfWorks.Utility.FloatRange)">
+            <summary>
+            Clamps a value between min and max; When a value reaches min or max, it will start counting towards the opposite direction in a "ping-pong" style.
             </summary>
             <param name="value"></param>
             <param name="range"></param>
@@ -5868,6 +6081,15 @@
             <param name="NumberToApproximate"></param>
             <param name="NumberToCompare"></param>
             <param name="approximation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.MiddleMan(System.Single,System.Single,System.Single)">
+            <summary>
+            
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <param name="percent"></param>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.IsWithinRange(System.Single,WarWolfWorks.Utility.FloatRange)">
@@ -5938,6 +6160,26 @@
             <param name="renderer"></param>
             <param name="camera"></param>
             <returns></returns>
+        </member>
+        <member name="T:WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType">
+            <summary>
+            Determines the shaking type of <see cref="M:WarWolfWorks.Utility.Hooks.Rendering.Shake(UnityEngine.MonoBehaviour,UnityEngine.Vector3,UnityEngine.Vector3,System.Single,System.Single,System.Single,WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType)"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType.None">
+            <summary>
+            Doesn't shake.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType.zAxis">
+            <summary>
+            Shakes the Z rotation of a camera. (2D)
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType.FullRandom">
+            <summary>
+            Shakes every axis. (3D)
+            </summary>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Rendering.Shake(UnityEngine.MonoBehaviour,UnityEngine.Vector3,UnityEngine.Vector3,System.Single,System.Single,System.Single,WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType)">
             <summary>
@@ -6232,6 +6474,30 @@
             <param name="maxY"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.GetAnchoredPosition(UnityEngine.RectTransform)">
+            <summary>
+            Returns the anchored position of a <see cref="T:UnityEngine.RectTransform"/> in <see cref="T:UnityEngine.Vector4"/>: X = minX, Y = minY, z = maxX, W = maxY.
+            </summary>
+            <param name="rt"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.IsInsideBounds(UnityEngine.Vector2,UnityEngine.Vector4)">
+            <summary>
+            Returns true if the given position is within the bounds given. (<see cref="T:UnityEngine.Vector4"/> bounds: X = minX, Y = minY, z = maxX, W = maxY)
+            </summary>
+            <param name="position"></param>
+            <param name="bounds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.IsInsideBounds(UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2)">
+            <summary>
+            Returns true if the given position is within the bounds given.
+            </summary>
+            <param name="position"></param>
+            <param name="min"></param>
+            <param name="max"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Find``1(``0[],System.Predicate{``0})">
             <summary>
             <see cref="M:WarWolfWorks.Utility.Hooks.Enumeration.Find``1(``0[],System.Predicate{``0})"/> Pointer.
@@ -6290,6 +6556,11 @@
             </summary>
             <param name="types"></param>
             <returns></returns>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.PlayerTag">
+            <summary>
+            Returns the default player tag for Unity.
+            </summary>
         </member>
         <member name="P:WarWolfWorks.Utility.Hooks.RealTimeSecond">
             <summary>
@@ -6661,6 +6932,40 @@
             <param name="object"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.HasMethod(System.Object,System.String)">
+            <summary>
+            Returns true if a given object has a method named with methodName.
+            </summary>
+            <param name="objectToCheck"></param>
+            <param name="methodName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.CallMethod(System.Object,System.String,System.Object[])">
+            <summary>
+            Attempts to call a method by name from an object.
+            </summary>
+            <param name="objectToCheck"></param>
+            <param name="methodName"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.CallMethod(System.Object,System.String,System.Object[],System.Reflection.BindingFlags)">
+            <summary>
+            Attempts to call a method by name from an object using custom bindings.
+            </summary>
+            <param name="objectToCheck"></param>
+            <param name="methodName"></param>
+            <param name="args"></param>
+            <param name="customBind"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.CallStaticMethod(System.Type,System.String,System.Object[],System.Reflection.BindingFlags)">
+            <summary>
+            Calls a method by name inside a static class.
+            </summary>
+            <param name="classToCheck"></param>
+            <param name="methodName"></param>
+            <param name="args"></param>
+            <param name="specificBind"></param>
+        </member>
         <member name="M:WarWolfWorks.Utility.Hooks.LineChanger(System.String,System.String,System.Int32)">
             <summary>
             Overrides a line at the given index of a file.
@@ -6760,6 +7065,22 @@
             <typeparam name="T"></typeparam>
             <param name="i"></param>
             <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.StartCoroutine(UnityEngine.MonoBehaviour,System.Collections.IEnumerator,System.Boolean@)">
+            <summary>
+            Starts a singleton-type unity coroutine.
+            </summary>
+            <param name="caller"></param>
+            <param name="routine"></param>
+            <param name="isRunningBool"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.StopCoroutine(UnityEngine.MonoBehaviour,System.Collections.IEnumerator,System.Boolean@)">
+            <summary>
+            Stops a singleton-type unity coroutine.
+            </summary>
+            <param name="caller"></param>
+            <param name="routine"></param>
+            <param name="isRunningBool"></param>
         </member>
         <member name="T:WarWolfWorks.Utility.IntRange">
             <summary>

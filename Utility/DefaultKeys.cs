@@ -194,18 +194,15 @@ namespace WarWolfWorks.Utility
             }
             else
             {
-                string[] allVariablesFromCategory = LoadAll(Catalog.Loader(KeysPath, CategoryName, null), true).ToArray();
-                string[] array2 = new string[allVariablesFromCategory.Length];
-                KeyCode[] array3 = new KeyCode[allVariablesFromCategory.Length];
+                string[] allVariablesFromCategory = LoadAll(Catalog.LoaderFull(KeysPath, CategoryName), true).ToArray();
+                string[] names = new string[allVariablesFromCategory.Length];
+                KeyCode[] keys = new KeyCode[allVariablesFromCategory.Length];
                 for (int j = 0; j < allVariablesFromCategory.Length; j++)
                 {
-                    string[] array4 = allVariablesFromCategory[j].Split(new char[1]
-                    {
-                    '='
-                    });
-                    array2[j] = array4[0];
-                    array3[j] = Hooks.Parse<KeyCode>(array4[1]);
-                    list.Add((array2[j], array3[j]));
+                    string[] array4 = allVariablesFromCategory[j].Split(STREAM_VALUE_POINTER, StringSplitOptions.None);
+                    names[j] = array4[0];
+                    keys[j] = Hooks.Parse<KeyCode>(array4[1]);
+                    list.Add((names[j], keys[j]));
                 }
             }
             return list.ToArray();

@@ -157,7 +157,7 @@ namespace WarWolfWorks.Utility
                 public bool UsesDefaultValue;
 
                 /// <summary>
-                /// Password used for encryption.
+                /// Password used for encryption. NOTE: VERY heavy, use only on high-end pc's or small save sections.
                 /// </summary>
                 public string Password;
 
@@ -172,7 +172,7 @@ namespace WarWolfWorks.Utility
                 /// <param name="input"></param>
                 /// <returns></returns>
                 public string Encrypt(string input)
-                    => RijndaelEncryption.Encrypt(input, Password);
+                    => RijndaelEncryption.Encrypt(input, Password, CipherMode.CBC, PaddingMode.PKCS7);
 
                 /// <summary>
                 /// Decrypts a string value with this catalog's password.
@@ -180,7 +180,7 @@ namespace WarWolfWorks.Utility
                 /// <param name="input"></param>
                 /// <returns></returns>
                 public string Decrypt(string input)
-                    => RijndaelEncryption.Decrypt(input, Password);
+                    => RijndaelEncryption.Decrypt(input, Password, CipherMode.CBC, PaddingMode.PKCS7);
 
                 /// <summary>
                 /// Creates a <see cref="Catalog"/> using the default password and path.
@@ -204,6 +204,7 @@ namespace WarWolfWorks.Utility
                         Name = name,
                         Value = value,
                         Password = DefaultPassword,
+                        UsesDefaultValue = false
                     };
                 }
 
@@ -353,6 +354,28 @@ namespace WarWolfWorks.Utility
                 }
 
                 /// <summary>
+                /// To be used with <see cref="LoadAll(Catalog, bool)"/>
+                /// </summary>
+                /// <param name="path"></param>
+                /// <param name="category"></param>
+                /// <returns></returns>
+                public static Catalog LoaderFull(string path, string category)
+                {
+                    if (path == null || category == null)
+                        throw new StreamingException(StreamingResult.INVALID_ARG);
+
+                    return new Catalog()
+                    {
+                        Path = path,
+                        Category = category,
+                        Name = null,
+                        Value = null,
+                        Password = null,
+                        UsesDefaultValue = false
+                    };
+                }
+
+                /// <summary>
                 /// Creates a <see cref="Catalog"/> to load or remove a value.
                 /// </summary>
                 /// <param name="path"></param>
@@ -371,6 +394,7 @@ namespace WarWolfWorks.Utility
                         Name = name,
                         Value = null,
                         Password = null,
+                        UsesDefaultValue = false
                     };
                 }
 
@@ -445,6 +469,7 @@ namespace WarWolfWorks.Utility
                         Name = name,
                         Value = null,
                         Password = DefaultPassword,
+                        UsesDefaultValue = false
                     };
                 }
             }
@@ -540,7 +565,7 @@ namespace WarWolfWorks.Utility
                 }
 
                 int writeIndex = lines.FindIndex(startIndex, endIndex - startIndex, 
-                    s => (catalog.Protected ? catalog.Decrypt(s) : s).Contains(NameNoValSaver(catalog)));
+                    s => (catalog.Protected ? catalog.Decrypt(s) : s).Contains(catalog.Name));
                 if (writeIndex == -1)
                     lines.Insert(startIndex + 1, catalog.Protected ? catalog.Encrypt(ValueSaver(catalog)) : ValueSaver(catalog));
                 else
@@ -564,15 +589,16 @@ namespace WarWolfWorks.Utility
                     throw new StreamingException(StreamingResult.INVALID_CATALOG_COLLECTION_SIZE);
 
                 Catalog reference = catalogs[0];
-                for(int i = 1; i < catalogs.Length; i++)
+
+                for (int i = 1; i < catalogs.Length; i++)
                 {
                     if (!catalogs[i].Category.Equals(reference.Category))
                         throw new StreamingException(StreamingResult.CATALOG_MISSMATCH_CATEGORY);
 
-                    if (!catalogs[i].Password.Equals(reference.Password))
+                    if (catalogs[i].Password != null && !catalogs[i].Password.Equals(reference.Password))
                         throw new StreamingException(StreamingResult.CATALOG_MISSMATCH_PASSWORD);
 
-                    if(!catalogs[i].Path.Equals(reference.Path))
+                    if (!catalogs[i].Path.Equals(reference.Path))
                         throw new StreamingException(StreamingResult.CATALOG_MISSMATCH_FILEPATH);
                 }
 
@@ -582,6 +608,7 @@ namespace WarWolfWorks.Utility
                 string categoryStartName = CategoryWrapper(reference), categoryEndName = CategoryEndWrapper(reference);
                 int startIndex = lines.FindIndex(l => (reference.Protected ? reference.Decrypt(l) : l) == categoryStartName);
                 int endIndex = lines.FindIndex(l => (reference.Protected ? reference.Decrypt(l) : l) == categoryEndName);
+
                 if (startIndex == -1 || endIndex == -1)
                 {
                     startIndex = 0;
@@ -589,16 +616,15 @@ namespace WarWolfWorks.Utility
                     lines.Insert(startIndex, reference.Protected ? reference.Encrypt(categoryStartName) : categoryStartName);
                     lines.Insert(endIndex, reference.Protected ? reference.Encrypt(categoryEndName) : categoryEndName);
                 }
+
                 for (int i = 0; i < catalogs.Length; i++)
                 {
-                    int varIndex = lines.FindLastIndex(endIndex, (endIndex - startIndex).ToPositive(), 
+                    int writeIndex = lines.FindIndex(startIndex, endIndex - startIndex,
                         s => (catalogs[i].Protected ? catalogs[i].Decrypt(s) : s).Contains(catalogs[i].Name));
-                    if (varIndex == -1)
-                    {
+                    if (writeIndex == -1)
                         lines.Insert(startIndex + 1, catalogs[i].Protected ? catalogs[i].Encrypt(ValueSaver(catalogs[i])) : ValueSaver(catalogs[i]));
-                        endIndex += 1;
-                    }
-                    else lines[varIndex] = catalogs[i].Protected ? catalogs[i].Encrypt(ValueSaver(catalogs[i])) : ValueSaver(catalogs[i]);
+                    else
+                        lines[writeIndex] = catalogs[i].Protected ? catalogs[i].Encrypt(ValueSaver(catalogs[i])) : ValueSaver(catalogs[i]);
                 }
 
                 File.WriteAllLines(reference.Path, lines);
@@ -638,9 +664,11 @@ namespace WarWolfWorks.Utility
                 {
                     List<string> lines;
                     LoadLines(out lines, catalog);
-                    int index = lines.FindIndex(s => (catalog.Protected ? catalog.Decrypt(s) : s).Contains(ValueSaver(catalog)));
+                    int index = lines.FindIndex(s => (catalog.Protected ? catalog.Decrypt(s) : s).Contains(NameNoValSaver(catalog)));
                     if (index == -1)
+                    {
                         goto Saver;
+                    }
 
                     return (catalog.Protected ? catalog.Decrypt(lines[index]) : lines[index])
                         .Split(STREAM_VALUE_POINTER, StringSplitOptions.None)[1];
@@ -777,6 +805,56 @@ namespace WarWolfWorks.Utility
                 }
                 return list.ToArray();
             }
+
+            private const int STREAMING_FILE_ENCRYPTION_JUMPER = 85;
+
+            private static bool InternalEncryptionFile(string path, string password, bool encrypt)
+            {
+                try
+                {
+                    string VanillaText = File.ReadAllText(path);
+                    string Encryption = encrypt ? RijndaelEncryption.Encrypt(VanillaText, password) : RijndaelEncryption.Decrypt(VanillaText, password);
+                    if (VanillaText.Equals(Encryption))
+                        return false;
+
+                    StringBuilder writer = new StringBuilder(Encryption);
+                    if (encrypt)
+                    {
+                        for (int i = STREAMING_FILE_ENCRYPTION_JUMPER; i < writer.Length; i += STREAMING_FILE_ENCRYPTION_JUMPER)
+                        {
+                            writer.Insert(i, '\n');
+                        }
+                    }
+                    else
+                        writer.Replace("\n", string.Empty);
+
+                    File.WriteAllText(path, writer.ToString());
+
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            /// <summary>
+            /// Encrypts all contents of a file using <see cref="RijndaelEncryption"/>.
+            /// </summary>
+            /// <param name="path"></param>
+            /// <param name="password"></param>
+            /// <returns></returns>
+            public static bool EncryptFile(string path, string password)
+                => InternalEncryptionFile(path, password, true);
+
+            /// <summary>
+            /// Decrypts all contents of a file using <see cref="RijndaelEncryption"/>, assuming it was previously encrypted using <see cref="EncryptFile(string, string)"/>.
+            /// </summary>
+            /// <param name="path"></param>
+            /// <param name="password"></param>
+            /// <returns></returns>
+            public static bool DecryptFile(string path, string password)
+            => InternalEncryptionFile(path, password, false);
 
             /// <summary>
             /// Gets all lines from a StreamReader and returns them as a string array. (THIS METHOD DOES NOT FLUSH OR DISPOSE THE STREAMREADER)
@@ -1710,88 +1788,150 @@ namespace WarWolfWorks.Utility
         /// </summary>
         public static class RijndaelEncryption
         {
+            private static string EncryptInternal(string input, string password, CipherMode mode, PaddingMode padding)
+            {
+                try
+                {
+                    password = EncryptionUtilityInternal.EncryptingKey(password);
+
+                    byte[] saltStringBytes = EncryptionUtilityInternal.Generate256BitsOfRandomEntropy();
+                    byte[] ivStringBytes = EncryptionUtilityInternal.Generate256BitsOfRandomEntropy();
+                    byte[] plainTextBytes = Encoding.UTF8.GetBytes(input);
+                    using (Rfc2898DeriveBytes passwordIntern = new Rfc2898DeriveBytes(password, saltStringBytes, EncryptionUtilityInternal.DerivationIterations))
+                    {
+                        byte[] keyBytes = passwordIntern.GetBytes(EncryptionUtilityInternal.Keysize / 8);
+                        using (RijndaelManaged symmetricKey = new RijndaelManaged())
+                        {
+                            symmetricKey.BlockSize = EncryptionUtilityInternal.Keysize;
+                            symmetricKey.Mode = mode;
+                            symmetricKey.Padding = padding;
+                            using (ICryptoTransform encryptor = symmetricKey.CreateEncryptor(keyBytes, ivStringBytes))
+                            {
+                                using (MemoryStream memoryStream = new MemoryStream())
+                                {
+                                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+                                    {
+                                        cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
+                                        cryptoStream.FlushFinalBlock();
+                                        byte[] cipherTextBytes = saltStringBytes;
+                                        cipherTextBytes = cipherTextBytes.Concat(ivStringBytes).ToArray();
+                                        cipherTextBytes = cipherTextBytes.Concat(memoryStream.ToArray()).ToArray();
+                                        memoryStream.Close();
+                                        cryptoStream.Close();
+                                        return Convert.ToBase64String(cipherTextBytes);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch(CryptographicException)
+                {
+                    return input;
+                }
+            }
+
             /// <summary>
-            /// Returns an encrypted version of this string using the given password.
+            /// Returns an encrypted version of this string using the given password; CipherMode is set to CBC and PaddingMode to PKCS7.
             /// </summary>
             /// <param name="input"></param>
             /// <param name="password"></param>
             /// <returns></returns>
             public static string Encrypt(string input, string password)
-            {
-                password = EncryptionUtilityInternal.EncryptingKey(password);
+                => EncryptInternal(input, password, CipherMode.CBC, PaddingMode.PKCS7);
 
-                byte[] saltStringBytes = EncryptionUtilityInternal.Generate256BitsOfRandomEntropy();
-                byte[] ivStringBytes = EncryptionUtilityInternal.Generate256BitsOfRandomEntropy();
-                byte[] plainTextBytes = Encoding.UTF8.GetBytes(input);
-                using (Rfc2898DeriveBytes passwordIntern = new Rfc2898DeriveBytes(password, saltStringBytes, EncryptionUtilityInternal.DerivationIterations))
+            /// <summary>
+            /// Returns an encrypted version of this string using the given password; PaddingMode is set to PKCS7.
+            /// </summary>
+            /// <param name="input"></param>
+            /// <param name="password"></param>
+            /// <param name="mode"></param>
+            /// <returns></returns>
+            public static string Encrypt(string input, string password, CipherMode mode)
+                => EncryptInternal(input, password, mode, PaddingMode.PKCS7);
+
+            /// <summary>
+            /// Returns an encrypted version of this string using the given password.
+            /// </summary>
+            /// <param name="input"></param>
+            /// <param name="password"></param>
+            /// <param name="mode"></param>
+            /// <param name="padding"></param>
+            /// <returns></returns>
+            public static string Encrypt(string input, string password, CipherMode mode, PaddingMode padding)
+               => EncryptInternal(input, password, mode, padding);
+
+            private static string DecryptInternal(string input, string password, CipherMode mode, PaddingMode padding)
+            {
+                try
                 {
-                    byte[] keyBytes = passwordIntern.GetBytes(EncryptionUtilityInternal.Keysize / 8);
-                    using (RijndaelManaged symmetricKey = new RijndaelManaged())
+                    password = EncryptionUtilityInternal.EncryptingKey(password);
+
+                    byte[] cipherTextBytesWithSaltAndIv = Convert.FromBase64String(input);
+                    byte[] saltStringBytes = cipherTextBytesWithSaltAndIv.Take(EncryptionUtilityInternal.Keysize / 8).ToArray();
+                    byte[] ivStringBytes = cipherTextBytesWithSaltAndIv.Skip(EncryptionUtilityInternal.Keysize / 8).Take(EncryptionUtilityInternal.Keysize / 8).ToArray();
+                    byte[] cipherTextBytes = cipherTextBytesWithSaltAndIv.Skip((EncryptionUtilityInternal.Keysize / 8) * 2).Take(cipherTextBytesWithSaltAndIv.Length - ((EncryptionUtilityInternal.Keysize / 8) * 2)).ToArray();
+
+                    using (Rfc2898DeriveBytes passwordInternal = new Rfc2898DeriveBytes(password, saltStringBytes, EncryptionUtilityInternal.DerivationIterations))
                     {
-                        symmetricKey.BlockSize = EncryptionUtilityInternal.Keysize;
-                        symmetricKey.Mode = CipherMode.CBC;
-                        symmetricKey.Padding = PaddingMode.PKCS7;
-                        using (ICryptoTransform encryptor = symmetricKey.CreateEncryptor(keyBytes, ivStringBytes))
+                        byte[] keyBytes = passwordInternal.GetBytes(EncryptionUtilityInternal.Keysize / 8);
+                        using (RijndaelManaged symmetricKey = new RijndaelManaged())
                         {
-                            using (MemoryStream memoryStream = new MemoryStream())
+                            symmetricKey.BlockSize = EncryptionUtilityInternal.Keysize;
+                            symmetricKey.Mode = mode;
+                            symmetricKey.Padding = padding;
+                            using (ICryptoTransform decryptor = symmetricKey.CreateDecryptor(keyBytes, ivStringBytes))
                             {
-                                using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+                                using (MemoryStream memoryStream = new MemoryStream(cipherTextBytes))
                                 {
-                                    cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
-                                    cryptoStream.FlushFinalBlock();
-                                    byte[] cipherTextBytes = saltStringBytes;
-                                    cipherTextBytes = cipherTextBytes.Concat(ivStringBytes).ToArray();
-                                    cipherTextBytes = cipherTextBytes.Concat(memoryStream.ToArray()).ToArray();
-                                    memoryStream.Close();
-                                    cryptoStream.Close();
-                                    return Convert.ToBase64String(cipherTextBytes);
+                                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
+                                    {
+                                        byte[] plainTextBytes = new byte[cipherTextBytes.Length];
+                                        int decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
+                                        memoryStream.Close();
+                                        cryptoStream.Close();
+                                        return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount);
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                catch(CryptographicException)
+                {
+                    return input;
+                }
             }
 
             /// <summary>
-            /// Decrypts a string previously encrypted using <see cref="Encrypt(string, string)"/>.
+            /// Decrypts a string previously encrypted using <see cref="RijndaelEncryption"/>; CipherMode is set to CBC and PaddingMode to PKCS7.
             /// </summary>
             /// <param name="input"></param>
             /// <param name="password"></param>
             /// <returns></returns>
             public static string Decrypt(string input, string password)
-            {
-                password = EncryptionUtilityInternal.EncryptingKey(password);
+                => DecryptInternal(input, password, CipherMode.CBC, PaddingMode.PKCS7);
 
-                byte[] cipherTextBytesWithSaltAndIv = Convert.FromBase64String(input);
-                byte[] saltStringBytes = cipherTextBytesWithSaltAndIv.Take(EncryptionUtilityInternal.Keysize / 8).ToArray();
-                byte[] ivStringBytes = cipherTextBytesWithSaltAndIv.Skip(EncryptionUtilityInternal.Keysize / 8).Take(EncryptionUtilityInternal.Keysize / 8).ToArray();
-                byte[] cipherTextBytes = cipherTextBytesWithSaltAndIv.Skip((EncryptionUtilityInternal.Keysize / 8) * 2).Take(cipherTextBytesWithSaltAndIv.Length - ((EncryptionUtilityInternal.Keysize / 8) * 2)).ToArray();
+            /// <summary>
+            /// Decrypts a string previously encrypted using <see cref="RijndaelEncryption"/>; PaddingMode is set to PKCS7.
+            /// </summary>
+            /// <param name="input"></param>
+            /// <param name="password"></param>
+            /// <param name="mode"></param>
+            /// <returns></returns>
+            public static string Decrypt(string input, string password, CipherMode mode)
+                => DecryptInternal(input, password, mode, PaddingMode.PKCS7);
 
-                using (Rfc2898DeriveBytes passwordInternal = new Rfc2898DeriveBytes(password, saltStringBytes, EncryptionUtilityInternal.DerivationIterations))
-                {
-                    byte[] keyBytes = passwordInternal.GetBytes(EncryptionUtilityInternal.Keysize / 8);
-                    using (RijndaelManaged symmetricKey = new RijndaelManaged())
-                    {
-                        symmetricKey.BlockSize = EncryptionUtilityInternal.Keysize;
-                        symmetricKey.Mode = CipherMode.CBC;
-                        symmetricKey.Padding = PaddingMode.PKCS7;
-                        using (ICryptoTransform decryptor = symmetricKey.CreateDecryptor(keyBytes, ivStringBytes))
-                        {
-                            using (MemoryStream memoryStream = new MemoryStream(cipherTextBytes))
-                            {
-                                using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
-                                {
-                                    byte[] plainTextBytes = new byte[cipherTextBytes.Length];
-                                    int decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
-                                    memoryStream.Close();
-                                    cryptoStream.Close();
-                                    return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            /// <summary>
+            /// Decrypts a string previously encrypted using <see cref="RijndaelEncryption"/>.
+            /// </summary>
+            /// <param name="input"></param>
+            /// <param name="password"></param>
+            /// <param name="mode"></param>
+            /// <param name="padding"></param>
+            /// <returns></returns>
+            public static string Decrypt(string input, string password, CipherMode mode, PaddingMode padding)
+                => DecryptInternal(input, password, mode, padding);
         }
 
         /// <summary>
@@ -2955,12 +3095,28 @@ namespace WarWolfWorks.Utility
         /// </summary>
         public static class RPhysics
         {
+            /// <summary>
+            /// Casts a single 2D raycast.
+            /// </summary>
+            /// <param name="startingPos"></param>
+            /// <param name="direction"></param>
+            /// <param name="distance"></param>
+            /// <param name="layerMasks"></param>
+            /// <returns></returns>
             public static RaycastHit2D RayCastSingle(Vector2 startingPos, Vector2 direction, float distance, string[] layerMasks)
             {
                 LayerMask mask = LayerMask.GetMask(layerMasks);
                 return Physics2D.Raycast(startingPos, direction, distance, mask);
             }
 
+            /// <summary>
+            /// Casts a single raycast.
+            /// </summary>
+            /// <param name="startingPos"></param>
+            /// <param name="direction"></param>
+            /// <param name="distance"></param>
+            /// <param name="layerMasks"></param>
+            /// <returns></returns>
             public static RaycastHit RayCastSingle(Vector3 startingPos, Vector3 direction, float distance, string[] layerMasks)
             {
                 LayerMask mask = LayerMask.GetMask(layerMasks);
@@ -2968,6 +3124,14 @@ namespace WarWolfWorks.Utility
                 return hitInfo;
             }
 
+            /// <summary>
+            /// Casts multiple 2D raycasts.
+            /// </summary>
+            /// <param name="startingPos"></param>
+            /// <param name="directions"></param>
+            /// <param name="distance"></param>
+            /// <param name="layerMasks"></param>
+            /// <returns></returns>
             public static RaycastHit2D[] RayCastSides(Vector2 startingPos, Vector2[] directions, float distance, string[] layerMasks)
             {
                 RaycastHit2D[] array = new RaycastHit2D[directions.Length];
@@ -2979,6 +3143,14 @@ namespace WarWolfWorks.Utility
                 return array;
             }
 
+            /// <summary>
+            /// Casts multiple raycasts.
+            /// </summary>
+            /// <param name="startingPos"></param>
+            /// <param name="directions"></param>
+            /// <param name="distance"></param>
+            /// <param name="layerMasks"></param>
+            /// <returns></returns>
             public static RaycastHit[] RayCastSides(Vector3 startingPos, Vector3[] directions, float distance, string[] layerMasks)
             {
                 RaycastHit[] array = new RaycastHit[directions.Length];
@@ -2990,6 +3162,15 @@ namespace WarWolfWorks.Utility
                 return array;
             }
 
+            /// <summary>
+            /// Casts multiple 2D raycasts; If multiple raycasts hit, closestIndex will return the index of the closest hit to the startingPos.
+            /// </summary>
+            /// <param name="startingPos"></param>
+            /// <param name="directions"></param>
+            /// <param name="distance"></param>
+            /// <param name="layerMasks"></param>
+            /// <param name="closestIndex"></param>
+            /// <returns></returns>
             public static RaycastHit2D[] RayCastSides(Vector2 startingPos, Vector2[] directions, float distance, string[] layerMasks, ref int closestIndex)
             {
                 RaycastHit2D[] array = new RaycastHit2D[directions.Length];
@@ -3008,6 +3189,15 @@ namespace WarWolfWorks.Utility
                 return array;
             }
 
+            /// <summary>
+            /// Casts multiple 2D raycasts where a transform's position is the center.
+            /// </summary>
+            /// <param name="startingPos"></param>
+            /// <param name="directions"></param>
+            /// <param name="distance"></param>
+            /// <param name="layerMasks"></param>
+            /// <param name="local"></param>
+            /// <returns></returns>
             public static RaycastHit2D[] RayCastSides(Transform startingPos, Vector2[] directions, float distance, string[] layerMasks, bool local)
             {
                 RaycastHit2D[] array = new RaycastHit2D[directions.Length];
@@ -3019,6 +3209,16 @@ namespace WarWolfWorks.Utility
                 return array;
             }
 
+            /// <summary>
+            /// Casts multiple 2D raycasts where a transform's position is the center; If multiple raycasts hit, closestIndex will return the index of the closest hit to the startingPos.
+            /// </summary>
+            /// <param name="startingPos"></param>
+            /// <param name="directions"></param>
+            /// <param name="distance"></param>
+            /// <param name="layerMasks"></param>
+            /// <param name="local"></param>
+            /// <param name="closestIndex"></param>
+            /// <returns></returns>
             public static RaycastHit2D[] RayCastSides(Transform startingPos, Vector2[] directions, float distance, string[] layerMasks, bool local, ref int closestIndex)
             {
                 RaycastHit2D[] array = new RaycastHit2D[directions.Length];
@@ -3074,6 +3274,12 @@ namespace WarWolfWorks.Utility
                 return Mathf.Min(angle, to);
             }
 
+            /// <summary>
+            /// Attempts to clamp a euler rotation value.
+            /// </summary>
+            /// <param name="angle"></param>
+            /// <param name="range"></param>
+            /// <returns></returns>
             public static float ClampAngle(float angle, FloatRange range)
             {
                 if (angle < 0f)
@@ -3243,6 +3449,13 @@ namespace WarWolfWorks.Utility
                 }
                 return num;
             }
+
+            /// <summary>
+            /// Clamps a value between min and max, and if the value goes outside the boundries, it goes back to it's opposite boundry and starts counting from it.
+            /// </summary>
+            /// <param name="value"></param>
+            /// <param name="range"></param>
+            /// <returns></returns>
             public static float ClampRounded(float value, FloatRange range)
             {
                 float num = value;
@@ -3323,6 +3536,13 @@ namespace WarWolfWorks.Utility
                 return i;
             }
 
+            /// <summary>
+            /// Clamps a value between min and max; When a value reaches min or max, it will start counting towards the opposite direction in a "ping-pong" style.
+            /// </summary>
+            /// <param name="value"></param>
+            /// <param name="min"></param>
+            /// <param name="max"></param>
+            /// <returns></returns>
             public static int ClampPingPong(int value, int min, int max)
             {
                 int num = value;
@@ -3349,6 +3569,12 @@ namespace WarWolfWorks.Utility
                 return num;
             }
 
+            /// <summary>
+            /// Clamps a value between min and max; When a value reaches min or max, it will start counting towards the opposite direction in a "ping-pong" style.
+            /// </summary>
+            /// <param name="value"></param>
+            /// <param name="range"></param>
+            /// <returns></returns>
             public static int ClampPingPong(int value, IntRange range)
             {
                 int num = value;
@@ -3375,6 +3601,13 @@ namespace WarWolfWorks.Utility
                 return num;
             }
 
+            /// <summary>
+            /// Clamps a value between min and max; When a value reaches min or max, it will start counting towards the opposite direction in a "ping-pong" style.
+            /// </summary>
+            /// <param name="value"></param>
+            /// <param name="min"></param>
+            /// <param name="max"></param>
+            /// <returns></returns>
             public static float ClampPingPong(float value, float min, float max)
             {
                 float num = value;
@@ -3401,6 +3634,12 @@ namespace WarWolfWorks.Utility
                 return num;
             }
 
+            /// <summary>
+            /// Clamps a value between min and max; When a value reaches min or max, it will start counting towards the opposite direction in a "ping-pong" style.
+            /// </summary>
+            /// <param name="value"></param>
+            /// <param name="range"></param>
+            /// <returns></returns>
             public static float ClampPingPong(float value, FloatRange range)
             {
                 float num = value;
@@ -3470,6 +3709,13 @@ namespace WarWolfWorks.Utility
                 return result;
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="a"></param>
+            /// <param name="b"></param>
+            /// <param name="percent"></param>
+            /// <returns></returns>
             public static float MiddleMan(float a, float b, float percent = 0.5f)
             {
                 float num = b - a;
@@ -3625,10 +3871,22 @@ namespace WarWolfWorks.Utility
                 return GeometryUtility.TestPlanesAABB(planes, renderer.bounds);
             }
 
+            /// <summary>
+            /// Determines the shaking type of <see cref="Shake(MonoBehaviour, Vector3, Vector3, float, float, float, RotationShakeType)"/>.
+            /// </summary>
             public enum RotationShakeType
             {
+                /// <summary>
+                /// Doesn't shake.
+                /// </summary>
                 None,
+                /// <summary>
+                /// Shakes the Z rotation of a camera. (2D)
+                /// </summary>
                 zAxis,
+                /// <summary>
+                /// Shakes every axis. (3D)
+                /// </summary>
                 FullRandom,
             }
 
@@ -4095,12 +4353,30 @@ namespace WarWolfWorks.Utility
         public static void SetAnchoredUI(this RectTransform rt, float minX, float minY, float maxX, float maxY)
             => Vectors.SetAnchoredUI(rt, minX, minY, maxX, maxY);
 
+        /// <summary>
+        /// Returns the anchored position of a <see cref="RectTransform"/> in <see cref="Vector4"/>: X = minX, Y = minY, z = maxX, W = maxY.
+        /// </summary>
+        /// <param name="rt"></param>
+        /// <returns></returns>
         public static Vector4 GetAnchoredPosition(this RectTransform rt)
             => Vectors.GetAnchoredPosition(rt);
 
+        /// <summary>
+        /// Returns true if the given position is within the bounds given. (<see cref="Vector4"/> bounds: X = minX, Y = minY, z = maxX, W = maxY)
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="bounds"></param>
+        /// <returns></returns>
         public static bool IsInsideBounds(this Vector2 position, Vector4 bounds)
             => Vectors.IsInsideBounds(position, bounds);
 
+        /// <summary>
+        /// Returns true if the given position is within the bounds given.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
         public static bool IsInsideBounds(this Vector2 position, Vector2 min, Vector2 max)
             => Vectors.IsInsideBounds(position, min, max);
 
@@ -4203,48 +4479,14 @@ namespace WarWolfWorks.Utility
             return toReturn;
         }
 
-        public enum ResultCode
-        {
-            Success,
-            ErrorOpenClipboard,
-            ErrorGlobalAlloc,
-            ErrorGlobalLock,
-            ErrorSetClipboardData,
-            ErrorOutOfMemoryException,
-            ErrorArgumentOutOfRangeException,
-            ErrorException,
-            ErrorInvalidArgs,
-            ErrorGetLastError
-        }
-
-        public class Result
-        {
-            public ResultCode ResultCode
-            {
-                get;
-                set;
-            }
-
-            public uint LastError
-            {
-                get;
-                set;
-            }
-
-            public bool OK => ResultCode == ResultCode.Success;
-        }
-
         private const uint CF_TEXT = 1u;
 
         private const uint CF_UNICODETEXT = 13u;
 
+        /// <summary>
+        /// Returns the default player tag for Unity.
+        /// </summary>
         public const string PlayerTag = "Player";
-
-        [Obsolete("Kept for backwards compatibility, avoid usage.")]
-        public const string EnemyTag = "Enemies";
-
-        [Obsolete("Kept for backwards compatibility, avoid usage.")]
-        public const string DecorationTag = "Decoration";
 
         /// <summary>
         /// <see cref="Time.smoothDeltaTime"/> Pointer.
@@ -4557,7 +4799,7 @@ namespace WarWolfWorks.Utility
         /// <summary>
         /// Returns the first keycode pressed in the same frame as <see cref="GetKeyStroke(int)"/> was called in.
         /// </summary>
-        /// <param name="type">0 = <see cref="Input.GetKey(KeyCode)"/>; 1 = <see cref="Input.GetKeyDown(KeyCode)"/>; 2 = <see cref="Input.GetKeyUp"/></param>
+        /// <param name="type">0 = <see cref="Input.GetKey(KeyCode)"/>; 1 = <see cref="Input.GetKeyDown(KeyCode)"/>; 2 = <see cref="Input.GetKeyUp(KeyCode)"/></param>
         /// <returns></returns>
         public static KeyCode GetKeyStroke(int type)
         {
@@ -5018,6 +5260,12 @@ namespace WarWolfWorks.Utility
             }
         }
 
+        /// <summary>
+        /// Returns true if a given object has a method named with methodName.
+        /// </summary>
+        /// <param name="objectToCheck"></param>
+        /// <param name="methodName"></param>
+        /// <returns></returns>
         public static bool HasMethod(this object objectToCheck, string methodName)
         {
             try
@@ -5031,6 +5279,12 @@ namespace WarWolfWorks.Utility
             }
         }
 
+        /// <summary>
+        /// Attempts to call a method by name from an object.
+        /// </summary>
+        /// <param name="objectToCheck"></param>
+        /// <param name="methodName"></param>
+        /// <param name="args"></param>
         public static void CallMethod(this object objectToCheck, string methodName, object[] args)
         {
             try
@@ -5045,6 +5299,13 @@ namespace WarWolfWorks.Utility
             }
         }
 
+        /// <summary>
+        /// Attempts to call a method by name from an object using custom bindings.
+        /// </summary>
+        /// <param name="objectToCheck"></param>
+        /// <param name="methodName"></param>
+        /// <param name="args"></param>
+        /// <param name="customBind"></param>
         public static void CallMethod(this object objectToCheck, string methodName, object[] args, BindingFlags customBind)
         {
             try
@@ -5059,50 +5320,13 @@ namespace WarWolfWorks.Utility
             }
         }
 
-        public static void CallMethod(this object objectToCheck, string methodName, object[] args, string customMessage)
-        {
-            bool wrongArg = false;
-            objectToCheck.CallMethod(methodName, args, customMessage, ref wrongArg);
-        }
-
-        public static void CallMethod(this object objectToCheck, string methodName, object[] args, string customMessage, ref bool wrongArg)
-        {
-            try
-            {
-                Type type = objectToCheck.GetType();
-                MethodInfo method = type.GetMethod(methodName);
-                method.Invoke(objectToCheck, args);
-            }
-            catch (ArgumentException ae)
-            {
-                wrongArg = true;
-                AdvancedDebug.LogException(ae);
-            }
-            catch (Exception e)
-            {
-                AdvancedDebug.LogException(e);
-            }
-        }
-
-        public static void CallMethod(this object objectToCheck, string methodName, object[] args, BindingFlags specificBind, string customMessage, ref bool wrongArg)
-        {
-            try
-            {
-                Type type = objectToCheck.GetType();
-                MethodInfo method = type.GetMethod(methodName, specificBind);
-                method.Invoke(objectToCheck, args);
-            }
-            catch (ArgumentException)
-            {
-                wrongArg = true;
-                AdvancedDebug.LogError(customMessage, AdvancedDebug.ExceptionLayerIndex);
-            }
-            catch (Exception e)
-            {
-                AdvancedDebug.LogException(e);
-            }
-        }
-
+        /// <summary>
+        /// Calls a method by name inside a static class.
+        /// </summary>
+        /// <param name="classToCheck"></param>
+        /// <param name="methodName"></param>
+        /// <param name="args"></param>
+        /// <param name="specificBind"></param>
         public static void CallStaticMethod(Type classToCheck, string methodName, object[] args, BindingFlags specificBind)
         {
             try
@@ -5127,6 +5351,38 @@ namespace WarWolfWorks.Utility
             string[] array = File.ReadAllLines(fileName);
             array[line_to_edit - 1] = newText;
             File.WriteAllLines(fileName, array);
+        }
+
+#pragma warning disable CS1591
+        public enum ResultCode
+        {
+            Success,
+            ErrorOpenClipboard,
+            ErrorGlobalAlloc,
+            ErrorGlobalLock,
+            ErrorSetClipboardData,
+            ErrorOutOfMemoryException,
+            ErrorArgumentOutOfRangeException,
+            ErrorException,
+            ErrorInvalidArgs,
+            ErrorGetLastError
+        }
+
+        public class Result
+        {
+            public ResultCode ResultCode
+            {
+                get;
+                set;
+            }
+
+            public uint LastError
+            {
+                get;
+                set;
+            }
+
+            public bool OK => ResultCode == ResultCode.Success;
         }
 
         [DllImport("kernel32.dll")]
@@ -5329,6 +5585,7 @@ namespace WarWolfWorks.Utility
                 };
             }
         }
+#pragma warning restore CS1591
 
         /// <summary>
         /// Returns the parent gameobject of the given <see cref="GameObject"/>.
@@ -5533,6 +5790,12 @@ namespace WarWolfWorks.Utility
             return (T)(object)i;
         }
 
+        /// <summary>
+        /// Starts a singleton-type unity coroutine.
+        /// </summary>
+        /// <param name="caller"></param>
+        /// <param name="routine"></param>
+        /// <param name="isRunningBool"></param>
         public static void StartCoroutine(this MonoBehaviour caller, IEnumerator routine, ref bool isRunningBool)
         {
             if (isRunningBool)
@@ -5544,6 +5807,12 @@ namespace WarWolfWorks.Utility
             caller.StartCoroutine(routine);
         }
 
+        /// <summary>
+        /// Stops a singleton-type unity coroutine.
+        /// </summary>
+        /// <param name="caller"></param>
+        /// <param name="routine"></param>
+        /// <param name="isRunningBool"></param>
         public static void StopCoroutine(this MonoBehaviour caller, IEnumerator routine, ref bool isRunningBool)
         {
             if (isRunningBool)

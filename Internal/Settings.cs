@@ -55,7 +55,7 @@ namespace WarWolfWorks.Internal
         /// <summary>
         /// Name of the category given to the <see cref="Hooks.UtilityCanvas"/> Settings in WWWSettings.ini.
         /// </summary>
-        internal const string CanvasCategoryName = "WWWCanvas";
+        internal const string CanvasCategoryName = "ユチリテイキャンバス";
 
         /// <summary>
         /// Gets the <see cref="UtilityCanvasType"/> read directly from the WWWSettings.ini file.
@@ -88,7 +88,7 @@ namespace WarWolfWorks.Internal
         /// <summary>
         /// Name of the category given to <see cref="AdvancedDebug"/> settings in WWWSettings.ini.
         /// </summary>
-        internal const string DebugCategoryName = "AdvancedDebug";
+        internal const string DebugCategoryName = "デバッグ";
         internal const char LayerVarSeparator = ';';
         /// <summary>
         /// Default layer used by <see cref="AdvancedDebug"/>.
@@ -141,7 +141,7 @@ namespace WarWolfWorks.Internal
                         break;
                 }
 
-                string[] splits = Load(Catalog.Loader(SettingsPath, DebugCategoryName, $"{DebugNames[0]}_{i}", baseName, true)).Split(LayerVarSeparator);
+                string[] splits = Load(Catalog.Loader(SettingsPath, DebugCategoryName, $"{DebugNames[0]}_{i}", LayerToSavableString(baseName), true)).Split(LayerVarSeparator);
                 toReturn[i] = new DebugLayer(splits[0], Convert.ToBoolean(splits[1]));
             }
 
