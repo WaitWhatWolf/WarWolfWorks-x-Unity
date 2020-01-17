@@ -1,31 +1,38 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
+using WarWolfWorks.Debugging;
 using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.EditorBase
 {
     public class KeyCodeEditorWindow : EditorWindow
     {
-        public const string WindowName = "Default Keys Customizer";
+        public const string WINDOW_NAME = "Default Keys Customizer";
 
-        private Vector3 ScrollPosition;
+        private const float WINDOW_KR_OFFSET_Y = 10;
+        private const float WINDOW_KR_CELL_SIZE_Y = 20;
+        private const float WINDOW_KR_CELL_PADDING_X = 5;
 
-        private bool pop;
+        private const int WINDOW_KR_CELL_DIVISIONS = 3;
 
-        private bool pop2;
+        private readonly LanguageString LS_Remove = new LanguageString("Remove Selected", ("Usuń", SystemLanguage.Polish), ("削除", SystemLanguage.Japanese));
+        private readonly LanguageString LS_Add = new LanguageString("New Key", ("Nowy Przycisk", SystemLanguage.Polish), ("新しいキー", SystemLanguage.Japanese));
+        private readonly LanguageString LS_Save = new LanguageString("Save Selected", ("Zapisz", SystemLanguage.Polish), ("保存", SystemLanguage.Japanese));
+        private readonly LanguageString LS_SaveAll = new LanguageString("Save All Keys", ("Zapisz wszystkie przyciski", SystemLanguage.Polish), ("全てキー保存", SystemLanguage.Japanese));
+        private readonly LanguageString LS_SwitchViewEnum = new LanguageString("Switch to Enum View", ("Zmień na widok 'Enum'", SystemLanguage.Polish), ("'Enum' 見る", SystemLanguage.Japanese));
+        private readonly LanguageString LS_SwitchViewParse = new LanguageString("Switch to Parse View", ("Zmień na widok 'Parse'", SystemLanguage.Polish), ("'Parse' 見る", SystemLanguage.Japanese));
 
-        private bool pop3;
+        private ReorderableList list;
 
-        private bool pop4;
+        private Vector2 ScrollPosition;
 
-        private bool pop5;
+        private bool[] pops = new bool[6];
+        private bool ParsesValues;
 
-        private string keySave;
-
-        private string keycodeSave;
-
-        private (string, KeyCode)[] Keys;
+        private List<DefaultKeys.WKey> Keys;
 
         [MenuItem("WarWolfWorks/Default Keys Customizer")]
         public static void ShowWindow()
@@ -42,91 +49,122 @@ namespace WarWolfWorks.EditorBase
             UpdateKeys();
         }
 
+        private float DivWidth => position.DividedWidth(WINDOW_KR_CELL_DIVISIONS);
+
+        private Rect GetKeyRect(float posX, float sizeX, float posY)
+        {
+            return new Rect(position.xMin + DivWidth,
+                    posY,
+                    DivWidth - WINDOW_KR_CELL_PADDING_X,
+                    WINDOW_KR_CELL_SIZE_Y);
+        }
+
         private void UpdateKeys()
         {
-            try { Keys = DefaultKeys.GetAllKeys(); }
+            try
+            {
+                Keys = DefaultKeys.GetAllKeys();
+                list = new ReorderableList(Keys, typeof(DefaultKeys.WKey), true, false, false, false);
+
+                list.drawElementCallback =
+                (Rect rect, int index, bool isActive, bool isFocused) =>
+                {
+                    string txt = EditorGUI.TextField(
+                        new Rect(rect.x, rect.y, rect.width / 2, EditorGUIUtility.singleLineHeight), Keys[index].Name);
+
+                    KeyCode key = Keys[index].Key;
+
+                    if (ParsesValues)
+                    {
+                        key = (KeyCode)EditorGUI.EnumPopup(
+                            new Rect(rect.x + rect.width / 2, rect.y, rect.width / 2, EditorGUIUtility.singleLineHeight),
+                            Keys[index].Key);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            key = Hooks.Parse<KeyCode>(EditorGUI.TextField(
+                                new Rect(rect.x + rect.width / 2, rect.y, rect.width / 2, EditorGUIUtility.singleLineHeight),
+                                Keys[index].Key.ToString()));
+                        }
+                        catch
+                        {
+                            key = Keys[index].Key;
+                        }
+                    }
+
+                    Keys[index] = new DefaultKeys.WKey(txt, key);
+
+                    rect.y += 2;
+                };
+            }
             catch { goto DefaultSetter; }
             if (Keys != null)
                 return;
 
             DefaultSetter:
-            Keys = new (string, KeyCode)[]
+            Keys = new List<DefaultKeys.WKey>
             {
-                ("ConsoleKey", KeyCode.F1)
+                WWWConsole.DefaultKey
             };
         }
 
+        private List<DefaultKeys.WKey> GetSortedList()
+            => Hooks.Enumeration.ToGenericList<DefaultKeys.WKey>(list.list, false);
+
         private void OnGUI()
         {
-            if (!DefaultKeys.IsOptimized)
+            EditorGUILayout.BeginVertical();
+            ScrollPosition = EditorGUILayout.BeginScrollView(ScrollPosition);
+
+            list.DoLayoutList();
+
+            EditorGUILayout.EndScrollView();
+            EditorGUILayout.EndVertical();
+
+            pops[0] = GUILayout.Button(!ParsesValues ? LS_SwitchViewEnum : LS_SwitchViewParse);
+            if (pops[0]) ParsesValues = !ParsesValues;
+
+            EditorHooks.SlickSeparator();
+
+            pops[4] = GUILayout.Button(LS_Add);
+            if(pops[4])
             {
-                EditorGUILayout.BeginVertical();
-                ScrollPosition = EditorGUILayout.BeginScrollView(ScrollPosition);
+                DefaultKeys.AddKey(new DefaultKeys.WKey("New Key", KeyCode.None));
+                UpdateKeys();
+            }
 
-                for (int num = Keys.Length - 1; num >= 0; num--)
+            if (list.index >= 0 && list.index < Keys.Count)
+            {
+                pops[2] = GUILayout.Button(LS_Save);
+                if (pops[2])
                 {
-                    EditorGUILayout.LabelField($"{Keys[num].Item1}: {Keys[num].Item2}");
+                    DefaultKeys.AddKey(GetSortedList()[list.index]);
                 }
 
-                EditorGUILayout.EndScrollView();
-                EditorGUILayout.EndVertical();
-
-                pop = GUILayout.Button("Save Keys");
-                if (pop && Keys != null)
+                pops[3] = GUILayout.Button(LS_Remove);
+                if (pops[3])
                 {
-                    for (int i = 0; i < Keys.Length; i++)
-                    {
-                        DefaultKeys.ChangeKey(Keys[i]);
-                    }
-                }
-                pop2 = GUILayout.Button("Update Keys");
-                if (pop2)
-                {
-                    UpdateKeys();
-                }
-                keySave = EditorGUILayout.TextField("Custom Key", keySave, Array.Empty<GUILayoutOption>());
-                keycodeSave = EditorGUILayout.TextField("Parsed Value", keycodeSave, Array.Empty<GUILayoutOption>());
-                KeyCode item = KeyCode.None;
-                if (keycodeSave != string.Empty)
-                {
-                    try
-                    {
-                        item = Hooks.Parse<KeyCode>(keycodeSave);
-                    }
-                    catch
-                    {
-                        EditorGUILayout.HelpBox("The parsed value given is invalid! Make sure there are no spaces in your input.", MessageType.Warning);
-                    }
-                }
-                pop3 = GUILayout.Button("Save Custom Key");
-                if (pop3)
-                {
-                    DefaultKeys.AddKey((keySave, item));
-                    UpdateKeys();
-                }
-                pop4 = GUILayout.Button("Remove Custom Key");
-                if (pop4)
-                {
-                    DefaultKeys.RemoveKey(keySave);
+                    DefaultKeys.WKey removed = GetSortedList()[list.index];
+                    DefaultKeys.RemoveKey(removed.Name);
                     UpdateKeys();
                 }
             }
-            else
+
+            EditorHooks.SlickSeparator();
+
+            pops[1] = GUILayout.Button(LS_SaveAll);
+            if (pops[1] && Keys != null)
             {
-                EditorGUILayout.LabelField("Cannot modify keys while Optimized mode is active!", Array.Empty<GUILayoutOption>());
-                if (!Application.isPlaying)
+                List<DefaultKeys.WKey> keyz = GetSortedList();
+                for (int i = 0; i < Keys.Count; i++)
                 {
-                    pop5 = GUILayout.Button("Force Disable Optimization");
-                    if (pop5)
-                    {
-                        DefaultKeys.Unoptimize();
-                    }
+                    DefaultKeys.AddKey(keyz[i]);
                 }
             }
-            for (int j = 0; j < 4; j++)
-            {
-                EditorGUILayout.Space();
-            }
+
+            EditorHooks.MultiSpace(4);
             EditorGUILayout.LabelField("Current Optimization State: " + (DefaultKeys.IsOptimized ? "Active" : "Inactive"));
         }
     }

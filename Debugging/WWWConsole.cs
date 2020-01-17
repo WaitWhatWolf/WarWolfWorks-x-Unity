@@ -15,6 +15,8 @@ namespace WarWolfWorks.Debugging
 
         private static int inputIndx;
 
+        internal static DefaultKeys.WKey DefaultKey = new DefaultKeys.WKey("ConsoleKey", KeyCode.F1);
+
         /// <summary>
         /// All non-function input keys acceptable by the <see cref="WWWConsole"/>.
         /// </summary>

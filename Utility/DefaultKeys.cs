@@ -2,21 +2,58 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using static WarWolfWorks.Utility.Hooks.Streaming;
 
+[assembly: InternalsVisibleTo("WarWolfWorks.EditorBase")]
 namespace WarWolfWorks.Utility
 {
     /// <summary>
-    /// A more customizable Input system compared to UnityEngine.Input class.
+    /// A more customizable Input system compared to the <see cref="UnityEngine.Input"/> class.
     /// </summary>
     public static class DefaultKeys
     {
+        /// <summary>
+        /// Struct used to store keys and identify them by name.
+        /// </summary>
+        public struct WKey
+        {
+            /// <summary>
+            /// Name of the <see cref="WKey"/>.
+            /// </summary>
+            public string Name;
+            /// <summary>
+            /// Value of the <see cref="WKey"/>.
+            /// </summary>
+            public KeyCode Key;
+
+            /// <summary>
+            /// Base constructor of the <see cref="WKey"/>.
+            /// </summary>
+            /// <param name="name"></param>
+            /// <param name="key"></param>
+            public WKey(string name, KeyCode key)
+            {
+                Name = name;
+                Key = key;
+            }
+
+            /// <summary>
+            /// Constructor based off of <see cref="Hooks.Streaming"/> save lines.
+            /// </summary>
+            /// <param name="saveLine"></param>
+            internal WKey(string saveLine)
+            {
+                string[] split = saveLine.Split(STREAM_VALUE_POINTER, StringSplitOptions.None);
+                Name = split[0];
+                Key = Hooks.Parse<KeyCode>(split[1]);
+            }
+        }
+
         private static readonly string KeysPath = Path.Combine(Application.streamingAssetsPath.Replace("/", "\\"), "DefaultKeys.kfidk");
 
         private static readonly string CategoryName = "Keys";
-
-        //private const string EncryptionKey = "KeysUnite!";
 
         private static Dictionary<string, KeyCode> OptimizedKeys = new Dictionary<string, KeyCode>();
 
@@ -44,10 +81,10 @@ namespace WarWolfWorks.Utility
         {
             if (!IsOptimized)
             {
-                (string, KeyCode)[] allKeys = GetAllKeys();
-                for (int i = 0; i < allKeys.Length; i++)
+                List<WKey> keys = GetAllKeys();
+                for(int i = 0; i < keys.Count; i++)
                 {
-                    OptimizedKeys.Add(allKeys[i].Item1, allKeys[i].Item2);
+                    OptimizedKeys.Add(keys[i].Name, keys[i].Key);
                 }
                 IsOptimized = true;
             }
@@ -181,31 +218,26 @@ namespace WarWolfWorks.Utility
         /// Returns a <see cref="ValueTuple"/> array of all keys stored inside DefaultKeys. (If optimization is active, it will return all keys in Dictionary, otherwise returns directly from the file.)
         /// </summary>
         /// <returns></returns>
-        public static (string, KeyCode)[] GetAllKeys()
+        public static List<WKey> GetAllKeys()
         {
-            List<(string, KeyCode)> list = new List<(string, KeyCode)>();
+            List<WKey> list = new List<WKey>();
             if (IsOptimized)
             {
-                string[] array = OptimizedKeys.Keys.ToArray();
-                for (int i = 0; i < OptimizedKeys.Count; i++)
+                List<KeyValuePair<string, KeyCode>> temp = OptimizedKeys.ToList();
+                for(int i = 0; i < temp.Count; i++)
                 {
-                    list.Add((array[i], OptimizedKeys[array[i]]));
+                    list.Add(new WKey(temp[i].Key, temp[i].Value));
                 }
             }
             else
             {
                 string[] allVariablesFromCategory = LoadAll(Catalog.LoaderFull(KeysPath, CategoryName), true).ToArray();
-                string[] names = new string[allVariablesFromCategory.Length];
-                KeyCode[] keys = new KeyCode[allVariablesFromCategory.Length];
                 for (int j = 0; j < allVariablesFromCategory.Length; j++)
                 {
-                    string[] array4 = allVariablesFromCategory[j].Split(STREAM_VALUE_POINTER, StringSplitOptions.None);
-                    names[j] = array4[0];
-                    keys[j] = Hooks.Parse<KeyCode>(array4[1]);
-                    list.Add((names[j], keys[j]));
+                    list.Add(new WKey(allVariablesFromCategory[j]));
                 }
             }
-            return list.ToArray();
+            return list;
         }
 
         private static bool IsOptimizedCheck()
@@ -218,7 +250,7 @@ namespace WarWolfWorks.Utility
         }
 
         /// <summary>
-        /// Returns true if key under keyName exists inside DefaultKeys. (If optimized, tries to find it inside the Dictionary, otherwise reads it directly from the file)
+        /// Returns true if key under keyName exists inside <see cref="DefaultKeys"/>.
         /// </summary>
         /// <param name="keyName"></param>
         /// <returns></returns>
@@ -226,86 +258,90 @@ namespace WarWolfWorks.Utility
         {
             if (!IsOptimized)
             {
-                return Load(Catalog.Loader(KeysPath, CategoryName, keyName)) != string.Empty;
+                return !string.IsNullOrEmpty(Load(Catalog.Loader(KeysPath, CategoryName, keyName)));
             }
             return OptimizedKeys.ContainsKey(keyName);
         }
 
         /// <summary>
-        /// Adds a key to the database.
+        /// Adds a key to the database; If a key under <see cref="WKey.Name"/> already exists, it will only change that key's value with <see cref="WKey.Key"/>.
         /// </summary>
         /// <param name="key"></param>
-        public static void AddKey((string, KeyCode) key)
+        public static void AddKey(WKey key)
+            => AddKey(key.Name, key.Key);
+
+        /// <summary>
+        /// Adds a key to the database; If a key under the given name already exists, it will only change that key's value.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        public static void AddKey(string name, KeyCode value)
         {
             if (!IsOptimizedCheck())
             {
                 try
                 {
                     CreateFolder(KeysPath);
-                    Save(Catalog.Saver(KeysPath, CategoryName, key.Item1, key.Item2.ToString()));
-                    Debug.Log($"{key} Key was successfully saved in: {KeysPath}");
+                    Save(Catalog.Saver(KeysPath, CategoryName, name, value.ToString()));
+                    Debug.Log($"{name} Key was successfully saved as {value}!");
                 }
                 catch (Exception ex)
                 {
-                    AdvancedDebug.Log($"A problem occured trying to save {key} key, please try again. (Error: {ex.Message})", AdvancedDebug.ExceptionLayerIndex);
+                    AdvancedDebug.Log($"A problem occured trying to save {name} key. (Error: {ex.Message})", AdvancedDebug.ExceptionLayerIndex);
                 }
             }
         }
 
         /// <summary>
-        /// Forces DefaultKeys to add key into database even if optimization mode is active.
+        /// Forces <see cref="DefaultKeys"/> to add/change a key inside the database even if optimization mode is active.
         /// </summary>
         /// <param name="key"></param>
-        public static void ForceAddKey((string, KeyCode) key)
-        {
-            InternalKeymethodChanger(key, isAdd: true);
-        }
+        public static void ForceAddKey(WKey key)
+            => ForceAddKey(key.Name, key.Key);
 
-        private static void InternalKeymethodChanger((string, KeyCode) key, bool isAdd)
+        /// <summary>
+        /// Forces <see cref="DefaultKeys"/> to add/change a key inside the database even if optimization mode is active.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="name"></param>
+        public static void ForceAddKey(string name, KeyCode key)
         {
-            bool isOptimized = IsOptimized;
-            if (isOptimized)
+            bool wasOptimized = IsOptimized;
+            if (wasOptimized)
             {
                 Unoptimize();
             }
-            if (isAdd)
-            {
-                AddKey(key);
-            }
-            else
-            {
-                ChangeKey(key);
-            }
-            if (isOptimized)
+
+            AddKey(name, key);
+
+            if (wasOptimized)
             {
                 Optimize();
             }
         }
 
         /// <summary>
-        /// Changes key's value under key.Item1 to key.Item2's value.
+        /// Changes a key's name.
         /// </summary>
-        /// <param name="key"></param>
-        public static void ChangeKey((string, KeyCode) key)
+        /// <param name="of">Current name of the key.</param>
+        /// <param name="to">New name of the key.</param>
+        public static bool ChangeKeyName(string of, string to)
         {
+            if (of == to)
+                goto FalseReturn;
+
             if (!IsOptimizedCheck())
             {
-                KeyCode keyCode = Hooks.Parse<KeyCode>(Load(Catalog.Loader(KeysPath, CategoryName, key.Item1)));
-                if (keyCode != key.Item2)
-                {
-                    Save(Catalog.Saver(KeysPath, CategoryName, key.Item1, key.Item2.ToString()));
-                    AdvancedDebug.Log($"{key.Item1} was successfully changed from {keyCode} to {key.Item2}", AdvancedDebug.WWWInfoLayerIndex);
-                }
-            }
-        }
+                if (!ChangeVariableName(Catalog.Loader(KeysPath, CategoryName, of), to))
+                    goto FalseReturn;
 
-        /// <summary>
-        /// Forces DefaultKeys to change key from database even if optimization mode is active.
-        /// </summary>
-        /// <param name="key"></param>
-        public static void ForceChangeKey((string, KeyCode) key)
-        {
-            InternalKeymethodChanger(key, isAdd: false);
+                AdvancedDebug.Log($"{of}'s name was successfully changed to {to}", AdvancedDebug.WWWInfoLayerIndex);
+                return true;
+            }
+
+        FalseReturn:
+            AdvancedDebug.LogWarning($"{of}'s name couldn't be changed as it was not found! Make sure a key under the given name exists.", AdvancedDebug.WWWInfoLayerIndex);
+            return false;
         }
 
         /// <summary>

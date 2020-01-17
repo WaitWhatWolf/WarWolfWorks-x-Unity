@@ -673,7 +673,7 @@
             Instantiates a new canvas that will be purely used by the WWWLibrary.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.Internal.Settings.CanvasCategoryName">
+        <member name="F:WarWolfWorks.Internal.Settings.CATEGORY_CANVAS_NAME">
             <summary>
             Name of the category given to the <see cref="P:WarWolfWorks.Utility.Hooks.UtilityCanvas"/> Settings in WWWSettings.ini.
             </summary>
@@ -694,7 +694,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="F:WarWolfWorks.Internal.Settings.DebugCategoryName">
+        <member name="F:WarWolfWorks.Internal.Settings.CATEGORY_DEBUG_NAME">
             <summary>
             Name of the category given to <see cref="T:WarWolfWorks.AdvancedDebug"/> settings in WWWSettings.ini.
             </summary>
@@ -703,6 +703,13 @@
             <summary>
             Default layer used by <see cref="T:WarWolfWorks.AdvancedDebug"/>.
             </summary>
+        </member>
+        <member name="M:WarWolfWorks.Internal.Settings.ToLayerStreamingName(System.Int32)">
+            <summary>
+            Gives the name of the variable to be used with <see cref="T:WarWolfWorks.Utility.Hooks.Streaming"/>'s loading.
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
         </member>
         <member name="T:WarWolfWorks.Internal.Settings.DebugStyle">
             <summary>
@@ -758,6 +765,11 @@
             Gets the LogError <see cref="T:UnityEngine.Color"/> read directly from WWWSettings.ini.
             </summary>
             <returns></returns>
+        </member>
+        <member name="P:WarWolfWorks.Internal.Settings.LibraryLanguage">
+            <summary>
+            Language of this library.
+            </summary>
         </member>
         <member name="T:WarWolfWorks.Internal.StreamingException">
             <summary>
@@ -1972,6 +1984,15 @@
             <param name="position"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntity(System.Single,UnityEngine.Vector3,System.Type)">
+            <summary>
+            Gets the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> in within range from position of given type.
+            </summary>
+            <param name="within"></param>
+            <param name="position"></param>
+            <param name="of"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntity(System.Single,UnityEngine.Vector3,System.Collections.Generic.IEnumerable{System.Type})">
             <summary>
             Gets the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> in within range from position of given type.
@@ -1989,6 +2010,23 @@
             <param name="position"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntities``1(System.Single,UnityEngine.Vector3)">
+            <summary>
+            Gets all entities in within range from position of given type.
+            </summary>
+            <param name="within"></param>
+            <param name="position"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntities(System.Single,UnityEngine.Vector3,System.Type)">
+            <summary>
+            Gets all entities in within range from position of given type.
+            </summary>
+            <param name="within"></param>
+            <param name="position"></param>
+            <param name="of"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntities(System.Single,UnityEngine.Vector3,System.Collections.Generic.IEnumerable{System.Type})">
             <summary>
             Gets all entities in within range from position of given types.
@@ -1998,20 +2036,21 @@
             <param name="ofTypes"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntities``1(System.Single,UnityEngine.Vector3)">
-            <summary>
-            Gets all entities in within range from position of given type.
-            </summary>
-            <param name="within"></param>
-            <param name="position"></param>
-            <returns></returns>
-        </member>
         <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetAllWithinView(UnityEngine.Camera)">
             <summary>
             Returns all entities visible to a camera. Only works on entities with a renderer component.
             Rather slow, avoid using on any Update method.
             </summary>
             <param name="from"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetAllWithinView(UnityEngine.Camera,System.Type)">
+            <summary>
+            Returns all entities of given type visible to a camera. Only works on entities with a renderer component.
+            Rather slow, avoid using on any Update method.
+            </summary>
+            <param name="from"></param>
+            <param name="of"></param>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetAllWithinView``1(UnityEngine.Camera)">
@@ -2025,6 +2064,14 @@
         <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetAllWithinBounds(UnityEngine.Vector3,UnityEngine.Vector3)">
             <summary>
             Gets all entities inside of bounds.
+            </summary>
+            <param name="center"></param>
+            <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetAllWithinBounds``1(UnityEngine.Vector3,UnityEngine.Vector3)">
+            <summary>
+            Gets all entities of given generic type inside of bounds.
             </summary>
             <param name="center"></param>
             <param name="size"></param>
@@ -4170,7 +4217,7 @@
         </member>
         <member name="M:WarWolfWorks.UI.MouseHUD.RemoveFromQueue(UnityEngine.Sprite,UnityEngine.Color)">
             <summary>
-            Removes the sprite to the queue of images to be displayed.
+            Removes the sprite from the queue of images to be displayed.
             </summary>
             <param name="sprite"></param>
             <param name="color"></param>
@@ -4585,8 +4632,36 @@
         </member>
         <member name="T:WarWolfWorks.Utility.DefaultKeys">
             <summary>
-            A more customizable Input system compared to UnityEngine.Input class.
+            A more customizable Input system compared to the <see cref="T:UnityEngine.Input"/> class.
             </summary>
+        </member>
+        <member name="T:WarWolfWorks.Utility.DefaultKeys.WKey">
+            <summary>
+            Struct used to store keys and identify them by name.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.DefaultKeys.WKey.Name">
+            <summary>
+            Name of the <see cref="T:WarWolfWorks.Utility.DefaultKeys.WKey"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.DefaultKeys.WKey.Key">
+            <summary>
+            Value of the <see cref="T:WarWolfWorks.Utility.DefaultKeys.WKey"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.DefaultKeys.WKey.#ctor(System.String,UnityEngine.KeyCode)">
+            <summary>
+            Base constructor of the <see cref="T:WarWolfWorks.Utility.DefaultKeys.WKey"/>.
+            </summary>
+            <param name="name"></param>
+            <param name="key"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.DefaultKeys.WKey.#ctor(System.String)">
+            <summary>
+            Constructor based off of <see cref="T:WarWolfWorks.Utility.Hooks.Streaming"/> save lines.
+            </summary>
+            <param name="saveLine"></param>
         </member>
         <member name="P:WarWolfWorks.Utility.DefaultKeys.IsOptimized">
             <summary>
@@ -4677,34 +4752,43 @@
         </member>
         <member name="M:WarWolfWorks.Utility.DefaultKeys.KeyExists(System.String)">
             <summary>
-            Returns true if key under keyName exists inside DefaultKeys. (If optimized, tries to find it inside the Dictionary, otherwise reads it directly from the file)
+            Returns true if key under keyName exists inside <see cref="T:WarWolfWorks.Utility.DefaultKeys"/>.
             </summary>
             <param name="keyName"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.DefaultKeys.AddKey(System.ValueTuple{System.String,UnityEngine.KeyCode})">
+        <member name="M:WarWolfWorks.Utility.DefaultKeys.AddKey(WarWolfWorks.Utility.DefaultKeys.WKey)">
             <summary>
-            Adds a key to the database.
+            Adds a key to the database; If a key under <see cref="F:WarWolfWorks.Utility.DefaultKeys.WKey.Name"/> already exists, it will only change that key's value with <see cref="F:WarWolfWorks.Utility.DefaultKeys.WKey.Key"/>.
             </summary>
             <param name="key"></param>
         </member>
-        <member name="M:WarWolfWorks.Utility.DefaultKeys.ForceAddKey(System.ValueTuple{System.String,UnityEngine.KeyCode})">
+        <member name="M:WarWolfWorks.Utility.DefaultKeys.AddKey(System.String,UnityEngine.KeyCode)">
             <summary>
-            Forces DefaultKeys to add key into database even if optimization mode is active.
+            Adds a key to the database; If a key under the given name already exists, it will only change that key's value.
+            </summary>
+            <param name="name"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.DefaultKeys.ForceAddKey(WarWolfWorks.Utility.DefaultKeys.WKey)">
+            <summary>
+            Forces <see cref="T:WarWolfWorks.Utility.DefaultKeys"/> to add/change a key inside the database even if optimization mode is active.
             </summary>
             <param name="key"></param>
         </member>
-        <member name="M:WarWolfWorks.Utility.DefaultKeys.ChangeKey(System.ValueTuple{System.String,UnityEngine.KeyCode})">
+        <member name="M:WarWolfWorks.Utility.DefaultKeys.ForceAddKey(System.String,UnityEngine.KeyCode)">
             <summary>
-            Changes key's value under key.Item1 to key.Item2's value.
+            Forces <see cref="T:WarWolfWorks.Utility.DefaultKeys"/> to add/change a key inside the database even if optimization mode is active.
             </summary>
             <param name="key"></param>
+            <param name="name"></param>
         </member>
-        <member name="M:WarWolfWorks.Utility.DefaultKeys.ForceChangeKey(System.ValueTuple{System.String,UnityEngine.KeyCode})">
+        <member name="M:WarWolfWorks.Utility.DefaultKeys.ChangeKeyName(System.String,System.String)">
             <summary>
-            Forces DefaultKeys to change key from database even if optimization mode is active.
+            Changes a key's name.
             </summary>
-            <param name="key"></param>
+            <param name="of">Current name of the key.</param>
+            <param name="to">New name of the key.</param>
         </member>
         <member name="M:WarWolfWorks.Utility.DefaultKeys.RemoveKey(System.String)">
             <summary>
@@ -5084,6 +5168,14 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.ChangeVariableName(WarWolfWorks.Utility.Hooks.Streaming.Catalog,System.String)">
+            <summary>
+            Changes the names of a variable and returns true if it was changed successfully.
+            </summary>
+            <param name="original"></param>
+            <param name="to"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Remove(WarWolfWorks.Utility.Hooks.Streaming.Catalog)">
             <summary>
             Removes a value under catergory file of the given catalog.
@@ -5370,6 +5462,23 @@
             </summary>
             <typeparam name="T"></typeparam>
             <param name="list"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.ToGenericList``1(System.Collections.IList,System.Boolean)">
+            <summary>
+            Returns a generic <see cref="T:System.Collections.Generic.List`1"/> from a non-generic <see cref="T:System.Collections.IList"/>. In case of an incorrect cast, it will return null.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="linqReturn">If false, it will return a new list instead of using System.Linq to generate a list.</param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.ToGeneric``1(System.Collections.IEnumerable)">
+            <summary>
+            Returns a generic <see cref="T:System.Collections.Generic.IEnumerable`1"/> from a non-generic <see cref="T:System.Collections.IEnumerable"/>. In case of an incorrect cast, it will return null.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="enumerable"></param>
+            <returns></returns>
         </member>
         <member name="T:WarWolfWorks.Utility.Hooks.Vectors">
             <summary>
@@ -7106,6 +7215,49 @@
             <param name="value"></param>
             <returns></returns>
         </member>
+        <member name="T:WarWolfWorks.Utility.LanguageString">
+            <summary>
+            Struct which returns a string based on language given; If used directly, it will use <see cref="P:UnityEngine.Application.systemLanguage"/> to determine the language.
+            To use with a specified language, use an indexer.
+            (Example: ItemName = LanguageItemName[<see cref="F:UnityEngine.SystemLanguage.Polish"/>])
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.LanguageString.English">
+            <summary>
+            Returned by default.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.LanguageString.Values">
+            <summary>
+            All values contained by this <see cref="T:WarWolfWorks.Utility.LanguageString"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.LanguageString.#ctor(System.String,System.ValueTuple{System.String,UnityEngine.SystemLanguage}[])">
+            <summary>
+            Creates a new <see cref="T:WarWolfWorks.Utility.LanguageString"/>.
+            </summary>
+            <param name="english"></param>
+            <param name="other"></param>
+        </member>
+        <member name="P:WarWolfWorks.Utility.LanguageString.Item(UnityEngine.SystemLanguage)">
+            <summary>
+            Returns a string associated with this language; If not found, will return <see cref="F:WarWolfWorks.Utility.LanguageString.English"/> as default.
+            </summary>
+            <param name="language"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.LanguageString.ToString">
+            <summary>
+            Returns the text instead of the full type.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.LanguageString.op_Implicit(WarWolfWorks.Utility.LanguageString)~System.String">
+            <summary>
+            Pointer to <see cref="T:WarWolfWorks.Utility.LanguageString"/>[<see cref="P:WarWolfWorks.Internal.Settings.LibraryLanguage"/>].
+            </summary>
+            <param name="languageString"></param>
+        </member>
         <member name="T:WarWolfWorks.Utility.LevelFloat">
             <summary>
             A float value which changes based on it's level.
@@ -7158,11 +7310,6 @@
             Implicitly returns <see cref="P:WarWolfWorks.Utility.LevelFloat.Value"/>.
             </summary>
             <param name="lf"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Pooling.CustomPool`1.OnCustomPoolInstantiation">
-            <summary>
-            This method invokes when the pool is first instantiated.
-            </summary>
         </member>
         <member name="T:WarWolfWorks.Utility.TransformLimiter">
             <summary>

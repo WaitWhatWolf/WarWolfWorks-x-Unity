@@ -69,7 +69,7 @@ namespace WarWolfWorks.UI
         }
 
         /// <summary>
-        /// Removes the sprite to the queue of images to be displayed.
+        /// Removes the sprite from the queue of images to be displayed.
         /// </summary>
         /// <param name="sprite"></param>
         /// <param name="color"></param>

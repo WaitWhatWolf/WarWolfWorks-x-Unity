@@ -16,6 +16,10 @@ namespace WarWolfWorks.EditorBase
             GetWindow<EnumListDisplayer>("Enum List Displayer").Show();
         }
 
+        private const float RECT_BOTBUTTON_SIZE_Y = 20;
+        private const float RECT_BOTBUTTON_SMALL_SIZE_Y = 14;
+        private const float RECT_BOTBUTTON_SMALL_PADDING_X = 10;
+
         private Type CurrentType = null;
         private string ParsedType = "";
 
@@ -27,6 +31,18 @@ namespace WarWolfWorks.EditorBase
         public (string[] EnumName, short[] EnumVal) EnumValuesShort;
         public (string[] EnumName, long[] EnumVal) EnumValuesLong;
 
+        private LanguageString LS_Previous = new LanguageString("Previous", ("Poprzedni", SystemLanguage.Polish), ("前に", SystemLanguage.Japanese));
+        private LanguageString LS_Next = new LanguageString("Previous", ("Następny", SystemLanguage.Polish), ("次に", SystemLanguage.Japanese));
+        private LanguageString LS_Remove = new LanguageString("Remove Entry", ("Usuń wejście", SystemLanguage.Polish), ("エントリーを削除", SystemLanguage.Japanese));
+
+        private LanguageString LS_Type = new LanguageString("Type", ("Typ", SystemLanguage.Polish), ("タイプ", SystemLanguage.Japanese));
+        private LanguageString LS_Check = new LanguageString("Check", ("Sprawdź", SystemLanguage.Polish), ("確認", SystemLanguage.Japanese));
+        private LanguageString LS_WarningDoesntExist = new LanguageString("Parsed type does not exist! Make sure you include the namespace of the type and the type is an Enum.",
+            ("Podany typ nie istnieję! Upewnij się że podany typ zawiera namespace oraz jest on typem Enum.", SystemLanguage.Polish),
+            ("タイプは存在しません！ネームスペースを含め、タイプがEnumであることを確認してください", SystemLanguage.Japanese));
+        private LanguageString LS_CurrentDisplay = new LanguageString("Currently Displaying", ("Obecnie Wyświetlane", SystemLanguage.Polish), ("現在表示", SystemLanguage.Japanese));
+        private LanguageString LS_Reset = new LanguageString("Reset", ("Resetuj", SystemLanguage.Polish), ("リセット", SystemLanguage.Japanese));
+
         private Vector3 ScrollPosition;
 
         enum IntType : short
@@ -36,7 +52,7 @@ namespace WarWolfWorks.EditorBase
             int64
         }
 
-        private string Category = "EnumListEntries";
+        private string Category = "Enumリストエントリー";
         private IntType CurrentIntType;
 
         private string[] PreviousEntries;
@@ -60,14 +76,14 @@ namespace WarWolfWorks.EditorBase
 
         private void SetEntries()
         {
-            try { PreviousEntries = LoadAll(Catalog.Loader(Settings.SettingsPath, Category, null), false).ToArray(); }
+            try { PreviousEntries = LoadAll(Catalog.LoaderFull(Settings.SettingsPath, Category), false).ToArray(); }
             catch { goto DefaultSetter; }
 
-            if (PreviousEntries != null)
+            if (PreviousEntries != null && PreviousEntries.Length > 0)
                 return;
 
         DefaultSetter:
-            PreviousEntries = new string[] { "WWW.EntitiesSystem.Statistics.Stacking" };
+            PreviousEntries = new string[] { "WarWolfWorks.EntitiesSystem.Statistics.Stacking" };
         }
 
         private void OnGUI()
@@ -77,8 +93,8 @@ namespace WarWolfWorks.EditorBase
                 if (!ActivatedWindow)
                 {
                     if (PreviousEntries == null) SetEntries();
-                    ParsedType = EditorGUILayout.TextField("Type", ParsedType);
-                    flag = GUILayout.Button("Check", GUILayout.Height(40));
+                    ParsedType = EditorGUILayout.TextField(LS_Type, ParsedType);
+                    flag = GUILayout.Button(LS_Check, GUILayout.Height(40));
                     CurrentType = ParsedType.Length > 0 ? Hooks.ParseType(ParsedType) : null;
 
                     if (CurrentType != null && CurrentType.BaseType == typeof(Enum))
@@ -105,16 +121,28 @@ namespace WarWolfWorks.EditorBase
                         }
                     }
                     else
-                        EditorGUILayout.HelpBox("Parsed type does not exist! Make sure you include the namespace of the type and the type is an Enum.", UnityEditor.MessageType.Warning);
+                        EditorGUILayout.HelpBox(LS_WarningDoesntExist, UnityEditor.MessageType.Warning);
 
-                    if(GUILayout.Button("Previous Entry", GUILayout.Height(20)))
+
+                    if (GUI.Button(new Rect(position.x + (RECT_BOTBUTTON_SIZE_Y * 2), position.yMin, position.width, RECT_BOTBUTTON_SIZE_Y), LS_Next))
+                    {
+                        EntryIndex++;
+                    }
+                    if(GUI.Button(new Rect(position.x + RECT_BOTBUTTON_SIZE_Y, position.yMin, position.width, RECT_BOTBUTTON_SIZE_Y), LS_Previous))
                     {
                         EntryIndex--;
+                    }
+                    if (GUI.Button(new Rect(position.x + RECT_BOTBUTTON_SMALL_PADDING_X,
+                        position.yMin, position.width - RECT_BOTBUTTON_SMALL_PADDING_X, 
+                        RECT_BOTBUTTON_SMALL_SIZE_Y), LS_Remove))
+                    {
+                        Remove(Catalog.Loader(Settings.SettingsPath, Category, PreviousEntries[EntryIndex]));
+                        SetEntries();
                     }
                 }
                 else
                 {
-                    EditorGUILayout.LabelField($"Currently displaying: {CurrentType.FullName}");
+                    EditorGUILayout.LabelField($"{LS_CurrentDisplay}: {CurrentType.FullName}");
 
                     EditorGUILayout.BeginVertical();
                     ScrollPosition = EditorGUILayout.BeginScrollView(ScrollPosition);
@@ -143,7 +171,7 @@ namespace WarWolfWorks.EditorBase
                     EditorGUILayout.EndScrollView();
                     EditorGUILayout.EndVertical();
 
-                    if (GUILayout.Button("Reset"))
+                    if (GUILayout.Button(LS_Reset))
                     {
                         ActivatedWindow = false;
                         PreviousEntries = null;

@@ -565,7 +565,7 @@ namespace WarWolfWorks.Utility
                 }
 
                 int writeIndex = lines.FindIndex(startIndex, endIndex - startIndex, 
-                    s => (catalog.Protected ? catalog.Decrypt(s) : s).Contains(catalog.Name));
+                    s => (catalog.Protected ? catalog.Decrypt(s) : s).Split(STREAM_VALUE_POINTER, StringSplitOptions.None)[0].Equals(catalog.Name));
                 if (writeIndex == -1)
                     lines.Insert(startIndex + 1, catalog.Protected ? catalog.Encrypt(ValueSaver(catalog)) : ValueSaver(catalog));
                 else
@@ -620,7 +620,7 @@ namespace WarWolfWorks.Utility
                 for (int i = 0; i < catalogs.Length; i++)
                 {
                     int writeIndex = lines.FindIndex(startIndex, endIndex - startIndex,
-                        s => (catalogs[i].Protected ? catalogs[i].Decrypt(s) : s).Contains(catalogs[i].Name));
+                        s => (catalogs[i].Protected ? catalogs[i].Decrypt(s) : s).Split(STREAM_VALUE_POINTER, StringSplitOptions.None)[0].Equals(catalogs[i].Name));
                     if (writeIndex == -1)
                         lines.Insert(startIndex + 1, catalogs[i].Protected ? catalogs[i].Encrypt(ValueSaver(catalogs[i])) : ValueSaver(catalogs[i]));
                     else
@@ -664,13 +664,13 @@ namespace WarWolfWorks.Utility
                 {
                     List<string> lines;
                     LoadLines(out lines, catalog);
-                    int index = lines.FindIndex(s => (catalog.Protected ? catalog.Decrypt(s) : s).Contains(NameNoValSaver(catalog)));
-                    if (index == -1)
+                    string toReturn = lines.Find(s => (catalog.Protected ? catalog.Decrypt(s) : s).Split(STREAM_VALUE_POINTER, StringSplitOptions.None)[0].Equals(catalog.Name));
+                    if (string.IsNullOrEmpty(toReturn))
                     {
                         goto Saver;
                     }
 
-                    return (catalog.Protected ? catalog.Decrypt(lines[index]) : lines[index])
+                    return (catalog.Protected ? catalog.Decrypt(toReturn) : toReturn)
                         .Split(STREAM_VALUE_POINTER, StringSplitOptions.None)[1];
                 }
                 catch
@@ -728,14 +728,41 @@ namespace WarWolfWorks.Utility
                 return InternalLoadAll(catalog, includeName);
             }
 
+            /// <summary>
+            /// Changes the names of a variable and returns true if it was changed successfully.
+            /// </summary>
+            /// <param name="original"></param>
+            /// <param name="to"></param>
+            /// <returns></returns>
+            public static bool ChangeVariableName(Catalog original, string to)
+            {
+                try
+                {
+                    LoadLines(out List<string> lines, out int catStart, out int catEnd, original);
+
+                    string toReturn = lines.Find(s => (original.Protected ? original.Decrypt(s) : s).Split(STREAM_VALUE_POINTER, StringSplitOptions.None)[0].Equals(original.Name));
+                    
+                    if (string.IsNullOrEmpty(toReturn))
+                        return false;
+
+                    string keep = (original.Protected ? original.Decrypt(toReturn) : toReturn).Split(STREAM_VALUE_POINTER, StringSplitOptions.None)[2];
+                    string toSave = $"{to}{STREAM_VALUE_POINTER}{keep}";
+                    toReturn = original.Protected ? original.Encrypt(toSave) : toSave;
+
+                    File.WriteAllLines(original.Path, lines);
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
             private static bool InternalRemove(Catalog catalog)
             {
                 try
                 {
-                    List<string> lines;
-                    int catStart;
-                    int catEnd;
-                    LoadLines(out lines, out catStart, out catEnd, catalog);
+                    LoadLines(out List<string> lines, out int catStart, out int catEnd, catalog);
 
                     int index = lines.FindIndex(s => (catalog.Protected ? catalog.Decrypt(s) : s).Contains(catalog.Name));
                     if (index == -1 || index > catEnd || index < catStart)
@@ -2263,6 +2290,45 @@ namespace WarWolfWorks.Utility
             public static void RemoveNull<T>(List<T> list)
             {
                 list.RemoveAll(i => i == null);
+            }
+
+            /// <summary>
+            /// Returns a generic <see cref="List{T}"/> from a non-generic <see cref="IList"/>. In case of an incorrect cast, it will return null.
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="list"></param>
+            /// <param name="linqReturn">If false, it will return a new list instead of using System.Linq to generate a list.</param>
+            /// <returns></returns>
+            public static List<T> ToGenericList<T>(IList list, bool linqReturn = true)
+            {
+                try
+                {
+                    if (linqReturn)
+                        return list.Cast<T>().ToList();
+                    else return new List<T>(list.Cast<T>());
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+
+            /// <summary>
+            /// Returns a generic <see cref="IEnumerable{T}"/> from a non-generic <see cref="IEnumerable"/>. In case of an incorrect cast, it will return null.
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="enumerable"></param>
+            /// <returns></returns>
+            public static IEnumerable<T> ToGeneric<T>(IEnumerable enumerable)
+            {
+                try
+                {
+                    return enumerable.Cast<T>();
+                }
+                catch
+                {
+                    return null;
+                }
             }
         }
 

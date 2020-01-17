@@ -77,7 +77,7 @@ namespace WarWolfWorks.UI
         {
             if (!DefaultKeys.KeyExists(ConsoleKeyName))
             {
-                DefaultKeys.ForceAddKey((ConsoleKeyName, KeyCode.Tilde));
+                DefaultKeys.ForceAddKey(ConsoleKeyName, KeyCode.Tilde);
             }
 
             ConsoleMenu consoleMenu = UnityEngine.Object.FindObjectOfType<ConsoleMenu>();
