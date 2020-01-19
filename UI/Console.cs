@@ -15,10 +15,6 @@ namespace WarWolfWorks.UI
     /// </summary>
     public sealed class ConsoleMenu : Menu
     {
-        private const KeyCode UpKey = KeyCode.UpArrow;
-
-        private const KeyCode DownKey = KeyCode.DownArrow;
-
         private float ScrollSensitivity = 0.1f;
 
         [SerializeField]
@@ -28,7 +24,9 @@ namespace WarWolfWorks.UI
         private TextMeshProUGUI consoleInputText;
 
         [SerializeField]
+#pragma warning disable IDE0051
         private bool CustomConsoleLayout;
+#pragma warning restore IDE0051
 
         private int inptFldIndx = 0;
 
@@ -51,9 +49,15 @@ namespace WarWolfWorks.UI
                 }
             }
         }
-
+        
+        /// <summary>
+        /// Text of the console's input.
+        /// </summary>
         public TextMeshProUGUI ConsoleInputText => consoleContentText;
 
+        /// <summary>
+        /// Sets the console up.
+        /// </summary>
         protected override void Awake()
         {
             base.Awake();
@@ -63,6 +67,9 @@ namespace WarWolfWorks.UI
             UpdateTextSize();
         }
 
+        /// <summary>
+        /// Updates the size of the console and the scroll position.
+        /// </summary>
         protected override void OnActivate()
         {
             ScrollConsoleContent(up: true);
@@ -73,7 +80,9 @@ namespace WarWolfWorks.UI
         private const string ConsoleKeyName = "Console";
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+#pragma warning disable IDE0051
         private static void CheckForConsole()
+#pragma warning restore IDE0051
         {
             if (!DefaultKeys.KeyExists(ConsoleKeyName))
             {

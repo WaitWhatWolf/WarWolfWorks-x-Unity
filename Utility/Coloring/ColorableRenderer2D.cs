@@ -13,7 +13,8 @@ namespace WarWolfWorks.Utility.Coloring
         [SerializeField]
         private SpriteRenderer[] renderers;
 
-        Color IColorable.ColorApplier { set => Array.ForEach(renderers, r => r.color = value); }
+        //MAKE SURE WE USE .sharedMaterial OTHERWISE USING ANY MATERIAL OTHER THAN SPRITES-DEFAULT WILL RESULT IN MEMORY LEAKS!!!!!
+        Color IColorable.ColorApplier { set => Array.ForEach(renderers, r => r.sharedMaterial.color = value); }
 
         /// <summary>
         /// Reference of all <see cref="SpriteRenderer"/> assigned to be changed.

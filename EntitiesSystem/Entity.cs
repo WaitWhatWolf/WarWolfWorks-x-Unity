@@ -4,6 +4,7 @@ using UnityEngine;
 namespace WarWolfWorks.EntitiesSystem
 {
     using Statistics;
+    using System.Collections;
     using System.Collections.Generic;
     using WarWolfWorks.Debugging;
     using WarWolfWorks.Interfaces;
@@ -14,6 +15,33 @@ namespace WarWolfWorks.EntitiesSystem
     /// </summary>
     public abstract class Entity : MonoBehaviour
     {
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void SetEntitySystem()
+        {
+            EntityManager.Instance.StartCoroutine(UpdateGlobal());
+            EntityManager.Instance.StartCoroutine(FixedUpdateGlobal());
+        }
+
+        private static WaitForFixedUpdate FixedUpdateWait = new WaitForFixedUpdate();
+
+        private static IEnumerator UpdateGlobal()
+        {
+            while(true)
+            {
+                EntityManager.InitiatedEntities.ForEach(e => e.InternalUpdate());
+                yield return null;
+            }
+        }
+
+        private static IEnumerator FixedUpdateGlobal()
+        {
+            while (true)
+            {
+                EntityManager.InitiatedEntities.ForEach(e => e.InternalFixedUpdate());
+                yield return FixedUpdateWait;
+            }
+        }
+
         /// <summary>
         /// Override this to set the entity's base type. (E.G Enemy, Boss, Player, etc...)
         /// </summary>
@@ -267,10 +295,11 @@ namespace WarWolfWorks.EntitiesSystem
             Components.Add(component);
         }
 
+#pragma warning disable IDE0051
         private void Awake()
         {
             Stats.Initiate();
-            EntityUtilities.InitiatedEntities.Add(this);
+            EntityManager.InitiatedEntities.Add(this);
             CallComponentMethods(CallType.awake);
             OnAwake();
             OnCallEventTrigger?.Invoke(this, CallType.awake);
@@ -304,7 +333,7 @@ namespace WarWolfWorks.EntitiesSystem
         /// Equivalent to <see cref="MonoBehaviour"/>.OnEnable().
         /// </summary>
         protected virtual void OnEnabled() { }
-        private void Update()
+        private void InternalUpdate()
         {
             CallComponentMethods(CallType.update);
             OnUpdate();
@@ -314,7 +343,7 @@ namespace WarWolfWorks.EntitiesSystem
         /// Equivalent to <see cref="MonoBehaviour"/>.Update().
         /// </summary>
         protected virtual void OnUpdate() { }
-        private void FixedUpdate()
+        private void InternalFixedUpdate()
         {
             CallComponentMethods(CallType.fixedU);
             OnFixed();
@@ -330,6 +359,7 @@ namespace WarWolfWorks.EntitiesSystem
             OnDisabled();
             OnCallEventTrigger?.Invoke(this, CallType.disable);
         }
+        #pragma warning restore IDE0051
         /// <summary>
         /// Equivalent to <see cref="MonoBehaviour"/>.OnDisable().
         /// </summary>
@@ -350,7 +380,7 @@ namespace WarWolfWorks.EntitiesSystem
         public void Destroy()
         {
             OnBeforeDestroy();
-            EntityUtilities.InitiatedEntities.Remove(this);
+            EntityManager.InitiatedEntities.Remove(this);
             CallComponentMethods(CallType.destroy);
             OnCallEventTrigger?.Invoke(this, CallType.destroy);
             OnDestroyed();
@@ -362,7 +392,7 @@ namespace WarWolfWorks.EntitiesSystem
         /// </summary>
         public void DestroyUnofficially()
         {
-            EntityUtilities.InitiatedEntities.Remove(this);
+            EntityManager.InitiatedEntities.Remove(this);
         }
 
         /// <summary>

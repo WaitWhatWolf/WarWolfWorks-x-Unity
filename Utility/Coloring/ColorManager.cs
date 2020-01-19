@@ -85,7 +85,7 @@ namespace WarWolfWorks.Utility.Coloring
                 }
 
                 FinalColor = finalDestination;
-                AdvancedDebug.Log(FinalColor, AdvancedDebug.WWWInfoLayerIndex);
+
                 foreach (IColorable ic in Colorables)
                 {
                     ic.ColorApplier = FinalColor;

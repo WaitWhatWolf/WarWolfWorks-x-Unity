@@ -57,6 +57,12 @@ namespace WarWolfWorks.Utility
 
         private static Dictionary<string, KeyCode> OptimizedKeys = new Dictionary<string, KeyCode>();
 
+        internal static Catalog KeysSaver(string name, string value)
+            => Catalog.Saver(KeysPath, CategoryName, name, value);
+
+        internal static Catalog KeysLoader(string name)
+            => Catalog.Loader(KeysPath, CategoryName, name);
+
         /// <summary>
         /// Is the optimization mode currently on?
         /// </summary>

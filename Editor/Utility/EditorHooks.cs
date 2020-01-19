@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace WarWolfWorks.EditorBase
+namespace WarWolfWorks.EditorBase.Utility
 {
     /// <summary>
     /// Like <see cref="WarWolfWorks.Utility.Hooks"/>, but for the editor :Pog:.

@@ -87,7 +87,7 @@ namespace WarWolfWorks.EntitiesSystem.Movement
             if (!respectPhysics)
             {
                 if (!MoveParent) Position = position;
-                else EntityUtilities.OldestOf(EntityMain, true).Position = position;
+                else EntityManager.OldestOf(EntityMain, true).Position = position;
             }
             else Rigidbody.MovePosition(position);
         }

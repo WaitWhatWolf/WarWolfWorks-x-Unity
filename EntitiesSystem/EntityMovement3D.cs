@@ -26,7 +26,7 @@ namespace WarWolfWorks.EntitiesSystem.Movement
                 if (!rigidSaved)
                 {
                     if (MoveParent)
-                        rb = EntityUtilities.OldestOf(EntityMain, true).GetComponent<Rigidbody>();
+                        rb = EntityManager.OldestOf(EntityMain, true).GetComponent<Rigidbody>();
 
                     if (!MoveParent || rb == null) rb = GetComponent<Rigidbody>();
 

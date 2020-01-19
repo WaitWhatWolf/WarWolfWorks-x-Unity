@@ -1097,6 +1097,16 @@
             This method is called when all conditions are met and the Attack successfully attacks.
             </summary>
         </member>
+        <member name="T:WarWolfWorks.EntitiesSystem.Attacking.Condition">
+            <summary>
+            Condition used for <see cref="T:WarWolfWorks.EntitiesSystem.Attacking.EntityAttack"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Attacking.Condition.ConditionIsMet">
+            <summary>
+            Predicate which determines if the <see cref="T:WarWolfWorks.EntitiesSystem.Attacking.Attack"/> assigned with this <see cref="T:WarWolfWorks.EntitiesSystem.Attacking.Condition"/> inside <see cref="T:WarWolfWorks.EntitiesSystem.Attacking.EntityAttack"/> will be able to shoot.
+            </summary>
+        </member>
         <member name="T:WarWolfWorks.EntitiesSystem.Attacking.EntityAttack">
             <summary>
             Class used for entity attacking. (sealed)
@@ -1255,6 +1265,13 @@
             <param name="groupIndex"></param>
             <param name="atk"></param>
         </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Attacking.EntityAttack.SetAttack(System.Int32,WarWolfWorks.EntitiesSystem.Attacking.Attack@)">
+            <summary>
+            Sets the <see cref="T:WarWolfWorks.EntitiesSystem.Attacking.Attack"/> component under groupIndex.
+            </summary>
+            <param name="groupIndex"></param>
+            <param name="atk"></param>
+        </member>
         <member name="M:WarWolfWorks.EntitiesSystem.Attacking.EntityAttack.SetCondition(System.Int32,WarWolfWorks.EntitiesSystem.Attacking.Condition)">
             <summary>
             Sets the <see cref="T:WarWolfWorks.EntitiesSystem.Attacking.Condition"/> component under groupIndex.
@@ -1275,6 +1292,23 @@
             </summary>
             <param name="groupIndex"></param>
             <param name="to"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Attacking.EntityAttack.AddAttack(WarWolfWorks.EntitiesSystem.Attacking.Attack,WarWolfWorks.EntitiesSystem.Attacking.Condition,UnityEngine.Transform,System.Boolean)">
+            <summary>
+            Adds an attack group to all attacks of this <see cref="T:WarWolfWorks.EntitiesSystem.Attacking.EntityAttack"/>.
+            </summary>
+            <param name="attack"></param>
+            <param name="condition"></param>
+            <param name="point"></param>
+            <param name="canAttack"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Attacking.EntityAttack.RemoveAttack(System.Int32)">
+            <summary>
+            Removes an attack at the given index.
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
         </member>
         <member name="M:WarWolfWorks.EntitiesSystem.Attacking.EntityAttack.ForEachAttack(System.Action{WarWolfWorks.EntitiesSystem.Attacking.Attack})">
             <summary>
@@ -1702,6 +1736,201 @@
             Stops an immunity previously triggered with <see cref="M:WarWolfWorks.EntitiesSystem.EntityHealth.TriggerImmunity(System.Single)"/>.
             </summary>
         </member>
+        <member name="T:WarWolfWorks.EntitiesSystem.EntityManager">
+            <summary>
+            Utility class based around Entities.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.Find(System.Predicate{WarWolfWorks.EntitiesSystem.Entity})">
+            <summary>
+            Finds an existing entity based on Predicate given.
+            </summary>
+            <param name="match"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.FindAll(System.Predicate{WarWolfWorks.EntitiesSystem.Entity})">
+            <summary>
+            Finds all entities who match the given condition.
+            </summary>
+            <param name="match"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.Exists(System.Type)">
+            <summary>
+            Returns true if an entity of given type exists inside the scene.
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetClosestEntity(UnityEngine.Vector3)">
+            <summary>
+            Gets the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> to position.
+            </summary>
+            <param name="position"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetClosestEntity``1(UnityEngine.Vector3)">
+            <summary>
+            Gets the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> to position of specified T type.
+            </summary>
+            <param name="position"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetClosestEntity(System.Single,UnityEngine.Vector3)">
+            <summary>
+            Gets the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> in within range from position.
+            </summary>
+            <param name="within"></param>
+            <param name="position"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetClosestEntity``1(System.Single,UnityEngine.Vector3)">
+            <summary>
+            Gets the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> in within range from position of given type.
+            </summary>
+            <param name="within"></param>
+            <param name="position"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetClosestEntity(System.Single,UnityEngine.Vector3,System.Type)">
+            <summary>
+            Gets the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> in within range from position of given type.
+            </summary>
+            <param name="within"></param>
+            <param name="position"></param>
+            <param name="of"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetClosestEntity(System.Single,UnityEngine.Vector3,System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Gets the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> in within range from position of given type.
+            </summary>
+            <param name="within"></param>
+            <param name="position"></param>
+            <param name="types"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetClosestEntities(System.Single,UnityEngine.Vector3)">
+            <summary>
+            Gets all entities in within range from position.
+            </summary>
+            <param name="within"></param>
+            <param name="position"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetClosestEntities``1(System.Single,UnityEngine.Vector3)">
+            <summary>
+            Gets all entities in within range from position of given type.
+            </summary>
+            <param name="within"></param>
+            <param name="position"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetClosestEntities(System.Single,UnityEngine.Vector3,System.Type)">
+            <summary>
+            Gets all entities in within range from position of given type.
+            </summary>
+            <param name="within"></param>
+            <param name="position"></param>
+            <param name="of"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetClosestEntities(System.Single,UnityEngine.Vector3,System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Gets all entities in within range from position of given types.
+            </summary>
+            <param name="within"></param>
+            <param name="position"></param>
+            <param name="ofTypes"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetAllWithinView(UnityEngine.Camera)">
+            <summary>
+            Returns all entities visible to a camera. Only works on entities with a renderer component.
+            Rather slow, avoid using on any Update method.
+            </summary>
+            <param name="from"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetAllWithinView(UnityEngine.Camera,System.Type)">
+            <summary>
+            Returns all entities of given type visible to a camera. Only works on entities with a renderer component.
+            Rather slow, avoid using on any Update method.
+            </summary>
+            <param name="from"></param>
+            <param name="of"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetAllWithinView``1(UnityEngine.Camera)">
+            <summary>
+            Returns all entities of given T type visible to a camera. Only works on entities with a renderer component.
+            Rather slow, avoid using on any Update method.
+            </summary>
+            <param name="from"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetAllWithinBounds(UnityEngine.Vector3,UnityEngine.Vector3)">
+            <summary>
+            Gets all entities inside of bounds.
+            </summary>
+            <param name="center"></param>
+            <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetAllWithinBounds``1(UnityEngine.Vector3,UnityEngine.Vector3)">
+            <summary>
+            Gets all entities of given generic type inside of bounds.
+            </summary>
+            <param name="center"></param>
+            <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetAllWithinBounds(UnityEngine.Vector3,UnityEngine.Vector3,System.Type)">
+            <summary>
+            Gets all entities of given type inside of bounds.
+            </summary>
+            <param name="center"></param>
+            <param name="size"></param>
+            <param name="of"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetAllWithinBounds(UnityEngine.Vector3,UnityEngine.Vector3,System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Gets all entities of given types inside of bounds.
+            </summary>
+            <param name="center"></param>
+            <param name="size"></param>
+            <param name="of"></param>
+            <returns></returns>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.EntityManager.GetAllEntities">
+            <summary>
+            Gets all entities currently inside the scene (Includes inactive/disabled Entities).
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.EntityManager.GetAllEntitiesList">
+            <summary>
+            Gets all entities currently inside the scene into a <see cref="T:System.Collections.Generic.IList`1"/> (Includes inactive/disabled Entities).
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.EntityManager.GetAllDisabledEntities">
+            <summary>
+            Gets all disabled entites inside the scene.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.EntityManager.GetAllEnabledEntities">
+            <summary>
+            Gets all enabled entites inside the scene.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.OldestOf(WarWolfWorks.EntitiesSystem.Entity,System.Boolean)">
+            <summary>
+            Returns the oldest parent of an Entity with <see cref="T:WarWolfWorks.Interfaces.IEntityParentable"/> interface.
+            </summary>
+            <param name="entity"></param>
+            <param name="includeNonParentableParent"></param>
+            <returns></returns>
+        </member>
         <member name="T:WarWolfWorks.EntitiesSystem.Movement.EntityMovement">
             <summary>
             Base class of all EntityMovement scripts. Use only this to move entites.
@@ -1927,201 +2156,6 @@
             Overrided <see cref="M:WarWolfWorks.General.Rotation.Update"/> method to do nothing; 
             This is to adapt this <see cref="T:WarWolfWorks.EntitiesSystem.EntityRotation"/> to an <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/>'s Execution order.
             </summary>
-        </member>
-        <member name="T:WarWolfWorks.EntitiesSystem.EntityUtilities">
-            <summary>
-            Utility class based around Entities.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.Find(System.Predicate{WarWolfWorks.EntitiesSystem.Entity})">
-            <summary>
-            Finds an existing entity based on Predicate given.
-            </summary>
-            <param name="match"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.FindAll(System.Predicate{WarWolfWorks.EntitiesSystem.Entity})">
-            <summary>
-            Finds all entities who match the given condition.
-            </summary>
-            <param name="match"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.Exists(System.Type)">
-            <summary>
-            Returns true if an entity of given type exists inside the scene.
-            </summary>
-            <param name="type"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntity(UnityEngine.Vector3)">
-            <summary>
-            Gets the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> to position.
-            </summary>
-            <param name="position"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntity``1(UnityEngine.Vector3)">
-            <summary>
-            Gets the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> to position of specified T type.
-            </summary>
-            <param name="position"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntity(System.Single,UnityEngine.Vector3)">
-            <summary>
-            Gets the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> in within range from position.
-            </summary>
-            <param name="within"></param>
-            <param name="position"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntity``1(System.Single,UnityEngine.Vector3)">
-            <summary>
-            Gets the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> in within range from position of given type.
-            </summary>
-            <param name="within"></param>
-            <param name="position"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntity(System.Single,UnityEngine.Vector3,System.Type)">
-            <summary>
-            Gets the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> in within range from position of given type.
-            </summary>
-            <param name="within"></param>
-            <param name="position"></param>
-            <param name="of"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntity(System.Single,UnityEngine.Vector3,System.Collections.Generic.IEnumerable{System.Type})">
-            <summary>
-            Gets the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> in within range from position of given type.
-            </summary>
-            <param name="within"></param>
-            <param name="position"></param>
-            <param name="types"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntities(System.Single,UnityEngine.Vector3)">
-            <summary>
-            Gets all entities in within range from position.
-            </summary>
-            <param name="within"></param>
-            <param name="position"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntities``1(System.Single,UnityEngine.Vector3)">
-            <summary>
-            Gets all entities in within range from position of given type.
-            </summary>
-            <param name="within"></param>
-            <param name="position"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntities(System.Single,UnityEngine.Vector3,System.Type)">
-            <summary>
-            Gets all entities in within range from position of given type.
-            </summary>
-            <param name="within"></param>
-            <param name="position"></param>
-            <param name="of"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetClosestEntities(System.Single,UnityEngine.Vector3,System.Collections.Generic.IEnumerable{System.Type})">
-            <summary>
-            Gets all entities in within range from position of given types.
-            </summary>
-            <param name="within"></param>
-            <param name="position"></param>
-            <param name="ofTypes"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetAllWithinView(UnityEngine.Camera)">
-            <summary>
-            Returns all entities visible to a camera. Only works on entities with a renderer component.
-            Rather slow, avoid using on any Update method.
-            </summary>
-            <param name="from"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetAllWithinView(UnityEngine.Camera,System.Type)">
-            <summary>
-            Returns all entities of given type visible to a camera. Only works on entities with a renderer component.
-            Rather slow, avoid using on any Update method.
-            </summary>
-            <param name="from"></param>
-            <param name="of"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetAllWithinView``1(UnityEngine.Camera)">
-            <summary>
-            Returns all entities of given T type visible to a camera. Only works on entities with a renderer component.
-            Rather slow, avoid using on any Update method.
-            </summary>
-            <param name="from"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetAllWithinBounds(UnityEngine.Vector3,UnityEngine.Vector3)">
-            <summary>
-            Gets all entities inside of bounds.
-            </summary>
-            <param name="center"></param>
-            <param name="size"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetAllWithinBounds``1(UnityEngine.Vector3,UnityEngine.Vector3)">
-            <summary>
-            Gets all entities of given generic type inside of bounds.
-            </summary>
-            <param name="center"></param>
-            <param name="size"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetAllWithinBounds(UnityEngine.Vector3,UnityEngine.Vector3,System.Type)">
-            <summary>
-            Gets all entities of given type inside of bounds.
-            </summary>
-            <param name="center"></param>
-            <param name="size"></param>
-            <param name="of"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.GetAllWithinBounds(UnityEngine.Vector3,UnityEngine.Vector3,System.Collections.Generic.IEnumerable{System.Type})">
-            <summary>
-            Gets all entities of given types inside of bounds.
-            </summary>
-            <param name="center"></param>
-            <param name="size"></param>
-            <param name="of"></param>
-            <returns></returns>
-        </member>
-        <member name="P:WarWolfWorks.EntitiesSystem.EntityUtilities.GetAllEntities">
-            <summary>
-            Gets all entities currently inside the scene (Includes inactive/disabled Entities).
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.EntitiesSystem.EntityUtilities.GetAllEntitiesList">
-            <summary>
-            Gets all entities currently inside the scene into a <see cref="T:System.Collections.Generic.IList`1"/> (Includes inactive/disabled Entities).
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.EntitiesSystem.EntityUtilities.GetAllDisabledEntities">
-            <summary>
-            Gets all disabled entites inside the scene.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.EntitiesSystem.EntityUtilities.GetAllEnabledEntities">
-            <summary>
-            Gets all enabled entites inside the scene.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.EntityUtilities.OldestOf(WarWolfWorks.EntitiesSystem.Entity,System.Boolean)">
-            <summary>
-            Returns the oldest parent of an Entity with <see cref="T:WarWolfWorks.Interfaces.IEntityParentable"/> interface.
-            </summary>
-            <param name="entity"></param>
-            <param name="includeNonParentableParent"></param>
-            <returns></returns>
         </member>
         <member name="T:WarWolfWorks.EntitiesSystem.HealthDamage">
             <summary>
@@ -3812,6 +3846,21 @@
             UI display of the <see cref="T:WarWolfWorks.Debugging.WWWConsole"/>.
             </summary>
         </member>
+        <member name="P:WarWolfWorks.UI.ConsoleMenu.ConsoleInputText">
+            <summary>
+            Text of the console's input.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.Awake">
+            <summary>
+            Sets the console up.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.OnActivate">
+            <summary>
+            Updates the size of the console and the scroll position.
+            </summary>
+        </member>
         <member name="T:WarWolfWorks.UI.MenusSystem.Assets.BasicIndexEvent">
             <summary>
             Premade <see cref="T:WarWolfWorks.UI.MenusSystem.Assets.IndexEvent"/> with basic utilities.
@@ -4827,6 +4876,16 @@
             (Explicitly convertible to <see cref="T:UnityEngine.Transform"/>)
             </summary>
         </member>
+        <member name="P:WarWolfWorks.Utility.FollowBehaviour.RigidBody">
+            <summary>
+            Follow behaviour's rigidbody; Only used if <see cref="F:WarWolfWorks.Utility.FollowBehaviour.UsesRigidbody"/> returns true.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.FollowBehaviour.UsesRigidbody">
+            <summary>
+            If true, this class will use a rigidbody instead of it's transform.
+            </summary>
+        </member>
         <member name="F:WarWolfWorks.Utility.FollowBehaviour.AllowConsistentFollow">
             <summary>
             When active, it forces the follow behaviour to loop through it's position calculation again 
@@ -4865,6 +4924,21 @@
             Position at which this behaviour will be blocked in based on BlocksX, BlocksY and BlocksZ.
             </summary>
         </member>
+        <member name="P:WarWolfWorks.Utility.FollowBehaviour.BlocksX">
+            <summary>
+            Does this <see cref="T:WarWolfWorks.Utility.FollowBehaviour"/> block the X axis?
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.FollowBehaviour.BlocksY">
+            <summary>
+            Does this <see cref="T:WarWolfWorks.Utility.FollowBehaviour"/> block the Y axis?
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.FollowBehaviour.BlocksZ">
+            <summary>
+            Does this <see cref="T:WarWolfWorks.Utility.FollowBehaviour"/> block the Z axis?
+            </summary>
+        </member>
         <member name="M:WarWolfWorks.Utility.FollowBehaviour.AddFollower(UnityEngine.Transform)">
             <summary>
             Adds a Transform to the list of followed objects.
@@ -4876,6 +4950,35 @@
             Removes an existing Transform from the list of followed objects.
             </summary>
             <param name="t"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.FollowBehaviour.ContainsFollower(UnityEngine.Transform)">
+            <summary>
+            Returns true if the given transform is inside of the followed objects list.
+            </summary>
+            <param name="t"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.FollowBehaviour.ChangeBlock(System.Int32,System.Boolean)">
+            <summary>
+            Changes an axis block to the given boolean value.
+            0 = X axis, 1 = Y axis, 2 = Z axis.
+            </summary>
+            <param name="position"></param>
+            <param name="block"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.FollowBehaviour.ChangeBlock(System.Int32,System.Single)">
+            <summary>
+            Sets the block position of an axis.
+            0 = X axis, 1 = Y axis, 2 = Z axis.
+            </summary>
+            <param name="position"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.FollowBehaviour.op_Explicit(WarWolfWorks.Utility.FollowBehaviour)~UnityEngine.Transform">
+            <summary>
+            Explicitly returns <see cref="T:WarWolfWorks.Utility.FollowBehaviour"/>.transform.
+            </summary>
+            <param name="fb"></param>
         </member>
         <member name="T:WarWolfWorks.Utility.Hooks">
             <summary>
@@ -4940,6 +5043,12 @@
         <member name="T:WarWolfWorks.Utility.Hooks.Streaming">
             <summary>
             Subclass with all streaming and saving/loading methods.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Streaming.STREAM_VALUE_POINTER">
+            <summary>
+            Value which separates the name from the value; Only has one entry at index 0.
+            Example: ValueName IS value; In here, " IS " is the separator.
             </summary>
         </member>
         <member name="T:WarWolfWorks.Utility.Hooks.Streaming.Catalog">
@@ -5155,6 +5264,28 @@
             </summary>
             <param name="catalogs"></param>
         </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Reorder(WarWolfWorks.Utility.Hooks.Streaming.Catalog,System.Func{System.String,System.Int32})">
+            <summary>
+            Attempts to reorder all values inside the given catalog's category;
+            (Note: When comparing, the separator is included, so make sure to use <see cref="F:WarWolfWorks.Utility.Hooks.Streaming.STREAM_VALUE_POINTER"/> to split the string.)
+            </summary>
+            <param name="catalog"></param>
+            <param name="order"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.ReorderSingle(WarWolfWorks.Utility.Hooks.Streaming.Catalog,System.Int32)">
+            <summary>
+            Reorders a variable into the given index.
+            </summary>
+            <param name="catalog"></param>
+            <param name="to"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Contains(WarWolfWorks.Utility.Hooks.Streaming.Catalog)">
+            <summary>
+            Returns true if the given <see cref="T:WarWolfWorks.Utility.Hooks.Streaming.Catalog"/>'s name exists under it's path.
+            </summary>
+            <param name="catalog"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Streaming.Load(WarWolfWorks.Utility.Hooks.Streaming.Catalog)">
             <summary>
             Loads a variable previously saved using <see cref="T:WarWolfWorks.Utility.Hooks.Streaming"/>.
@@ -5172,7 +5303,7 @@
             <summary>
             Changes the names of a variable and returns true if it was changed successfully.
             </summary>
-            <param name="original"></param>
+            <param name="catalog"></param>
             <param name="to"></param>
             <returns></returns>
         </member>

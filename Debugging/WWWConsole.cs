@@ -81,14 +81,18 @@ namespace WarWolfWorks.Debugging
 
         private static int insrtOffstIndx;
 
+#pragma warning disable IDE0051
         private const int BackspaceRemoveAmount = 1;
+#pragma warning restore IDE0051
 
         /// <summary>
         /// All previous inputs confirmed inside the console.
         /// </summary>
         public static List<StringBuilder> PreviousInputs { get; private set; } = new List<StringBuilder>();
 
+#pragma warning disable IDE0051
         private static int CurrentInputIndex
+#pragma warning restore IDE0051
         {
             get
             {

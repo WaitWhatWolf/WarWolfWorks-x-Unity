@@ -99,7 +99,7 @@ namespace WarWolfWorks.EntitiesSystem
             if (Calculator == null) Calculator = ScriptableObject.CreateInstance<DefaultHealthDamage>();
             if (immunityEffect != null) ImmunityEffect = Instantiate(immunityEffect);
 
-            SetDamagedHealth(EntityMain, EntityUtilities.OldestOf(EntityMain, true));
+            SetDamagedHealth(EntityMain, EntityManager.OldestOf(EntityMain, true));
             if (EntityMain is IEntityParentable) ((IEntityParentable)EntityMain).OnParentSet += SetDamagedHealth; 
         }
 

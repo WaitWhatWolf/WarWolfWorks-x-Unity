@@ -124,7 +124,11 @@ namespace WarWolfWorks.Utility
             internal const char STREAM_CATEGORY_WRAPPER_START = '[';
             internal const char STREAM_CATEGORY_WRAPPER_END = ']';
             internal const char STREAM_CATEGORY_END = '/';
-            internal static readonly string[] STREAM_VALUE_POINTER = new string[] { " IS " };
+            /// <summary>
+            /// Value which separates the name from the value; Only has one entry at index 0.
+            /// Example: ValueName IS value; In here, " IS " is the separator.
+            /// </summary>
+            public static readonly string[] STREAM_VALUE_POINTER = new string[] { " IS " };
 
             private static string DefaultPassword = "MereoleonaBestGrill";
             private static string DefaultPath = string.Empty;
@@ -133,6 +137,13 @@ namespace WarWolfWorks.Utility
             /// </summary>
             public struct Catalog
             {
+                internal enum CatalogType
+                {
+                    INVALID,
+                    LOADER,
+                    SAVER
+                }
+
                 /// <summary>
                 /// File path towards which this catalog will be saved.
                 /// </summary>
@@ -160,6 +171,8 @@ namespace WarWolfWorks.Utility
                 /// Password used for encryption. NOTE: VERY heavy, use only on high-end pc's or small save sections.
                 /// </summary>
                 public string Password;
+
+                internal CatalogType Type;
 
                 /// <summary>
                 /// Determines if this category is protected by a password.
@@ -204,7 +217,8 @@ namespace WarWolfWorks.Utility
                         Name = name,
                         Value = value,
                         Password = DefaultPassword,
-                        UsesDefaultValue = false
+                        UsesDefaultValue = false,
+                        Type = CatalogType.SAVER
                     };
                 }
 
@@ -229,7 +243,8 @@ namespace WarWolfWorks.Utility
                         Name = name,
                         Value = value,
                         Password = null,
-                        UsesDefaultValue = false
+                        UsesDefaultValue = false,
+                        Type = CatalogType.SAVER
                     };
                 }
 
@@ -255,7 +270,8 @@ namespace WarWolfWorks.Utility
                         Name = name,
                         Value = value,
                         Password = password,
-                        UsesDefaultValue = false
+                        UsesDefaultValue = false,
+                        Type = CatalogType.SAVER
                     };
                 }
 
@@ -286,7 +302,8 @@ namespace WarWolfWorks.Utility
                             Name = names[i],
                             Value = values[i],
                             Password = null,
-                            UsesDefaultValue = false
+                            UsesDefaultValue = false,
+                            Type = CatalogType.SAVER
                         };
                     }
 
@@ -321,7 +338,8 @@ namespace WarWolfWorks.Utility
                             Name = names[i],
                             Value = values[i],
                             Password = password,
-                            UsesDefaultValue = false
+                            UsesDefaultValue = false,
+                            Type = CatalogType.SAVER
                         };
                     }
 
@@ -349,7 +367,8 @@ namespace WarWolfWorks.Utility
                         Name = name,
                         Value = null,
                         Password = DefaultPassword,
-                        UsesDefaultValue = false
+                        UsesDefaultValue = false,
+                        Type = CatalogType.LOADER
                     };
                 }
 
@@ -371,7 +390,8 @@ namespace WarWolfWorks.Utility
                         Name = null,
                         Value = null,
                         Password = null,
-                        UsesDefaultValue = false
+                        UsesDefaultValue = false,
+                        Type = CatalogType.LOADER
                     };
                 }
 
@@ -394,7 +414,8 @@ namespace WarWolfWorks.Utility
                         Name = name,
                         Value = null,
                         Password = null,
-                        UsesDefaultValue = false
+                        UsesDefaultValue = false,
+                        Type = CatalogType.LOADER
                     };
                 }
 
@@ -419,7 +440,8 @@ namespace WarWolfWorks.Utility
                         Name = name,
                         Value = defaultValue,
                         Password = null,
-                        UsesDefaultValue = useDefaultValue
+                        UsesDefaultValue = useDefaultValue,
+                        Type = CatalogType.LOADER
                     };
                 }
 
@@ -445,7 +467,8 @@ namespace WarWolfWorks.Utility
                         Name = name,
                         Value = defaultValue,
                         Password = DefaultPassword,
-                        UsesDefaultValue = useDefaultValue
+                        UsesDefaultValue = useDefaultValue,
+                        Type = CatalogType.LOADER
                     };
                 }
 
@@ -469,7 +492,8 @@ namespace WarWolfWorks.Utility
                         Name = name,
                         Value = null,
                         Password = DefaultPassword,
-                        UsesDefaultValue = false
+                        UsesDefaultValue = false,
+                        Type = CatalogType.LOADER
                     };
                 }
             }
@@ -526,6 +550,14 @@ namespace WarWolfWorks.Utility
             /// <returns></returns>
             internal static string NameNoValSaver(Catalog catalog) => $"{catalog.Name}{STREAM_VALUE_POINTER[0]}";
 
+            private static bool IsValidCatalog(Catalog catalog, Catalog.CatalogType type)
+            {
+                if (type == Catalog.CatalogType.INVALID || catalog.Type != type)
+                    return false;
+
+                return true;
+            }
+
             internal static void CheckCategoryFileValidity(string filePath, out bool folderNull, out bool fileNull)
             {
                 folderNull = false;
@@ -547,8 +579,11 @@ namespace WarWolfWorks.Utility
                 }
             }
 
-            private static void InternalSave(Catalog catalog)
+            private static void InternalSave(Catalog catalog, bool fromLoad)
             {
+                if (!fromLoad && !IsValidCatalog(catalog, Catalog.CatalogType.SAVER))
+                    throw new StreamingException(StreamingResult.INVALID_CATALOG);
+
                 CheckCategoryFileValidity(catalog.Path, out _, out _);
 
                 List<string> lines = new List<string>(File.ReadAllLines(catalog.Path));
@@ -580,7 +615,7 @@ namespace WarWolfWorks.Utility
             /// <param name="saver"></param>
             public static void Save(Catalog saver)
             {
-                InternalSave(saver);
+                InternalSave(saver, false);
             }
 
             internal static void InternalSaveAll(Catalog[] catalogs)
@@ -589,6 +624,7 @@ namespace WarWolfWorks.Utility
                     throw new StreamingException(StreamingResult.INVALID_CATALOG_COLLECTION_SIZE);
 
                 Catalog reference = catalogs[0];
+
 
                 for (int i = 1; i < catalogs.Length; i++)
                 {
@@ -600,6 +636,9 @@ namespace WarWolfWorks.Utility
 
                     if (!catalogs[i].Path.Equals(reference.Path))
                         throw new StreamingException(StreamingResult.CATALOG_MISSMATCH_FILEPATH);
+
+                    if (!IsValidCatalog(catalogs[i], Catalog.CatalogType.SAVER))
+                        throw new StreamingException(StreamingResult.INVALID_CATALOG);
                 }
 
                 CheckCategoryFileValidity(reference.Path, out _, out _);
@@ -657,9 +696,114 @@ namespace WarWolfWorks.Utility
                 start = list.FindIndex(s => (catalog.Protected ? catalog.Decrypt(s) : s) == CategoryWrapper(catalog));
                 end = list.FindIndex(s => (catalog.Protected ? catalog.Decrypt(s) : s) == CategoryEndWrapper(catalog));
             }
+
+            /// <summary>
+            /// Attempts to reorder all values inside the given catalog's category;
+            /// (Note: When comparing, the separator is included, so make sure to use <see cref="STREAM_VALUE_POINTER"/> to split the string.)
+            /// </summary>
+            /// <param name="catalog"></param>
+            /// <param name="order"></param>
+            public static void Reorder(Catalog catalog, Func<string, int> order)
+            {
+                if (!IsValidCatalog(catalog, Catalog.CatalogType.LOADER))
+                    throw new StreamingException(StreamingResult.INVALID_CATALOG);
+
+                try
+                {
+                    List<string> lines = new List<string>(File.ReadAllLines(catalog.Path));
+                    string categoryStartName = CategoryWrapper(catalog), categoryEndName = CategoryEndWrapper(catalog);
+                    int startIndex = lines.FindIndex(l => (catalog.Protected ? catalog.Decrypt(l) : l) == categoryStartName);
+                    int endIndex = lines.FindIndex(l => (catalog.Protected ? catalog.Decrypt(l) : l) == categoryEndName);
+
+                    if (startIndex == -1 || endIndex == -1)
+                    {
+                        startIndex = 0;
+                        endIndex = startIndex + 1;
+                        lines.Insert(startIndex, catalog.Protected ? catalog.Encrypt(categoryStartName) : categoryStartName);
+                        lines.Insert(endIndex, catalog.Protected ? catalog.Encrypt(categoryEndName) : categoryEndName);
+                    }
+
+                    List<string> cutLines = lines.GetRange(startIndex, endIndex - startIndex);
+                    lines.RemoveRange(startIndex, endIndex - startIndex);
+
+                    cutLines = new List<string>(cutLines.OrderBy(order));
+
+                    lines.InsertRange(startIndex, cutLines);
+
+                    File.WriteAllLines(catalog.Path, lines);
+                }
+                catch
+                {
+
+                }
+            }
+
+            /// <summary>
+            /// Reorders a variable into the given index.
+            /// </summary>
+            /// <param name="catalog"></param>
+            /// <param name="to"></param>
+            public static void ReorderSingle(Catalog catalog, int to)
+            {
+                if (!IsValidCatalog(catalog, Catalog.CatalogType.LOADER))
+                    throw new StreamingException(StreamingResult.INVALID_CATALOG);
+
+                try
+                {
+                    List<string> lines = new List<string>(File.ReadAllLines(catalog.Path));
+                    string categoryStartName = CategoryWrapper(catalog), categoryEndName = CategoryEndWrapper(catalog);
+                    int startIndex = lines.FindIndex(l => (catalog.Protected ? catalog.Decrypt(l) : l) == categoryStartName);
+                    int endIndex = lines.FindIndex(l => (catalog.Protected ? catalog.Decrypt(l) : l) == categoryEndName);
+
+                    if (startIndex == -1 || endIndex == -1)
+                    {
+                        startIndex = 0;
+                        endIndex = startIndex + 1;
+                        lines.Insert(startIndex, catalog.Protected ? catalog.Encrypt(categoryStartName) : categoryStartName);
+                        lines.Insert(endIndex, catalog.Protected ? catalog.Encrypt(categoryEndName) : categoryEndName);
+                    }
+
+                    int index = lines.FindIndex(curItm => curItm.Split(STREAM_VALUE_POINTER, StringSplitOptions.None)[0].Equals(catalog.Name));
+                    string item = lines[index];
+                    lines.Remove(item);
+                    lines.Insert(to, item);
+
+                    File.WriteAllLines(catalog.Path, lines);
+                }
+                catch
+                {
+
+                }
+            }
+
+            /// <summary>
+            /// Returns true if the given <see cref="Catalog"/>'s name exists under it's path.
+            /// </summary>
+            /// <param name="catalog"></param>
+            /// <returns></returns>
+            public static bool Contains(Catalog catalog)
+            {
+                if (!IsValidCatalog(catalog, Catalog.CatalogType.LOADER))
+                    throw new StreamingException(StreamingResult.INVALID_CATALOG);
+
+                try
+                {
+                    List<string> lines;
+                    LoadLines(out lines, catalog);
+                    string toReturn = lines.Find(s => (catalog.Protected ? catalog.Decrypt(s) : s).Split(STREAM_VALUE_POINTER, StringSplitOptions.None)[0].Equals(catalog.Name));
+                    return !string.IsNullOrEmpty(toReturn);
+                }
+                catch
+                {
+                    return false;
+                }
+            }
             
             private static string LoadInternal(Catalog catalog)
             {
+                if (!IsValidCatalog(catalog, Catalog.CatalogType.LOADER))
+                    throw new StreamingException(StreamingResult.INVALID_CATALOG);
+
                 try
                 {
                     List<string> lines;
@@ -681,7 +825,7 @@ namespace WarWolfWorks.Utility
             Saver:
                 if (catalog.UsesDefaultValue)
                 {
-                    Save(catalog);
+                    InternalSave(catalog, true);
                     return catalog.Value;
                 }
                 else return string.Empty;
@@ -699,6 +843,9 @@ namespace WarWolfWorks.Utility
 
             private static IEnumerable<string> InternalLoadAll(Catalog catalog, bool includeName)
             {
+                if (!IsValidCatalog(catalog, Catalog.CatalogType.LOADER))
+                    throw new StreamingException(StreamingResult.INVALID_CATALOG);
+
                 try
                 {
                     List<string> lines;
@@ -731,25 +878,28 @@ namespace WarWolfWorks.Utility
             /// <summary>
             /// Changes the names of a variable and returns true if it was changed successfully.
             /// </summary>
-            /// <param name="original"></param>
+            /// <param name="catalog"></param>
             /// <param name="to"></param>
             /// <returns></returns>
-            public static bool ChangeVariableName(Catalog original, string to)
+            public static bool ChangeVariableName(Catalog catalog, string to)
             {
+                if (!IsValidCatalog(catalog, Catalog.CatalogType.LOADER))
+                    throw new StreamingException(StreamingResult.INVALID_CATALOG);
+
                 try
                 {
-                    LoadLines(out List<string> lines, out int catStart, out int catEnd, original);
+                    LoadLines(out List<string> lines, out int catStart, out int catEnd, catalog);
 
-                    string toReturn = lines.Find(s => (original.Protected ? original.Decrypt(s) : s).Split(STREAM_VALUE_POINTER, StringSplitOptions.None)[0].Equals(original.Name));
+                    string toReturn = lines.Find(s => (catalog.Protected ? catalog.Decrypt(s) : s).Split(STREAM_VALUE_POINTER, StringSplitOptions.None)[0].Equals(catalog.Name));
                     
                     if (string.IsNullOrEmpty(toReturn))
                         return false;
 
-                    string keep = (original.Protected ? original.Decrypt(toReturn) : toReturn).Split(STREAM_VALUE_POINTER, StringSplitOptions.None)[2];
+                    string keep = (catalog.Protected ? catalog.Decrypt(toReturn) : toReturn).Split(STREAM_VALUE_POINTER, StringSplitOptions.None)[2];
                     string toSave = $"{to}{STREAM_VALUE_POINTER}{keep}";
-                    toReturn = original.Protected ? original.Encrypt(toSave) : toSave;
+                    toReturn = catalog.Protected ? catalog.Encrypt(toSave) : toSave;
 
-                    File.WriteAllLines(original.Path, lines);
+                    File.WriteAllLines(catalog.Path, lines);
                     return true;
                 }
                 catch
@@ -760,6 +910,9 @@ namespace WarWolfWorks.Utility
 
             private static bool InternalRemove(Catalog catalog)
             {
+                if (!IsValidCatalog(catalog, Catalog.CatalogType.LOADER))
+                    throw new StreamingException(StreamingResult.INVALID_CATALOG);
+
                 try
                 {
                     LoadLines(out List<string> lines, out int catStart, out int catEnd, catalog);

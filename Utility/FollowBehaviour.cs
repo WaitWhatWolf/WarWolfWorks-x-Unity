@@ -14,6 +14,9 @@ namespace WarWolfWorks.Utility
     public sealed class FollowBehaviour : MonoBehaviour
     {
         private Rigidbody2D rb;
+        /// <summary>
+        /// Follow behaviour's rigidbody; Only used if <see cref="UsesRigidbody"/> returns true.
+        /// </summary>
         public Rigidbody2D RigidBody
         {
             get
@@ -47,6 +50,9 @@ namespace WarWolfWorks.Utility
         [SerializeField]
         private bool blockZ = false;
 
+        /// <summary>
+        /// If true, this class will use a rigidbody instead of it's transform.
+        /// </summary>
         public bool UsesRigidbody;
 
         /// <summary>
@@ -62,18 +68,22 @@ namespace WarWolfWorks.Utility
         /// All objects followed by this FollowBehaviour.
         /// </summary>
         public Transform[] FollowedObjects => FollowObjects.ToArray();
+
         /// <summary>
         /// Speed at which this script follows <see cref="FollowedObjects"/>.
         /// </summary>
         public float Speed { get { return speed; } private set { speed = value; } }
+
         /// <summary>
         /// Speed at which this behaviour accelerates based on distance.
         /// </summary>
         public float Acceleration { get { return acceleration; } set { acceleration = value; } }
+
         /// <summary>
         /// Decides if this behaviour accelerates when further away from the object.
         /// </summary>
         public bool AccelerateWhenFar => accelerateWhenFar;
+
         /// <summary>
         /// If false, this behaviour will stop following.
         /// </summary>
@@ -86,8 +96,18 @@ namespace WarWolfWorks.Utility
         /// Position at which this behaviour will be blocked in based on BlocksX, BlocksY and BlocksZ.
         /// </summary>
         public Vector3 PositionBlocker => positionBlocker;
+
+        /// <summary>
+        /// Does this <see cref="FollowBehaviour"/> block the X axis?
+        /// </summary>
         public bool BlocksX => blockX;
+        /// <summary>
+        /// Does this <see cref="FollowBehaviour"/> block the Y axis?
+        /// </summary>
         public bool BlocksY => blockY;
+        /// <summary>
+        /// Does this <see cref="FollowBehaviour"/> block the Z axis?
+        /// </summary>
         public bool BlocksZ => blockZ;
 
         private Vector3 MoveVector(Vector3 destination)
@@ -111,7 +131,17 @@ namespace WarWolfWorks.Utility
         /// <param name="t"></param>
         public void RemoveFollower(Transform t) => FollowObjects.Remove(t);
 
+        /// <summary>
+        /// Returns true if the given transform is inside of the followed objects list.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public bool ContainsFollower(Transform t)
+            => FollowObjects.Contains(t);
+
+#pragma warning disable IDE0051
         private void FixedUpdate()
+#pragma warning restore IDE0051
         {
             if (!IsFollowing)
                 return;
@@ -134,6 +164,12 @@ namespace WarWolfWorks.Utility
             }
         }
 
+        /// <summary>
+        /// Changes an axis block to the given boolean value.
+        /// 0 = X axis, 1 = Y axis, 2 = Z axis.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="block"></param>
         public void ChangeBlock(int position, bool block)
         {
             switch (position)
@@ -144,6 +180,12 @@ namespace WarWolfWorks.Utility
             }
         }
 
+        /// <summary>
+        /// Sets the block position of an axis.
+        /// 0 = X axis, 1 = Y axis, 2 = Z axis.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="value"></param>
         public void ChangeBlock(int position, float value)
         {
             positionBlocker = new Vector3(position == 0 ? value : positionBlocker.x, position == 1 ? value : positionBlocker.y, position == 2 ? value : positionBlocker.z);
@@ -183,6 +225,10 @@ namespace WarWolfWorks.Utility
             }
         }
 
+        /// <summary>
+        /// Explicitly returns <see cref="FollowBehaviour"/>.transform.
+        /// </summary>
+        /// <param name="fb"></param>
         public static explicit operator Transform(FollowBehaviour fb)
             => fb.transform;
 
