@@ -104,7 +104,7 @@ namespace WarWolfWorks.Utility
             catch(NullReferenceException)
             { AdvancedDebug.LogError($"No IRotation component was found in {gameObject.name}, " +
                 $"make sure you set one by either setting a premade WWWLibrary script (Rotation or EntityRotation) " +
-                $"or making one by implementing the IRotation interface.", AdvancedDebug.ExceptionLayerIndex); }
+                $"or making one by implementing the IRotation interface.", AdvancedDebug.DEBUG_LAYER_EXCEPTIONS_INDEX); }
         }
 
         /// <summary>

@@ -106,7 +106,7 @@ namespace WarWolfWorks.Utility
         private static bool ITransitionIsRunning;
         private static IEnumerator ITransition(int ofIndex, float speed)
         {
-            AdvancedDebug.LogFormat("Starting Transition {0}...", AdvancedDebug.WWWInfoLayerIndex, ofIndex);
+            AdvancedDebug.LogFormat("Starting Transition {0}...", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, ofIndex);
             OnTransitionStart?.Invoke(ofIndex);
 
             while (TransitionImage.color.a < 1)
@@ -116,7 +116,7 @@ namespace WarWolfWorks.Utility
                 yield return null;
             }
 
-            AdvancedDebug.LogFormat("Completing Transition {0}...", AdvancedDebug.WWWInfoLayerIndex, ofIndex);
+            AdvancedDebug.LogFormat("Completing Transition {0}...", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, ofIndex);
             OnTransitionComplete?.Invoke(ofIndex);
 
             while(TransitionImage.color.a > 0)
@@ -126,11 +126,11 @@ namespace WarWolfWorks.Utility
                 yield return null;
             }
 
-            AdvancedDebug.LogFormat("Ending Transition {0}...", AdvancedDebug.WWWInfoLayerIndex, ofIndex);
+            AdvancedDebug.LogFormat("Ending Transition {0}...", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, ofIndex);
             OnTransitionEnd?.Invoke(ofIndex);
 
             CurrentTransitionProgress = 0;
-            AdvancedDebug.LogFormat("Ending Transition {0} thread...", AdvancedDebug.WWWInfoLayerIndex, ofIndex);
+            AdvancedDebug.LogFormat("Ending Transition {0} thread...", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, ofIndex);
             Instance.StopCoroutine(ITransition(ofIndex, speed), ref ITransitionIsRunning);
         }
 

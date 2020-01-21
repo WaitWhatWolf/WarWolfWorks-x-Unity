@@ -53,19 +53,19 @@ namespace WarWolfWorks
         /// <summary>
         /// Layer at which exceptions are handled.
         /// </summary>
-        public const int ExceptionLayerIndex = 0;
+        public const int DEBUG_LAYER_EXCEPTIONS_INDEX = 0;
         /// <summary>
         /// Layer at which exceptions are handled.
         /// </summary>
-        public const string ExceptionLayerName = "Exceptions";
+        public const string DEBUG_LAYER_EXCEPTIONS_NAME = "Exceptions";
         /// <summary>
         /// Layer at which WWWLibrary gives simple debug information.
         /// </summary>
-        public const int WWWInfoLayerIndex = 1;
+        public const int DEBUG_LAYER_WWW_INDEX = 1;
         /// <summary>
         /// Layer at which WWWLibrary gives simple debug information.
         /// </summary>
-        public const string WWWInfoLayerName = "WWWInfo";
+        public const string DEBUG_LAYER_WWW_NAME = "WWWInfo";
         /// <summary>
         /// Returns true if the given layer is active.
         /// </summary>
@@ -108,7 +108,7 @@ namespace WarWolfWorks
         /// <param name="exception"></param>
         public static void LogException(Exception exception)
         {
-            LogError(exception.ToString(), ExceptionLayerIndex);
+            LogError(exception.ToString(), DEBUG_LAYER_EXCEPTIONS_INDEX);
         }
 
         private static void InternalLog(object message, int layer, MessageType messageType)

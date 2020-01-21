@@ -100,7 +100,7 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
 
             if(at > events.Count)
             {
-                AdvancedDebug.LogWarningFormat("Cannot add {0} as the index ({1}) given is above the allowed range ({2})", AdvancedDebug.WWWInfoLayerIndex, nameof(@event), at, events.Count);
+                AdvancedDebug.LogWarningFormat("Cannot add {0} as the index ({1}) given is above the allowed range ({2})", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, nameof(@event), at, events.Count);
                 return;
             }
 

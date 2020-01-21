@@ -58,7 +58,7 @@ namespace WarWolfWorks.EntitiesSystem
 
         private void Awake()
         {
-            if (!EntityMain.Components.Contains(this)) EntityMain.AddEntityComponent(this);
+            if (!EntityMain.Components.Contains(this)) EntityMain.InternalAddComponent(this);
         }
 
         public virtual void OnAwake() { }

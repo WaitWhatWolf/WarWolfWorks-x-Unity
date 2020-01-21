@@ -250,7 +250,7 @@ namespace WarWolfWorks.Utility
         {
             if (IsOptimized)
             {
-                AdvancedDebug.LogWarning("Cannot add a key while optimization mode is active! Use DefaultKeys.Unoptimize() and try again.", AdvancedDebug.WWWInfoLayerIndex);
+                AdvancedDebug.LogWarning("Cannot add a key while optimization mode is active! Use DefaultKeys.Unoptimize() and try again.", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
             }
             return IsOptimized;
         }
@@ -293,7 +293,7 @@ namespace WarWolfWorks.Utility
                 }
                 catch (Exception ex)
                 {
-                    AdvancedDebug.Log($"A problem occured trying to save {name} key. (Error: {ex.Message})", AdvancedDebug.ExceptionLayerIndex);
+                    AdvancedDebug.Log($"A problem occured trying to save {name} key. (Error: {ex.Message})", AdvancedDebug.DEBUG_LAYER_EXCEPTIONS_INDEX);
                 }
             }
         }
@@ -341,12 +341,12 @@ namespace WarWolfWorks.Utility
                 if (!ChangeVariableName(Catalog.Loader(KeysPath, CategoryName, of), to))
                     goto FalseReturn;
 
-                AdvancedDebug.Log($"{of}'s name was successfully changed to {to}", AdvancedDebug.WWWInfoLayerIndex);
+                AdvancedDebug.Log($"{of}'s name was successfully changed to {to}", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
                 return true;
             }
 
         FalseReturn:
-            AdvancedDebug.LogWarning($"{of}'s name couldn't be changed as it was not found! Make sure a key under the given name exists.", AdvancedDebug.WWWInfoLayerIndex);
+            AdvancedDebug.LogWarning($"{of}'s name couldn't be changed as it was not found! Make sure a key under the given name exists.", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
             return false;
         }
 

@@ -158,7 +158,7 @@ namespace WarWolfWorks.EntitiesSystem.Attacking
             if (IsInitiated)
                 return;
 
-            AdvancedDebug.LogFormat("Attack {0} has been added to {1}!", AdvancedDebug.WWWInfoLayerIndex, Name, entity.Name);
+            AdvancedDebug.LogFormat("Attack {0} has been added to {1}!", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, Name, entity.Name);
             EntityMain = entity;
             EntityAttack = entity.GetEntityComponent<EntityAttack>();
 

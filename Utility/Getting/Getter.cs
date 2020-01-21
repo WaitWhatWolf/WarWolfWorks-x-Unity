@@ -16,7 +16,7 @@ namespace WarWolfWorks.Utility.Getting
             AllGetterObjects.RemoveAll(ig => ig == null);
             if (GetGetter(g.名前))
             {
-                AdvancedDebug.LogWarning($"IGetter under the name {g.名前} already exists! Please use another name.", AdvancedDebug.WWWInfoLayerIndex);
+                AdvancedDebug.LogWarning($"IGetter under the name {g.名前} already exists! Please use another name.", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
                 return;
             }
             AllGetterObjects.Add(g);

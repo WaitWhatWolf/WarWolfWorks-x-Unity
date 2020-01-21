@@ -93,7 +93,7 @@ namespace WarWolfWorks.Utility.Coloring
             }
             catch(Exception e)
             {
-                AdvancedDebug.LogWarning($"Couldn't Apply color, {e}", AdvancedDebug.ExceptionLayerIndex);
+                AdvancedDebug.LogWarning($"Couldn't Apply color, {e}", AdvancedDebug.DEBUG_LAYER_EXCEPTIONS_INDEX);
                 return;
             }
         }

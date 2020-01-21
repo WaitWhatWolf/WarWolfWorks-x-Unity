@@ -15,33 +15,6 @@ namespace WarWolfWorks.EntitiesSystem
     /// </summary>
     public abstract class Entity : MonoBehaviour
     {
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        private static void SetEntitySystem()
-        {
-            EntityManager.Instance.StartCoroutine(UpdateGlobal());
-            EntityManager.Instance.StartCoroutine(FixedUpdateGlobal());
-        }
-
-        private static WaitForFixedUpdate FixedUpdateWait = new WaitForFixedUpdate();
-
-        private static IEnumerator UpdateGlobal()
-        {
-            while(true)
-            {
-                EntityManager.InitiatedEntities.ForEach(e => e.InternalUpdate());
-                yield return null;
-            }
-        }
-
-        private static IEnumerator FixedUpdateGlobal()
-        {
-            while (true)
-            {
-                EntityManager.InitiatedEntities.ForEach(e => e.InternalFixedUpdate());
-                yield return FixedUpdateWait;
-            }
-        }
-
         /// <summary>
         /// Override this to set the entity's base type. (E.G Enemy, Boss, Player, etc...)
         /// </summary>
@@ -180,7 +153,6 @@ namespace WarWolfWorks.EntitiesSystem
         /// </summary>
         public event Action<Entity, CallType> OnCallEventTrigger;
 
-
         /// <summary>
         /// Calls a Monobehaviour method from all <see cref="EntityComponent"/>s attached to this entity.
         /// </summary>
@@ -290,16 +262,84 @@ namespace WarWolfWorks.EntitiesSystem
             }
         }
 
-        internal void AddEntityComponent(IEntityComponent component)
+        internal void InternalAddComponent(IEntityComponent component)
         {
             Components.Add(component);
         }
 
+        /// <summary>
+        /// Adds an <see cref="EntityComponent"/> to this <see cref="Entity"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T AddEntityComponent<T>() where T : Component, IEntityComponent
+        {
+            T used = gameObject.AddComponent<T>();
+            InternalAddComponent(used);
+
+            return used;
+        }
+
+        /// <summary>
+        /// Adds an <see cref="EntityComponent"/> to this <see cref="Entity"/>.
+        /// </summary>
+        /// <returns></returns>
+        public IEntityComponent AddEntityComponent(Type type)
+        {
+            if (!Hooks.Implements(type, typeof(IEntityComponent)))
+                throw new EntityException(EntityExceptionType.ENTITY_COMPONENT_TYPE_INVALID);
+
+            IEntityComponent used = (IEntityComponent)gameObject.AddComponent(type);
+            InternalAddComponent(used);
+
+            return used;
+        }
+
+        /// <summary>
+        /// Removes an <see cref="EntityComponent"/> from this <see cref="Entity"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public bool RemoveEntityComponent<T>() where T : Component, IEntityComponent
+        {
+            T toUse = (T)Components.Find(c => c is T);
+
+            if (!toUse)
+                return false;
+
+            Components.Remove(toUse);
+            Destroy(gameObject.GetComponent<T>());
+            return true;
+        }
+
+        /// <summary>
+        /// Removes an <see cref="EntityComponent"/> from this <see cref="Entity"/>.
+        /// </summary>
+        /// <returns></returns>
+        public bool RemoveEntityComponent(Type type)
+        {
+            IEntityComponent toUse = Components.Find(c => c.GetType() == type);
+
+            if (toUse == null)
+                return false;
+
+            Components.Remove(toUse);
+            Destroy(gameObject.GetComponent(type));
+            return true;
+        }
+
 #pragma warning disable IDE0051
+
+        internal bool InitiatedViaManager = false;
+
         private void Awake()
         {
-            Stats.Initiate();
-            EntityManager.InitiatedEntities.Add(this);
+            if (!InitiatedViaManager)
+            {
+                AdvancedDebug.LogWarning(EntityException.MESSAGE_WARNING_NOT_INITIATED_PROPERLY, AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
+                Stats.Initiate();
+                EntityManager.InitiatedEntities.Add(this);
+            }
             CallComponentMethods(CallType.awake);
             OnAwake();
             OnCallEventTrigger?.Invoke(this, CallType.awake);
@@ -333,7 +373,7 @@ namespace WarWolfWorks.EntitiesSystem
         /// Equivalent to <see cref="MonoBehaviour"/>.OnEnable().
         /// </summary>
         protected virtual void OnEnabled() { }
-        private void InternalUpdate()
+        internal void InternalUpdate()
         {
             CallComponentMethods(CallType.update);
             OnUpdate();
@@ -343,7 +383,7 @@ namespace WarWolfWorks.EntitiesSystem
         /// Equivalent to <see cref="MonoBehaviour"/>.Update().
         /// </summary>
         protected virtual void OnUpdate() { }
-        private void InternalFixedUpdate()
+        internal void InternalFixedUpdate()
         {
             CallComponentMethods(CallType.fixedU);
             OnFixed();

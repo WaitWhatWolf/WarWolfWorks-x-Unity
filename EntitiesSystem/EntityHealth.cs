@@ -42,12 +42,12 @@ namespace WarWolfWorks.EntitiesSystem
         {
             add
             {
-                AdvancedDebug.LogFormat("{0} will now trigger when {1}'s health reaches 0.", AdvancedDebug.WWWInfoLayerIndex, value.Method.Name, EntityMain.Name);
+                AdvancedDebug.LogFormat("{0} will now trigger when {1}'s health reaches 0.", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, value.Method.Name, EntityMain.Name);
                 OnDthHandler += value;
             }
             remove
             {
-                AdvancedDebug.LogFormat("{0} will no longer trigger when {1}'s health reaches 0.", AdvancedDebug.WWWInfoLayerIndex, value.Method.Name, EntityMain.Name);
+                AdvancedDebug.LogFormat("{0} will no longer trigger when {1}'s health reaches 0.", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, value.Method.Name, EntityMain.Name);
                 OnDthHandler -= value;
             }
         }

@@ -4,6 +4,7 @@ using System;
 using WarWolfWorks.Utility;
 using WarWolfWorks.Interfaces;
 using System.Linq;
+using System.Collections;
 
 namespace WarWolfWorks.EntitiesSystem
 {
@@ -12,7 +13,44 @@ namespace WarWolfWorks.EntitiesSystem
     /// </summary>
     public sealed class EntityManager : Singleton<EntityManager>
     {
+        #region Internal Init
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void SetEntitySystem()
+        {
+            Instance.StartCoroutine(UpdateGlobal());
+            Instance.StartCoroutine(FixedUpdateGlobal());
+        }
+
+        private static WaitForFixedUpdate FixedUpdateWait = new WaitForFixedUpdate();
+
+        private static IEnumerator UpdateGlobal()
+        {
+            while (true)
+            {
+                for (int i = 0; i < InitiatedEntities.Count; i++)
+                {
+                    InitiatedEntities[i].InternalUpdate();
+                }
+                yield return null;
+            }
+        }
+
+        private static IEnumerator FixedUpdateGlobal()
+        {
+            while (true)
+            {
+                for (int i = 0; i < InitiatedEntities.Count; i++)
+                {
+                    InitiatedEntities[i].InternalFixedUpdate();
+                }
+                yield return FixedUpdateWait;
+            }
+        }
+        #endregion
+
         internal static List<Entity> InitiatedEntities = new List<Entity>();
+
+        #region Utility
         /// <summary>
         /// Finds an existing entity based on Predicate given.
         /// </summary>
@@ -378,5 +416,123 @@ namespace WarWolfWorks.EntitiesSystem
 
             return toReturn;
         }
+        #endregion
+
+        #region Instantiation
+        /// <summary>
+        /// Creates a new entity from an existing prefab.
+        /// </summary>
+        /// <param name="original"></param>
+        /// <param name="position"></param>
+        /// <param name="rotation"></param>
+        /// <returns></returns>
+        public static T New<T>(T original, Vector3 position, Quaternion rotation) where T : Entity
+        {
+            bool wasActive = original.gameObject.activeSelf;
+            original.gameObject.SetActive(false);
+
+            T toReturn = Instantiate(original, position, rotation);
+
+            toReturn.InitiatedViaManager = true;
+            toReturn.Stats.Initiate();
+            InitiatedEntities.Add(toReturn);
+
+            toReturn.gameObject.SetActive(wasActive);
+            original.gameObject.SetActive(wasActive);
+            
+            return toReturn;
+        }
+
+        /// <summary>
+        /// Creates a new entity from an existing prefab.
+        /// </summary>
+        /// <param name="original"></param>
+        /// <param name="position"></param>
+        /// <param name="rotation"></param>
+        /// <returns></returns>
+        public static Entity New(GameObject original, Vector3 position, Quaternion rotation)
+        {
+            Entity toUse = original.GetComponent<Entity>();
+            if (!toUse)
+                throw new EntityException(EntityExceptionType.GAMEOBJECT_PREFAB_NO_ENTITY);
+
+            return New(toUse, position, rotation);
+        }
+
+        /// <summary>
+        /// Creates an entity from scratch.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="position"></param>
+        /// <param name="rotation"></param>
+        /// <param name="hierarchyName"></param>
+        /// <param name="entityComponents"></param>
+        /// <param name="components"></param>
+        /// <returns></returns>
+        public static Entity New(Type entity, Vector3 position, Quaternion rotation, string hierarchyName, Type[] entityComponents, Type[] components)
+        {
+            if(!entity.IsSubclassOf(typeof(Entity)))
+            {
+                throw new EntityException(EntityExceptionType.ENTITY_TYPE_NULL);
+            }
+
+            GameObject toUse = new GameObject(hierarchyName);
+            toUse.SetActive(false);
+
+            toUse.transform.position = position;
+            toUse.transform.rotation = rotation;
+
+            Entity toReturn = (Entity)toUse.AddComponent(entity);
+            toReturn.InitiatedViaManager = true;
+
+            for (int i = 0; i < components.Length; i++)
+                toUse.AddComponent(components[i]);
+
+            for (int i = 0; i < components.Length; i++)
+                toReturn.AddEntityComponent(entityComponents[i]);
+
+            toReturn.Stats.Initiate();
+            InitiatedEntities.Add(toReturn);
+
+            toUse.SetActive(true);
+
+            return toReturn;
+        }
+
+        /// <summary>
+        /// Creates an entity from scratch.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="rotation"></param>
+        /// <param name="hierarchyName"></param>
+        /// <param name="entityComponents"></param>
+        /// <param name="components"></param>
+        /// <returns></returns>
+        public static Entity New<T>(Vector3 position, Quaternion rotation, string hierarchyName, Type[] entityComponents, Type[] components) where T : Entity
+        {
+            GameObject toUse = new GameObject(hierarchyName);
+            toUse.SetActive(false);
+
+            toUse.transform.position = position;
+            toUse.transform.rotation = rotation;
+
+            Entity toReturn = toUse.AddComponent<T>();
+            toReturn.InitiatedViaManager = true;
+
+            for (int i = 0; i < components.Length; i++)
+                toUse.AddComponent(components[i]);
+
+            for (int i = 0; i < components.Length; i++)
+                toReturn.AddEntityComponent(entityComponents[i]);
+
+            toReturn.Stats.Initiate();
+            InitiatedEntities.Add(toReturn);
+
+            toUse.SetActive(true);
+
+            return toReturn;
+        }
+
+        #endregion
     }
 }

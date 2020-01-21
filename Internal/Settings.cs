@@ -15,6 +15,7 @@ namespace WarWolfWorks.Internal
     public static class Settings
     {
         internal const string CanvasDefaultName = "WWWCanvas";
+        
         /// <summary>
         /// Path to the WWWSettings.ini file.
         /// </summary>
@@ -91,16 +92,19 @@ namespace WarWolfWorks.Internal
         internal static readonly string[] SEPARATOR_LAYER_STATE = new string[] { " With Active State " };
         internal const char SEPARATOR_COLOR = ';';
         internal const string STREAMING_LAYER_NAME = "レイヤー";
+        
         /// <summary>
         /// Default layer used by <see cref="AdvancedDebug"/>.
         /// </summary>
         internal static string LayerToSavableString(string layer, bool to = false) => $"{layer}{SEPARATOR_LAYER_STATE[0]}{to}";
+        
         /// <summary>
         /// Gives the name of the variable to be used with <see cref="Hooks.Streaming"/>'s loading.
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
         internal static string ToLayerStreamingName(int index) => $"{STREAMING_LAYER_NAME}{index}";
+        
         /// <summary>
         /// Determines how <see cref="AdvancedDebug"/> will behave.
         /// </summary>
@@ -123,11 +127,13 @@ namespace WarWolfWorks.Internal
             /// </summary>
             DISABLED,
         }
+        
         /// <summary>
         /// Gets the <see cref="DebugStyle"/> read directly from WWWSettings.ini.
         /// </summary>
         /// <returns></returns>
         public static DebugStyle GetDebugStyle() => Hooks.Parse<DebugStyle>(Load(Catalog.Loader(SettingsPath, CATEGORY_DEBUG_NAME, DebugNames[0], DebugStyle.EDITOR_GAME_DEBUG.ToString(), true)));
+        
         /// <summary>
         /// Gets the debug layer read directly from WWWSettings.ini.
         /// </summary>
@@ -140,11 +146,11 @@ namespace WarWolfWorks.Internal
                 string baseName = $"LAYER_{i}";
                 switch(i)
                 {
-                    case ExceptionLayerIndex:
-                        baseName = ExceptionLayerName;
+                    case DEBUG_LAYER_EXCEPTIONS_INDEX:
+                        baseName = DEBUG_LAYER_EXCEPTIONS_NAME;
                         break;
-                    case WWWInfoLayerIndex:
-                        baseName = WWWInfoLayerName;
+                    case DEBUG_LAYER_WWW_INDEX:
+                        baseName = DEBUG_LAYER_WWW_NAME;
                         break;
                 }
 
@@ -165,8 +171,8 @@ namespace WarWolfWorks.Internal
                 string toUse = LayerToSavableString(layers[i].Name, layers[i].Active);
                 switch (i)
                 {
-                    case ExceptionLayerIndex: toUse = LayerToSavableString(ExceptionLayerName, true); break;
-                    case WWWInfoLayerIndex: toUse = LayerToSavableString(WWWInfoLayerName, layers[i].Active); break;
+                    case DEBUG_LAYER_EXCEPTIONS_INDEX: toUse = LayerToSavableString(DEBUG_LAYER_EXCEPTIONS_NAME, true); break;
+                    case DEBUG_LAYER_WWW_INDEX: toUse = LayerToSavableString(DEBUG_LAYER_WWW_NAME, layers[i].Active); break;
                 }
                 Save(Catalog.Saver(SettingsPath, CATEGORY_DEBUG_NAME, ToLayerStreamingName(i), toUse));
             }

@@ -34,7 +34,7 @@ namespace WarWolfWorks.CollisionSystem
             while(!IsUsable)
             {
                 yield return new WaitForSecondsRealtime(1);
-                AdvancedDebug.LogWarning($"{gameObject.name}'s {name} cannot function as it's conditions were not met!", AdvancedDebug.WWWInfoLayerIndex);
+                AdvancedDebug.LogWarning($"{gameObject.name}'s {name} cannot function as it's conditions were not met!", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
             }
 
             this.StopCoroutine(コンディションチエッカ(), ref チエッカは遊ぶ);

@@ -177,7 +177,7 @@ namespace WarWolfWorks.EntitiesSystem.Attacking
             }
             catch (Exception e)
             {
-                AdvancedDebug.LogWarningFormat("Couldn't add/set {0} under Attack Group {1}: {2}", AdvancedDebug.ExceptionLayerIndex, atk, groupIndex, e);
+                AdvancedDebug.LogWarningFormat("Couldn't add/set {0} under Attack Group {1}: {2}", AdvancedDebug.DEBUG_LAYER_EXCEPTIONS_INDEX, atk, groupIndex, e);
             }
         }
 
@@ -196,7 +196,7 @@ namespace WarWolfWorks.EntitiesSystem.Attacking
             }
             catch (Exception e)
             {
-                AdvancedDebug.LogWarningFormat("Couldn't add/set {0} under attak group {1}: {2}", AdvancedDebug.ExceptionLayerIndex, atk, groupIndex, e);
+                AdvancedDebug.LogWarningFormat("Couldn't add/set {0} under attak group {1}: {2}", AdvancedDebug.DEBUG_LAYER_EXCEPTIONS_INDEX, atk, groupIndex, e);
             }
         }
 

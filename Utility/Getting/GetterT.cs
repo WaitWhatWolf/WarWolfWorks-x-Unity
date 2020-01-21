@@ -18,7 +18,7 @@ namespace WarWolfWorks.Utility.Getting
             AllGetterObjects.RemoveAll(g => g == null);
             if(Draw() != null)
             {
-                AdvancedDebug.LogWarning($"A IGetter of type {draw.GetType().Name} already exists! Make sure there are no duplicates of the object in the scene.", AdvancedDebug.WWWInfoLayerIndex);
+                AdvancedDebug.LogWarning($"A IGetter of type {draw.GetType().Name} already exists! Make sure there are no duplicates of the object in the scene.", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
                 return;
             }
             AllGetterObjects.Add(draw);

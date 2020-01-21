@@ -565,12 +565,12 @@ namespace WarWolfWorks.Utility
 
                 if (CreateFolder(filePath))
                 {
-                    AdvancedDebug.Log($"Given directory of {filePath} did not exist, creating new...", AdvancedDebug.WWWInfoLayerIndex);
+                    AdvancedDebug.Log($"Given directory of {filePath} did not exist, creating new...", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
                     folderNull = true;
                 }
                 if (!File.Exists(filePath))
                 {
-                    AdvancedDebug.Log($"Given file under {filePath} did not exist, creating new...", AdvancedDebug.WWWInfoLayerIndex);
+                    AdvancedDebug.Log($"Given file under {filePath} did not exist, creating new...", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
                     FileStream fs = File.Create(filePath);
                     fs.Close();
                     fs.Dispose();
@@ -3220,7 +3220,7 @@ namespace WarWolfWorks.Utility
                     throw new WWWException("Cannot use GetClosestToPosition when collection given is lower in size than amount requested. Aborting");
                 else if (amount == count)
                 {
-                    AdvancedDebug.LogWarning("Using GetClosestToPosition with amount equal to the collection size is pointless. Returning original collection...", AdvancedDebug.WWWInfoLayerIndex);
+                    AdvancedDebug.LogWarning("Using GetClosestToPosition with amount equal to the collection size is pointless. Returning original collection...", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
                     return from.ToArray();
                 }
 
@@ -3252,7 +3252,7 @@ namespace WarWolfWorks.Utility
                     throw new WWWException("Cannot use GetFurthestFromPosition when collection given is lower in size than amount requested. Aborting");
                 else if (amount == count)
                 {
-                    AdvancedDebug.LogWarning("Using GetFurthestFromPosition with amount equal to the collection size is pointless. Returning original collection...", AdvancedDebug.WWWInfoLayerIndex);
+                    AdvancedDebug.LogWarning("Using GetFurthestFromPosition with amount equal to the collection size is pointless. Returning original collection...", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
                     return from.ToArray();
                 }
 
@@ -4000,12 +4000,12 @@ namespace WarWolfWorks.Utility
 
                     for(int i = 0; i < 1; i--)
                     {
-                        AdvancedDebug.LogError("*Evil laugh*", AdvancedDebug.WWWInfoLayerIndex);
+                        AdvancedDebug.LogError("*Evil laugh*", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
                     }
                 }
                 catch
                 {
-                    AdvancedDebug.LogError("Cannot use Freeze() when not on main thread!", AdvancedDebug.ExceptionLayerIndex);
+                    AdvancedDebug.LogError("Cannot use Freeze() when not on main thread!", AdvancedDebug.DEBUG_LAYER_EXCEPTIONS_INDEX);
                 }
             }
 
@@ -4341,7 +4341,7 @@ namespace WarWolfWorks.Utility
             {
                 if (!original.Contains(RainbowTextStarter) || !original.Contains(RainbowTextEnder))
                 {
-                    AdvancedDebug.LogWarning("Message did not contain required Starter/Ender for text conversion. Make sure the text you want to modify is wrapped with (Color=Rainbow) (/Color=Rainbow)", AdvancedDebug.WWWInfoLayerIndex);
+                    AdvancedDebug.LogWarning("Message did not contain required Starter/Ender for text conversion. Make sure the text you want to modify is wrapped with (Color=Rainbow) (/Color=Rainbow)", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
                     return original;
                 }
                 string text = "<color=#klrtgiv>";
@@ -4697,6 +4697,24 @@ namespace WarWolfWorks.Utility
 
             return toReturn;
         }
+
+        /// <summary>
+        /// Returns true if type is implementing implementation.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="implementation"></param>
+        /// <returns></returns>
+        public static bool Implements(Type type, Type implementation)
+            => implementation.IsAssignableFrom(type);
+
+        /// <summary>
+        /// Returns true if type is implementing the generic implementation.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="genericImplementation"></param>
+        /// <returns></returns>
+        public static bool ImplementsGeneric(Type type, Type genericImplementation)
+            => type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == genericImplementation);
 
         private const uint CF_TEXT = 1u;
 
@@ -5129,6 +5147,29 @@ namespace WarWolfWorks.Utility
             }
             return LayerMask.GetMask(array);
         }
+
+        /// <summary> 
+        /// Converts given bitmask to it's layer number. 
+        /// </summary>
+        /// <returns></returns>
+        public static int MaskToLayer(int bitmask)
+        {
+            int result = bitmask > 0 ? 0 : 31;
+            while (bitmask > 1)
+            {
+                bitmask >>= 1;
+                result++;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Converts given maskname into it's layer number.
+        /// </summary>
+        /// <param name="layer"></param>
+        /// <returns></returns>
+        public static int LayerNameToIndex(string layer)
+            => MaskToLayer(LayerMask.NameToLayer(layer));
 
         /// <summary>
         /// Returns an array which is a merged version of array1 and array2.

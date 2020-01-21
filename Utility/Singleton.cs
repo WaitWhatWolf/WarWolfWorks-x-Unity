@@ -16,7 +16,7 @@ namespace WarWolfWorks.Utility
             {
                 if (m_ShuttingDown)
                 {
-                    AdvancedDebug.LogWarning("[Singleton] Instance '" + typeof(T) + "' already destroyed. Returning null.", AdvancedDebug.WWWInfoLayerIndex);
+                    AdvancedDebug.LogWarning("[Singleton] Instance '" + typeof(T) + "' already destroyed. Returning null.", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
                     return null;
                 }
                 lock (m_Lock)
