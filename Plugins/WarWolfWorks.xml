@@ -354,22 +354,22 @@
             Current <see cref="T:WarWolfWorks.Internal.Settings.DebugStyle"/> of <see cref="T:WarWolfWorks.AdvancedDebug"/>.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.AdvancedDebug.ExceptionLayerIndex">
+        <member name="F:WarWolfWorks.AdvancedDebug.DEBUG_LAYER_EXCEPTIONS_INDEX">
             <summary>
             Layer at which exceptions are handled.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.AdvancedDebug.ExceptionLayerName">
+        <member name="F:WarWolfWorks.AdvancedDebug.DEBUG_LAYER_EXCEPTIONS_NAME">
             <summary>
             Layer at which exceptions are handled.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.AdvancedDebug.WWWInfoLayerIndex">
+        <member name="F:WarWolfWorks.AdvancedDebug.DEBUG_LAYER_WWW_INDEX">
             <summary>
             Layer at which WWWLibrary gives simple debug information.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.AdvancedDebug.WWWInfoLayerName">
+        <member name="F:WarWolfWorks.AdvancedDebug.DEBUG_LAYER_WWW_NAME">
             <summary>
             Layer at which WWWLibrary gives simple debug information.
             </summary>
@@ -1533,6 +1533,32 @@
             Entity's Animation Manager. (Always attached by default)
             </summary>
         </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Entity.AddEntityComponent``1">
+            <summary>
+            Adds an <see cref="T:WarWolfWorks.EntitiesSystem.EntityComponent"/> to this <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/>.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Entity.AddEntityComponent(System.Type)">
+            <summary>
+            Adds an <see cref="T:WarWolfWorks.EntitiesSystem.EntityComponent"/> to this <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Entity.RemoveEntityComponent``1">
+            <summary>
+            Removes an <see cref="T:WarWolfWorks.EntitiesSystem.EntityComponent"/> from this <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/>.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Entity.RemoveEntityComponent(System.Type)">
+            <summary>
+            Removes an <see cref="T:WarWolfWorks.EntitiesSystem.EntityComponent"/> from this <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/>.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.EntitiesSystem.Entity.OnAwake">
             <summary>
             Equivalent to <see cref="T:UnityEngine.MonoBehaviour"/>.Awake().
@@ -1641,6 +1667,11 @@
             </summary>
             <param name="routine"></param>
             <param name="verifier"></param>
+        </member>
+        <member name="T:WarWolfWorks.EntitiesSystem.EntityException">
+            <summary>
+            Exception used by the entity system.
+            </summary>
         </member>
         <member name="T:WarWolfWorks.EntitiesSystem.EntityHealth">
             <summary>
@@ -1929,6 +1960,47 @@
             </summary>
             <param name="entity"></param>
             <param name="includeNonParentableParent"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.New``1(``0,UnityEngine.Vector3,UnityEngine.Quaternion)">
+            <summary>
+            Creates a new entity from an existing prefab.
+            </summary>
+            <param name="original"></param>
+            <param name="position"></param>
+            <param name="rotation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.New(UnityEngine.GameObject,UnityEngine.Vector3,UnityEngine.Quaternion)">
+            <summary>
+            Creates a new entity from an existing prefab.
+            </summary>
+            <param name="original"></param>
+            <param name="position"></param>
+            <param name="rotation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.New(System.Type,UnityEngine.Vector3,UnityEngine.Quaternion,System.String,System.Type[],System.Type[])">
+            <summary>
+            Creates an entity from scratch.
+            </summary>
+            <param name="entity"></param>
+            <param name="position"></param>
+            <param name="rotation"></param>
+            <param name="hierarchyName"></param>
+            <param name="entityComponents"></param>
+            <param name="components"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.New``1(UnityEngine.Vector3,UnityEngine.Quaternion,System.String,System.Type[],System.Type[])">
+            <summary>
+            Creates an entity from scratch.
+            </summary>
+            <param name="position"></param>
+            <param name="rotation"></param>
+            <param name="hierarchyName"></param>
+            <param name="entityComponents"></param>
+            <param name="components"></param>
             <returns></returns>
         </member>
         <member name="T:WarWolfWorks.EntitiesSystem.Movement.EntityMovement">
@@ -3241,7 +3313,7 @@
             <summary>
             Used by <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/>'s EntityComponent management. When using this,
             make sure not to use original MonoBehaviour methods and to add it into
-            an <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> through <see cref="M:WarWolfWorks.EntitiesSystem.Entity.AddEntityComponent(WarWolfWorks.Interfaces.IEntityComponent)"/>
+            an <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> through <see cref="M:WarWolfWorks.EntitiesSystem.Entity.InternalAddComponent(WarWolfWorks.Interfaces.IEntityComponent)"/>
             when the component is created/instantiated.
             </summary>
         </member>
@@ -6802,6 +6874,22 @@
             <param name="types"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Implements(System.Type,System.Type)">
+            <summary>
+            Returns true if type is implementing implementation.
+            </summary>
+            <param name="type"></param>
+            <param name="implementation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.ImplementsGeneric(System.Type,System.Type)">
+            <summary>
+            Returns true if type is implementing the generic implementation.
+            </summary>
+            <param name="type"></param>
+            <param name="genericImplementation"></param>
+            <returns></returns>
+        </member>
         <member name="F:WarWolfWorks.Utility.Hooks.PlayerTag">
             <summary>
             Returns the default player tag for Unity.
@@ -7000,6 +7088,19 @@
             Returns LayerMask int value of all layers. Useful for Raycasting.
             </summary>
             <param name="layers"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.MaskToLayer(System.Int32)">
+            <summary> 
+            Converts given bitmask to it's layer number. 
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.LayerNameToIndex(System.String)">
+            <summary>
+            Converts given maskname into it's layer number.
+            </summary>
+            <param name="layer"></param>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.ArrayMerger``1(``0[],``0[])">
