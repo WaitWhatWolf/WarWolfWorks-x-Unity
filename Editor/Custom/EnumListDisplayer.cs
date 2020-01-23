@@ -124,17 +124,15 @@ namespace WarWolfWorks.EditorBase.Custom
                         EditorGUILayout.HelpBox(LS_WarningDoesntExist, UnityEditor.MessageType.Warning);
 
 
-                    if (GUI.Button(new Rect(position.x + (RECT_BOTBUTTON_SIZE_Y * 2), position.yMin, position.width, RECT_BOTBUTTON_SIZE_Y), LS_Next))
+                    if (GUILayout.Button(LS_Next))
                     {
                         EntryIndex++;
                     }
-                    if(GUI.Button(new Rect(position.x + RECT_BOTBUTTON_SIZE_Y, position.yMin, position.width, RECT_BOTBUTTON_SIZE_Y), LS_Previous))
+                    if(GUILayout.Button(LS_Previous))
                     {
                         EntryIndex--;
                     }
-                    if (GUI.Button(new Rect(position.x + RECT_BOTBUTTON_SMALL_PADDING_X,
-                        position.yMin, position.width - RECT_BOTBUTTON_SMALL_PADDING_X, 
-                        RECT_BOTBUTTON_SMALL_SIZE_Y), LS_Remove))
+                    if (GUILayout.Button(LS_Remove))
                     {
                         Remove(Catalog.Loader(Settings.SettingsPath, Category, PreviousEntries[EntryIndex]));
                         SetEntries();
