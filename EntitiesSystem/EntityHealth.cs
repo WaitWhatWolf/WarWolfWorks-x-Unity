@@ -4,7 +4,6 @@ namespace WarWolfWorks.EntitiesSystem
 {
     using System;
     using System.Collections;
-    using System.Diagnostics;
     using Interfaces;
     using Statistics;
     using WarWolfWorks;
@@ -162,7 +161,6 @@ namespace WarWolfWorks.EntitiesSystem
             CurrentHealth -= amount;
         }
 
-#if WWW2_5_OR_HIGHER
         /// <summary>
         /// To make this method work, you will need to assign a custom or premade <see cref="HealthDamage"/>.
         /// </summary>
@@ -185,23 +183,6 @@ namespace WarWolfWorks.EntitiesSystem
                 AdvancedDebug.LogFormat("Couldn't damage {0} as either the damage given was of incorrect type or Caclucator was not set.", 0, EntityMain.Name);
             }
         }
-#else
-        [System.Obsolete("This is an old version, consider using WWW2_0.")]
-        public void DamageHealth((float damage, bool trueDamage, float penetration, Vector3 position) vars)
-        {
-            if (IsImmune)
-                return;
-            
-            float dmgRemover = vars.trueDamage ? 0 : Defense != 0 && vars.penetration != 0 ? Defense / vars.penetration : 0;
-            float actDamage = vars.damage - dmgRemover;
-
-            OnDmgHandler?.Invoke(this);
-            RemoveHealth(actDamage);
-            if (CurrentHealth <= 0)
-                OnDthHandler?.Invoke(this);
-            TriggerImmunity();
-        }
-#endif
 
         /// <summary>
         /// Triggers the immunity of this <see cref="Entity"/>. (Works only if <see cref="UsesImmunity"/> is true)
@@ -216,31 +197,68 @@ namespace WarWolfWorks.EntitiesSystem
         /// <summary>
         /// Effect which will be Invoked when Immunity is triggered.
         /// </summary>
-        public IImmunityEffect ImmunityEffect
+        public IImmunityEffect<EntityHealth> ImmunityEffect
         {
             get => immunityEffect;
             set
             {
+                if (immunityEffect.Equals(value))
+                    return;
+
                 immunityEffect = value is ImmunityEffect ? (ImmunityEffect)value : immunityEffect;
-                if(immunityEffect) immunityEffect.StopwatchDuration = ImmunityCounter;
+
+                immunityEffect.internalParent = this;
+                immunityEffect.OnAdded();
             }
         }
 
-        private Stopwatch ImmunityCounter = new Stopwatch();
+        /// <summary>
+        /// Must be of type <see cref="IImmunityEffect{T}"/> where T is <see cref="EntityHealth"/>.
+        /// </summary>
+        IImmunityEffect<IAdvancedHealth> IAdvancedHealth.ImmunityEffect
+        {
+            get
+            {
+                try { return (IImmunityEffect<IAdvancedHealth>)ImmunityEffect; }
+                catch { return null; }
+            }
+            set
+            {
+                try { ImmunityEffect = (IImmunityEffect<EntityHealth>)value; }
+                catch { }
+            }
+        }
+
         private IEnumerator IImmunity(float @for)
         {
             IsImmune = true;
-            ImmunityCounter.Reset();
-            ImmunityCounter.Start();
-            ImmunityEffect?.OnTrigger(EntityMain);
-            yield return new WaitForSeconds(@for);
+
+            if(!immunityEffect)
+            {
+                StopCoroutine(IImmunity(@for));
+                yield break;
+            }
+
+            ImmunityEffect.OnTrigger();
+
+            immunityEffect.ImmunityTime = immunityEffect.ImmunityCountdown = @for;
+            float timer = @for;
+
+            while(timer > 0)
+            {
+                timer -= Time.deltaTime;
+                immunityEffect.ImmunityCountdown = timer;
+                immunityEffect.WhileTrigger();
+                yield return null;
+            }
+
             StopImmunityInternal(@for);
         }
 
         private void StopImmunityInternal(float @for)
         {
             IsImmune = false;
-            ImmunityCounter.Stop();
+
             ImmunityEffect?.OnEnd();
             StopCoroutine(IImmunity(@for));
         }

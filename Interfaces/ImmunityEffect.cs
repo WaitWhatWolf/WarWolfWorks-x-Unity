@@ -7,22 +7,42 @@ namespace WarWolfWorks.EntitiesSystem
     /// <summary>
     /// <see cref="ScriptableObject"/> used for custom effect when an <see cref="Entity"/> enters immunity through <see cref="EntityHealth"/>.
     /// </summary>
-    public abstract class ImmunityEffect : ScriptableObject, IImmunityEffect
+    public abstract class ImmunityEffect : ScriptableObject, IImmunityEffect<EntityHealth>
     {
-        internal Stopwatch StopwatchDuration { get; set; }
         /// <summary>
-        /// Time since the immunity was triggered after <see cref="OnTrigger(Entity)"/> (read-only).
+        /// Duration at which the current immunity will last.
         /// </summary>
-        protected float TriggerDuration => StopwatchDuration.Elapsed.Milliseconds / 1000;
+        public float ImmunityTime { get; internal set; }
+
+        /// <summary>
+        /// The countdown/cooldown of the current immunity timer; To be used with ImmunityTime for percentage duration.
+        /// </summary>
+        public float ImmunityCountdown { get; internal set; }
+
+        internal EntityHealth internalParent;
+        /// <summary>
+        /// Parent of this <see cref="ImmunityEffect"/>.
+        /// </summary>
+        public EntityHealth Parent => internalParent;
+
         /// <summary>
         /// What happens when Immunity first triggers.
         /// </summary>
-        /// <param name="entity"></param>
-        public abstract void OnTrigger(Entity entity);
+        public abstract void OnTrigger();
 
         /// <summary>
         /// What happens when Immunity stops.
         /// </summary>
         public abstract void OnEnd();
+
+        /// <summary>
+        /// What happens when Immunity is either added to a <see cref="EntityHealth"/>, or when it was already attached to it on instantiation.
+        /// </summary>
+        public abstract void OnAdded();
+
+        /// <summary>
+        /// Equivalent to Unity's update method.
+        /// </summary>
+        public virtual void WhileTrigger() { }
     }
 }

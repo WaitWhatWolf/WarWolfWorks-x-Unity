@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using WarWolfWorks.General;
 using WarWolfWorks.Interfaces;
 using WarWolfWorks.Utility;
 
@@ -34,11 +33,6 @@ namespace WarWolfWorks.EntitiesSystem
         {
             base.Update();
         }
-
-        /*private Transform Parent;
-        internal protected sealed override Transform ToRotateX => Parent;
-        internal protected sealed override Transform ToRotateY => Parent;
-        internal protected sealed override Transform ToRotateZ => Parent;*/
 
         /// <summary>
         /// Overrided <see cref="Rotation.Update"/> method to do nothing; 

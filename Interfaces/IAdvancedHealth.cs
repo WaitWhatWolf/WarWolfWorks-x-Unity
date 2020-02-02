@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 
 namespace WarWolfWorks.Interfaces
 {
@@ -28,16 +27,14 @@ namespace WarWolfWorks.Interfaces
         /// Should determine when the immunity is triggered or not.
         /// </summary>
         bool IsImmune { get; }
-#if WWW2_5_OR_HIGHER
         /// <summary>
         /// Separate component which should calculate the final value in <see cref="DamageHealth(object)"/>.
         /// </summary>
         IHealthDamage Calculator { get; set; }
-#endif
         /// <summary>
         /// Separate component which should be used with the immunity system.
         /// </summary>
-        IImmunityEffect ImmunityEffect { get; set; }
+        IImmunityEffect<IAdvancedHealth> ImmunityEffect { get; set; }
         /// <summary>
         /// What calculates health and triggers all other events in this interface.
         /// </summary>

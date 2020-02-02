@@ -1,8 +1,6 @@
 ﻿using System;
 using UnityEngine;
-using WarWolfWorks.General;
 using WarWolfWorks.Interfaces;
-using static UnityEngine.RectTransform;
 
 namespace WarWolfWorks.Utility
 {
@@ -20,9 +18,12 @@ namespace WarWolfWorks.Utility
         [SerializeField]
         private float sensitivityHorizontal, sensitivityVertical;
         /// <summary>
-        /// Sensitivity of the camera controller.
+        /// Sensitivity of the camera controller's horizontal axis.
         /// </summary>
         public float SensitivityHorizontal { get => sensitivityHorizontal; set => sensitivityHorizontal = value; }
+        /// <summary>
+        /// Sensitivity of the camera controller's vertical axis.
+        /// </summary>
         public float SensitivityVertical { get => sensitivityVertical; set => sensitivityVertical = value; }
         [SerializeField]
         [Range(0, 180)]
@@ -40,6 +41,11 @@ namespace WarWolfWorks.Utility
         [SerializeField]
         private CursorLockMode LockStateStart;
 
+        /// <summary>
+        /// Returns true if an axis is inverted.
+        /// </summary>
+        /// <param name="axis"></param>
+        /// <returns></returns>
         public bool IsInversed(RectTransform.Axis axis)
         {
             switch(axis)
@@ -49,6 +55,11 @@ namespace WarWolfWorks.Utility
             }
         }
 
+        /// <summary>
+        /// Inverts the controls of an axis.
+        /// </summary>
+        /// <param name="axis"></param>
+        /// <param name="to"></param>
         public void SetInversed(RectTransform.Axis axis, bool to)
         {
             switch (axis)

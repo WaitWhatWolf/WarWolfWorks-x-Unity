@@ -1762,6 +1762,11 @@
             Effect which will be Invoked when Immunity is triggered.
             </summary>
         </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.EntityHealth.WarWolfWorks#Interfaces#IAdvancedHealth#ImmunityEffect">
+            <summary>
+            Must be of type <see cref="T:WarWolfWorks.Interfaces.IImmunityEffect`1"/> where T is <see cref="T:WarWolfWorks.EntitiesSystem.EntityHealth"/>.
+            </summary>
+        </member>
         <member name="M:WarWolfWorks.EntitiesSystem.EntityHealth.StopImmunity">
             <summary>
             Stops an immunity previously triggered with <see cref="M:WarWolfWorks.EntitiesSystem.EntityHealth.TriggerImmunity(System.Single)"/>.
@@ -2225,7 +2230,7 @@
         </member>
         <member name="M:WarWolfWorks.EntitiesSystem.EntityRotation.Update">
             <summary>
-            Overrided <see cref="M:WarWolfWorks.General.Rotation.Update"/> method to do nothing; 
+            Overrided <see cref="M:WarWolfWorks.Utility.Rotation.Update"/> method to do nothing; 
             This is to adapt this <see cref="T:WarWolfWorks.EntitiesSystem.EntityRotation"/> to an <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/>'s Execution order.
             </summary>
         </member>
@@ -3072,109 +3077,40 @@
             <see cref="T:UnityEngine.ScriptableObject"/> used for custom effect when an <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> enters immunity through <see cref="T:WarWolfWorks.EntitiesSystem.EntityHealth"/>.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.EntitiesSystem.ImmunityEffect.TriggerDuration">
+        <member name="P:WarWolfWorks.EntitiesSystem.ImmunityEffect.ImmunityTime">
             <summary>
-            Time since the immunity was triggered after <see cref="M:WarWolfWorks.EntitiesSystem.ImmunityEffect.OnTrigger(WarWolfWorks.EntitiesSystem.Entity)"/> (read-only).
+            Duration at which the current immunity will last.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.ImmunityEffect.OnTrigger(WarWolfWorks.EntitiesSystem.Entity)">
+        <member name="P:WarWolfWorks.EntitiesSystem.ImmunityEffect.ImmunityCountdown">
+            <summary>
+            The countdown/cooldown of the current immunity timer; To be used with ImmunityTime for percentage duration.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.ImmunityEffect.Parent">
+            <summary>
+            Parent of this <see cref="T:WarWolfWorks.EntitiesSystem.ImmunityEffect"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.ImmunityEffect.OnTrigger">
             <summary>
             What happens when Immunity first triggers.
             </summary>
-            <param name="entity"></param>
         </member>
         <member name="M:WarWolfWorks.EntitiesSystem.ImmunityEffect.OnEnd">
             <summary>
             What happens when Immunity stops.
             </summary>
         </member>
-        <member name="T:WarWolfWorks.General.Rotation">
+        <member name="M:WarWolfWorks.EntitiesSystem.ImmunityEffect.OnAdded">
             <summary>
-            Utility component for rotation.
+            What happens when Immunity is either added to a <see cref="T:WarWolfWorks.EntitiesSystem.EntityHealth"/>, or when it was already attached to it on instantiation.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.General.Rotation.GetDestination">
+        <member name="M:WarWolfWorks.EntitiesSystem.ImmunityEffect.WhileTrigger">
             <summary>
-            Rotation towards which this <see cref="T:WarWolfWorks.General.Rotation"/> is destinated.
+            Equivalent to Unity's update method.
             </summary>
-        </member>
-        <member name="P:WarWolfWorks.General.Rotation.CurrentRotation">
-            <summary>
-            The Currently applied rotation.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.General.Rotation.DefaultEulerRotation">
-            <summary>
-            The Euler Rotation that's used as the default rotation.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.General.Rotation.baseRotationSpeed">
-            <summary>
-            Determines the base rotation speed of this <see cref="T:WarWolfWorks.General.Rotation"/>.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.General.Rotation.BaseRotationSpeed">
-            <summary>
-            Pointer to <see cref="F:WarWolfWorks.General.Rotation.baseRotationSpeed"/>, overridable.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.General.Rotation.RotationSpeed">
-            <summary>
-            The absolute RotationSpeed used by this <see cref="T:WarWolfWorks.General.Rotation"/>.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.General.Rotation.Locked">
-            <summary>
-            The object's Lock state; See <see cref="T:WarWolfWorks.Interfaces.ILockable"/> for more info.
-            </summary>
-        </member>
-        <member name="E:WarWolfWorks.General.Rotation.OnLocked">
-            <summary>
-            Called when the object is locked (<see cref="T:WarWolfWorks.Interfaces.ILockable"/> implementation).
-            </summary>
-        </member>
-        <member name="E:WarWolfWorks.General.Rotation.OnUnlocked">
-            <summary>
-            Called when the object is unlocked (<see cref="T:WarWolfWorks.Interfaces.ILockable"/> implementation).
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.General.Rotation.SetLock(System.Boolean)">
-            <summary>
-            Locks or Unlocks this object (<see cref="T:WarWolfWorks.Interfaces.ILockable"/> implementation).
-            </summary>
-            <param name="to"></param>
-        </member>
-        <member name="M:WarWolfWorks.General.Rotation.Update">
-            <summary>
-            Unity's Update method, used by the <see cref="T:WarWolfWorks.General.Rotation"/> to apply it's transform.rotation.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.General.Rotation.TryGetRotator(UnityEngine.Transform@,WarWolfWorks.Utility.Axis)">
-            <summary>
-            Gets the rotated transform of the specified axis. Returns false if null. (Doesn't support Axis Flags)
-            </summary>
-            <param name="rotator"></param>
-            <param name="axis"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.General.Rotation.SetRotator(UnityEngine.Transform,WarWolfWorks.Utility.Axis)">
-            <summary>
-            Sets the rotated transform of the specified Axis. (Can be set to null; Supports Axis Flags)
-            </summary>
-            <param name="to"></param>
-            <param name="of"></param>
-        </member>
-        <member name="M:WarWolfWorks.General.Rotation.SetRotation(UnityEngine.Quaternion)">
-            <summary>
-            Sets the destination of this <see cref="T:WarWolfWorks.General.Rotation"/>.
-            </summary>
-            <param name="toApply"></param>
-        </member>
-        <member name="M:WarWolfWorks.General.Rotation.SetRotation(UnityEngine.Vector3)">
-            <summary>
-            Sets the destination of this <see cref="T:WarWolfWorks.General.Rotation"/> in euler angles.
-            </summary>
-            <param name="toApply"></param>
         </member>
         <member name="T:WarWolfWorks.Interfaces.IAdvancedHealth">
             <summary>
@@ -3363,18 +3299,27 @@
             <param name="damage"></param>
             <returns></returns>
         </member>
-        <member name="T:WarWolfWorks.Interfaces.IImmunityEffect">
+        <member name="T:WarWolfWorks.Interfaces.IImmunityEffect`1">
             <summary>
             Interface used for custom effect when an <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> enters immunity.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Interfaces.IImmunityEffect.OnTrigger(WarWolfWorks.EntitiesSystem.Entity)">
+        <member name="M:WarWolfWorks.Interfaces.IImmunityEffect`1.OnAdded">
+            <summary>
+            Invoked when this immunity effect is added to a <see cref="T:WarWolfWorks.Interfaces.IAdvancedHealth"/>, or when it is initiated with it.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Interfaces.IImmunityEffect`1.OnTrigger">
             <summary>
             This is invoked when immunity is first triggered.
             </summary>
-            <param name="entity"></param>
         </member>
-        <member name="M:WarWolfWorks.Interfaces.IImmunityEffect.OnEnd">
+        <member name="M:WarWolfWorks.Interfaces.IImmunityEffect`1.WhileTrigger">
+            <summary>
+            Invoked for as long as the immunity is active.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Interfaces.IImmunityEffect`1.OnEnd">
             <summary>
             This is invoked when immunity ends.
             </summary>
@@ -3530,6 +3475,17 @@
         <member name="E:WarWolfWorks.Interfaces.ILockable.OnUnlocked">
             <summary>
             Called when SetLock was called as false.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.Interfaces.IParentable`1">
+            <summary>
+            Class for a parenting system.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:WarWolfWorks.Interfaces.IParentable`1.Parent">
+            <summary>
+            The parent.
             </summary>
         </member>
         <member name="M:WarWolfWorks.Interfaces.IRotation.GetDestination">
@@ -4480,13 +4436,32 @@
         </member>
         <member name="P:WarWolfWorks.Utility.CameraManagerFPS.SensitivityHorizontal">
             <summary>
-            Sensitivity of the camera controller.
+            Sensitivity of the camera controller's horizontal axis.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.CameraManagerFPS.SensitivityVertical">
+            <summary>
+            Sensitivity of the camera controller's vertical axis.
             </summary>
         </member>
         <member name="P:WarWolfWorks.Utility.CameraManagerFPS.MaxVerticalRotation">
             <summary>
             Sets the maximum rotation allowed vertically.
             </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.CameraManagerFPS.IsInversed(UnityEngine.RectTransform.Axis)">
+            <summary>
+            Returns true if an axis is inverted.
+            </summary>
+            <param name="axis"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.CameraManagerFPS.SetInversed(UnityEngine.RectTransform.Axis,System.Boolean)">
+            <summary>
+            Inverts the controls of an axis.
+            </summary>
+            <param name="axis"></param>
+            <param name="to"></param>
         </member>
         <member name="M:WarWolfWorks.Utility.CameraManagerFPS.SetFOV(System.Single)">
             <summary>
@@ -7542,6 +7517,109 @@
             Implicitly returns <see cref="P:WarWolfWorks.Utility.LevelFloat.Value"/>.
             </summary>
             <param name="lf"></param>
+        </member>
+        <member name="T:WarWolfWorks.Utility.Rotation">
+            <summary>
+            Utility component for rotation.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Rotation.GetDestination">
+            <summary>
+            Rotation towards which this <see cref="T:WarWolfWorks.Utility.Rotation"/> is destinated.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Rotation.CurrentRotation">
+            <summary>
+            The Currently applied rotation.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Rotation.DefaultEulerRotation">
+            <summary>
+            The Euler Rotation that's used as the default rotation.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Rotation.baseRotationSpeed">
+            <summary>
+            Determines the base rotation speed of this <see cref="T:WarWolfWorks.Utility.Rotation"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Rotation.BaseRotationSpeed">
+            <summary>
+            Pointer to <see cref="F:WarWolfWorks.Utility.Rotation.baseRotationSpeed"/>, overridable.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Rotation.RotationSpeed">
+            <summary>
+            The absolute RotationSpeed used by this <see cref="T:WarWolfWorks.Utility.Rotation"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Rotation.Locked">
+            <summary>
+            The object's Lock state; See <see cref="T:WarWolfWorks.Interfaces.ILockable"/> for more info.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.Utility.Rotation.OnLocked">
+            <summary>
+            Called when the object is locked (<see cref="T:WarWolfWorks.Interfaces.ILockable"/> implementation).
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.Utility.Rotation.OnUnlocked">
+            <summary>
+            Called when the object is unlocked (<see cref="T:WarWolfWorks.Interfaces.ILockable"/> implementation).
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Rotation.SetLock(System.Boolean)">
+            <summary>
+            Locks or Unlocks this object (<see cref="T:WarWolfWorks.Interfaces.ILockable"/> implementation).
+            </summary>
+            <param name="to"></param>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Rotation.ToRotateX">
+            <summary>
+            <see cref="T:UnityEngine.Transform"/> which will be used for the X rotation.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Rotation.ToRotateY">
+            <summary>
+            <see cref="T:UnityEngine.Transform"/> which will be used for the Y rotation.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Rotation.ToRotateZ">
+            <summary>
+            <see cref="T:UnityEngine.Transform"/> which will be used for the Z rotation.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Rotation.Update">
+            <summary>
+            Unity's Update method, used by the <see cref="T:WarWolfWorks.Utility.Rotation"/> to apply it's transform.rotation.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Rotation.TryGetRotator(UnityEngine.Transform@,WarWolfWorks.Utility.Axis)">
+            <summary>
+            Gets the rotated transform of the specified axis. Returns false if null. (Doesn't support Axis Flags)
+            </summary>
+            <param name="rotator"></param>
+            <param name="axis"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Rotation.SetRotator(UnityEngine.Transform,WarWolfWorks.Utility.Axis)">
+            <summary>
+            Sets the rotated transform of the specified Axis. (Can be set to null; Supports Axis Flags)
+            </summary>
+            <param name="to"></param>
+            <param name="of"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Rotation.SetRotation(UnityEngine.Quaternion)">
+            <summary>
+            Sets the destination of this <see cref="T:WarWolfWorks.Utility.Rotation"/>.
+            </summary>
+            <param name="toApply"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Rotation.SetRotation(UnityEngine.Vector3)">
+            <summary>
+            Sets the destination of this <see cref="T:WarWolfWorks.Utility.Rotation"/> in euler angles.
+            </summary>
+            <param name="toApply"></param>
         </member>
         <member name="T:WarWolfWorks.Utility.TransformLimiter">
             <summary>
