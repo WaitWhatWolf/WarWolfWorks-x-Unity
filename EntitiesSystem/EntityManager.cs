@@ -534,5 +534,35 @@ namespace WarWolfWorks.EntitiesSystem
         }
 
         #endregion
+
+        #region Destruction
+        /// <summary>
+        /// Destroys a given entity.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static bool Destroy(Entity entity)
+        {
+            if (!entity || !InitiatedEntities.Contains(entity))
+                return false;
+
+            entity.Destroy();
+            return true;
+        }
+
+        /// <summary>
+        /// Destroys a given entity without invoking any of it's destroy methods.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static bool DestroyUnofficially(Entity entity)
+        {
+            if (!entity || !InitiatedEntities.Contains(entity))
+                return false;
+
+            entity.DestroyUnofficially();
+            return true;
+        }
+        #endregion
     }
 }

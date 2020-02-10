@@ -8,9 +8,21 @@ namespace WarWolfWorks.Utility
     [Flags]
     public enum Axis
     {
+        /// <summary>
+        /// No Axis.
+        /// </summary>
         None = 0,
-        X = 1,
-        Y = 2,
-        Z = 4
+        /// <summary>
+        /// Horizontal Axis.
+        /// </summary>
+        X = 2,
+        /// <summary>
+        /// Vertical Axis.
+        /// </summary>
+        Y = 4,
+        /// <summary>
+        /// Depth Axis.
+        /// </summary>
+        Z = 8
     }
 }

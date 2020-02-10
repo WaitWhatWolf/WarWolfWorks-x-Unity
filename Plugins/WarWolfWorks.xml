@@ -2957,6 +2957,21 @@
             Returns all resistances of this <see cref="T:WarWolfWorks.EntitiesSystem.Statusing.EntityStatusApplier"/>.
             </summary>
         </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Statusing.EntityStatusApplier.Locked">
+            <summary>
+            Locked state of the <see cref="T:WarWolfWorks.EntitiesSystem.Statusing.EntityStatusApplier"/>. See <see cref="T:WarWolfWorks.Interfaces.ILockable"/> for more info.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.EntitiesSystem.Statusing.EntityStatusApplier.OnLocked">
+            <summary>
+            Invoked when this <see cref="T:WarWolfWorks.EntitiesSystem.Statusing.EntityStatusApplier"/> is locked.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.EntitiesSystem.Statusing.EntityStatusApplier.OnUnlocked">
+            <summary>
+            Invoked when this <see cref="T:WarWolfWorks.EntitiesSystem.Statusing.EntityStatusApplier"/> is unlocked.
+            </summary>
+        </member>
         <member name="M:WarWolfWorks.EntitiesSystem.Statusing.EntityStatusApplier.ContainsResistance(System.Type)">
             <summary>
             Returns true if a <see cref="T:WarWolfWorks.EntitiesSystem.Statusing.Resistance"/> contained in this <see cref="T:WarWolfWorks.EntitiesSystem.Statusing.EntityStatusApplier"/> has <see cref="P:WarWolfWorks.EntitiesSystem.Statusing.Resistance.ResistantTo"/> equal to the given value.
@@ -3027,6 +3042,12 @@
             <summary>
             Calls <see cref="M:WarWolfWorks.Interfaces.IStatus.OnTick(WarWolfWorks.Interfaces.IStatusApplier)"/> for all statuses currently applied to this <see cref="T:WarWolfWorks.EntitiesSystem.Statusing.EntityStatusApplier"/>.
             </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Statusing.EntityStatusApplier.SetLock(System.Boolean)">
+            <summary>
+            Locks or Unlocks this object (<see cref="T:WarWolfWorks.Interfaces.ILockable"/> implementation).
+            </summary>
+            <param name="to"></param>
         </member>
         <member name="T:WarWolfWorks.EntitiesSystem.Statusing.Resistance">
             <summary>
@@ -7422,6 +7443,34 @@
             <param name="value"></param>
             <returns></returns>
         </member>
+        <member name="T:WarWolfWorks.Utility.Langroup">
+            <summary>
+            Used by <see cref="T:WarWolfWorks.Utility.LanguageString"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Langroup.Value">
+            <summary>
+            Value of this group in string.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Langroup.Language">
+            <summary>
+            What language is this value used for.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Langroup.#ctor(System.String,UnityEngine.SystemLanguage)">
+            <summary>
+            Creates a new <see cref="T:WarWolfWorks.Utility.Langroup"/> instance.
+            </summary>
+            <param name="value"></param>
+            <param name="language"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Langroup.op_Implicit(System.ValueTuple{System.String,UnityEngine.SystemLanguage})~WarWolfWorks.Utility.Langroup">
+            <summary>
+            Implicitly converts a tuple into a Langroup.
+            </summary>
+            <param name="tuple"></param>
+        </member>
         <member name="T:WarWolfWorks.Utility.LanguageString">
             <summary>
             Struct which returns a string based on language given; If used directly, it will use <see cref="P:UnityEngine.Application.systemLanguage"/> to determine the language.
@@ -7440,6 +7489,13 @@
             </summary>
         </member>
         <member name="M:WarWolfWorks.Utility.LanguageString.#ctor(System.String,System.ValueTuple{System.String,UnityEngine.SystemLanguage}[])">
+            <summary>
+            Creates a new <see cref="T:WarWolfWorks.Utility.LanguageString"/>.
+            </summary>
+            <param name="english"></param>
+            <param name="other"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.LanguageString.#ctor(System.String,WarWolfWorks.Utility.Langroup[])">
             <summary>
             Creates a new <see cref="T:WarWolfWorks.Utility.LanguageString"/>.
             </summary>

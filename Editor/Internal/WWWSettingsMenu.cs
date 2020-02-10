@@ -73,7 +73,8 @@ namespace WarWolfWorks.EditorBase.Internal
 
         #endregion
 
-        private bool LayersFoldout;
+        private const float SPACE_AMOUNT = 5;
+
         private ReorderableList list;
         private DebugLayer[] Layers;
         private Settings.DebugStyle DebugStyle;
@@ -151,8 +152,9 @@ namespace WarWolfWorks.EditorBase.Internal
 
         private void OnGUI()
         {
-            EditorHooks.SpacedLabel($"<color=#D6D6FF>{LS_UCSettings}</color>", TitleStyle);
-            EditorGUILayout.Space();
+            EditorGUILayout.LabelField($"<color=#D6D6FF>{LS_UCSettings}</color>", TitleStyle);
+            EditorHooks.SlickSeparatorNS();
+            EditorGUILayout.Space(SPACE_AMOUNT);
 
             CanvasType = (Settings.UtilityCanvasType)EditorGUILayout.EnumPopup(LS_UCLoadType, CanvasType);
             switch (CanvasType)
@@ -165,18 +167,17 @@ namespace WarWolfWorks.EditorBase.Internal
                     break;
             }
 
-            EditorHooks.SpacedLabel($"<color=#D6D6FF>{LS_ADSettings}</color>", TitleStyle);
+            EditorGUILayout.LabelField($"<color=#D6D6FF>{LS_ADSettings}</color>", TitleStyle);
+            EditorHooks.SlickSeparatorNS();
+            EditorGUILayout.Space(SPACE_AMOUNT);
 
-            LayersFoldout = EditorGUILayout.Foldout(LayersFoldout, LS_ADLayers);
+            //LayersFoldout = EditorGUILayout.Foldout(LayersFoldout, LS_ADLayers);
+            EditorGUILayout.LabelField(LS_ADLayers);
+            LayersPosition = EditorGUILayout.BeginScrollView(LayersPosition);
 
-            if (LayersFoldout)
-            { 
-                LayersPosition = EditorGUILayout.BeginScrollView(LayersPosition);
-
-                list.DoLayoutList();
-
-                EditorGUILayout.EndScrollView();
-            }
+            list.DoLayoutList();
+            
+            EditorGUILayout.EndScrollView();
 
             DebugStyle = (Settings.DebugStyle)EditorGUILayout.EnumPopup(LS_ADStyle, DebugStyle);
 
@@ -184,7 +185,9 @@ namespace WarWolfWorks.EditorBase.Internal
             WarningColor = EditorGUILayout.ColorField(new GUIContent(LS_ADColorWarning), WarningColor, true, false, false);
             ErrorColor = EditorGUILayout.ColorField(new GUIContent(LS_ADColorError), ErrorColor, true, false, false);
 
-            EditorHooks.SpacedLabel($"<color=#D6D6FF>{LS_OSettings}</color>", TitleStyle);
+            EditorGUILayout.LabelField($"<color=#D6D6FF>{LS_OSettings}</color>", TitleStyle);
+            EditorHooks.SlickSeparatorNS();
+            EditorGUILayout.Space(SPACE_AMOUNT);
 
             EditorGUILayout.LabelField($"<color=#808080>{LS_OLangReminder}</color>", SmallNoteStyle, GUILayout.Height(10));
             Language = (SystemLanguage)EditorGUILayout.EnumPopup(LS_OLanguage, Language);

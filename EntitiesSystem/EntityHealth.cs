@@ -13,7 +13,6 @@ namespace WarWolfWorks.EntitiesSystem
     /// </summary>
     public sealed class EntityHealth : EntityComponent, IAdvancedHealth
     {
-
         private Action<IAdvancedHealth, object, IHealthDamage> OnDmgHandler;
         /// <summary>
         /// What happends when <see cref="DamageHealth(object)"/> is successfully invoked.
@@ -22,13 +21,13 @@ namespace WarWolfWorks.EntitiesSystem
         {
             add
             {
-                AdvancedDebug.LogFormat("{0} has been added to {1}'s EntityHealth component!", 1, value.Method.Name, EntityMain.Name);
+                AdvancedDebug.LogFormat("{0} has been added to {1}'s EntityHealth component!", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, value.Method.Name, EntityMain.Name);
                 OnDmgHandler += value;
             }
 
             remove
             {
-                AdvancedDebug.LogFormat("{0} has been removed from {1}'s EntityHealth component.", 1, value.Method.Name, EntityMain.Name);
+                AdvancedDebug.LogFormat("{0} has been removed from {1}'s EntityHealth component.", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, value.Method.Name, EntityMain.Name);
                 OnDmgHandler -= value;
             }
         }
@@ -150,7 +149,7 @@ namespace WarWolfWorks.EntitiesSystem
         /// Adds the specified amount to <see cref="CurrentHealth"/>.
         /// </summary>
         /// <param name="amount"></param>
-        public void AddHealth(float amount) => CurrentHealth += amount;
+        public void AddHealth(float amount) => CurrentHealth = Math.Min(CurrentHealth + amount, MaxHealth);
 
         /// <summary>
         /// Removes the specified amount from <see cref="CurrentHealth"/>.
@@ -159,6 +158,7 @@ namespace WarWolfWorks.EntitiesSystem
         public void RemoveHealth(float amount)
         {
             CurrentHealth -= amount;
+            if (CurrentHealth < 0) CurrentHealth = 0;
         }
 
         /// <summary>

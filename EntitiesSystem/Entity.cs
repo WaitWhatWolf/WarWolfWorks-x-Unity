@@ -4,7 +4,6 @@ using UnityEngine;
 namespace WarWolfWorks.EntitiesSystem
 {
     using Statistics;
-    using System.Collections;
     using System.Collections.Generic;
     using WarWolfWorks.Debugging;
     using WarWolfWorks.Interfaces;
@@ -157,7 +156,7 @@ namespace WarWolfWorks.EntitiesSystem
         /// Calls a Monobehaviour method from all <see cref="EntityComponent"/>s attached to this entity.
         /// </summary>
         /// <param name="callType"></param>
-        protected void CallComponentMethods(CallType callType)
+        internal void CallComponentMethods(CallType callType)
         {
             for(int i = 0; i < Components.Count; i++)
             {
@@ -433,6 +432,7 @@ namespace WarWolfWorks.EntitiesSystem
         public void DestroyUnofficially()
         {
             EntityManager.InitiatedEntities.Remove(this);
+            Destroy(gameObject);
         }
 
         /// <summary>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WarWolfWorks.Interfaces;
@@ -9,7 +8,7 @@ namespace WarWolfWorks.EntitiesSystem.Statusing
     /// <summary>
     /// The class which handles status application.
     /// </summary>
-    public sealed class EntityStatusApplier : EntityComponent, IStatusApplier
+    public sealed class EntityStatusApplier : EntityComponent, IStatusApplier, ILockable
     {
         /// <summary>
         /// All statuses currently affecting the <see cref="EntityStatusApplier"/>.
@@ -27,6 +26,20 @@ namespace WarWolfWorks.EntitiesSystem.Statusing
         /// Returns all resistances of this <see cref="EntityStatusApplier"/>.
         /// </summary>
         public IEnumerable<Resistance> GetAllResistances => Resistances;
+
+        /// <summary>
+        /// Locked state of the <see cref="EntityStatusApplier"/>. See <see cref="ILockable"/> for more info.
+        /// </summary>
+        public bool Locked { get; private set; }
+
+        /// <summary>
+        /// Invoked when this <see cref="EntityStatusApplier"/> is locked.
+        /// </summary>
+        public event Action<ILockable> OnLocked;
+        /// <summary>
+        /// Invoked when this <see cref="EntityStatusApplier"/> is unlocked.
+        /// </summary>
+        public event Action<ILockable> OnUnlocked;
 
         /// <summary>
         /// Returns true if a <see cref="Resistance"/> contained in this <see cref="EntityStatusApplier"/> has <see cref="Resistance.ResistantTo"/> equal to the given value.
@@ -149,16 +162,39 @@ namespace WarWolfWorks.EntitiesSystem.Statusing
         /// </summary>
         public override void OnFixed()
         {
+            if (Locked)
+                return;
+
             for (int i = 0; i < Statuses.Count; i++)
             {
                 Statuses[i].OnTick(this);
-                Statuses[i].CurrentDuration = Mathf.Clamp(Statuses[i].CurrentDuration - Time.fixedDeltaTime, 0, Statuses[i].MaxDuration);
+                Statuses[i].CurrentDuration = Mathf.Clamp(Statuses[i].CurrentDuration - Time.deltaTime, 0, Statuses[i].MaxDuration);
                 if (Statuses[i].CurrentDuration <= 0)
                 {
                     Statuses[i].OnEnd(this);
                     Statuses.Remove(Statuses[i]);
                 }
             }
+        }
+
+        /// <summary>
+        /// Locks or Unlocks this object (<see cref="ILockable"/> implementation).
+        /// </summary>
+        /// <param name="to"></param>
+        public void SetLock(bool to)
+        {
+            if (to == Locked)
+                return;
+
+            Locked = to;
+            if (Locked) OnLocked?.Invoke(this);
+            else OnUnlocked?.Invoke(this);
+
+            Statuses.ForEach(s =>
+            {
+                if (s is ILockable)
+                    ((ILockable)s).SetLock(Locked);
+            });
         }
     }
 }

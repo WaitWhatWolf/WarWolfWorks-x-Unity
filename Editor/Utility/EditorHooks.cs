@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace WarWolfWorks.EditorBase.Utility
@@ -8,6 +9,51 @@ namespace WarWolfWorks.EditorBase.Utility
     /// </summary>
     public static class EditorHooks
     {
+        /// <summary>
+        /// Returns all serialized properties inside a serialized object.
+        /// </summary>
+        /// <param name="serializedObject"></param>
+        /// <returns></returns>
+        public static List<SerializedProperty> GetAllSerializedProperties(SerializedObject serializedObject, bool enterChildren)
+        {
+            SerializedProperty sp = serializedObject.GetIterator();
+            List<SerializedProperty> toReturn = new List<SerializedProperty>();
+
+            sp.Next(true);
+            sp.Next(enterChildren);
+
+            do
+            {
+                toReturn.Add(sp.Copy());
+            }
+            while (sp.Next(enterChildren));
+
+            return toReturn;
+        }
+
+        /// <summary>
+        /// Returns all visible serialized properties inside a serialized object.
+        /// (Does not include the first two entries m_Script and Base)
+        /// </summary>
+        /// <param name="serializedObject"></param>
+        /// <param name="enterChildren"></param>
+        /// <returns></returns>
+        public static List<SerializedProperty> GetAllVisibleProperties(SerializedObject serializedObject, bool enterChildren)
+        {
+            SerializedProperty sp = serializedObject.GetIterator();
+            List<SerializedProperty> toReturn = new List<SerializedProperty>();
+
+            sp.NextVisible(true);
+
+            while (sp.NextVisible(enterChildren))
+            {
+                toReturn.Add(sp.Copy());
+            }
+            
+
+            return toReturn;
+        }
+
         /// <summary>
         /// Calls <see cref="EditorGUILayout.Space"/> in the multitude of counts.
         /// </summary>
@@ -38,6 +84,12 @@ namespace WarWolfWorks.EditorBase.Utility
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
             EditorGUILayout.Space();
         }
+
+        /// <summary>
+        /// Makes a separator line by exploiting <see cref="EditorGUILayout"/>. Doesn't make spaces before or after the line.
+        /// </summary>
+        public static void SlickSeparatorNS()
+            => EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
         /// <summary>
         /// Makes a label with <see cref="EditorGUILayout.Space"/> before and after it.

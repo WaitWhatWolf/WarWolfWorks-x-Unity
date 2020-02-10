@@ -132,13 +132,16 @@ namespace WarWolfWorks.EditorBase.Custom
 
         private void OnGUI()
         {
-            EditorGUILayout.BeginVertical();
-            ScrollPosition = EditorGUILayout.BeginScrollView(ScrollPosition);
+            if (list != null && list.list.Count > 0)
+            {
+                EditorGUILayout.BeginVertical();
+                ScrollPosition = EditorGUILayout.BeginScrollView(ScrollPosition);
 
-            list.DoLayoutList();
+                list.DoLayoutList();
 
-            EditorGUILayout.EndScrollView();
-            EditorGUILayout.EndVertical();
+                EditorGUILayout.EndScrollView();
+                EditorGUILayout.EndVertical();
+            }
 
             pops[0] = GUILayout.Button(!ParsesValues ? LS_SwitchViewEnum : LS_SwitchViewParse);
             if (pops[0]) ParsesValues = !ParsesValues;
@@ -152,7 +155,7 @@ namespace WarWolfWorks.EditorBase.Custom
                 UpdateKeys();
             }
 
-            if (list.index >= 0 && list.index < Keys.Count)
+            if (list != null && list.index >= 0 && list.index < Keys.Count)
             {
                 pops[2] = GUILayout.Button(LS_Save);
                 if (pops[2])

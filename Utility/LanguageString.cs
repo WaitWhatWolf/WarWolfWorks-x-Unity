@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 using WarWolfWorks.Internal;
 
@@ -21,7 +19,7 @@ namespace WarWolfWorks.Utility
         /// <summary>
         /// All values contained by this <see cref="LanguageString"/>.
         /// </summary>
-        public (string, SystemLanguage)[] Values;
+        public Langroup[] Values;
 
         /// <summary>
         /// Creates a new <see cref="LanguageString"/>.
@@ -29,6 +27,19 @@ namespace WarWolfWorks.Utility
         /// <param name="english"></param>
         /// <param name="other"></param>
         public LanguageString(string english, params (string, SystemLanguage)[] other)
+        {
+            Values = new Langroup[other.Length];
+            for (int i = 0; i < other.Length; i++)
+                Values[i] = other[i];
+            English = english;
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="LanguageString"/>.
+        /// </summary>
+        /// <param name="english"></param>
+        /// <param name="other"></param>
+        public LanguageString(string english, params Langroup[] other)
         {
             Values = other;
             English = english;
@@ -46,12 +57,12 @@ namespace WarWolfWorks.Utility
                 if (language == SystemLanguage.English)
                     return English;
 
-                int index = Array.FindIndex(Values, v => v.Item2 == language);
+                int index = Array.FindIndex(Values, v => v.Language == language);
 
                 if (index == -1)
                     return English;
 
-                return Values[index].Item1;
+                return Values[index].Value;
             }
         }
 

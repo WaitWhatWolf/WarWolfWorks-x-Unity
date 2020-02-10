@@ -114,8 +114,6 @@ namespace WarWolfWorks.Utility
             }
         }
 
-#if WWW2_5_OR_HIGHER
-        
         /// <summary>
         /// Subclass with all streaming and saving/loading methods.
         /// </summary>
@@ -1073,865 +1071,7 @@ namespace WarWolfWorks.Utility
             /// <returns></returns>
             public static string GetAssetsFilePath(string fileName) => Path.Combine(AssetsPath, fileName);
         }
-#else
-        /// <summary>
-        /// All Streaming methods using CBC Rfc2898 encryption.
-        /// </summary>
-        public static class EncryptedStreaming
-        {
-            public struct SaveCatalog
-            {
-                public readonly string CategoryName;
-
-                public readonly string[] VariableNames;
-
-                public readonly string[] Variables;
-
-                public readonly string Password;
-
-                public SaveCatalog(string category, string[] variableNames, string[] variables, string password = "SaveFileFFF")
-                {
-                    CategoryName = category;
-                    Variables = variables;
-                    VariableNames = variableNames;
-                    Password = password;
-                }
-
-                public SaveCatalog(string category, string variableName, string variable, string password = "SaveFileFFF")
-                {
-                    CategoryName = category;
-                    Variables = new string[1]
-                    {
-                    variable
-                    };
-                    VariableNames = new string[1]
-                    {
-                    variableName
-                    };
-                    Password = password;
-                }
-
-                public SaveCatalog(string category, (string, string)[] variables, string password = "SaveFileFFF")
-                {
-                    CategoryName = category;
-                    VariableNames = variables.GetItemsFromTupleIndex(0);
-                    Variables = variables.GetItemsFromTupleIndex(1);
-                    Password = password;
-                }
-
-                public SaveCatalog(string category, (string, string) variable, string password = "SaveFileFFF")
-                {
-                    CategoryName = category;
-                    Variables = new string[1]
-                    {
-                    variable.Item1
-                    };
-                    VariableNames = new string[1]
-                    {
-                    variable.Item2
-                    };
-                    Password = password;
-                }
-            }
-
-            private const int Keysize = 256;
-
-            private const int DerivationIterations = 1000;
-
-            private const char OpeningCategoryChar = '[';
-
-            private const char ClosingCategoryChar = ']';
-
-            private const string ClosingCategoryID = "/CatEnd/";
-
-            public const string DefaultSavePassword = "SaveFileFFF";
-
-            public const char VariableNameSeparator = '=';
-
-            public static string Encrypt(string plainText, string passPhrase)
-            {
-                byte[] array = Generate256BitsOfRandomEntropy();
-                byte[] array2 = Generate256BitsOfRandomEntropy();
-                byte[] bytes = Encoding.UTF8.GetBytes(plainText);
-                using (Rfc2898DeriveBytes rfc2898DeriveBytes = new Rfc2898DeriveBytes(passPhrase, array, DerivationIterations))
-                {
-                    byte[] bytes2 = rfc2898DeriveBytes.GetBytes(32);
-                    using (RijndaelManaged rijndaelManaged = new RijndaelManaged())
-                    {
-                        rijndaelManaged.BlockSize = Keysize;
-                        rijndaelManaged.Mode = CipherMode.CBC;
-                        rijndaelManaged.Padding = PaddingMode.PKCS7;
-                        using (ICryptoTransform transform = rijndaelManaged.CreateEncryptor(bytes2, array2))
-                        {
-                            using (MemoryStream memoryStream = new MemoryStream())
-                            {
-                                using (CryptoStream cryptoStream = new CryptoStream(memoryStream, transform, CryptoStreamMode.Write))
-                                {
-                                    cryptoStream.Write(bytes, 0, bytes.Length);
-                                    cryptoStream.FlushFinalBlock();
-                                    byte[] first = array;
-                                    first = first.Concat(array2).ToArray();
-                                    first = first.Concat(memoryStream.ToArray()).ToArray();
-                                    memoryStream.Close();
-                                    cryptoStream.Close();
-                                    return Convert.ToBase64String(first);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            public static string Decrypt(string cipherText, string passPhrase)
-            {
-                byte[] array = Convert.FromBase64String(cipherText);
-                byte[] salt = array.Take(32).ToArray();
-                byte[] rgbIV = array.Skip(32).Take(32).ToArray();
-                byte[] array2 = array.Skip(64).Take(array.Length - 64).ToArray();
-                using (Rfc2898DeriveBytes rfc2898DeriveBytes = new Rfc2898DeriveBytes(passPhrase, salt, 1000))
-                {
-                    byte[] bytes = rfc2898DeriveBytes.GetBytes(32);
-                    using (RijndaelManaged rijndaelManaged = new RijndaelManaged())
-                    {
-                        rijndaelManaged.BlockSize = 256;
-                        rijndaelManaged.Mode = CipherMode.CBC;
-                        rijndaelManaged.Padding = PaddingMode.PKCS7;
-                        using (ICryptoTransform transform = rijndaelManaged.CreateDecryptor(bytes, rgbIV))
-                        {
-                            using (MemoryStream memoryStream = new MemoryStream(array2))
-                            {
-                                using (CryptoStream cryptoStream = new CryptoStream(memoryStream, transform, CryptoStreamMode.Read))
-                                {
-                                    byte[] array3 = new byte[array2.Length];
-                                    int count = cryptoStream.Read(array3, 0, array3.Length);
-                                    memoryStream.Close();
-                                    cryptoStream.Close();
-                                    return Encoding.UTF8.GetString(array3, 0, count);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            private static byte[] Generate256BitsOfRandomEntropy()
-            {
-                byte[] array = new byte[32];
-                using (RNGCryptoServiceProvider rNGCryptoServiceProvider = new RNGCryptoServiceProvider())
-                {
-                    rNGCryptoServiceProvider.GetBytes(array);
-                }
-                return array;
-            }
-
-            public static string[] GetAllDecryptedStreamedLines(StreamReader sr, string password)
-            {
-                List<string> list = new List<string>();
-                string text;
-                while ((text = sr.ReadLine()) != null)
-                {
-                    list.Add((text != string.Empty) ? Decrypt(text, password) : text);
-                }
-                return list.ToArray();
-            }
-
-            private static string OpenCategory(string categoryName)
-            {
-                return StringWrapper(categoryName, (OpeningCategoryChar, ClosingCategoryChar));
-            }
-
-            private static string CloseCategory(string categoryName)
-            {
-                return StringWrapper(ClosingCategoryID + categoryName, (OpeningCategoryChar, ClosingCategoryChar));
-            }
-
-            private static string CatalogLine(SaveCatalog catalog, int index)
-            {
-                return $"{catalog.VariableNames[index]}{'='}{catalog.Variables[index]}";
-            }
-
-            private static string CatalogLine(string name, string variable)
-            {
-                return $"{name}{'='}{variable}";
-            }
-
-            public static void SaveCatalogToFile(string filePath, SaveCatalog catalog)
-            {
-                if (File.Exists(filePath))
-                {
-                    string b = OpenCategory(catalog.CategoryName);
-                    string b2 = CloseCategory(catalog.CategoryName);
-                    StreamReader streamReader = new StreamReader(filePath);
-                    string[] allStreamedLines = Streaming.GetAllStreamedLines(streamReader);
-                    streamReader.Dispose();
-                    StreamWriter streamWriter = new StreamWriter(filePath);
-                    bool flag = false;
-                    bool flag2 = false;
-                    int num = 0;
-                    for (int i = 0; i < allStreamedLines.Length; i++)
-                    {
-                        if (Decrypt(allStreamedLines[i], catalog.Password) == b)
-                        {
-                            flag2 = (flag = true);
-                            streamWriter.WriteLine(allStreamedLines[i]);
-                            continue;
-                        }
-                        if (allStreamedLines.Length != i + 1 && Decrypt(allStreamedLines[i + 1], catalog.Password) == b2)
-                        {
-                            flag = false;
-                        }
-                        if (flag)
-                        {
-                            streamWriter.WriteLine(Encrypt(CatalogLine(catalog, num), catalog.Password));
-                            num++;
-                        }
-                        else
-                        {
-                            streamWriter.WriteLine(allStreamedLines[i]);
-                        }
-                    }
-                    streamWriter.Dispose();
-                    if (!flag2)
-                    {
-                        InjectCategoryInFile(filePath, catalog);
-                    }
-                }
-                else
-                {
-                    CreateNewCategoryFile(filePath, catalog);
-                }
-            }
-
-            private static void CreateNewCategoryFile(string filePath, SaveCatalog catalog)
-            {
-                FileStream fileStream = File.Create(filePath);
-                fileStream.Dispose();
-                StreamWriter streamWriter = new StreamWriter(filePath);
-                streamWriter.WriteLine(Encrypt(OpenCategory(catalog.CategoryName), catalog.Password));
-                for (int i = 0; i < catalog.Variables.Length; i++)
-                {
-                    streamWriter.WriteLine(Encrypt(CatalogLine(catalog, i), catalog.Password));
-                }
-                streamWriter.WriteLine(Encrypt(CloseCategory(catalog.CategoryName), catalog.Password));
-                streamWriter.Dispose();
-            }
-
-            private static void InjectCategoryInFile(string filePath, SaveCatalog catalog)
-            {
-                StreamReader streamReader = new StreamReader(filePath);
-                string[] allStreamedLines = Streaming.GetAllStreamedLines(streamReader);
-                streamReader.Dispose();
-                StreamWriter streamWriter = new StreamWriter(filePath);
-                for (int i = 0; i < allStreamedLines.Length; i++)
-                {
-                    streamWriter.WriteLine(allStreamedLines[i]);
-                }
-                streamWriter.WriteLine();
-                streamWriter.WriteLine(Encrypt(OpenCategory(catalog.CategoryName), catalog.Password));
-                for (int j = 0; j < catalog.Variables.Length; j++)
-                {
-                    streamWriter.WriteLine(Encrypt(CatalogLine(catalog, j), catalog.Password));
-                }
-                streamWriter.WriteLine(Encrypt(CloseCategory(catalog.CategoryName), catalog.Password));
-                streamWriter.Dispose();
-            }
-
-            public static void SaveVariableToCategory(string filePath, string categoryName, string variableName, string variableValue, string password = "SaveFileFFF")
-            {
-                if (!File.Exists(filePath))
-                {
-                    CreateNewCategoryFile(filePath, new SaveCatalog(categoryName, variableName, variableValue, password));
-                    return;
-                }
-                StreamReader streamReader = new StreamReader(filePath);
-                string[] allStreamedLines = Streaming.GetAllStreamedLines(streamReader);
-                streamReader.Dispose();
-                bool flag = false;
-                bool flag2 = false;
-                StreamWriter streamWriter = new StreamWriter(filePath);
-                for (int i = 0; i < allStreamedLines.Length; i++)
-                {
-                    if (Decrypt(allStreamedLines[i], password) == OpenCategory(categoryName))
-                    {
-                        flag = true;
-                        streamWriter.WriteLine(allStreamedLines[i]);
-                        continue;
-                    }
-                    if (Decrypt(allStreamedLines[i], password) == CloseCategory(categoryName))
-                    {
-                        flag = false;
-                    }
-                    string[] array = Decrypt(allStreamedLines[i], password).Split(new char[1]
-                    {
-                    '='
-                    });
-                    if (flag && variableName == array[0])
-                    {
-                        streamWriter.WriteLine(Encrypt(CatalogLine(variableName, variableValue), password));
-                        flag2 = true;
-                    }
-                    else
-                    {
-                        streamWriter.WriteLine(allStreamedLines[i]);
-                    }
-                }
-                streamWriter.Dispose();
-                if (!flag2)
-                {
-                    SaveNewVariableToCategory(filePath, categoryName, variableName, variableValue, password);
-                }
-            }
-
-            public static string[] GetAllVariablesFromCategory(string filePath, string categoryName, bool includeVariableName, char separator = '=', string password = "SaveFileFFF")
-            {
-                if (!File.Exists(filePath))
-                {
-                    return null;
-                }
-                List<string> list = new List<string>();
-                StreamReader streamReader = new StreamReader(filePath);
-                string[] allDecryptedStreamedLines = GetAllDecryptedStreamedLines(streamReader, password);
-                streamReader.Dispose();
-                bool flag = false;
-                for (int i = 0; i < allDecryptedStreamedLines.Length; i++)
-                {
-                    if (allDecryptedStreamedLines[i] == OpenCategory(categoryName))
-                    {
-                        flag = true;
-                        continue;
-                    }
-                    if (allDecryptedStreamedLines[i] == CloseCategory(categoryName))
-                    {
-                        break;
-                    }
-                    if (flag)
-                    {
-                        string[] array = allDecryptedStreamedLines[i].Split(new char[1]
-                        {
-                        '='
-                        });
-                        list.Add(includeVariableName ? (array[0] + separator.ToString() + array[1]) : array[1]);
-                    }
-                }
-                return list.ToArray();
-            }
-
-            public static void RemoveVariableFromCategory(string filePath, string categoryName, string variableName, string password = "SaveFileFFF")
-            {
-                if (!File.Exists(filePath))
-                {
-                    return;
-                }
-                StreamReader streamReader = new StreamReader(filePath);
-                string[] allStreamedLines = Streaming.GetAllStreamedLines(streamReader);
-                streamReader.Dispose();
-                bool flag = false;
-                StreamWriter streamWriter = new StreamWriter(filePath);
-                for (int i = 0; i < allStreamedLines.Length; i++)
-                {
-                    if (Decrypt(allStreamedLines[i], password) == OpenCategory(categoryName))
-                    {
-                        flag = true;
-                        streamWriter.WriteLine(allStreamedLines[i]);
-                        continue;
-                    }
-                    if (Decrypt(allStreamedLines[i], password) == CloseCategory(categoryName))
-                    {
-                        flag = false;
-                    }
-                    string[] array = Decrypt(allStreamedLines[i], password).Split(new char[1]
-                    {
-                    '='
-                    });
-                    if (!flag || !(variableName == array[0]))
-                    {
-                        streamWriter.WriteLine(allStreamedLines[i]);
-                    }
-                }
-                streamWriter.Dispose();
-            }
-
-            private static void SaveNewVariableToCategory(string filePath, string categoryName, string variableName, string variableValue, string password = "SaveFileFFF")
-            {
-                if (!File.Exists(filePath))
-                {
-                    AdvancedDebug.LogWarningFormat("Couldn't save {0} as the file {1} does not exist!", 0, variableName, filePath);
-                    return;
-                }
-                StreamReader streamReader = new StreamReader(filePath);
-                string[] allStreamedLines = Streaming.GetAllStreamedLines(streamReader);
-                streamReader.Dispose();
-                StreamWriter streamWriter = new StreamWriter(filePath);
-                for (int i = 0; i < allStreamedLines.Length; i++)
-                {
-                    if (Decrypt(allStreamedLines[i], password) == OpenCategory(categoryName))
-                    {
-                        streamWriter.WriteLine(allStreamedLines[i]);
-                        streamWriter.WriteLine(Encrypt(CatalogLine(variableName, variableValue), password));
-                    }
-                    else
-                    {
-                        streamWriter.WriteLine(allStreamedLines[i]);
-                    }
-                }
-                streamWriter.Dispose();
-            }
-
-            public static string GetVariableFromCategory(string filePath, string categoryName, string variableName, string password = "SaveFileFFF")
-            {
-                if (!File.Exists(filePath))
-                {
-                    throw new Exception("File under path " + filePath + " does not exist!");
-                }
-                StreamReader streamReader = new StreamReader(filePath);
-                string[] allDecryptedStreamedLines = GetAllDecryptedStreamedLines(streamReader, password);
-                streamReader.Dispose();
-                bool flag = false;
-                for (int i = 0; i < allDecryptedStreamedLines.Length; i++)
-                {
-                    if (allDecryptedStreamedLines[i] == OpenCategory(categoryName))
-                    {
-                        flag = true;
-                        continue;
-                    }
-                    if (allDecryptedStreamedLines[i] == CloseCategory(categoryName))
-                    {
-                        return string.Empty;
-                    }
-                    string[] array = allDecryptedStreamedLines[i].Split(new char[1]
-                    {
-                    '='
-                    });
-                    if (flag && variableName == array[0])
-                    {
-                        return array[1];
-                    }
-                }
-                return string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// Contains all methods concerning IO.Streams.
-        /// </summary>
-        public static class Streaming
-        {
-            public struct SaveCatalog
-            {
-                public readonly string CategoryName;
-
-                public readonly string[] VariableNames;
-
-                public readonly string[] Variables;
-
-                public SaveCatalog(string category, string[] variableNames, string[] variables)
-                {
-                    CategoryName = category;
-                    Variables = variables;
-                    VariableNames = variableNames;
-                }
-
-                public SaveCatalog(string category, string variableName, string variable)
-                {
-                    CategoryName = category;
-                    Variables = new string[1]
-                    {
-                    variable
-                    };
-                    VariableNames = new string[1]
-                    {
-                    variableName
-                    };
-                }
-
-                public SaveCatalog(string category, (string, string)[] variables)
-                {
-                    CategoryName = category;
-                    VariableNames = variables.GetItemsFromTupleIndex(0);
-                    Variables = variables.GetItemsFromTupleIndex(1);
-                }
-
-                public SaveCatalog(string category, (string, string) variable)
-                {
-                    CategoryName = category;
-                    Variables = new string[1]
-                    {
-                    variable.Item1
-                    };
-                    VariableNames = new string[1]
-                    {
-                    variable.Item2
-                    };
-                }
-            }
-
-            private const char OpeningCategoryChar = '[';
-
-            private const char ClosingCategoryChar = ']';
-
-            private const string ClosingCategoryID = "/CatEnd/";
-
-            public const char VariableNameSeparator = '=';
-
-            public static bool CreateFolder(string folderPath)
-            {
-                if (Enumerable.Contains(folderPath, '.'))
-                {
-                    folderPath = Path.GetDirectoryName(folderPath);
-                }
-                bool flag = Directory.Exists(folderPath);
-                if (!flag)
-                {
-                    Directory.CreateDirectory(folderPath);
-                }
-                return flag;
-            }
-
-            public static string[] GetAllFilesInFolder(string folderPath, string extention, bool includeFolderPath)
-            {
-                string actFolderPath = Path.GetDirectoryName(folderPath);
-                if (!Directory.Exists(actFolderPath))
-                {
-                    return null;
-                }
-                DirectoryInfo directoryInfo = new DirectoryInfo(actFolderPath);
-                FileInfo[] files = directoryInfo.GetFiles(extention);
-                List<string> list = new List<string>();
-                FileInfo[] array = files;
-                foreach (FileInfo fileInfo in array)
-                {
-                    list.Add(includeFolderPath ? (actFolderPath + fileInfo.Name) : fileInfo.Name);
-                }
-                return list.ToArray();
-            }
-
-            public static string[] GetAllStreamedLines(StreamReader sr)
-            {
-                List<string> list = new List<string>();
-                string item;
-                while ((item = sr.ReadLine()) != null)
-                {
-                    list.Add(item);
-                }
-                return list.ToArray();
-            }
-
-            private static string OpenCategory(string categoryName)
-            {
-                return StringWrapper(categoryName, (OpeningCategoryChar, ClosingCategoryChar));
-            }
-
-            private static string CloseCategory(string categoryName)
-            {
-                return StringWrapper(ClosingCategoryID + categoryName, (OpeningCategoryChar, ClosingCategoryChar));
-            }
-
-            private static string CatalogLine(SaveCatalog catalog, int index)
-            {
-                return $"{catalog.VariableNames[index]}{'='}{catalog.Variables[index]}";
-            }
-
-            private static string CatalogLine(string name, string variable)
-            {
-                return $"{name}{'='}{variable}";
-            }
-
-            public static void SaveCatalogToFile(string filePath, SaveCatalog catalog)
-            {
-                if (File.Exists(filePath))
-                {
-                    string b = OpenCategory(catalog.CategoryName);
-                    string b2 = CloseCategory(catalog.CategoryName);
-                    StreamReader streamReader = new StreamReader(filePath);
-                    string[] allStreamedLines = GetAllStreamedLines(streamReader);
-                    streamReader.Dispose();
-                    StreamWriter streamWriter = new StreamWriter(filePath);
-                    bool flag = false;
-                    bool flag2 = false;
-                    int num = 0;
-                    for (int i = 0; i < allStreamedLines.Length; i++)
-                    {
-                        if (allStreamedLines[i] == b)
-                        {
-                            flag2 = (flag = true);
-                            streamWriter.WriteLine(allStreamedLines[i]);
-                            continue;
-                        }
-                        if (allStreamedLines.Length != i + 1 && allStreamedLines[i + 1] == b2)
-                        {
-                            flag = false;
-                        }
-                        if (flag)
-                        {
-                            streamWriter.WriteLine(CatalogLine(catalog, num));
-                            num++;
-                        }
-                        else
-                        {
-                            streamWriter.WriteLine(allStreamedLines[i]);
-                        }
-                    }
-                    streamWriter.Dispose();
-                    if (!flag2)
-                    {
-                        InjectCategoryInFile(filePath, catalog);
-                    }
-                }
-                else
-                {
-                    CreateNewCategoryFile(filePath, catalog);
-                }
-            }
-
-            private static void CreateNewCategoryFile(string filePath, SaveCatalog catalog)
-            {
-                FileStream fileStream = File.Create(filePath);
-                fileStream.Dispose();
-                StreamWriter streamWriter = new StreamWriter(filePath);
-                streamWriter.WriteLine(OpenCategory(catalog.CategoryName));
-                for (int i = 0; i < catalog.Variables.Length; i++)
-                {
-                    streamWriter.WriteLine(CatalogLine(catalog, i));
-                }
-                streamWriter.WriteLine(CloseCategory(catalog.CategoryName));
-                streamWriter.Dispose();
-            }
-
-            private static void InjectCategoryInFile(string filePath, SaveCatalog catalog)
-            {
-                StreamReader streamReader = new StreamReader(filePath);
-                string[] allStreamedLines = GetAllStreamedLines(streamReader);
-                streamReader.Dispose();
-                StreamWriter streamWriter = new StreamWriter(filePath);
-                for (int i = 0; i < allStreamedLines.Length; i++)
-                {
-                    streamWriter.WriteLine(allStreamedLines[i]);
-                }
-                streamWriter.WriteLine();
-                streamWriter.WriteLine(OpenCategory(catalog.CategoryName));
-                for (int j = 0; j < catalog.Variables.Length; j++)
-                {
-                    streamWriter.WriteLine(CatalogLine(catalog, j));
-                }
-                streamWriter.WriteLine(CloseCategory(catalog.CategoryName));
-                streamWriter.Dispose();
-            }
-
-            public static void SaveVariableToCategory(string filePath, string categoryName, string variableName, string variableValue)
-            {
-                if (!File.Exists(filePath))
-                {
-                    CreateNewCategoryFile(filePath, new SaveCatalog(categoryName, variableName, variableValue));
-                    return;
-                }
-                StreamReader streamReader = new StreamReader(filePath);
-                string[] allStreamedLines = GetAllStreamedLines(streamReader);
-                streamReader.Dispose();
-                bool flag = false;
-                bool flag2 = false;
-                StreamWriter streamWriter = new StreamWriter(filePath);
-                for (int i = 0; i < allStreamedLines.Length; i++)
-                {
-                    if (allStreamedLines[i] == OpenCategory(categoryName))
-                    {
-                        flag = true;
-                        streamWriter.WriteLine(allStreamedLines[i]);
-                        continue;
-                    }
-                    if (allStreamedLines[i] == CloseCategory(categoryName))
-                    {
-                        flag = false;
-                    }
-                    string[] array = allStreamedLines[i].Split('=');
-                    if (flag && variableName == array[0])
-                    {
-                        streamWriter.WriteLine(CatalogLine(variableName, variableValue));
-                        flag2 = true;
-                    }
-                    else
-                    {
-                        streamWriter.WriteLine(allStreamedLines[i]);
-                    }
-                }
-                streamWriter.Dispose();
-                if (!flag2)
-                {
-                    SaveNewVariableToCategory(filePath, categoryName, variableName, variableValue);
-                }
-            }
-
-            public static string[] GetAllVariablesFromCategory(string filePath, string categoryName, bool includeVariableName, char separator = '=')
-            {
-                if (!File.Exists(filePath))
-                {
-                    return null;
-                }
-                List<string> list = new List<string>();
-                StreamReader streamReader = new StreamReader(filePath);
-                string[] allStreamedLines = GetAllStreamedLines(streamReader);
-                streamReader.Dispose();
-                bool flag = false;
-                for (int i = 0; i < allStreamedLines.Length; i++)
-                {
-                    if (allStreamedLines[i] == OpenCategory(categoryName))
-                    {
-                        flag = true;
-                        continue;
-                    }
-                    if (allStreamedLines[i] == CloseCategory(categoryName))
-                    {
-                        break;
-                    }
-                    if (flag)
-                    {
-                        string[] array = allStreamedLines[i].Split('=');
-                        list.Add(includeVariableName ? (array[0] + separator.ToString() + array[1]) : array[1]);
-                    }
-                }
-                return list.ToArray();
-            }
-
-            public static void RemoveVariableFromCategory(string filePath, string categoryName, string variableName)
-            {
-                if (!File.Exists(filePath))
-                {
-                    return;
-                }
-                StreamReader streamReader = new StreamReader(filePath);
-                string[] allStreamedLines = GetAllStreamedLines(streamReader);
-                streamReader.Dispose();
-                bool flag = false;
-                StreamWriter streamWriter = new StreamWriter(filePath);
-                for (int i = 0; i < allStreamedLines.Length; i++)
-                {
-                    if (allStreamedLines[i] == OpenCategory(categoryName))
-                    {
-                        flag = true;
-                        streamWriter.WriteLine(allStreamedLines[i]);
-                        continue;
-                    }
-                    if (allStreamedLines[i] == CloseCategory(categoryName))
-                    {
-                        flag = false;
-                    }
-                    string[] array = allStreamedLines[i].Split('=');
-                    if (!flag || !(variableName == array[0]))
-                    {
-                        streamWriter.WriteLine(allStreamedLines[i]);
-                    }
-                }
-                streamWriter.Dispose();
-            }
-
-            private static void SaveNewVariableToCategory(string filePath, string categoryName, string variableName, string variableValue)
-            {
-                if (!File.Exists(filePath))
-                {
-                    AdvancedDebug.LogWarningFormat("Couldn't save {0} as the file {1} does not exist!", 0, variableName, filePath);
-                    return;
-                }
-                StreamReader streamReader = new StreamReader(filePath);
-                string[] allStreamedLines = GetAllStreamedLines(streamReader);
-                streamReader.Dispose();
-                StreamWriter streamWriter = new StreamWriter(filePath);
-                for (int i = 0; i < allStreamedLines.Length; i++)
-                {
-                    if (allStreamedLines[i] == OpenCategory(categoryName))
-                    {
-                        streamWriter.WriteLine(allStreamedLines[i]);
-                        streamWriter.WriteLine(CatalogLine(variableName, variableValue));
-                    }
-                    else
-                    {
-                        streamWriter.WriteLine(allStreamedLines[i]);
-                    }
-                }
-                streamWriter.Dispose();
-            }
-
-            public static string GetVariableFromCategory(string filePath, string categoryName, string variableName)
-            {
-                if (!File.Exists(filePath))
-                {
-                    throw new Exception("File under path " + filePath + " does not exist!");
-                }
-                StreamReader streamReader = new StreamReader(filePath);
-                string[] allStreamedLines = GetAllStreamedLines(streamReader);
-                streamReader.Dispose();
-                bool flag = false;
-                for (int i = 0; i < allStreamedLines.Length; i++)
-                {
-                    if (allStreamedLines[i] == OpenCategory(categoryName))
-                    {
-                        flag = true;
-                        continue;
-                    }
-                    if (allStreamedLines[i] == CloseCategory(categoryName))
-                    {
-                        return string.Empty;
-                    }
-                    string[] array = allStreamedLines[i].Split('=');
-                    if (flag && variableName == array[0])
-                    {
-                        return array[1];
-                    }
-                }
-                return string.Empty;
-            }
-
-            /*public static string AssetsPath
-            {
-                get
-                {
-                    string toReturn = StreamingAssetsPath;
-
-                    List<string> folders = new List<string>(toReturn.Split('\\'));
-                    int startIndex = folders.FindIndex(s => s == "StreamingAssets");
-                    if(startIndex != -1) folders.RemoveRange(startIndex, folders.Count - startIndex - 1);
-                    
-                    return toReturn;
-                }
-            }*/
-            public static string StreamingAssetsPath => Application.streamingAssetsPath.Replace("/", @"\");
-            public static string AssetsPath => Application.dataPath.Replace("/", @"\");
-            public static string GetStreamingAssetsFilePath(string fileName) => Path.Combine(StreamingAssetsPath, fileName);
-            public static string GetAssetsFilePath(string fileName) => Path.Combine(AssetsPath, fileName);
-        }
-#endif
-        /// <summary>
-        /// Encryption class for generic encryption use.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        public static class Encryption<T> where T : ICryptoTransform
-        {
-            /// <summary>
-            /// Encrypts a string then returs it.
-            /// </summary>
-            /// <param name="cryptoTransform"></param>
-            /// <param name="input"></param>
-            /// <returns></returns>
-            public static string Encrypt(T cryptoTransform, string input)
-            {
-                byte[] baseBytes = Encoding.ASCII.GetBytes(input);
-                byte[] result = cryptoTransform.TransformFinalBlock(baseBytes, 0, baseBytes.Length);
-                return Convert.ToBase64String(result, 0, result.Length);
-            }
-
-            /// <summary>
-            /// Decrypts a string then returns it.
-            /// </summary>
-            /// <param name="cryptoTransform"></param>
-            /// <param name="input"></param>
-            /// <returns></returns>
-            public static string Decrypt(T cryptoTransform, string input)
-            {
-                byte[] baseBytes = Encoding.ASCII.GetBytes(input);
-                byte[] result = cryptoTransform.TransformFinalBlock(baseBytes, 0, baseBytes.Length);
-
-                return Convert.ToBase64String(result, 0, result.Length);
-            }
-        }
-
+        
         internal static class EncryptionUtilityInternal
         {
             internal const int Keysize = 256;
@@ -2153,90 +1293,6 @@ namespace WarWolfWorks.Utility
             }
         }
 
-        /// <summary>
-        /// Encryption class which uses the Rijndael encryption algorithm.
-        /// </summary>
-        public static class TwofishEncryption
-        {
-            /// <summary>
-            /// Returns an encrypted version of this string using the given password.
-            /// </summary>
-            /// <param name="input"></param>
-            /// <param name="password"></param>
-            /// <returns></returns>
-            public static string Encrypt(string input, string password)
-            {
-                byte[] array = EncryptionUtilityInternal.Generate256BitsOfRandomEntropy();
-                byte[] array2 = EncryptionUtilityInternal.Generate256BitsOfRandomEntropy();
-                byte[] bytes = Encoding.UTF8.GetBytes(input);
-                using (Rfc2898DeriveBytes rfc2898DeriveBytes 
-                    = new Rfc2898DeriveBytes(password, array, EncryptionUtilityInternal.DerivationIterations))
-                {
-                    byte[] bytes2 = rfc2898DeriveBytes.GetBytes(32);
-                    using (TwofishManaged twofishManaged = new TwofishManaged())
-                    {
-                        twofishManaged.BlockSize = EncryptionUtilityInternal.Keysize;
-                        twofishManaged.Mode = CipherMode.CBC;
-                        twofishManaged.Padding = PaddingMode.PKCS7;
-                        using (ICryptoTransform transform = twofishManaged.CreateEncryptor(bytes2, array2))
-                        {
-                            using (MemoryStream memoryStream = new MemoryStream())
-                            {
-                                using (CryptoStream cryptoStream = new CryptoStream(memoryStream, transform, CryptoStreamMode.Write))
-                                {
-                                    cryptoStream.Write(bytes, 0, bytes.Length);
-                                    cryptoStream.FlushFinalBlock();
-                                    byte[] first = array;
-                                    first = first.Concat(array2).ToArray();
-                                    first = first.Concat(memoryStream.ToArray()).ToArray();
-                                    memoryStream.Close();
-                                    cryptoStream.Close();
-                                    return Convert.ToBase64String(first);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            /// <summary>
-            /// Decrypts a string previously encrypted using <see cref="Encrypt(string, string)"/>.
-            /// </summary>
-            /// <param name="input"></param>
-            /// <param name="password"></param>
-            /// <returns></returns>
-            public static string Decrypt(string input, string password)
-            {
-                byte[] array = Convert.FromBase64String(input);
-                byte[] salt = array.Take(32).ToArray();
-                byte[] rgbIV = array.Skip(32).Take(32).ToArray();
-                byte[] array2 = array.Skip(64).Take(array.Length - 64).ToArray();
-                using (Rfc2898DeriveBytes rfc2898DeriveBytes = new Rfc2898DeriveBytes(password, salt, 1000))
-                {
-                    byte[] bytes = rfc2898DeriveBytes.GetBytes(32);
-                    using (TwofishManaged twofishManaged = new TwofishManaged())
-                    {
-                        twofishManaged.BlockSize = 256;
-                        twofishManaged.Mode = CipherMode.CBC;
-                        twofishManaged.Padding = PaddingMode.PKCS7;
-                        using (ICryptoTransform transform = twofishManaged.CreateDecryptor(bytes, rgbIV))
-                        {
-                            using (MemoryStream memoryStream = new MemoryStream(array2))
-                            {
-                                using (CryptoStream cryptoStream = new CryptoStream(memoryStream, transform, CryptoStreamMode.Read))
-                                {
-                                    byte[] array3 = new byte[array2.Length];
-                                    int count = cryptoStream.Read(array3, 0, array3.Length);
-                                    memoryStream.Close();
-                                    cryptoStream.Close();
-                                    return Encoding.UTF8.GetString(array3, 0, count);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
         /// <summary>
         /// Cipher algorithms.
         /// </summary>
@@ -4446,7 +3502,6 @@ namespace WarWolfWorks.Utility
         }
 
 #region Extention Methods
-
         /// <summary>
         /// Puts a string value into a rainbow text using Unity's Rich Text format.
         /// </summary>
@@ -4465,7 +3520,6 @@ namespace WarWolfWorks.Utility
         /// <returns></returns>
         public static string Cutout(this string original, string from, string to)
             => Text.Cutout(original, from, to);
-
         /// <summary>
         /// Extention method for <see cref="Text.Cutout(string, char, char)"/>.
         /// </summary>
@@ -4475,7 +3529,6 @@ namespace WarWolfWorks.Utility
         /// <returns></returns>
         public static string Cutout(this string original, char from, char to)
            => Text.Cutout(original, from, to);
-
         /// <summary>
         /// Returns true if numberToApproximate is not lower than or higer than numberToCompare using approximation as range.
         /// </summary>
@@ -4485,7 +3538,6 @@ namespace WarWolfWorks.Utility
         /// <returns></returns>
         public static bool IsApproximate(this float NumberToApproximate, float NumberToCompare, float approximation)
             => WWWMath.IsApproximate(NumberToApproximate, NumberToCompare, approximation);
-
         /// <summary>
         /// Cuts a float to digits length.
         /// </summary>
@@ -4493,28 +3545,24 @@ namespace WarWolfWorks.Utility
         /// <param name="digits"></param>
         /// <returns></returns>
         public static float Truncate(float value, int digits) => WWWMath.Truncate(value, digits);
-
         /// <summary>
         /// If value given is negative, it will be turned into it's positive value.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public static float ToPositive(this float value) => WWWMath.ToPositive(value);
-
         /// <summary>
         /// If value given is positive, it will be turned into it's negative value.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public static float ToNegative(this float value) => WWWMath.ToNegative(value);
-
         /// <summary>
         /// If value given is negative, it will be turned into it's positive value.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public static int ToPositive(this int value) => WWWMath.ToPositive(value);
-
         /// <summary>
         /// If value given is positive, it will be turned into it's negative value.
         /// </summary>
@@ -4533,15 +3581,12 @@ namespace WarWolfWorks.Utility
         /// <param name="value"></param>
         /// <returns></returns>
         public static long ToNegative(this long value) => WWWMath.ToNegative(value);
-
-
         /// <summary>
         /// Puts all values of a given color into negatives. (If a value was negative, it will be put into positive)
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public static Color ToNegative(this Color value) => Colors.ToNegative(value);
-
         /// <summary>
         /// Extention method. Points to <see cref="Vectors.SetAnchoredUI(RectTransform, Vector4)"/>.
         /// </summary>
@@ -4550,7 +3595,6 @@ namespace WarWolfWorks.Utility
         /// <returns></returns>
         public static void SetAnchoredUI(this RectTransform rt, Vector4 Position)
             => Vectors.SetAnchoredUI(rt, Position);
-
         /// <summary>
         /// Extention method. Points to <see cref="Vectors.SetAnchoredUI(RectTransform, Vector2, Vector2)"/>.
         /// </summary>
@@ -4559,7 +3603,6 @@ namespace WarWolfWorks.Utility
         /// <param name="max"></param>
         public static void SetAnchoredUI(this RectTransform rt, Vector2 min, Vector2 max)
             => Vectors.SetAnchoredUI(rt, min, max);
-
         /// <summary>
         /// Extention method. Points to <see cref="Vectors.SetAnchoredUI(RectTransform, float, float, float, float)"/>.
         /// </summary>
@@ -4571,7 +3614,6 @@ namespace WarWolfWorks.Utility
         /// <returns></returns>
         public static void SetAnchoredUI(this RectTransform rt, float minX, float minY, float maxX, float maxY)
             => Vectors.SetAnchoredUI(rt, minX, minY, maxX, maxY);
-
         /// <summary>
         /// Returns the anchored position of a <see cref="RectTransform"/> in <see cref="Vector4"/>: X = minX, Y = minY, z = maxX, W = maxY.
         /// </summary>
@@ -4579,7 +3621,6 @@ namespace WarWolfWorks.Utility
         /// <returns></returns>
         public static Vector4 GetAnchoredPosition(this RectTransform rt)
             => Vectors.GetAnchoredPosition(rt);
-
         /// <summary>
         /// Returns true if the given position is within the bounds given. (<see cref="Vector4"/> bounds: X = minX, Y = minY, z = maxX, W = maxY)
         /// </summary>
@@ -4588,7 +3629,6 @@ namespace WarWolfWorks.Utility
         /// <returns></returns>
         public static bool IsInsideBounds(this Vector2 position, Vector4 bounds)
             => Vectors.IsInsideBounds(position, bounds);
-
         /// <summary>
         /// Returns true if the given position is within the bounds given.
         /// </summary>
@@ -4598,7 +3638,6 @@ namespace WarWolfWorks.Utility
         /// <returns></returns>
         public static bool IsInsideBounds(this Vector2 position, Vector2 min, Vector2 max)
             => Vectors.IsInsideBounds(position, min, max);
-
         /// <summary>
         /// <see cref="Enumeration.Find{T}(T[], Predicate{T})"/> Pointer.
         /// </summary>
@@ -4608,7 +3647,6 @@ namespace WarWolfWorks.Utility
         /// <returns></returns>
         public static T Find<T>(this T[] toUse, Predicate<T> match)
             => Array.Find(toUse, match);
-
         /// <summary>
         /// <see cref="Enumeration.FindIndex{T}(T[], Predicate{T})"/> Pointer.
         /// </summary>
@@ -4618,7 +3656,6 @@ namespace WarWolfWorks.Utility
         /// <returns></returns>
         public static int FindIndex<T>(this T[] toUse, Predicate<T> match)
             => Array.FindIndex(toUse, match);
-
         /// <summary>
         /// <see cref="Enumeration.ForEach{T}(T[], Action{T})"/> Pointer.
         /// </summary>
@@ -4627,7 +3664,6 @@ namespace WarWolfWorks.Utility
         /// <param name="action"></param>
         public static void ForEach<T>(this T[] array, Action<T> action)
             => Array.ForEach(array, action);
-
         /// <summary>
         /// Returns a list with all null elements removed (if any)
         /// </summary>
