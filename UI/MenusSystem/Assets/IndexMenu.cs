@@ -133,6 +133,24 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         }
 
         /// <summary>
+        /// Removes a <see cref="IndexEvent"/> from this menu's events.
+        /// </summary>
+        /// <param name="at"></param>
+        public void RemoveIndexEvent(int at)
+        {
+            if (at < 0 || at > events.Count)
+                throw new IndexOutOfRangeException();
+
+            events[at].InternalOnRemove();
+            events.RemoveAt(at);
+
+            foreach (IndexEvent ie in events)
+            {
+                if (ie.IndexInMenu > at) ie.IndexInMenu--;
+            }
+        }
+
+        /// <summary>
         /// Initiates all events.
         /// </summary>
         protected override void Awake()

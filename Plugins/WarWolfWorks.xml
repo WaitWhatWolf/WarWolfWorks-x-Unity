@@ -2008,6 +2008,26 @@
             <param name="components"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.Destroy(WarWolfWorks.EntitiesSystem.Entity)">
+            <summary>
+            Destroys a given entity.
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.DestroyUnofficially(WarWolfWorks.EntitiesSystem.Entity)">
+            <summary>
+            Destroys a given entity without invoking any of it's destroy methods.
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.ToString">
+            <summary>
+            Returns the name of the class.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:WarWolfWorks.EntitiesSystem.Movement.EntityMovement">
             <summary>
             Base class of all EntityMovement scripts. Use only this to move entites.
@@ -3363,7 +3383,7 @@
         <member name="T:WarWolfWorks.Interfaces.IInstantiatable">
             <summary>
             Used with an Unity Object to be called right after (preferably still inside) <see cref="M:UnityEngine.Object.Instantiate(UnityEngine.Object)"/>.
-            (Compatible with <see cref="M:WarWolfWorks.Utility.Hooks.InstantiateList``1(System.Collections.Generic.IEnumerable{``0})"/>)
+            (Compatible with <see cref="!:Hooks.InstantiateList&lt;T&gt;(IEnumerable&lt;T&gt;)"/>)
             </summary>
         </member>
         <member name="M:WarWolfWorks.Interfaces.IInstantiatable.PostInstantiate">
@@ -4098,6 +4118,12 @@
             </summary>
             <param name="event"></param>
         </member>
+        <member name="M:WarWolfWorks.UI.MenusSystem.Assets.IndexMenu.RemoveIndexEvent(System.Int32)">
+            <summary>
+            Removes a <see cref="T:WarWolfWorks.UI.MenusSystem.Assets.IndexEvent"/> from this menu's events.
+            </summary>
+            <param name="at"></param>
+        </member>
         <member name="M:WarWolfWorks.UI.MenusSystem.Assets.IndexMenu.Awake">
             <summary>
             Initiates all events.
@@ -4320,6 +4346,66 @@
             <param name="sprite"></param>
             <param name="color"></param>
         </member>
+        <member name="T:WarWolfWorks.UI.MoveableBar">
+            <summary>
+            A bar/tab that allows you to move a menu using your mouse drag.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.UI.MoveableBar.FreezeStyle">
+            <summary>
+            Which axis should freeze from any <see cref="T:WarWolfWorks.UI.MoveableBar"/> movement.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.UI.MoveableBar.FreezeStyle.None">
+            <summary>
+            Freemove.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.UI.MoveableBar.FreezeStyle.X">
+            <summary>
+            Frozen on the X axis.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.UI.MoveableBar.FreezeStyle.Y">
+            <summary>
+            Frozen on the Y axis.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.UI.MoveableBar.Confinement">
+            <summary>
+            How the <see cref="T:WarWolfWorks.UI.MoveableBar"/> is confined.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.UI.MoveableBar.Confinement.None">
+            <summary>
+            Not confined.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.UI.MoveableBar.Confinement.SnapParent">
+            <summary>
+            Clamped to it's parent when released.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.UI.MoveableBar.Confinement.HardParent">
+            <summary>
+            Clamps to it's parent constantly.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.UI.MoveableBar.MovableBar">
+            <summary>
+            Bar to be used as the "interactor".
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.UI.MoveableBar.UIToMove">
+            <summary>
+            The <see cref="T:UnityEngine.RectTransform"/> to move with the bar.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.UI.MoveableBar.Freeze">
+            <summary>
+            The <see cref="T:WarWolfWorks.UI.MoveableBar.FreezeStyle"/> of this <see cref="T:WarWolfWorks.UI.MoveableBar"/>.
+            </summary>
+        </member>
         <member name="P:WarWolfWorks.UI.MoveableBar.OriginalRectSize">
             <summary>
             Rect min and max anchores stored in a vector4. Sorted as follows: anchorMin.x, anchorMin.y, anchorMax.x, anchorMax.y.
@@ -4344,6 +4430,17 @@
             <summary>
             Returns true if the window is currently moved.
             </summary>
+        </member>
+        <member name="F:WarWolfWorks.UI.MoveableBar.Clamping">
+            <summary>
+            If true, the menu will snap back to screen view when released.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.MoveableBar.CanMoveUI">
+            <summary>
+            Returns true if it can drag.
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:WarWolfWorks.UI.MoveableBar.SetRectDefaultSizes">
             <summary>
@@ -4380,6 +4477,26 @@
         <member name="T:WarWolfWorks.Utility.Axis">
             <summary>
             Depicts a 3D axis for directions. (Flags-friendly)
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Axis.None">
+            <summary>
+            No Axis.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Axis.X">
+            <summary>
+            Horizontal Axis.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Axis.Y">
+            <summary>
+            Vertical Axis.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Axis.Z">
+            <summary>
+            Depth Axis.
             </summary>
         </member>
         <member name="T:WarWolfWorks.Utility.CameraManager2D">
@@ -5420,6 +5537,14 @@
             <param name="sr"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Streaming.LineChanger(System.String,System.Int32,System.String)">
+            <summary>
+            Overrides a line at the given index of a file.
+            </summary>
+            <param name="newText"></param>
+            <param name="filePath"></param>
+            <param name="index"></param>
+        </member>
         <member name="P:WarWolfWorks.Utility.Hooks.Streaming.StreamingAssetsPath">
             <summary>
             Returns the StreamingAssets folder path in windows form.
@@ -5442,28 +5567,6 @@
             Returns a merged path between <see cref="P:WarWolfWorks.Utility.Hooks.Streaming.AssetsPath"/> and fileName given.
             </summary>
             <param name="fileName"></param>
-            <returns></returns>
-        </member>
-        <member name="T:WarWolfWorks.Utility.Hooks.Encryption`1">
-            <summary>
-            Encryption class for generic encryption use.
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Encryption`1.Encrypt(`0,System.String)">
-            <summary>
-            Encrypts a string then returs it.
-            </summary>
-            <param name="cryptoTransform"></param>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Encryption`1.Decrypt(`0,System.String)">
-            <summary>
-            Decrypts a string then returns it.
-            </summary>
-            <param name="cryptoTransform"></param>
-            <param name="input"></param>
             <returns></returns>
         </member>
         <member name="T:WarWolfWorks.Utility.Hooks.RijndaelEncryption">
@@ -5545,27 +5648,6 @@
             <param name="input"></param>
             <returns></returns>
         </member>
-        <member name="T:WarWolfWorks.Utility.Hooks.TwofishEncryption">
-            <summary>
-            Encryption class which uses the Rijndael encryption algorithm.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.TwofishEncryption.Encrypt(System.String,System.String)">
-            <summary>
-            Returns an encrypted version of this string using the given password.
-            </summary>
-            <param name="input"></param>
-            <param name="password"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.TwofishEncryption.Decrypt(System.String,System.String)">
-            <summary>
-            Decrypts a string previously encrypted using <see cref="M:WarWolfWorks.Utility.Hooks.TwofishEncryption.Encrypt(System.String,System.String)"/>.
-            </summary>
-            <param name="input"></param>
-            <param name="password"></param>
-            <returns></returns>
-        </member>
         <member name="T:WarWolfWorks.Utility.Hooks.Ciphers">
             <summary>
             Cipher algorithms.
@@ -5620,13 +5702,39 @@
             Contains some utility methods concerting enumeration and generic collections.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.CompareTo(System.Object,System.Object,System.Boolean)">
+        <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.ListContainsType``1(System.Collections.Generic.List{``0},System.Type)">
             <summary>
-            Returns the CompareTo method based on integer type of the value given; If the object(s) given are non-int, non-float or non-double it will return 0.
+            Returns true if a list contains an item of type. (Only works on inherited classes)
             </summary>
-            <param name="a"></param>
-            <param name="b"></param>
-            <param name="matchType">If true, both objects must be of the same type to work.</param>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.ArrayMerger``1(``0[],``0[])">
+            <summary>
+            Returns an array which is a merged version of array1 and array2.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="array1"></param>
+            <param name="array2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.EnumerableContains``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Equivalent to <paramref name="collection"/>.Intersect(<paramref name="objectsToFind"/>).Any().
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="collection"></param>
+            <param name="objectsToFind"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.IsEmpty``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns true if the Array or all of it's elements are null.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="collection"></param>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.Find``1(``0[],System.Predicate{``0})">
@@ -5655,9 +5763,16 @@
             <param name="array"></param>
             <param name="action"></param>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.RemoveNull``1(System.Collections.Generic.List{``0})">
+        <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.RemoveNull``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
-            Removes all null elements inside a list.
+            Removes all null elements inside a collection.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.RemoveDefault``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Removes all default elements inside a collection.
             </summary>
             <typeparam name="T"></typeparam>
             <param name="list"></param>
@@ -5677,6 +5792,20 @@
             </summary>
             <typeparam name="T"></typeparam>
             <param name="enumerable"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.InstantiateList``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns a <see cref="T:System.Collections.Generic.IEnumerable`1"/> of instantiated objects (unity copy).
+            </summary>
+            <param name="objects"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.InstantiateList``1(``0[])">
+            <summary>
+            Returns an array of instantiated objects.
+            </summary>
+            <param name="objects"></param>
             <returns></returns>
         </member>
         <member name="T:WarWolfWorks.Utility.Hooks.Vectors">
@@ -6466,6 +6595,26 @@
             Contains all methods related to rendering.
             </summary>
         </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.MaskGetter(System.Int32[])">
+            <summary>
+            Returns LayerMask int value of all layers. Useful for Raycasting.
+            </summary>
+            <param name="layers"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.LayerNameToIndex(System.String)">
+            <summary>
+            Converts given maskname into it's layer number.
+            </summary>
+            <param name="layer"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.MaskToLayer(System.Int32)">
+            <summary> 
+            Converts given bitmask to it's layer number. 
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Rendering.IsVisibleFrom(UnityEngine.Renderer,UnityEngine.Camera)">
             <summary>
             Returns true if a renderer is visible from a Camera's view.
@@ -6506,10 +6655,36 @@
             <param name="speed"></param>
             <param name="rotationShake"></param>
         </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.LayerIdsToNames(System.Int32[])">
+            <summary>
+            Retuns an array of layer names based on ids given.
+            </summary>
+            <param name="ids"></param>
+            <returns></returns>
+        </member>
         <member name="T:WarWolfWorks.Utility.Hooks.Text">
             <summary>
             Contains all Regex, string and StringBuilder utilities.
             </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Text.RainbowTextStarter">
+            <summary>
+            Used to tag a string section to start a rainbow text.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Text.RainbowTextEnder">
+            <summary>
+            Used to tag a string section to stop a rainbow text.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Text.ToRainbow(System.String,System.Int32,UnityEngine.Color[])">
+            <summary>
+            Puts a string value into a rainbow color using Unity's Rich Text format.
+            </summary>
+            <param name="original"></param>
+            <param name="frequency"></param>
+            <param name="colorsToUse"></param>
+            <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Text.StringWrapper(System.String,System.ValueTuple{System.Char,System.Char})">
             <summary>
@@ -6574,13 +6749,6 @@
             <param name="to"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Text.LayerIdsToNames(System.Int32[])">
-            <summary>
-            Retuns an array of layer names based on ids given.
-            </summary>
-            <param name="ids"></param>
-            <returns></returns>
-        </member>
         <member name="T:WarWolfWorks.Utility.Hooks.Colors">
             <summary>
             Contains all Color utilities.
@@ -6607,14 +6775,9 @@
             <param name="original"></param>
             <returns></returns>
         </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.Colors.RainbowTextStarter">
+        <member name="F:WarWolfWorks.Utility.Hooks.Colors.PrimaryColors">
             <summary>
-            Used to tag a string section to start a rainbow text.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.Colors.RainbowTextEnder">
-            <summary>
-            Used to tag a string section to stop a rainbow text.
+            Returns in order: Color.red, Color.yellow, Color.blue.
             </summary>
         </member>
         <member name="F:WarWolfWorks.Utility.Hooks.Colors.MainColors">
@@ -6626,15 +6789,6 @@
             <summary>
             Returns all colors of the rainbow in descending order.
             </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Colors.ToRainbow(System.String,System.Int32,UnityEngine.Color[])">
-            <summary>
-            Puts a string value into a rainbow color using Unity's Rich Text format.
-            </summary>
-            <param name="original"></param>
-            <param name="frequency"></param>
-            <param name="colorsToUse"></param>
-            <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Colors.ColorToHex(UnityEngine.Color)">
             <summary>
@@ -6837,7 +6991,7 @@
             <param name="array"></param>
             <param name="action"></param>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RemoveNull``1(System.Collections.Generic.List{``0})">
+        <member name="M:WarWolfWorks.Utility.Hooks.RemoveNull``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Returns a list with all null elements removed (if any)
             </summary>
@@ -6845,99 +6999,25 @@
             <param name="list"></param>
             <returns></returns>
         </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.HooksMethods">
+        <member name="M:WarWolfWorks.Utility.Hooks.EnumerableContains``1(System.Collections.Generic.IEnumerable{``0},``0)">
             <summary>
-            Returns MethodInfo of all public methods inside <see cref="T:WarWolfWorks.Utility.Hooks"/>.
+            Returns true if the given <see cref="T:System.Collections.Generic.ICollection`1"/> has toLookfor.
             </summary>
-        </member>
-        <member name="P:WarWolfWorks.Utility.Hooks.FullMethods">
-            <summary>
-            Returns <see cref="T:System.Reflection.MethodInfo"/> of all public methods inside <see cref="T:WarWolfWorks.Utility.Hooks"/> and all of it's nested classes.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.ParseType(System.String)">
-            <summary>
-            Tries to parse a type with <see cref="M:System.Type.GetType(System.String)"/>; 
-            if it fails, it then tries to itterate through every Assembly inside <see cref="P:System.AppDomain.CurrentDomain"/> to parse the given typeName.
-            </summary>
-            <param name="typeName"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.ParseTypes(System.Collections.Generic.IEnumerable{System.String})">
-            <summary>
-            Itterates through each string, and uses <see cref="M:WarWolfWorks.Utility.Hooks.ParseType(System.String)"/>.
-            </summary>
-            <param name="types"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Implements(System.Type,System.Type)">
-            <summary>
-            Returns true if type is implementing implementation.
-            </summary>
-            <param name="type"></param>
-            <param name="implementation"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.ImplementsGeneric(System.Type,System.Type)">
-            <summary>
-            Returns true if type is implementing the generic implementation.
-            </summary>
-            <param name="type"></param>
-            <param name="genericImplementation"></param>
-            <returns></returns>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.PlayerTag">
-            <summary>
-            Returns the default player tag for Unity.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.Utility.Hooks.RealTimeSecond">
-            <summary>
-            <see cref="P:UnityEngine.Time.smoothDeltaTime"/> Pointer.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.Utility.Hooks.FixedSecond">
-            <summary>
-            <see cref="P:UnityEngine.Time.fixedDeltaTime"/> Pointer.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.Utility.Hooks.FixedFullSecond">
-            <summary>
-            Returns 60 * <see cref="P:UnityEngine.Time.fixedDeltaTime"/>.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RemoveElement(System.Collections.Generic.List{System.Int32}@,System.Int32)">
-            <summary>
-            Removes element at toRemove index from ref list.
-            </summary>
+            <typeparam name="T"></typeparam>
             <param name="list"></param>
-            <param name="toRemove"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.ParseNullable``1(System.String)">
-            <summary>
-            Tries to parse an Enum, if not successful, it returns null instead.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="input"></param>
+            <param name="toLookfor"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Parse``1(System.String)">
+        <member name="M:WarWolfWorks.Utility.Hooks.ReturnFromEnumerable``1(System.Collections.Generic.IEnumerable{``0},``0)">
             <summary>
-            Equivalent to <see cref="M:System.Enum.Parse(System.Type,System.String,System.Boolean)"/>, with the painful parts taken care of.
+            Returns an item from the given collection.
             </summary>
             <typeparam name="T"></typeparam>
-            <param name="input"></param>
+            <param name="list"></param>
+            <param name="toLookFor"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.DebugArrayToString``1(System.Collections.Generic.ICollection{``0},System.Int32)">
-            <summary>
-            Uses <see cref="M:WarWolfWorks.AdvancedDebug.Log(System.Object,System.Int32)"/> to debug all elements inside the given <see cref="T:System.Collections.Generic.ICollection`1"/>.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="collection"></param>
-            <param name="weight"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.ArrayToString``1(System.Collections.Generic.ICollection{``0})">
+        <member name="M:WarWolfWorks.Utility.Hooks.EnumerableToString``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Itterates through each element <typeparamref name="T"/>, calls it's <typeparamref name="T"/>.ToString()
             and returns all of them in a string array.
@@ -6946,7 +7026,7 @@
             <param name="collection"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.GetEmptyItem``1(System.Collections.Generic.ICollection{``0})">
+        <member name="M:WarWolfWorks.Utility.Hooks.GetEmptyItem``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Returns the first instance of a null item inside a collection.
             </summary>
@@ -7062,90 +7142,7 @@
             <param name="item">If 0, it returns Item1; if 1, returns Item2; otherwise returns Item3.</param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.GetKeyStroke(System.Int32)">
-            <summary>
-            Returns the first keycode pressed in the same frame as <see cref="M:WarWolfWorks.Utility.Hooks.GetKeyStroke(System.Int32)"/> was called in.
-            </summary>
-            <param name="type">0 = <see cref="M:UnityEngine.Input.GetKey(UnityEngine.KeyCode)"/>; 1 = <see cref="M:UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode)"/>; 2 = <see cref="M:UnityEngine.Input.GetKeyUp(UnityEngine.KeyCode)"/></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.CheckForMainThread">
-            <summary>
-            Checks if the current thread is the main thread.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.Utility.Hooks.UtilityCanvas">
-            <summary>
-            Canvas which is created under the name UtilitiesCanvas if no canvas was present on the scene.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.MaskGetter(System.Int32[])">
-            <summary>
-            Returns LayerMask int value of all layers. Useful for Raycasting.
-            </summary>
-            <param name="layers"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.MaskToLayer(System.Int32)">
-            <summary> 
-            Converts given bitmask to it's layer number. 
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.LayerNameToIndex(System.String)">
-            <summary>
-            Converts given maskname into it's layer number.
-            </summary>
-            <param name="layer"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.ArrayMerger``1(``0[],``0[])">
-            <summary>
-            Returns an array which is a merged version of array1 and array2.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="array1"></param>
-            <param name="array2"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.ArrayContains``1(System.Collections.Generic.ICollection{``0},``0)">
-            <summary>
-            Deprecated.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="collection"></param>
-            <param name="objectToFind"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.ArrayContains``1(System.Collections.Generic.ICollection{``0},System.Collections.Generic.ICollection{``0})">
-            <summary>
-            Equivalent to <paramref name="collection"/>.Intersect(<paramref name="objectsToFind"/>).Any().
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="collection"></param>
-            <param name="objectsToFind"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.ArrayIsEmpty``1(System.Collections.Generic.ICollection{``0})">
-            <summary>
-            Returns true if the Array or all of it's elements are null.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="collection"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.StringToFloat(System.String)">
-            <summary>
-            Equivalent to <see cref="M:System.Single.Parse(System.String,System.IFormatProvider)"/> where <see cref="T:System.IFormatProvider"/>
-            is <see cref="T:System.Globalization.CultureInfo"/>.InvariantCulture.NumberFormat.
-            </summary>
-            <param name="value"></param>
-            <exception cref="T:System.ArgumentNullException"/>
-            <exception cref="T:System.FormatException"/>
-            <exception cref="T:System.OverflowException"/>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RemoveArrayFromString(System.String,System.Collections.Generic.ICollection{System.String})">
+        <member name="M:WarWolfWorks.Utility.Hooks.RemoveArrayFromString(System.String,System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Removes an array of strings from original.
             </summary>
@@ -7155,28 +7152,6 @@
             <exception cref="T:System.ArgumentException"/>
             <exception cref="T:System.ArgumentNullException"/>
             <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.InstantiateList``1(System.Collections.Generic.IEnumerable{``0})">
-            <summary>
-            Returns a <see cref="T:System.Collections.Generic.IEnumerable`1"/> of instantiated objects (unity copy).
-            </summary>
-            <param name="objects"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.InstantiateList``1(``0[])">
-            <summary>
-            Returns an array of instantiated objects.
-            </summary>
-            <param name="objects"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.DestroyObject``1(``0)">
-            <summary>
-            Destroys a Unity Object using Object.Destroy().
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="objectToDestroy"></param>
-            <exception cref="T:UnityEngine.UnityException"/>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.RotateTo(UnityEngine.Vector3,UnityEngine.Vector3,System.Boolean)">
             <summary>
@@ -7205,15 +7180,6 @@
             <param name="destination"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Get2DRotationsAroundPoint(System.Single,System.Int32,System.Single)">
-            <summary>
-            Returns a list of rotations based around the amount given; amount 2 would return 0 and 180, 3 would return 0, 120 and 240, 4 would return 0, 80, 160 and 240, etc...
-            </summary>
-            <param name="offset"></param>
-            <param name="amount"></param>
-            <param name="maxRotation"></param>
-            <returns></returns>
-        </member>
         <member name="M:WarWolfWorks.Utility.Hooks.ToByteArray(System.String)">
             <summary>
             Equivalent to ASCII <see cref="M:System.Text.Encoding.GetBytes(System.Char[])"/>.
@@ -7226,52 +7192,6 @@
             Equivalent to ASCII <see cref="M:System.Text.Encoding.GetString(System.Byte[])"/>.
             </summary>
             <param name="byt"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.AddEventTriggerListener(UnityEngine.EventSystems.EventTrigger,UnityEngine.EventSystems.EventTriggerType,System.Action{UnityEngine.EventSystems.BaseEventData})">
-            <summary>
-            Adds an event to a given trigger.
-            </summary>
-            <param name="trigger"></param>
-            <param name="eventType"></param>
-            <param name="callback"></param>
-            <exception cref="T:System.ArgumentNullException"/>
-            <exception cref="T:UnityEngine.UnityException"/>
-            <exception cref="T:System.ArgumentException"/>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.ListContainsType``1(System.Collections.Generic.List{``0},System.Type)">
-            <summary>
-            Returns true if a list contains an item of type. (Only works on inherited classes)
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="list"></param>
-            <param name="type"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.ObjectParent(UnityEngine.Collider2D)">
-            <summary>
-             Deprecated.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.GetParent(UnityEngine.Collider2D)">
-            <summary>
-            Returns the parent of the collider. If collider is already the parent, it returns the collider's GameObject instead.
-            </summary>
-            <param name="collider"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.GetOldestParent(UnityEngine.Transform)">
-            <summary>
-            Gets the oldest parent inside the hierarchy.
-            </summary>
-            <param name="child"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.TrueParent(UnityEngine.GameObject)">
-            <summary>
-            Returns the oldest parent in the hierarchy of the given object.
-            </summary>
-            <param name="object"></param>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.HasMethod(System.Object,System.String)">
@@ -7299,6 +7219,207 @@
             <param name="args"></param>
             <param name="customBind"></param>
         </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.GetAttributeValue``2(System.Type,System.Func{``0,``1})">
+            <summary>
+            Returns an attribute value based on type and func given.
+            </summary>
+            <typeparam name="TAttribute"></typeparam>
+            <typeparam name="TValue"></typeparam>
+            <param name="type"></param>
+            <param name="valueSelector"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.StartCoroutine(UnityEngine.MonoBehaviour,System.Collections.IEnumerator,System.Boolean@)">
+            <summary>
+            Starts a singleton-type unity coroutine.
+            </summary>
+            <param name="caller"></param>
+            <param name="routine"></param>
+            <param name="isRunningBool"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.StopCoroutine(UnityEngine.MonoBehaviour,System.Collections.IEnumerator,System.Boolean@)">
+            <summary>
+            Stops a singleton-type unity coroutine.
+            </summary>
+            <param name="caller"></param>
+            <param name="routine"></param>
+            <param name="isRunningBool"></param>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.HooksMethods">
+            <summary>
+            Returns MethodInfo of all public methods inside <see cref="T:WarWolfWorks.Utility.Hooks"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Hooks.FullMethods">
+            <summary>
+            Returns <see cref="T:System.Reflection.MethodInfo"/> of all public methods inside <see cref="T:WarWolfWorks.Utility.Hooks"/> and all of it's nested classes.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.ParseType(System.String)">
+            <summary>
+            Tries to parse a type with <see cref="M:System.Type.GetType(System.String)"/>; 
+            if it fails, it then tries to itterate through every Assembly inside <see cref="P:System.AppDomain.CurrentDomain"/> to parse the given typeName.
+            </summary>
+            <param name="typeName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.CompareTo(System.Object,System.Object,System.Boolean)">
+            <summary>
+            Returns the CompareTo method based on integer type of the value given; If the object(s) given are non-standard data (like int, float, double, etc) it will return 0.
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <param name="matchType">If true, both objects must be of the same type to work.</param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.ParseTypes(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Itterates through each string, and uses <see cref="M:WarWolfWorks.Utility.Hooks.ParseType(System.String)"/>.
+            </summary>
+            <param name="types"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Implements(System.Type,System.Type)">
+            <summary>
+            Returns true if type is implementing implementation.
+            </summary>
+            <param name="type"></param>
+            <param name="implementation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.ImplementsGeneric(System.Type,System.Type)">
+            <summary>
+            Returns true if type is implementing the generic implementation.
+            </summary>
+            <param name="type"></param>
+            <param name="genericImplementation"></param>
+            <returns></returns>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.TAG_PLAYER">
+            <summary>
+            Returns the default player tag for Unity.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Hooks.RealTimeSecond">
+            <summary>
+            <see cref="P:UnityEngine.Time.smoothDeltaTime"/> Pointer.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Hooks.FixedSecond">
+            <summary>
+            <see cref="P:UnityEngine.Time.fixedDeltaTime"/> Pointer.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Hooks.FixedFullSecond">
+            <summary>
+            Returns 60 * <see cref="P:UnityEngine.Time.fixedDeltaTime"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RemoveElement(System.Collections.Generic.List{System.Int32}@,System.Int32)">
+            <summary>
+            Removes element at toRemove index from ref list.
+            </summary>
+            <param name="list"></param>
+            <param name="toRemove"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.ParseNullable``1(System.String)">
+            <summary>
+            Tries to parse an Enum, if not successful, it returns null instead.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Parse``1(System.String)">
+            <summary>
+            Equivalent to <see cref="M:System.Enum.Parse(System.Type,System.String,System.Boolean)"/>, with the painful parts taken care of.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.GetKeyStroke(System.Int32)">
+            <summary>
+            Returns the first keycode pressed in the same frame as <see cref="M:WarWolfWorks.Utility.Hooks.GetKeyStroke(System.Int32)"/> was called in.
+            </summary>
+            <param name="type">0 = <see cref="M:UnityEngine.Input.GetKey(UnityEngine.KeyCode)"/>; 1 = <see cref="M:UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode)"/>; 2 = <see cref="M:UnityEngine.Input.GetKeyUp(UnityEngine.KeyCode)"/></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.CheckForMainThread">
+            <summary>
+            Checks if the current thread is the main thread.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Hooks.UtilityCanvas">
+            <summary>
+            Canvas which is created under the name UtilitiesCanvas if no canvas was present on the scene.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.ToSingle(System.String)">
+            <summary>
+            Equivalent to <see cref="M:System.Single.Parse(System.String,System.IFormatProvider)"/> where <see cref="T:System.IFormatProvider"/>
+            is <see cref="T:System.Globalization.CultureInfo"/>.InvariantCulture.NumberFormat.
+            </summary>
+            <param name="value"></param>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:System.FormatException"/>
+            <exception cref="T:System.OverflowException"/>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.DestroyObject``1(``0)">
+            <summary>
+            Destroys a Unity Object using Object.Destroy().
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="objectToDestroy"></param>
+            <exception cref="T:UnityEngine.UnityException"/>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Get2DRotationsAroundPoint(System.Single,System.Int32,System.Single)">
+            <summary>
+            Returns a list of rotations based around the amount given; amount 2 would return 0 and 180, 3 would return 0, 120 and 240, 4 would return 0, 80, 160 and 240, etc...
+            </summary>
+            <param name="offset"></param>
+            <param name="amount"></param>
+            <param name="maxRotation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.AddEventTriggerListener(UnityEngine.EventSystems.EventTrigger,UnityEngine.EventSystems.EventTriggerType,System.Action{UnityEngine.EventSystems.BaseEventData})">
+            <summary>
+            Adds an event to a given trigger.
+            </summary>
+            <param name="trigger"></param>
+            <param name="eventType"></param>
+            <param name="callback"></param>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:UnityEngine.UnityException"/>
+            <exception cref="T:System.ArgumentException"/>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.ObjectParent(UnityEngine.Collider2D)">
+            <summary>
+             Deprecated.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.GetParent(UnityEngine.Collider2D)">
+            <summary>
+            Returns the parent of the collider. If collider is already the parent, it returns the collider's GameObject instead.
+            </summary>
+            <param name="collider"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.GetOldestParent(UnityEngine.Transform)">
+            <summary>
+            Gets the oldest parent inside the hierarchy.
+            </summary>
+            <param name="child"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.TrueParent(UnityEngine.GameObject)">
+            <summary>
+            Returns the oldest parent in the hierarchy of the given object.
+            </summary>
+            <param name="object"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.Utility.Hooks.CallStaticMethod(System.Type,System.String,System.Object[],System.Reflection.BindingFlags)">
             <summary>
             Calls a method by name inside a static class.
@@ -7307,14 +7428,6 @@
             <param name="methodName"></param>
             <param name="args"></param>
             <param name="specificBind"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.LineChanger(System.String,System.String,System.Int32)">
-            <summary>
-            Overrides a line at the given index of a file.
-            </summary>
-            <param name="newText"></param>
-            <param name="fileName"></param>
-            <param name="line_to_edit"></param>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.ObjectParent(UnityEngine.GameObject)">
             <summary>
@@ -7333,24 +7446,6 @@
             <param name="spriteName"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.ContainsInCollection``1(System.Collections.Generic.ICollection{``0},``0)">
-            <summary>
-            Returns true if the given <see cref="T:System.Collections.Generic.ICollection`1"/> has toLookfor.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="list"></param>
-            <param name="toLookfor"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.ReturnFromCollection``1(System.Collections.Generic.ICollection{``0},``0)">
-            <summary>
-            Returns an item from the given collectin.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="list"></param>
-            <param name="toLookFor"></param>
-            <returns></returns>
-        </member>
         <member name="M:WarWolfWorks.Utility.Hooks.IsSubclassOf(System.Type,System.Type)">
             <summary>
             Returns true if type is subclass of baseType.
@@ -7359,7 +7454,7 @@
             <param name="baseType"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.ListSender(System.String,System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:WarWolfWorks.Utility.Hooks.EnumerableConcat(System.String,System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Returns all values merged into one with origin as base value, from an <see cref="T:System.Collections.Generic.IEnumerable`1"/> where T is string.
             </summary>
@@ -7367,22 +7462,29 @@
             <param name="adders"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.ListSender(System.Single,System.Collections.Generic.IEnumerable{System.Single})">
+        <member name="M:WarWolfWorks.Utility.Hooks.EnumerableConcat(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Returns all values merged into one with origin as base value, from an <see cref="T:System.Collections.Generic.IEnumerable`1"/> where T is string.
+            </summary>
+            <param name="adders"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.EnumerableConcat(System.Single,System.Collections.Generic.IEnumerable{System.Single})">
             <summary>
             Returns all values merged into one with origin as base value, from an <see cref="T:System.Collections.Generic.IEnumerable`1"/> where T is float.
             </summary>
             <param name="origin"></param>
-            <param name="adder"></param>
+            <param name="adders"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.ListMerger(System.Collections.Generic.IEnumerable{System.Single})">
+        <member name="M:WarWolfWorks.Utility.Hooks.EnumerableConcat(System.Collections.Generic.IEnumerable{System.Single})">
             <summary>
             Returns all values merged into one from an <see cref="T:System.Collections.Generic.IEnumerable`1"/> where T is float.
             </summary>
-            <param name="adder"></param>
+            <param name="adders"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.ListMerger(System.Int32,System.Collections.Generic.List{System.Int32})">
+        <member name="M:WarWolfWorks.Utility.Hooks.EnumerableConcat(System.Int32,System.Collections.Generic.IEnumerable{System.Int32})">
             <summary>
             Merges all int values of a list into one value.
             </summary>
@@ -7390,14 +7492,11 @@
             <param name="adders"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.GetAttributeValue``2(System.Type,System.Func{``0,``1})">
+        <member name="M:WarWolfWorks.Utility.Hooks.EnumerableConcat(System.Collections.Generic.IEnumerable{System.Int32})">
             <summary>
-            Returns an attribute value based on type and func given.
+            Merges all int values of a list into one value.
             </summary>
-            <typeparam name="TAttribute"></typeparam>
-            <typeparam name="TValue"></typeparam>
-            <param name="type"></param>
-            <param name="valueSelector"></param>
+            <param name="adders"></param>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.ConvertEnum``1(System.Int32)">
@@ -7407,22 +7506,6 @@
             <typeparam name="T"></typeparam>
             <param name="i"></param>
             <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.StartCoroutine(UnityEngine.MonoBehaviour,System.Collections.IEnumerator,System.Boolean@)">
-            <summary>
-            Starts a singleton-type unity coroutine.
-            </summary>
-            <param name="caller"></param>
-            <param name="routine"></param>
-            <param name="isRunningBool"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.StopCoroutine(UnityEngine.MonoBehaviour,System.Collections.IEnumerator,System.Boolean@)">
-            <summary>
-            Stops a singleton-type unity coroutine.
-            </summary>
-            <param name="caller"></param>
-            <param name="routine"></param>
-            <param name="isRunningBool"></param>
         </member>
         <member name="T:WarWolfWorks.Utility.IntRange">
             <summary>

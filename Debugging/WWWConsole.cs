@@ -220,13 +220,13 @@ namespace WarWolfWorks.Debugging
         public static bool InsertInput(KeyCode key)
         {
             bool flag;
-            if (AcceptableKeys.ContainsInCollection(key))
+            if (AcceptableKeys.EnumerableContains(key))
             {
                 flag = false;
             }
             else
             {
-                if (!FunctionKeys.ContainsInCollection(key))
+                if (!FunctionKeys.EnumerableContains(key))
                 {
                     return false;
                 }

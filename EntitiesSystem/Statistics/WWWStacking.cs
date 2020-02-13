@@ -62,9 +62,9 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
 
             IStat[] toUse = GetStatsByAffections(BaseStat.Affections);
 
-            float adder = Hooks.ListSender(BaseStat.Value, GetStatValuesByStacking(toUse, Adder)) - BaseStat.Value;
-            float stackOrigMul = Hooks.ListSender(1, GetStatValuesByStacking(toUse, StackingOriginalMultiplier));
-            float stackMul = Hooks.ListSender(1, GetStatValuesByStacking(toUse, StackingMultiplier));
+            float adder = Hooks.EnumerableConcat(BaseStat.Value, GetStatValuesByStacking(toUse, Adder)) - BaseStat.Value;
+            float stackOrigMul = Hooks.EnumerableConcat(1, GetStatValuesByStacking(toUse, StackingOriginalMultiplier));
+            float stackMul = Hooks.EnumerableConcat(1, GetStatValuesByStacking(toUse, StackingMultiplier));
 
             float origMulAdd = GetMultiplierValue(BaseStat.Value, GetStatValuesByStacking(toUse, OriginalMultiplier));
             float MulAdd = GetMultiplierValue(adder, GetStatValuesByStacking(toUse, Multiplier));
@@ -72,7 +72,7 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
             float added = ((adder * stackMul) + origMulAdd + (BaseStat.Value * stackOrigMul)) + MulAdd;
             //AdvancedDebug.Log($"Added value is {added}; Based on adder: {adder}, origMulAdd: {origMulAdd}, BaseStat: {BaseStat}, stackOrigMul: {stackOrigMul}, MulAdd: {MulAdd}, stackMul: {stackMul}");
 
-            float stackFullMul = Hooks.ListSender(1, GetStatValuesByStacking(toUse, StackingFullMultiplier));
+            float stackFullMul = Hooks.EnumerableConcat(1, GetStatValuesByStacking(toUse, StackingFullMultiplier));
             float fullMulAdd = GetMultiplierValue(added, GetStatValuesByStacking(toUse, FullMultiplier));
 
             float toReturn = (added * stackFullMul) + fullMulAdd;

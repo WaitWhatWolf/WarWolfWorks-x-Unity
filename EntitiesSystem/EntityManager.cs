@@ -564,5 +564,16 @@ namespace WarWolfWorks.EntitiesSystem
             return true;
         }
         #endregion
+
+        private const string TOSTRING_RETURN = "EntityManager";
+
+        /// <summary>
+        /// Returns the name of the class.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return TOSTRING_RETURN;
+        }
     }
 }

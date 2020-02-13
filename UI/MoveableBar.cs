@@ -5,10 +5,62 @@ using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.UI
 {
+    /// <summary>
+    /// A bar/tab that allows you to move a menu using your mouse drag.
+    /// </summary>
     public class MoveableBar : MonoBehaviour
     {
+        /// <summary>
+        /// Which axis should freeze from any <see cref="MoveableBar"/> movement.
+        /// </summary>
+        public enum FreezeStyle
+        {
+            /// <summary>
+            /// Freemove.
+            /// </summary>
+            None,
+            /// <summary>
+            /// Frozen on the X axis.
+            /// </summary>
+            X,
+            /// <summary>
+            /// Frozen on the Y axis.
+            /// </summary>
+            Y
+        }
+
+        /// <summary>
+        /// How the <see cref="MoveableBar"/> is confined.
+        /// </summary>
+        public enum Confinement
+        {
+            /// <summary>
+            /// Not confined.
+            /// </summary>
+            None,
+            /// <summary>
+            /// Clamped to it's parent when released.
+            /// </summary>
+            SnapParent,
+            /// <summary>
+            /// Clamps to it's parent constantly.
+            /// </summary>
+            HardParent
+        }
+
+        /// <summary>
+        /// Bar to be used as the "interactor".
+        /// </summary>
         public Image MovableBar;
+        /// <summary>
+        /// The <see cref="RectTransform"/> to move with the bar.
+        /// </summary>
         public RectTransform UIToMove;
+
+        /// <summary>
+        /// The <see cref="FreezeStyle"/> of this <see cref="MoveableBar"/>.
+        /// </summary>
+        public FreezeStyle Freeze;
 
         /// <summary>
         /// Rect min and max anchores stored in a vector4. Sorted as follows: anchorMin.x, anchorMin.y, anchorMax.x, anchorMax.y.
@@ -35,8 +87,15 @@ namespace WarWolfWorks.UI
         /// </summary>
         public bool IsOnBar { get; private set; }
 
-        public bool LimitedToScreenView;
+        /// <summary>
+        /// If true, the menu will snap back to screen view when released.
+        /// </summary>
+        public Confinement Clamping;
 
+        /// <summary>
+        /// Returns true if it can drag.
+        /// </summary>
+        /// <returns></returns>
         public bool CanMoveUI()
         {
             return IsOnBar;
@@ -87,21 +146,22 @@ namespace WarWolfWorks.UI
             IsOnBar = false;
             LastRectSize = CurrentRectSize;
 
-            SetWindowOffBounds();
+            if(Clamping == Confinement.SnapParent) SetWindowOffBounds();
 
             AdvancedDebug.Log("Cursor stopped moving " + name, 5);
         }
 
+        private bool BoundsLeft() => UIToMove.anchorMin.x <= 0;
+        private bool BoundsRight() => UIToMove.anchorMax.x >= 1;
+        private bool BoundsTop() => UIToMove.anchorMin.y >= 1;
+        private bool BoundsBot() => UIToMove.anchorMin.y <= 0;
+
         private void SetWindowOffBounds()
         {
-            if (!LimitedToScreenView)
+            if (Clamping == Confinement.None)
                 return;
 
             //Checks if any side of the window is outside the screen.
-            bool isBoundsLeft = UIToMove.anchorMin.x < 0;
-            bool isBoundsRight = UIToMove.anchorMax.x > 1;
-            bool isBoundsUp = UIToMove.anchorMax.y > 1;
-            bool isBoundsDown = UIToMove.anchorMin.y < 0;
 
             //Will be used to set anchorMin.
             float xToGiveMin = UIToMove.anchorMin.x;
@@ -111,26 +171,26 @@ namespace WarWolfWorks.UI
             float xToGiveMax = UIToMove.anchorMax.x;
             float yToGiveMax = UIToMove.anchorMax.y;
 
-            if (isBoundsRight)
+            if (BoundsRight())
             {
                 float diff = (xToGiveMax - 1);
                 xToGiveMax -= diff;
                 xToGiveMin -= diff;
             }
-            else if (isBoundsLeft)
+            else if (BoundsLeft())
             {
                 float diff = xToGiveMin.ToPositive();
                 xToGiveMin = 0;
                 xToGiveMax += diff;
             }
 
-            if (isBoundsUp)
+            if (BoundsTop())
             {
                 float diff = (yToGiveMax - 1);
                 yToGiveMax -= diff;
                 yToGiveMin -= diff;
             }
-            else if (isBoundsDown)
+            else if (BoundsBot())
             {
                 float diff = yToGiveMin.ToPositive();
                 yToGiveMin = 0;
@@ -160,11 +220,16 @@ namespace WarWolfWorks.UI
             Vector2 mousePos = Hooks.Cursor.MousePosInPercent;
 
             //Sets anchor min and max.
-            UIToMove.anchorMin = new Vector2(mousePos.x + LastRectSize.x - MouseOffset.x, mousePos.y + LastRectSize.y - MouseOffset.y);
-            UIToMove.anchorMax = new Vector2(mousePos.x + LastRectSize.z - MouseOffset.x, mousePos.y + LastRectSize.w - MouseOffset.y);
+            UIToMove.anchorMin = new Vector2(Freeze != FreezeStyle.X ? mousePos.x + LastRectSize.x - MouseOffset.x : UIToMove.anchorMin.x,
+                Freeze != FreezeStyle.Y ? mousePos.y + LastRectSize.y - MouseOffset.y : UIToMove.anchorMin.y);
+            UIToMove.anchorMax = new Vector2(Freeze != FreezeStyle.X ? mousePos.x + LastRectSize.z - MouseOffset.x : UIToMove.anchorMax.x,
+                Freeze != FreezeStyle.Y ? mousePos.y + LastRectSize.w - MouseOffset.y : UIToMove.anchorMax.y);
 
             //Sets offset to 0 (The UI will be filling the whole anchor window).
             UIToMove.offsetMin = UIToMove.offsetMax = Vector2.zero;
+
+            if (Clamping == Confinement.HardParent)
+                SetWindowOffBounds();
         }
     }
 }

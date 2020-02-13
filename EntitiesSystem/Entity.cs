@@ -307,7 +307,8 @@ namespace WarWolfWorks.EntitiesSystem
                 return false;
 
             Components.Remove(toUse);
-            Destroy(gameObject.GetComponent<T>());
+            toUse.OnDestroyed();
+            Destroy(toUse);
             return true;
         }
 

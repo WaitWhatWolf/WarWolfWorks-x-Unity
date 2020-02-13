@@ -32,7 +32,7 @@ namespace WarWolfWorks.EditorBase.Custom
         public (string[] EnumName, long[] EnumVal) EnumValuesLong;
 
         private LanguageString LS_Previous = new LanguageString("Previous", ("Poprzedni", SystemLanguage.Polish), ("前に", SystemLanguage.Japanese));
-        private LanguageString LS_Next = new LanguageString("Previous", ("Następny", SystemLanguage.Polish), ("次に", SystemLanguage.Japanese));
+        private LanguageString LS_Next = new LanguageString("Next", ("Następny", SystemLanguage.Polish), ("次に", SystemLanguage.Japanese));
         private LanguageString LS_Remove = new LanguageString("Remove Entry", ("Usuń wejście", SystemLanguage.Polish), ("エントリーを削除", SystemLanguage.Japanese));
 
         private LanguageString LS_Type = new LanguageString("Type", ("Typ", SystemLanguage.Polish), ("タイプ", SystemLanguage.Japanese));

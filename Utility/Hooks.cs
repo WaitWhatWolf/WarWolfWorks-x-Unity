@@ -16,7 +16,6 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using WarWolfWorks.Interfaces;
 using WarWolfWorks.Internal;
-using WarWolfWorks.Security.Cryptography;
 
 namespace WarWolfWorks.Utility
 {
@@ -623,7 +622,6 @@ namespace WarWolfWorks.Utility
 
                 Catalog reference = catalogs[0];
 
-
                 for (int i = 1; i < catalogs.Length; i++)
                 {
                     if (!catalogs[i].Category.Equals(reference.Category))
@@ -1051,6 +1049,19 @@ namespace WarWolfWorks.Utility
             }
 
             /// <summary>
+            /// Overrides a line at the given index of a file.
+            /// </summary>
+            /// <param name="newText"></param>
+            /// <param name="filePath"></param>
+            /// <param name="index"></param>
+            public static void LineChanger(string filePath, int index, string newText)
+            {
+                string[] array = File.ReadAllLines(filePath);
+                array[index - 1] = newText;
+                File.WriteAllLines(filePath, array);
+            }
+
+            /// <summary>
             /// Returns the StreamingAssets folder path in windows form.
             /// </summary>
             public static string StreamingAssetsPath => Application.streamingAssetsPath.Replace("/", @"\");
@@ -1392,76 +1403,73 @@ namespace WarWolfWorks.Utility
         public static class Enumeration
         {
             /// <summary>
-            /// Returns the CompareTo method based on integer type of the value given; If the object(s) given are non-int, non-float or non-double it will return 0.
+            /// Returns true if a list contains an item of type. (Only works on inherited classes)
             /// </summary>
-            /// <param name="a"></param>
-            /// <param name="b"></param>
-            /// <param name="matchType">If true, both objects must be of the same type to work.</param>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="list"></param>
+            /// <param name="type"></param>
             /// <returns></returns>
-            public static int CompareTo(object a, object b, bool matchType)
+            public static bool ListContainsType<T>(List<T> list, Type type)
             {
-                try
+                foreach (T item in list)
                 {
-                    if (matchType)
+                    if (item.GetType() == type)
                     {
-                        switch (a)
-                        {
-                            default: return 0;
-                            case byte Byte when b is byte:
-                                return Byte.CompareTo((byte)b);
-                            case sbyte sByte when b is sbyte:
-                                return sByte.CompareTo((sbyte)b);
-                            case short Short when b is short:
-                                return Short.CompareTo((short)b);
-                            case ushort uShort when b is ushort:
-                                return uShort.CompareTo((ushort)b);
-                            case int Int when b is int:
-                                return Int.CompareTo((int)b);
-                            case uint uInt when b is uint:
-                                return uInt.CompareTo((uint)b);
-                            case long Long when b is long:
-                                return Long.CompareTo((long)b);
-                            case ulong uLong when b is ulong:
-                                return uLong.CompareTo((ulong)b);
-                            case float Float when b is float:
-                                return Float.CompareTo((float)b);
-                            case double Double when b is double:
-                                return Double.CompareTo((double)b);
-                        }
-                    }
-                    else
-                    {
-                        switch (a)
-                        {
-                            default: return 0;
-                            case byte Byte when b is byte:
-                                return Byte.CompareTo(b);
-                            case sbyte sByte when b is sbyte:
-                                return sByte.CompareTo(b);
-                            case short Short when b is short:
-                                return Short.CompareTo(b);
-                            case ushort uShort when b is ushort:
-                                return uShort.CompareTo(b);
-                            case int Int when b is int:
-                                return Int.CompareTo(b);
-                            case uint uInt when b is uint:
-                                return uInt.CompareTo(b);
-                            case long Long when b is long:
-                                return Long.CompareTo(b);
-                            case ulong uLong when b is ulong:
-                                return uLong.CompareTo(b);
-                            case float Float when b is float:
-                                return Float.CompareTo(b);
-                            case double Double when b is double:
-                                return Double.CompareTo(b);
-                        }
+                        return true;
                     }
                 }
-                catch
-                {
-                    return 0;
-                }
+                return false;
             }
+
+            /// <summary>
+            /// Returns an array which is a merged version of array1 and array2.
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="array1"></param>
+            /// <param name="array2"></param>
+            /// <returns></returns>
+            public static T[] ArrayMerger<T>(T[] array1, T[] array2)
+            {
+                T[] array3 = new T[array1.Length + array2.Length];
+                Array.Copy(array1, array3, array1.Length);
+                Array.Copy(array2, 0, array3, array1.Length, array2.Length);
+                return array3;
+            }
+
+            /// <summary>
+            /// Equivalent to <paramref name="collection"/>.Intersect(<paramref name="objectsToFind"/>).Any().
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="collection"></param>
+            /// <param name="objectsToFind"></param>
+            /// <returns></returns>
+            public static bool EnumerableContains<T>(IEnumerable<T> collection, IEnumerable<T> objectsToFind)
+            {
+                return collection.Intersect(objectsToFind).Any();
+            }
+
+            /// <summary>
+            /// Returns true if the Array or all of it's elements are null.
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="collection"></param>
+            /// <returns></returns>
+            public static bool IsEmpty<T>(IEnumerable<T> collection)
+            {
+                if (collection == null || collection.Count() < 1)
+                {
+                    return true;
+                }
+                foreach (T item in collection)
+                {
+                    if (item != null)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
             /// <summary>
             /// Equivalent to <see cref="List{T}.Find(Predicate{T})"/> for Arrays.
             /// </summary>
@@ -1492,13 +1500,23 @@ namespace WarWolfWorks.Utility
                 => Array.ForEach(array, action);
 
             /// <summary>
-            /// Removes all null elements inside a list.
+            /// Removes all null elements inside a collection.
             /// </summary>
             /// <typeparam name="T"></typeparam>
             /// <param name="list"></param>
-            public static void RemoveNull<T>(List<T> list)
+            public static IEnumerable<T> RemoveNull<T>(IEnumerable<T> list)
             {
-                list.RemoveAll(i => i == null);
+                return list.Where(t => t != null);
+            }
+
+            /// <summary>
+            /// Removes all default elements inside a collection.
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="list"></param>
+            public static IEnumerable<T> RemoveDefault<T>(IEnumerable<T> list)
+            {
+                return list.Where(t => t != default);
             }
 
             /// <summary>
@@ -1538,6 +1556,39 @@ namespace WarWolfWorks.Utility
                 {
                     return null;
                 }
+            }
+
+            /// <summary>
+            /// Returns a <see cref="IEnumerable{T}"/> of instantiated objects (unity copy).
+            /// </summary>
+            /// <param name="objects"></param>
+            /// <returns></returns>
+            public static IEnumerable<T> InstantiateList<T>(IEnumerable<T> objects) where T : UnityEngine.Object
+            {
+                T[] toReturn = objects.ToArray();
+                for (int i = 0; i < toReturn.Length; i++)
+                {
+                    toReturn[i] = UnityEngine.Object.Instantiate(toReturn[i]);
+                    if (toReturn[i] is IInstantiatable) ((IInstantiatable)toReturn[i]).PostInstantiate();
+                }
+
+                return toReturn;
+            }
+
+            /// <summary>
+            /// Returns an array of instantiated objects.
+            /// </summary>
+            /// <param name="objects"></param>
+            /// <returns></returns>
+            public static T[] InstantiateList<T>(T[] objects) where T : UnityEngine.Object
+            {
+                for (int i = 0; i < objects.Length; i++)
+                {
+                    objects[i] = UnityEngine.Object.Instantiate(objects[i]);
+                    if (objects[i] is IInstantiatable) ((IInstantiatable)objects[i]).PostInstantiate();
+                }
+
+                return objects;
             }
         }
 
@@ -3135,6 +3186,44 @@ namespace WarWolfWorks.Utility
         public static class Rendering
         {
             /// <summary>
+            /// Returns LayerMask int value of all layers. Useful for Raycasting.
+            /// </summary>
+            /// <param name="layers"></param>
+            /// <returns></returns>
+            public static int MaskGetter(int[] layers)
+            {
+                string[] array = new string[layers.Length];
+                for (int i = 0; i < array.Length; i++)
+                {
+                    array[i] = SortingLayer.IDToName(layers[i]);
+                }
+                return LayerMask.GetMask(array);
+            }
+
+            /// <summary>
+            /// Converts given maskname into it's layer number.
+            /// </summary>
+            /// <param name="layer"></param>
+            /// <returns></returns>
+            public static int LayerNameToIndex(string layer)
+                => Rendering.MaskToLayer(LayerMask.NameToLayer(layer));
+
+            /// <summary> 
+            /// Converts given bitmask to it's layer number. 
+            /// </summary>
+            /// <returns></returns>
+            public static int MaskToLayer(int bitmask)
+            {
+                int result = bitmask > 0 ? 0 : 31;
+                while (bitmask > 1)
+                {
+                    bitmask >>= 1;
+                    result++;
+                }
+                return result;
+            }
+
+            /// <summary>
             /// Returns true if a renderer is visible from a Camera's view.
             /// </summary>
             /// <param name="renderer"></param>
@@ -3203,6 +3292,21 @@ namespace WarWolfWorks.Utility
 
                 host.StopCoroutine("ICameraShake");
             }
+
+            /// <summary>
+            /// Retuns an array of layer names based on ids given.
+            /// </summary>
+            /// <param name="ids"></param>
+            /// <returns></returns>
+            public static string[] LayerIdsToNames(int[] ids)
+            {
+                string[] array = new string[ids.Length];
+                for (int i = 0; i < array.Length; i++)
+                {
+                    array[i] = LayerMask.LayerToName(ids[i]);
+                }
+                return array;
+            }
         }
 
         /// <summary>
@@ -3210,6 +3314,59 @@ namespace WarWolfWorks.Utility
         /// </summary>
         public static class Text
         {
+            /// <summary>
+            /// Used to tag a string section to start a rainbow text.
+            /// </summary>
+            public const string RainbowTextStarter = "(Color=Rainbow)";
+
+            /// <summary>
+            /// Used to tag a string section to stop a rainbow text.
+            /// </summary>
+            public const string RainbowTextEnder = "(/Color=Rainbow)";
+
+            /// <summary>
+            /// Puts a string value into a rainbow color using Unity's Rich Text format.
+            /// </summary>
+            /// <param name="original"></param>
+            /// <param name="frequency"></param>
+            /// <param name="colorsToUse"></param>
+            /// <returns></returns>
+            public static string ToRainbow(string original, int frequency, Color[] colorsToUse)
+            {
+                if (!original.Contains(RainbowTextStarter) || !original.Contains(RainbowTextEnder))
+                {
+                    AdvancedDebug.LogWarning("Message did not contain required Starter/Ender for text conversion. Make sure the text you want to modify is wrapped with (Color=Rainbow) (/Color=Rainbow)", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
+                    return original;
+                }
+                string text = "<color=#klrtgiv>";
+                string str = "</color>";
+                string[] separator = new string[1]
+                {
+                    RainbowTextStarter
+                };
+                string[] separator2 = new string[1]
+                {
+                    RainbowTextEnder
+                };
+                string text2 = original.Split(separator, StringSplitOptions.RemoveEmptyEntries)[1].Split(separator2, StringSplitOptions.RemoveEmptyEntries)[0];
+                char[] array = text2.ToCharArray();
+                string[] array2 = new string[array.Length];
+                for (int i = 0; i < array.Length; i += frequency)
+                {
+                    int num = Mathf.Clamp(i + frequency, 0, array.Length);
+                    for (int j = i; j < num; j++)
+                    {
+                        array2[j] = text.Replace("klrtgiv", Colors.ColorToHex(colorsToUse[WWWMath.ClampRounded(i, 0, colorsToUse.Length - 1)])) + array[j].ToString() + str;
+                    }
+                }
+                string empty = string.Empty;
+                empty = EnumerableConcat(empty, array2.ToList());
+                string[] array3 = original.Split(separator, StringSplitOptions.None);
+                string str2 = array3[0];
+                string str3 = array3[1].Split(separator2, StringSplitOptions.None)[1];
+                return str2 + empty + str3;
+            }
+
             /// <summary>
             /// Wraps original between wrappers.Item1 and wrappers.Item2
             /// </summary>
@@ -3304,21 +3461,6 @@ namespace WarWolfWorks.Utility
 
                 return original.Substring(pFrom, pTo - pFrom);
             }
-
-            /// <summary>
-            /// Retuns an array of layer names based on ids given.
-            /// </summary>
-            /// <param name="ids"></param>
-            /// <returns></returns>
-            public static string[] LayerIdsToNames(int[] ids)
-            {
-                string[] array = new string[ids.Length];
-                for (int i = 0; i < array.Length; i++)
-                {
-                    array[i] = LayerMask.LayerToName(ids[i]);
-                }
-                return array;
-            }
         }
 
         /// <summary>
@@ -3350,19 +3492,19 @@ namespace WarWolfWorks.Utility
             public static Color Reverse(Color original) => Color.white - original;
 
             /// <summary>
-            /// Used to tag a string section to start a rainbow text.
+            /// Returns in order: Color.red, Color.yellow, Color.blue.
             /// </summary>
-            public const string RainbowTextStarter = "(Color=Rainbow)";
-
-            /// <summary>
-            /// Used to tag a string section to stop a rainbow text.
-            /// </summary>
-            public const string RainbowTextEnder = "(/Color=Rainbow)";
+            public static readonly Color[] PrimaryColors = new Color[]
+            {
+                Color.red,
+                Color.yellow,
+                Color.blue
+            };
 
             /// <summary>
             /// Returns in order: Color.red, Color.yellow, Color.cyan, Color.blue, Color.magenta
             /// </summary>
-            public static Color[] MainColors = new Color[6]
+            public static readonly Color[] MainColors = new Color[6]
             {
                 Color.red,
                 Color.yellow,
@@ -3375,7 +3517,7 @@ namespace WarWolfWorks.Utility
             /// <summary>
             /// Returns all colors of the rainbow in descending order.
             /// </summary>
-            public static Color[] RainbowColors = new Color[7]
+            public static readonly Color[] RainbowColors = new Color[7]
             {
                 new Color(1f, 0f, 0f),
                 new Color(1f, 0.35f, 0f),
@@ -3385,49 +3527,6 @@ namespace WarWolfWorks.Utility
                 new Color(0f, 0.35f, 1f),
                 new Color(1f, 0f, 1f)
             };
-
-            /// <summary>
-            /// Puts a string value into a rainbow color using Unity's Rich Text format.
-            /// </summary>
-            /// <param name="original"></param>
-            /// <param name="frequency"></param>
-            /// <param name="colorsToUse"></param>
-            /// <returns></returns>
-            public static string ToRainbow(string original, int frequency, Color[] colorsToUse)
-            {
-                if (!original.Contains(RainbowTextStarter) || !original.Contains(RainbowTextEnder))
-                {
-                    AdvancedDebug.LogWarning("Message did not contain required Starter/Ender for text conversion. Make sure the text you want to modify is wrapped with (Color=Rainbow) (/Color=Rainbow)", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
-                    return original;
-                }
-                string text = "<color=#klrtgiv>";
-                string str = "</color>";
-                string[] separator = new string[1]
-                {
-                    RainbowTextStarter
-                };
-                string[] separator2 = new string[1]
-                {
-                    RainbowTextEnder
-                };
-                string text2 = original.Split(separator, StringSplitOptions.RemoveEmptyEntries)[1].Split(separator2, StringSplitOptions.RemoveEmptyEntries)[0];
-                char[] array = text2.ToCharArray();
-                string[] array2 = new string[array.Length];
-                for (int i = 0; i < array.Length; i += frequency)
-                {
-                    int num = Mathf.Clamp(i + frequency, 0, array.Length);
-                    for (int j = i; j < num; j++)
-                    {
-                        array2[j] = text.Replace("klrtgiv", ColorToHex(colorsToUse[WWWMath.ClampRounded(i, 0, colorsToUse.Length - 1)])) + array[j].ToString() + str;
-                    }
-                }
-                string empty = string.Empty;
-                empty = ListSender(empty, array2.ToList());
-                string[] array3 = original.Split(separator, StringSplitOptions.None);
-                string str2 = array3[0];
-                string str3 = array3[1].Split(separator2, StringSplitOptions.None)[1];
-                return str2 + empty + str3;
-            }
 
             /// <summary>
             /// Returns the hexcode value of a color. (Pointer of <see cref="ColorUtility.ToHtmlStringRGB(Color)"/>)
@@ -3501,7 +3600,7 @@ namespace WarWolfWorks.Utility
             }
         }
 
-#region Extention Methods
+#region Extension Methods
         /// <summary>
         /// Puts a string value into a rainbow text using Unity's Rich Text format.
         /// </summary>
@@ -3510,7 +3609,7 @@ namespace WarWolfWorks.Utility
         /// <param name="colorsToUse"></param>
         /// <returns></returns>
         public static string ToRainbow(this string original, int frequency, Color[] colorsToUse)
-            => Colors.ToRainbow(original, frequency, colorsToUse);
+            => Text.ToRainbow(original, frequency, colorsToUse);
         /// <summary>
         /// Extention method for <see cref="Text.Cutout(string, string, string)"/>.
         /// </summary>
@@ -3544,7 +3643,7 @@ namespace WarWolfWorks.Utility
         /// <param name="value"></param>
         /// <param name="digits"></param>
         /// <returns></returns>
-        public static float Truncate(float value, int digits) => WWWMath.Truncate(value, digits);
+        public static float Truncate(this float value, int digits) => WWWMath.Truncate(value, digits);
         /// <summary>
         /// If value given is negative, it will be turned into it's positive value.
         /// </summary>
@@ -3670,9 +3769,466 @@ namespace WarWolfWorks.Utility
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <returns></returns>
-        public static List<T> RemoveNull<T>(this List<T> list)
+        public static IEnumerable<T> RemoveNull<T>(this IEnumerable<T> list)
         {
-            return list.FindAll(t => t != null);
+            return list.Where(t => t != null);
+        }
+        /// <summary>
+        /// Returns true if the given <see cref="ICollection{T}"/> has toLookfor.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="toLookfor"></param>
+        /// <returns></returns>
+        public static bool EnumerableContains<T>(this IEnumerable<T> list, T toLookfor)
+        {
+            if (list.Count() < 1)
+            {
+                return false;
+            }
+            foreach (T item in list)
+            {
+                if (item.Equals(toLookfor))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        /// <summary>
+        /// Returns an item from the given collection.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="toLookFor"></param>
+        /// <returns></returns>
+        public static T ReturnFromEnumerable<T>(this IEnumerable<T> list, T toLookFor)
+        {
+            foreach (T item in list)
+            {
+                if (item.Equals(toLookFor))
+                {
+                    return item;
+                }
+            }
+            return default;
+        }
+        /// <summary>
+        /// Itterates through each element <typeparamref name="T"/>, calls it's <typeparamref name="T"/>.ToString()
+        /// and returns all of them in a string array.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        public static string[] EnumerableToString<T>(this IEnumerable<T> collection)
+        {
+            List<string> list = new List<string>();
+            foreach (T item in collection)
+            {
+                list.Add(item.ToString());
+            }
+            return list.ToArray();
+        }
+        /// <summary>
+        /// Returns the first instance of a null item inside a collection.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        public static T GetEmptyItem<T>(this IEnumerable<T> collection) where T : class
+        {
+            foreach (T item in collection)
+            {
+                if (item == null)
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
+        /// <summary>
+        /// Returns the index of the first element T equal to null.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static int GetEmptyIndex<T>(this List<T> list)
+         => list.FindIndex(t => t == null);
+        /// <summary>
+        /// Returns the index of the first element T equal to null.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="array"></param>
+        /// <returns></returns>
+        public static int GetEmptyIndex<T>(this T[] array)
+        => array.FindIndex(t => t == null);
+        /// <summary>
+        /// Returns the index of the first element T equal to null starting from specified index.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="array"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public static int GetEmptyIndex<T>(this T[] array, int index)
+            => Array.FindIndex(array, index, t => t == null);
+        /// <summary>
+        /// Returns the index of the first element T equal to null starting from specified index up to count times upwards in the enumerator.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="array"></param>
+        /// <param name="index"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public static int GetEmptyIndex<T>(this T[] array, int index, int count)
+            => Array.FindIndex(array, index, count, t => t == null);
+        /// <summary>
+        /// Returns index of the first element T equal to null starting from IntRange.Min to IntRange.Max.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="array"></param>
+        /// <param name="range"></param>
+        /// <returns></returns>
+        public static int GetEmptyIndex<T>(this T[] array, IntRange range)
+            => Array.FindIndex(array, range.Min, range.Max - range.Min, t => t == null);
+        /// <summary>
+        /// Returns the index of the first element T equal to null.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        public static int GetEmptyIndex<T>(this IEnumerable<T> collection)
+        {
+            try
+            {
+                T[] array = collection.ToArray();
+                for (int i = 0; i < array.Length; i++)
+                {
+                    T val = array[i];
+                    if (val == null)
+                    {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
+        /// <summary>
+        /// Returns the index of the first element equal to <typeparamref name="T"/> given.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <param name="Item"></param>
+        /// <returns></returns>
+        public static int GetItemIndex<T>(this IEnumerable<T> collection, T Item) where T : class
+        {
+            List<T> list = new List<T>(collection);
+            for (int i = 0; i < collection.Count(); i++)
+            {
+                if (list[i] != null && list[i].Equals(Item))
+                {
+                    return i;
+                }
+                if (list[i] == null && Item == null)
+                {
+                    return i;
+                }
+            }
+            return 0;
+        }
+        /// <summary>
+        /// Returns a new <see cref="ICollection{T}"/> of given size if collection passed was null.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public static ICollection<T> SetCollectionSizeIfNull<T>(this ICollection<T> collection, int size)
+        {
+            if (collection == null || collection.Count == 0)
+            {
+                return new T[size];
+            }
+            return collection;
+        }
+        /// <summary>
+        /// Takes <paramref name="size"/> elements of the given collection and puts them as a <see cref="Queue{T}"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection">Collection to itterate through.</param>
+        /// <param name="size">Amount of items from <paramref name="collection"/> to itterate through.</param>
+        /// <param name="fromEnd">If true, it will start from collection's Count-1 and go in descending order to get items, instead of 0 in ascending order.</param>
+        /// <returns></returns>
+        public static Queue<T> ToQueueSized<T>(this ICollection<T> collection, int size, bool fromEnd)
+        {
+            if (collection.Count <= 0)
+            {
+                return null;
+            }
+            int num = (collection.Count - 1 < size) ? (collection.Count - 1) : size;
+            int index = fromEnd ? (collection.Count - 1 - num) : 0;
+            List<T> range = collection.ToList().GetRange(index, num);
+            return new Queue<T>(range);
+        }
+        /// <summary>
+        /// Takes <paramref name="size"/> elements of the given collection and puts them as a <see cref="Stack{T}"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection">Collection to itterate through.</param>
+        /// <param name="size">Amount of items from <paramref name="collection"/> to itterate through.</param>
+        /// <param name="fromEnd">If true, it will start from collection's Count-1 and go in descending order to get items, instead of 0 in ascending order.</param>
+        /// <returns></returns>
+        public static Stack<T> ToStackSized<T>(this ICollection<T> collection, int size, bool fromEnd)
+        {
+            if (collection.Count <= 0)
+            {
+                return null;
+            }
+            int num = (collection.Count - 1 < size) ? (collection.Count - 1) : size;
+            int index = fromEnd ? (collection.Count - 1 - num) : 0;
+            List<T> range = collection.ToList().GetRange(index, num);
+            return new Stack<T>(range);
+        }
+        /// <summary>
+        /// Gets all <typeparamref name="T"/> items inside a <see cref="ValueTuple{T1, T2}"/> based on item index.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <param name="item">If 0, it returns Item1, otherwise returns Item2.</param>
+        /// <returns></returns>
+        public static T[] GetItemsFromTupleIndex<T>(this ICollection<(T, T)> collection, int item)
+        {
+            List<T> list = new List<T>();
+            foreach (var item2 in collection)
+            {
+                list.Add((item == 0) ? item2.Item1 : item2.Item2);
+            }
+            return list.ToArray();
+        }
+        /// <summary>
+        /// Gets all <typeparamref name="T"/> items inside a <see cref="ValueTuple{T1, T2, T3}"/> based on item index.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <param name="item">If 0, it returns Item1; if 1, returns Item2; otherwise returns Item3.</param>
+        /// <returns></returns>
+        public static T[] GetItemsFromTupleIndex<T>(this ICollection<(T, T, T)> collection, int item)
+        {
+            List<T> list = new List<T>();
+            foreach (var item3 in collection)
+            {
+                List<T> list2 = list;
+                object item2;
+                switch (item)
+                {
+                    default:
+                        item2 = item3.Item3;
+                        break;
+                    case 1:
+                        item2 = item3.Item2;
+                        break;
+                    case 0:
+                        item2 = item3.Item1;
+                        break;
+                }
+                list2.Add((T)item2);
+            }
+            return list.ToArray();
+        }
+        /// <summary>
+        /// Removes an array of strings from original.
+        /// </summary>
+        /// <param name="original"></param>
+        /// <param name="removers"></param>
+        /// <completionlist cref="string"/>
+        /// <exception cref="ArgumentException"/>
+        /// <exception cref="ArgumentNullException"/>
+        /// <returns></returns>
+        public static string RemoveArrayFromString(this string original, IEnumerable<string> removers)
+        {
+            if (removers == null)
+            {
+                goto Returner;
+            }
+            foreach (string remover in removers)
+            {
+                original = original.Replace(remover, string.Empty);
+            }
+            Returner:
+            return original;
+        }
+        /// <summary>
+        /// Creates a rotation from original position to destination.
+        /// </summary>
+        /// <param name="original"></param>
+        /// <param name="destination"></param>
+        /// <param name="reversed"></param>
+        /// <returns></returns>
+        public static Quaternion RotateTo(this Vector3 original, Vector3 destination, bool reversed)
+        {
+            if (reversed)
+            {
+                return Quaternion.LookRotation(original - destination);
+            }
+            return Quaternion.LookRotation(destination - original);
+        }
+        /// <summary>
+        ///  Creates a rotation from center position to destination using Atan2.
+        /// </summary>
+        /// <param name="center"></param>
+        /// <param name="destination"></param>
+        /// <param name="reversed"></param>
+        /// <param name="adder">Z rotation to add onto the result.</param>
+        /// <returns></returns>
+        public static Quaternion RotateTowards2D(this Vector2 center, Vector2 destination, bool reversed, float adder)
+        {
+            Vector3 used = center - destination;
+            float num = Mathf.Atan2(used.y, used.x) * Mathf.Rad2Deg;
+            if (reversed)
+            {
+                num += 180f;
+            }
+            Vector3 euler = new Vector3(0f, 0f, num + adder);
+            return Quaternion.Euler(euler);
+        }
+        /// <summary>
+        /// Equivalent to <see cref="Quaternion.LookRotation(Vector3)"/> with both vectors being normalized before calculation.
+        /// </summary>
+        /// <param name="original"></param>
+        /// <param name="destination"></param>
+        /// <returns></returns>
+        public static Quaternion RotateToNormalized(this Vector3 original, Vector3 destination)
+        {
+            Vector3 normalized = (destination - original).normalized;
+            return Quaternion.LookRotation(normalized);
+        }
+        /// <summary>
+        /// Equivalent to ASCII <see cref="Encoding.GetBytes(char[])"/>.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static byte[] ToByteArray(this string str)
+        {
+            return Encoding.ASCII.GetBytes(str);
+        }
+        /// <summary>
+        /// Equivalent to ASCII <see cref="Encoding.GetString(byte[])"/>.
+        /// </summary>
+        /// <param name="byt"></param>
+        /// <returns></returns>
+        public static string ToStringFromBytes(this byte[] byt)
+        {
+            return Encoding.ASCII.GetString(byt);
+        }
+        /// <summary>
+        /// Returns true if a given object has a method named with methodName.
+        /// </summary>
+        /// <param name="objectToCheck"></param>
+        /// <param name="methodName"></param>
+        /// <returns></returns>
+        public static bool HasMethod(this object objectToCheck, string methodName)
+        {
+            try
+            {
+                Type type = objectToCheck.GetType();
+                return type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic) != null;
+            }
+            catch (AmbiguousMatchException)
+            {
+                return true;
+            }
+        }
+        /// <summary>
+        /// Attempts to call a method by name from an object.
+        /// </summary>
+        /// <param name="objectToCheck"></param>
+        /// <param name="methodName"></param>
+        /// <param name="args"></param>
+        public static void CallMethod(this object objectToCheck, string methodName, object[] args)
+        {
+            try
+            {
+                Type type = objectToCheck.GetType();
+                MethodInfo method = type.GetMethod(methodName, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                method.Invoke(objectToCheck, args);
+            }
+            catch (Exception e)
+            {
+                AdvancedDebug.LogException(e);
+            }
+        }
+        /// <summary>
+        /// Attempts to call a method by name from an object using custom bindings.
+        /// </summary>
+        /// <param name="objectToCheck"></param>
+        /// <param name="methodName"></param>
+        /// <param name="args"></param>
+        /// <param name="customBind"></param>
+        public static void CallMethod(this object objectToCheck, string methodName, object[] args, BindingFlags customBind)
+        {
+            try
+            {
+                Type type = objectToCheck.GetType();
+                MethodInfo method = type.GetMethod(methodName, customBind);
+                method.Invoke(objectToCheck, args);
+            }
+            catch (Exception e)
+            {
+                AdvancedDebug.LogException(e);
+            }
+        }
+        /// <summary>
+        /// Returns an attribute value based on type and func given.
+        /// </summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="type"></param>
+        /// <param name="valueSelector"></param>
+        /// <returns></returns>
+        public static TValue GetAttributeValue<TAttribute, TValue>(this Type type, Func<TAttribute, TValue> valueSelector)
+        where TAttribute : Attribute
+        {
+            var att = type.GetCustomAttributes(
+                typeof(TAttribute), true
+            ).FirstOrDefault() as TAttribute;
+            if (att != null)
+            {
+                return valueSelector(att);
+            }
+            return default;
+        }
+        /// <summary>
+        /// Starts a singleton-type unity coroutine.
+        /// </summary>
+        /// <param name="caller"></param>
+        /// <param name="routine"></param>
+        /// <param name="isRunningBool"></param>
+        public static void StartCoroutine(this MonoBehaviour caller, IEnumerator routine, ref bool isRunningBool)
+        {
+            if (isRunningBool)
+            {
+                AdvancedDebug.Log("Couldn't start " + routine.ToString() + " enumerator as it is already running!", 6);
+                return;
+            }
+            isRunningBool = true;
+            caller.StartCoroutine(routine);
+        }
+        /// <summary>
+        /// Stops a singleton-type unity coroutine.
+        /// </summary>
+        /// <param name="caller"></param>
+        /// <param name="routine"></param>
+        /// <param name="isRunningBool"></param>
+        public static void StopCoroutine(this MonoBehaviour caller, IEnumerator routine, ref bool isRunningBool)
+        {
+            if (isRunningBool)
+            {
+                isRunningBool = false;
+                caller.StopCoroutine(routine);
+            }
         }
         #endregion
 
@@ -3721,6 +4277,78 @@ namespace WarWolfWorks.Utility
         }
 
         /// <summary>
+        /// Returns the CompareTo method based on integer type of the value given; If the object(s) given are non-standard data (like int, float, double, etc) it will return 0.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="matchType">If true, both objects must be of the same type to work.</param>
+        /// <returns></returns>
+        public static int CompareTo(object a, object b, bool matchType)
+        {
+            try
+            {
+                if (matchType)
+                {
+                    switch (a)
+                    {
+                        default: return 0;
+                        case byte Byte when b is byte:
+                            return Byte.CompareTo((byte)b);
+                        case sbyte sByte when b is sbyte:
+                            return sByte.CompareTo((sbyte)b);
+                        case short Short when b is short:
+                            return Short.CompareTo((short)b);
+                        case ushort uShort when b is ushort:
+                            return uShort.CompareTo((ushort)b);
+                        case int Int when b is int:
+                            return Int.CompareTo((int)b);
+                        case uint uInt when b is uint:
+                            return uInt.CompareTo((uint)b);
+                        case long Long when b is long:
+                            return Long.CompareTo((long)b);
+                        case ulong uLong when b is ulong:
+                            return uLong.CompareTo((ulong)b);
+                        case float Float when b is float:
+                            return Float.CompareTo((float)b);
+                        case double Double when b is double:
+                            return Double.CompareTo((double)b);
+                    }
+                }
+                else
+                {
+                    switch (a)
+                    {
+                        default: return 0;
+                        case byte Byte when b is byte:
+                            return Byte.CompareTo(b);
+                        case sbyte sByte when b is sbyte:
+                            return sByte.CompareTo(b);
+                        case short Short when b is short:
+                            return Short.CompareTo(b);
+                        case ushort uShort when b is ushort:
+                            return uShort.CompareTo(b);
+                        case int Int when b is int:
+                            return Int.CompareTo(b);
+                        case uint uInt when b is uint:
+                            return uInt.CompareTo(b);
+                        case long Long when b is long:
+                            return Long.CompareTo(b);
+                        case ulong uLong when b is ulong:
+                            return uLong.CompareTo(b);
+                        case float Float when b is float:
+                            return Float.CompareTo(b);
+                        case double Double when b is double:
+                            return Double.CompareTo(b);
+                    }
+                }
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        /// <summary>
         /// Itterates through each string, and uses <see cref="ParseType(string)"/>.
         /// </summary>
         /// <param name="types"></param>
@@ -3759,7 +4387,7 @@ namespace WarWolfWorks.Utility
         /// <summary>
         /// Returns the default player tag for Unity.
         /// </summary>
-        public const string PlayerTag = "Player";
+        public const string TAG_PLAYER = "Player";
 
         /// <summary>
         /// <see cref="Time.smoothDeltaTime"/> Pointer.
@@ -3814,259 +4442,6 @@ namespace WarWolfWorks.Utility
         public static T Parse<T>(string input) where T : Enum
         {
             return (T)Enum.Parse(typeof(T), input, ignoreCase: true);
-        }
-
-        /// <summary>
-        /// Uses <see cref="AdvancedDebug.Log(object, int)"/> to debug all elements inside the given <see cref="ICollection{T}"/>.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection"></param>
-        /// <param name="weight"></param>
-        public static void DebugArrayToString<T>(this ICollection<T> collection, int weight = 0)
-        {
-            foreach (T item in collection)
-            {
-                AdvancedDebug.Log(item, weight);
-            }
-        }
-
-        /// <summary>
-        /// Itterates through each element <typeparamref name="T"/>, calls it's <typeparamref name="T"/>.ToString()
-        /// and returns all of them in a string array.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection"></param>
-        /// <returns></returns>
-        public static string[] ArrayToString<T>(this ICollection<T> collection)
-        {
-            List<string> list = new List<string>();
-            foreach (T item in collection)
-            {
-                list.Add(item.ToString());
-            }
-            return list.ToArray();
-        }
-
-        /// <summary>
-        /// Returns the first instance of a null item inside a collection.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection"></param>
-        /// <returns></returns>
-        public static T GetEmptyItem<T>(this ICollection<T> collection) where T : class
-        {
-            foreach (T item in collection)
-            {
-                if (item == null)
-                {
-                    return item;
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Returns the index of the first element T equal to null.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        /// <returns></returns>
-        public static int GetEmptyIndex<T>(this List<T> list)
-         => list.FindIndex(t => t == null);
-
-        /// <summary>
-        /// Returns the index of the first element T equal to null.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="array"></param>
-        /// <returns></returns>
-        public static int GetEmptyIndex<T>(this T[] array)
-        => array.FindIndex(t => t == null);
-
-        /// <summary>
-        /// Returns the index of the first element T equal to null starting from specified index.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="array"></param>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public static int GetEmptyIndex<T>(this T[] array, int index)
-            => Array.FindIndex(array, index, t => t == null);
-
-        /// <summary>
-        /// Returns the index of the first element T equal to null starting from specified index up to count times upwards in the enumerator.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="array"></param>
-        /// <param name="index"></param>
-        /// <param name="count"></param>
-        /// <returns></returns>
-        public static int GetEmptyIndex<T>(this T[] array, int index, int count)
-            => Array.FindIndex(array, index, count, t => t == null);
-
-        /// <summary>
-        /// Returns index of the first element T equal to null starting from IntRange.Min to IntRange.Max.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="array"></param>
-        /// <param name="range"></param>
-        /// <returns></returns>
-        public static int GetEmptyIndex<T>(this T[] array, IntRange range)
-            => Array.FindIndex(array, range.Min, range.Max - range.Min, t => t == null);
-
-        /// <summary>
-        /// Returns the index of the first element T equal to null.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection"></param>
-        /// <returns></returns>
-        public static int GetEmptyIndex<T>(this IEnumerable<T> collection)
-        {
-            try
-            {
-                T[] array = collection.ToArray();
-                for (int i = 0; i < array.Length; i++)
-                {
-                    T val = array[i];
-                    if (val == null)
-                    {
-                        return i;
-                    }
-                }
-                return -1;
-            }
-            catch (Exception)
-            {
-                return -1;
-            }
-        }
-
-        /// <summary>
-        /// Returns the index of the first element equal to <typeparamref name="T"/> given.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection"></param>
-        /// <param name="Item"></param>
-        /// <returns></returns>
-        public static int GetItemIndex<T>(this IEnumerable<T> collection, T Item) where T : class
-        {
-            List<T> list = new List<T>(collection);
-            for (int i = 0; i < collection.Count(); i++)
-            {
-                if (list[i] != null && list[i].Equals(Item))
-                {
-                    return i;
-                }
-                if (list[i] == null && Item == null)
-                {
-                    return i;
-                }
-            }
-            return 0;
-        }
-
-        /// <summary>
-        /// Returns a new <see cref="ICollection{T}"/> of given size if collection passed was null.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection"></param>
-        /// <param name="size"></param>
-        /// <returns></returns>
-        public static ICollection<T> SetCollectionSizeIfNull<T>(this ICollection<T> collection, int size)
-        {
-            if (collection == null || collection.Count == 0)
-            {
-                return new T[size];
-            }
-            return collection;
-        }
-
-        /// <summary>
-        /// Takes <paramref name="size"/> elements of the given collection and puts them as a <see cref="Queue{T}"/>.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection">Collection to itterate through.</param>
-        /// <param name="size">Amount of items from <paramref name="collection"/> to itterate through.</param>
-        /// <param name="fromEnd">If true, it will start from collection's Count-1 and go in descending order to get items, instead of 0 in ascending order.</param>
-        /// <returns></returns>
-        public static Queue<T> ToQueueSized<T>(this ICollection<T> collection, int size, bool fromEnd)
-        {
-            if (collection.Count <= 0)
-            {
-                return null;
-            }
-            int num = (collection.Count - 1 < size) ? (collection.Count - 1) : size;
-            int index = fromEnd ? (collection.Count - 1 - num) : 0;
-            List<T> range = collection.ToList().GetRange(index, num);
-            return new Queue<T>(range);
-        }
-
-        /// <summary>
-        /// Takes <paramref name="size"/> elements of the given collection and puts them as a <see cref="Stack{T}"/>.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection">Collection to itterate through.</param>
-        /// <param name="size">Amount of items from <paramref name="collection"/> to itterate through.</param>
-        /// <param name="fromEnd">If true, it will start from collection's Count-1 and go in descending order to get items, instead of 0 in ascending order.</param>
-        /// <returns></returns>
-        public static Stack<T> ToStackSized<T>(this ICollection<T> collection, int size, bool fromEnd)
-        {
-            if (collection.Count <= 0)
-            {
-                return null;
-            }
-            int num = (collection.Count - 1 < size) ? (collection.Count - 1) : size;
-            int index = fromEnd ? (collection.Count - 1 - num) : 0;
-            List<T> range = collection.ToList().GetRange(index, num);
-            return new Stack<T>(range);
-        }
-
-        /// <summary>
-        /// Gets all <typeparamref name="T"/> items inside a <see cref="ValueTuple{T1, T2}"/> based on item index.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection"></param>
-        /// <param name="item">If 0, it returns Item1, otherwise returns Item2.</param>
-        /// <returns></returns>
-        public static T[] GetItemsFromTupleIndex<T>(this ICollection<(T, T)> collection, int item)
-        {
-            List<T> list = new List<T>();
-            foreach (var item2 in collection)
-            {
-                list.Add((item == 0) ? item2.Item1 : item2.Item2);
-            }
-            return list.ToArray();
-        }
-
-        /// <summary>
-        /// Gets all <typeparamref name="T"/> items inside a <see cref="ValueTuple{T1, T2, T3}"/> based on item index.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection"></param>
-        /// <param name="item">If 0, it returns Item1; if 1, returns Item2; otherwise returns Item3.</param>
-        /// <returns></returns>
-        public static T[] GetItemsFromTupleIndex<T>(this ICollection<(T, T, T)> collection, int item)
-        {
-            List<T> list = new List<T>();
-            foreach (var item3 in collection)
-            {
-                List<T> list2 = list;
-                object item2;
-                switch (item)
-                {
-                    default:
-                        item2 = item3.Item3;
-                        break;
-                    case 1:
-                        item2 = item3.Item2;
-                        break;
-                    case 0:
-                        item2 = item3.Item1;
-                        break;
-                }
-                list2.Add((T)item2);
-            }
-            return list.ToArray();
         }
 
         /// <summary>
@@ -4170,113 +4545,6 @@ namespace WarWolfWorks.Utility
         }
 
         /// <summary>
-        /// Returns LayerMask int value of all layers. Useful for Raycasting.
-        /// </summary>
-        /// <param name="layers"></param>
-        /// <returns></returns>
-        public static int MaskGetter(int[] layers)
-        {
-            string[] array = new string[layers.Length];
-            for (int i = 0; i < array.Length; i++)
-            {
-                array[i] = SortingLayer.IDToName(layers[i]);
-            }
-            return LayerMask.GetMask(array);
-        }
-
-        /// <summary> 
-        /// Converts given bitmask to it's layer number. 
-        /// </summary>
-        /// <returns></returns>
-        public static int MaskToLayer(int bitmask)
-        {
-            int result = bitmask > 0 ? 0 : 31;
-            while (bitmask > 1)
-            {
-                bitmask >>= 1;
-                result++;
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// Converts given maskname into it's layer number.
-        /// </summary>
-        /// <param name="layer"></param>
-        /// <returns></returns>
-        public static int LayerNameToIndex(string layer)
-            => MaskToLayer(LayerMask.NameToLayer(layer));
-
-        /// <summary>
-        /// Returns an array which is a merged version of array1 and array2.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="array1"></param>
-        /// <param name="array2"></param>
-        /// <returns></returns>
-        public static T[] ArrayMerger<T>(T[] array1, T[] array2)
-        {
-            T[] array3 = new T[array1.Length + array2.Length];
-            Array.Copy(array1, array3, array1.Length);
-            Array.Copy(array2, 0, array3, array1.Length, array2.Length);
-            return array3;
-        }
-
-        /// <summary>
-        /// Deprecated.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection"></param>
-        /// <param name="objectToFind"></param>
-        /// <returns></returns>
-        [Obsolete("Use Utilities.ContainsInCollecion instead.")]
-        public static bool ArrayContains<T>(ICollection<T> collection, T objectToFind)
-        {
-            foreach (T item in collection)
-            {
-                if (item.Equals(objectToFind))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Equivalent to <paramref name="collection"/>.Intersect(<paramref name="objectsToFind"/>).Any().
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection"></param>
-        /// <param name="objectsToFind"></param>
-        /// <returns></returns>
-        public static bool ArrayContains<T>(ICollection<T> collection, ICollection<T> objectsToFind)
-        {
-            return collection.Intersect(objectsToFind).Any();
-        }
-
-        /// <summary>
-        /// Returns true if the Array or all of it's elements are null.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection"></param>
-        /// <returns></returns>
-        public static bool ArrayIsEmpty<T>(ICollection<T> collection)
-        {
-            if (collection == null || collection.Count < 1)
-            {
-                return true;
-            }
-            foreach (T item in collection)
-            {
-                if (item != null)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        /// <summary>
         /// Equivalent to <see cref="float.Parse(string, IFormatProvider)"/> where <see cref="IFormatProvider"/>
         /// is <see cref="CultureInfo"/>.InvariantCulture.NumberFormat.
         /// </summary>
@@ -4285,65 +4553,9 @@ namespace WarWolfWorks.Utility
         /// <exception cref="FormatException"/>
         /// <exception cref="OverflowException"/>
         /// <returns></returns>
-        public static float StringToFloat(string value)
+        public static float ToSingle(string value)
         {
             return float.Parse(value, CultureInfo.InvariantCulture.NumberFormat);
-        }
-
-        /// <summary>
-        /// Removes an array of strings from original.
-        /// </summary>
-        /// <param name="original"></param>
-        /// <param name="removers"></param>
-        /// <completionlist cref="string"/>
-        /// <exception cref="ArgumentException"/>
-        /// <exception cref="ArgumentNullException"/>
-        /// <returns></returns>
-        public static string RemoveArrayFromString(this string original, ICollection<string> removers)
-        {
-            if (removers == null)
-            {
-                goto Returner;
-            }
-            foreach (string remover in removers)
-            {
-                original = original.Replace(remover, string.Empty);
-            }
-            Returner:
-            return original;
-        }
-
-        /// <summary>
-        /// Returns a <see cref="IEnumerable{T}"/> of instantiated objects (unity copy).
-        /// </summary>
-        /// <param name="objects"></param>
-        /// <returns></returns>
-        public static IEnumerable<T> InstantiateList<T>(IEnumerable<T> objects) where T : UnityEngine.Object
-        {
-           T[] toReturn = objects.ToArray();
-            for (int i = 0; i < toReturn.Length; i++)
-            {
-                toReturn[i] = UnityEngine.Object.Instantiate(toReturn[i]);
-                if (toReturn[i] is IInstantiatable) ((IInstantiatable)toReturn[i]).PostInstantiate();
-            }
-
-            return toReturn;
-        }
-
-        /// <summary>
-        /// Returns an array of instantiated objects.
-        /// </summary>
-        /// <param name="objects"></param>
-        /// <returns></returns>
-        public static T[] InstantiateList<T>(T[] objects) where T : UnityEngine.Object
-        {
-            for (int i = 0; i < objects.Length; i++)
-            {
-                objects[i] = UnityEngine.Object.Instantiate(objects[i]);
-                if (objects[i] is IInstantiatable) ((IInstantiatable)objects[i]).PostInstantiate();
-            }
-
-            return objects;
         }
 
         /// <summary>
@@ -4356,54 +4568,6 @@ namespace WarWolfWorks.Utility
         {
             UnityEngine.Object obj = objectToDestroy;
             UnityEngine.Object.Destroy(obj);
-        }
-
-        /// <summary>
-        /// Creates a rotation from original position to destination.
-        /// </summary>
-        /// <param name="original"></param>
-        /// <param name="destination"></param>
-        /// <param name="reversed"></param>
-        /// <returns></returns>
-        public static Quaternion RotateTo(this Vector3 original, Vector3 destination, bool reversed)
-        {
-            if (reversed)
-            {
-                return Quaternion.LookRotation(original - destination);
-            }
-            return Quaternion.LookRotation(destination - original);
-        }
-
-        /// <summary>
-        ///  Creates a rotation from center position to destination using Atan2.
-        /// </summary>
-        /// <param name="center"></param>
-        /// <param name="destination"></param>
-        /// <param name="reversed"></param>
-        /// <param name="adder">Z rotation to add onto the result.</param>
-        /// <returns></returns>
-        public static Quaternion RotateTowards2D(this Vector2 center, Vector2 destination, bool reversed, float adder)
-        {
-            Vector3 used = center - destination;
-            float num = Mathf.Atan2(used.y, used.x) * Mathf.Rad2Deg;
-            if (reversed)
-            {
-                num += 180f;
-            }
-            Vector3 euler = new Vector3(0f, 0f, num + adder);
-            return Quaternion.Euler(euler);
-        }
-
-        /// <summary>
-        /// Equivalent to <see cref="Quaternion.LookRotation(Vector3)"/> with both vectors being normalized before calculation.
-        /// </summary>
-        /// <param name="original"></param>
-        /// <param name="destination"></param>
-        /// <returns></returns>
-        public static Quaternion RotateToNormalized(this Vector3 original, Vector3 destination)
-        {
-            Vector3 normalized = (destination - original).normalized;
-            return Quaternion.LookRotation(normalized);
         }
 
         /// <summary>
@@ -4425,26 +4589,6 @@ namespace WarWolfWorks.Utility
         }
 
         /// <summary>
-        /// Equivalent to ASCII <see cref="Encoding.GetBytes(char[])"/>.
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public static byte[] ToByteArray(this string str)
-        {
-            return Encoding.ASCII.GetBytes(str);
-        }
-
-        /// <summary>
-        /// Equivalent to ASCII <see cref="Encoding.GetString(byte[])"/>.
-        /// </summary>
-        /// <param name="byt"></param>
-        /// <returns></returns>
-        public static string ToStringFromBytes(this byte[] byt)
-        {
-            return Encoding.ASCII.GetString(byt);
-        }
-
-        /// <summary>
         /// Adds an event to a given trigger.
         /// </summary>
         /// <param name="trigger"></param>
@@ -4460,25 +4604,6 @@ namespace WarWolfWorks.Utility
             entry.callback = new EventTrigger.TriggerEvent();
             entry.callback.AddListener(callback.Invoke);
             trigger.triggers.Add(entry);
-        }
-
-        /// <summary>
-        /// Returns true if a list contains an item of type. (Only works on inherited classes)
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool ListContainsType<T>(List<T> list, Type type)
-        {
-            foreach (T item in list)
-            {
-                if (item.GetType() == type)
-                {
-                    return true;
-                }
-            }
-            return false;
         }
 
         ///<summary>
@@ -4557,66 +4682,6 @@ namespace WarWolfWorks.Utility
         }
 
         /// <summary>
-        /// Returns true if a given object has a method named with methodName.
-        /// </summary>
-        /// <param name="objectToCheck"></param>
-        /// <param name="methodName"></param>
-        /// <returns></returns>
-        public static bool HasMethod(this object objectToCheck, string methodName)
-        {
-            try
-            {
-                Type type = objectToCheck.GetType();
-                return type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic) != null;
-            }
-            catch (AmbiguousMatchException)
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Attempts to call a method by name from an object.
-        /// </summary>
-        /// <param name="objectToCheck"></param>
-        /// <param name="methodName"></param>
-        /// <param name="args"></param>
-        public static void CallMethod(this object objectToCheck, string methodName, object[] args)
-        {
-            try
-            {
-                Type type = objectToCheck.GetType();
-                MethodInfo method = type.GetMethod(methodName, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-                method.Invoke(objectToCheck, args);
-            }
-            catch (Exception e)
-            {
-                AdvancedDebug.LogException(e);
-            }
-        }
-
-        /// <summary>
-        /// Attempts to call a method by name from an object using custom bindings.
-        /// </summary>
-        /// <param name="objectToCheck"></param>
-        /// <param name="methodName"></param>
-        /// <param name="args"></param>
-        /// <param name="customBind"></param>
-        public static void CallMethod(this object objectToCheck, string methodName, object[] args, BindingFlags customBind)
-        {
-            try
-            {
-                Type type = objectToCheck.GetType();
-                MethodInfo method = type.GetMethod(methodName, customBind);
-                method.Invoke(objectToCheck, args);
-            }
-            catch (Exception e)
-            {
-                AdvancedDebug.LogException(e);
-            }
-        }
-
-        /// <summary>
         /// Calls a method by name inside a static class.
         /// </summary>
         /// <param name="classToCheck"></param>
@@ -4634,19 +4699,6 @@ namespace WarWolfWorks.Utility
             {
                 AdvancedDebug.LogException(e);
             }
-        }
-
-        /// <summary>
-        /// Overrides a line at the given index of a file.
-        /// </summary>
-        /// <param name="newText"></param>
-        /// <param name="fileName"></param>
-        /// <param name="line_to_edit"></param>
-        public static void LineChanger(string newText, string fileName, int line_to_edit)
-        {
-            string[] array = File.ReadAllLines(fileName);
-            array[line_to_edit - 1] = newText;
-            File.WriteAllLines(fileName, array);
         }
 
 #pragma warning disable CS1591
@@ -4913,48 +4965,6 @@ namespace WarWolfWorks.Utility
         }
 
         /// <summary>
-        /// Returns true if the given <see cref="ICollection{T}"/> has toLookfor.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        /// <param name="toLookfor"></param>
-        /// <returns></returns>
-        public static bool ContainsInCollection<T>(this ICollection<T> list, T toLookfor)
-        {
-            if (list.Count < 1)
-            {
-                return false;
-            }
-            foreach (T item in list)
-            {
-                if (item.Equals(toLookfor))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Returns an item from the given collectin.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        /// <param name="toLookFor"></param>
-        /// <returns></returns>
-        public static T ReturnFromCollection<T>(this ICollection<T> list, T toLookFor)
-        {
-            foreach (T item in list)
-            {
-                if (item.Equals(toLookFor))
-                {
-                    return item;
-                }
-            }
-            return default;
-        }
-
-        /// <summary>
         /// Returns true if type is subclass of baseType.
         /// </summary>
         /// <param name="type"></param>
@@ -4997,7 +5007,7 @@ namespace WarWolfWorks.Utility
         /// <param name="origin"></param>
         /// <param name="adders"></param>
         /// <returns></returns>
-        public static string ListSender(string origin, IEnumerable<string> adders)
+        public static string EnumerableConcat(string origin, IEnumerable<string> adders)
         {
             if (adders == null)
             {
@@ -5009,29 +5019,35 @@ namespace WarWolfWorks.Utility
             }
             return origin;
         }
+        /// <summary>
+        /// Returns all values merged into one with origin as base value, from an <see cref="IEnumerable{T}"/> where T is string.
+        /// </summary>
+        /// <param name="adders"></param>
+        /// <returns></returns>
+        public static string EnumerableConcat(IEnumerable<string> adders)
+            => EnumerableConcat(string.Empty, adders);
 
         /// <summary>
         /// Returns all values merged into one with origin as base value, from an <see cref="IEnumerable{T}"/> where T is float.
         /// </summary>
         /// <param name="origin"></param>
-        /// <param name="adder"></param>
+        /// <param name="adders"></param>
         /// <returns></returns>
-        public static float ListSender(float origin, IEnumerable<float> adder)
+        public static float EnumerableConcat(float origin, IEnumerable<float> adders)
         {
             float toReturn = origin;
-            foreach (float f in adder)
+            foreach (float f in adders)
                 toReturn += f;
 
             return toReturn;
         }
-
         /// <summary>
         /// Returns all values merged into one from an <see cref="IEnumerable{T}"/> where T is float.
         /// </summary>
-        /// <param name="adder"></param>
+        /// <param name="adders"></param>
         /// <returns></returns>
-        public static float ListMerger(IEnumerable<float> adder)
-            => ListSender(0, adder);
+        public static float EnumerableConcat(IEnumerable<float> adders)
+            => EnumerableConcat(0, adders);
 
         /// <summary>
         /// Merges all int values of a list into one value.
@@ -5039,7 +5055,7 @@ namespace WarWolfWorks.Utility
         /// <param name="origin"></param>
         /// <param name="adders"></param>
         /// <returns></returns>
-        public static int ListMerger(int origin, List<int> adders)
+        public static int EnumerableConcat(int origin, IEnumerable<int> adders)
         {
             if (adders == null)
             {
@@ -5051,29 +5067,13 @@ namespace WarWolfWorks.Utility
             }
             return origin;
         }
-
         /// <summary>
-        /// Returns an attribute value based on type and func given.
+        /// Merges all int values of a list into one value.
         /// </summary>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <typeparam name="TValue"></typeparam>
-        /// <param name="type"></param>
-        /// <param name="valueSelector"></param>
+        /// <param name="adders"></param>
         /// <returns></returns>
-        public static TValue GetAttributeValue<TAttribute, TValue>(
-        this Type type,
-        Func<TAttribute, TValue> valueSelector)
-        where TAttribute : Attribute
-        {
-            var att = type.GetCustomAttributes(
-                typeof(TAttribute), true
-            ).FirstOrDefault() as TAttribute;
-            if (att != null)
-            {
-                return valueSelector(att);
-            }
-            return default(TValue);
-        }
+        public static int EnumerableConcat(IEnumerable<int> adders)
+           => EnumerableConcat(0, adders);
 
         /// <summary>
         /// Converts a given int value into an Enum value.
@@ -5084,38 +5084,6 @@ namespace WarWolfWorks.Utility
         public static T ConvertEnum<T>(int i) where T : struct, IConvertible
         {
             return (T)(object)i;
-        }
-
-        /// <summary>
-        /// Starts a singleton-type unity coroutine.
-        /// </summary>
-        /// <param name="caller"></param>
-        /// <param name="routine"></param>
-        /// <param name="isRunningBool"></param>
-        public static void StartCoroutine(this MonoBehaviour caller, IEnumerator routine, ref bool isRunningBool)
-        {
-            if (isRunningBool)
-            {
-                AdvancedDebug.Log("Couldn't start " + routine.ToString() + " enumerator as it is already running!", 6);
-                return;
-            }
-            isRunningBool = true;
-            caller.StartCoroutine(routine);
-        }
-
-        /// <summary>
-        /// Stops a singleton-type unity coroutine.
-        /// </summary>
-        /// <param name="caller"></param>
-        /// <param name="routine"></param>
-        /// <param name="isRunningBool"></param>
-        public static void StopCoroutine(this MonoBehaviour caller, IEnumerator routine, ref bool isRunningBool)
-        {
-            if (isRunningBool)
-            {
-                isRunningBool = false;
-                caller.StopCoroutine(routine);
-            }
         }
     }
 }

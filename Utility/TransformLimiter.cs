@@ -74,7 +74,7 @@ namespace WarWolfWorks.Utility
             Transform posUseTransform = Limiters.Find(l => l != null);
             if (posUseTransform == null)
             {
-                Limiters = Limiters.RemoveNull();
+                Limiters = new List<Transform>(Limiters.RemoveNull());
                 goto OriginReturner;
             }
 
