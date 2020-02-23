@@ -51,7 +51,7 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
             /// <summary>
             /// Initiated state of this <see cref="Behavior"/>. (<see cref="IParentInitiatable{T}"/> implementation)
             /// </summary>
-            public bool Initiated { get; private set; }
+            public bool Initiated { get; private set; } = false;
 
             /// <summary>
             /// Parent of this <see cref="Behavior"/>.
@@ -128,7 +128,7 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
         /// <summary>
         /// Returns true if <see cref="Populate{T}(int, Action{T})"/> was previously called.
         /// </summary>
-        protected static bool Populated { get; private set; }
+        protected static bool Populated { get; private set; } = false;
 
         /// <summary>
         /// What type the pool population was instantiated as.
@@ -162,6 +162,16 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
         public Quaternion Rotation { get => transform.rotation; set => transform.rotation = value; }
 
         /// <summary>
+        /// The velocity of this projectile.
+        /// </summary>
+        public abstract Vector3 Velocity { get; set; }
+
+        /// <summary>
+        /// The scene <see cref="GameObject"/> that holds all pooled projectiles.
+        /// </summary>
+        protected static Transform SceneSegregator { get; private set; }
+
+        /// <summary>
         /// Populates the <see cref="Projectile"/> pool.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -172,21 +182,26 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
             if (population < 1)
                 throw new ProjectileException(ProjectileExceptionType.PopulationLessThanOne);
 
+            if (Populated)
+            {
+                for (int i = 0; i < Projectiles.Length; i++)
+                {
+                    Destroy(Projectiles[i].gameObject);
+                }
+            }
+
+            Projectiles = new Projectile[population];
+
             lock (Projectiles)
             {
-                if (Populated)
-                {
-                    for (int i = 0; i < Projectiles.Length; i++)
-                    {
-                        Destroy(Projectiles[i].gameObject);
-                    }
-                }
-
-                Projectiles = new Projectile[population];
-
+                if (!Populated) SceneSegregator = new GameObject("Projectiles").transform;
                 for (int i = 0; i < population; i++)
                 {
+
                     GameObject g = new GameObject("Projectile_" + (i + 1).ToString());
+                    g.SetActive(false);
+                    g.transform.SetParent(SceneSegregator);
+
                     Projectiles[i] = g.AddComponent<T>();
                     OnInstantiate((T)Projectiles[i]);
                     InactiveProjectiles.Add(Projectiles[i]);
@@ -212,7 +227,7 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
 
         /// <summary>
         /// You are required to call this method at the end of a New/Instantiate method, as it set all required variables that are inaccessible through inherited members;
-        /// Creating a projectile without calling this method will result in an exception.
+        /// Creating a projectile without calling this method will make the projectile behave inconsistently, or not at all.
         /// </summary>
         /// <param name="for"></param>
         protected static void PostNew(Projectile @for)
@@ -220,8 +235,22 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
             if (@for)
             {
                 ActiveProjectiles.Add(@for);
-                @for.PostNewInvoked = true;
                 OnProjectileNew?.Invoke(@for);
+            }
+        }
+
+        /// <summary>
+        /// You are required to call this method at the beginning of a New/Instantiate method, as it set all required variables that are inaccessible through inherited members;
+        /// Creating a projectile without calling this method will result in an exception.
+        /// </summary>
+        /// <param name="for"></param>
+        protected static void PreNew(Projectile @for)
+        {
+            if (@for)
+            {
+                @for.PostNewInvoked = true;
+                @for.Active = true;
+                @for.gameObject.SetActive(true);
             }
         }
 
@@ -279,6 +308,7 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
             {
                 projectile.CallBehaviors(BehaviorCall.Destroy);
                 projectile.gameObject.SetActive(false);
+                projectile.Active = false;
                 ActiveProjectiles.Remove(projectile);
                 OnProjectileDestroy?.Invoke(projectile);
                 projectile.PostNewInvoked = false;

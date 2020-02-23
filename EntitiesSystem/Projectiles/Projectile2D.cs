@@ -37,6 +37,16 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
         public Rigidbody2D Rigidbody2D { get; private set; }
 
         /// <summary>
+        /// The collider of this projectile.
+        /// </summary>
+        public CircleCollider2D Collider { get; private set; }
+
+        /// <summary>
+        /// The velocity of this <see cref="Projectile2D"/>'s rigidbody.
+        /// </summary>
+        public override Vector3 Velocity { get => Rigidbody2D.velocity; set => Rigidbody2D.velocity = value; }
+
+        /// <summary>
         /// Populates the projectile pool.
         /// </summary>
         /// <param name="population"></param>
@@ -47,6 +57,9 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
         {
             projectile.SpriteRenderer = projectile.gameObject.AddComponent<SpriteRenderer>();
             projectile.Rigidbody2D = projectile.gameObject.AddComponent<Rigidbody2D>();
+            projectile.Collider = projectile.gameObject.AddComponent<CircleCollider2D>();
+            projectile.Collider.isTrigger = true;
+            projectile.Rigidbody2D.gravityScale = 0;
         }
 
         /// <summary>
@@ -67,11 +80,10 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
             Start:
             if(EnumeratorMoveNext())
             {
+                PreNew(EnumeratorCurrent);
                 EnumeratorCurrent.Position = position;
                 EnumeratorCurrent.Rotation = rotation;
                 (EnumeratorCurrent as Projectile2D).SpriteRenderer.sprite = sprite;
-
-                EnumeratorCurrent.gameObject.SetActive(true);
 
                 NewArgsSet(EnumeratorCurrent, owner, behaviors);
 

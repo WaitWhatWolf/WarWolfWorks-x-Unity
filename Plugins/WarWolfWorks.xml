@@ -2750,6 +2750,16 @@
             Pointer to transform.rotation.
             </summary>
         </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Velocity">
+            <summary>
+            The velocity of this projectile.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.SceneSegregator">
+            <summary>
+            The scene <see cref="T:UnityEngine.GameObject"/> that holds all pooled projectiles.
+            </summary>
+        </member>
         <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Populate``1(System.Int32,System.Action{``0})">
             <summary>
             Populates the <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile"/> pool.
@@ -2769,6 +2779,13 @@
         <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.PostNew(WarWolfWorks.EntitiesSystem.Projectiles.Projectile)">
             <summary>
             You are required to call this method at the end of a New/Instantiate method, as it set all required variables that are inaccessible through inherited members;
+            Creating a projectile without calling this method will make the projectile behave inconsistently, or not at all.
+            </summary>
+            <param name="for"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.PreNew(WarWolfWorks.EntitiesSystem.Projectiles.Projectile)">
+            <summary>
+            You are required to call this method at the beginning of a New/Instantiate method, as it set all required variables that are inaccessible through inherited members;
             Creating a projectile without calling this method will result in an exception.
             </summary>
             <param name="for"></param>
@@ -2845,6 +2862,16 @@
             The <see cref="T:UnityEngine.Rigidbody2D"/> attached to this projectile.
             </summary>
         </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile2D.Collider">
+            <summary>
+            The collider of this projectile.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile2D.Velocity">
+            <summary>
+            The velocity of this <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile2D"/>'s rigidbody.
+            </summary>
+        </member>
         <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile2D.Populate(System.Int32)">
             <summary>
             Populates the projectile pool.
@@ -2904,6 +2931,16 @@
         <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile3D.Rigidbody">
             <summary>
             The <see cref="T:UnityEngine.Rigidbody"/> attached to this projectile.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile3D.Collider">
+            <summary>
+            The collider of this projectile.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile3D.Velocity">
+            <summary>
+            The velocity of this <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile3D"/>'s rigidbody.
             </summary>
         </member>
         <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile3D.Populate(System.Int32)">

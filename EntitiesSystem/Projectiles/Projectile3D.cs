@@ -41,6 +41,16 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
         public Rigidbody Rigidbody { get; private set; }
 
         /// <summary>
+        /// The collider of this projectile.
+        /// </summary>
+        public SphereCollider Collider { get; private set; }
+
+        /// <summary>
+        /// The velocity of this <see cref="Projectile3D"/>'s rigidbody.
+        /// </summary>
+        public override Vector3 Velocity { get => Rigidbody.velocity; set => Rigidbody.velocity = value; }
+
+        /// <summary>
         /// Populates the projectile pool.
         /// </summary>
         /// <param name="population"></param>
@@ -52,6 +62,9 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
             projectile.MeshFilter = projectile.gameObject.AddComponent<MeshFilter>();
             projectile.MeshRenderer = projectile.gameObject.AddComponent<MeshRenderer>();
             projectile.Rigidbody = projectile.gameObject.AddComponent<Rigidbody>();
+            projectile.Collider = projectile.gameObject.AddComponent<SphereCollider>();
+            projectile.Collider.isTrigger = true;
+            projectile.Rigidbody.useGravity = false;
         }
 
         /// <summary>
@@ -73,11 +86,11 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
             Start:
             if (EnumeratorMoveNext())
             {
+                PreNew(EnumeratorCurrent);
                 EnumeratorCurrent.Position = position;
                 EnumeratorCurrent.Rotation = rotation;
                 (EnumeratorCurrent as Projectile3D).MeshFilter.mesh = mesh;
                 (EnumeratorCurrent as Projectile3D).MeshRenderer.materials = meshMaterials;
-                EnumeratorCurrent.gameObject.SetActive(true);
 
                 NewArgsSet(EnumeratorCurrent, owner, behaviors);
 
