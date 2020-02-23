@@ -1,4 +1,5 @@
 ﻿using System;
+using WarWolfWorks.EntitiesSystem.Statistics;
 
 namespace WarWolfWorks.Interfaces
 {
@@ -23,5 +24,10 @@ namespace WarWolfWorks.Interfaces
         /// How the value should be calculated.
         /// </summary>
         int Stacking { get; set; }
+        /// <summary>
+        /// Invoked when added to <see cref="Stats"/> with <see cref="Stats.AddStat(IStat)"/>.
+        /// </summary>
+        /// <param name="to"></param>
+        void OnAdded(Stats to);
     }
 }

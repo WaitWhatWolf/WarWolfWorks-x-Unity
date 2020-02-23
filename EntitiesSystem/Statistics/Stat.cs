@@ -47,6 +47,8 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
             set => affections = value;
         }
 
+        void IStat.OnAdded(Stats to) { }
+
         /// <summary>
         /// Create a Stat.
         /// </summary>
@@ -89,6 +91,22 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
         /// <param name="other"></param>
         /// <returns></returns>
         public bool Equals(float other) => value == other;
+
+        /// <summary>
+        /// Returns the value in string.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            string baseText = $"{value}|{Stacking}|";
+            for (int i = 0; i < Affections.Length; i++)
+            {
+                baseText += $"{Affections[i]}";
+                if (i != Affections.Length - 1)
+                    baseText += ',';
+            }
+            return baseText;
+        }
 
         /// <summary>
         /// Returns the Stat's value implicitly.

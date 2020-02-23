@@ -511,6 +511,40 @@
             <param name="enumerable"></param>
             <param name="layer"></param>
         </member>
+        <member name="T:WarWolfWorks.Debugging.Command">
+            <summary>
+            Used with <see cref="T:WarWolfWorks.Debugging.WWWConsole"/> to add commands.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Debugging.Command.Name">
+            <summary>
+            Name of the command.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Debugging.Command.CaseSensitiveName">
+            <summary>
+            If true, all characters must be of the same case to be accepted.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Debugging.Command.Description">
+            <summary>
+            Description of the command.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Debugging.Command.OnCommandUsed">
+            <summary>
+            What happens when the command is entered; String value is the text after the '='.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Debugging.Command.#ctor(System.String,System.Boolean,System.String,System.Action{System.String})">
+            <summary>
+            Creates a new <see cref="T:WarWolfWorks.Debugging.Command"/>.
+            </summary>
+            <param name="name"></param>
+            <param name="caseSensitiveName"></param>
+            <param name="description"></param>
+            <param name="onCommandUsed"></param>
+        </member>
         <member name="T:WarWolfWorks.Debugging.EnumFlagsAttribute">
             <summary>
             Displays an enum value inside the inspector as Flags.
@@ -532,22 +566,6 @@
             </summary>
             <param name="name"></param>
         </member>
-        <member name="T:WarWolfWorks.Debugging.RenameAttribute">
-            <summary>
-            Renames a variable in the inspector without changing it in code or creating a custom editor.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Debugging.RenameAttribute.label">
-            <summary>
-            Name that it will be changed to.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Debugging.RenameAttribute.#ctor(System.String)">
-            <summary>
-            Renames a variable in the inspector without changing it in code or creating a custom editor.
-            </summary>
-            <param name="label">Name that it will be changed to.</param>
-        </member>
         <member name="T:WarWolfWorks.Debugging.WWWConsole">
             <summary>
             In game console (For visual display, see <see cref="T:WarWolfWorks.UI.ConsoleMenu"/>).
@@ -561,6 +579,11 @@
         <member name="F:WarWolfWorks.Debugging.WWWConsole.FunctionKeys">
             <summary>
             All function keys readable by the console.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Debugging.WWWConsole.COMMAND_ARG_SEPARATOR">
+            <summary>
+            What separates the command name from it's argument.
             </summary>
         </member>
         <member name="P:WarWolfWorks.Debugging.WWWConsole.PreviousInputs">
@@ -578,14 +601,38 @@
             Index of the | inside the input.
             </summary>
         </member>
-        <member name="E:WarWolfWorks.Debugging.WWWConsole.OnConfirmInput">
+        <member name="F:WarWolfWorks.Debugging.WWWConsole.Commands">
             <summary>
-            Called when Input inside the console is confirmed; Use this to add commands.
+            All commands.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Debugging.WWWConsole.AddCommand(WarWolfWorks.Debugging.Command)">
+            <summary>
+            Adds a command to the list of commands. (Note: Cannot add two commands of the same <see cref="F:WarWolfWorks.Debugging.Command.Name"/> value)
+            </summary>
+            <param name="command"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Debugging.WWWConsole.RemoveCommand(System.String)">
+            <summary>
+            Removes a command under the given name from the list of commands.
+            </summary>
+            <param name="commandName"></param>
+            <returns></returns>
+        </member>
+        <member name="E:WarWolfWorks.Debugging.WWWConsole.OnInputConfirmed">
+            <summary>
+            Invoked when Input inside the console is confirmed.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.Debugging.WWWConsole.OnCommandConfirmed">
+            <summary>
+            Invoked when a command was successfully called.
             </summary>
         </member>
         <member name="E:WarWolfWorks.Debugging.WWWConsole.OnConsoleTextInsert">
             <summary>
-            Called when text is inserted inside the console content.
+            Invoked when text is inserted inside the console content.
             </summary>
         </member>
         <member name="M:WarWolfWorks.Debugging.WWWConsole.GetCurrentInput">
@@ -599,6 +646,12 @@
             Use this to display a helper message.
             </summary>
             <param name="commandListText"></param>
+        </member>
+        <member name="M:WarWolfWorks.Debugging.WWWConsole.GetCommandNameDescriptionText(WarWolfWorks.Debugging.Command)">
+            <summary>
+            Returns a nicely formatted text of a command.
+            </summary>
+            <param name="command"></param>
         </member>
         <member name="M:WarWolfWorks.Debugging.WWWConsole.SetInputText(System.String)">
             <summary>
@@ -636,6 +689,21 @@
         <member name="M:WarWolfWorks.Debugging.WWWConsole.ConfirmInput">
             <summary>
             Confirms the current input of the console.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Debugging.WWWConsole.InputFieldIndex">
+            <summary>
+            Index of the Console's UI input field.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Debugging.WWWConsole.ScrollSpeed">
+            <summary>
+            Scroll speed of the console's UI.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Debugging.WWWConsole.FontSize">
+            <summary>
+            Font size of the console's UI.
             </summary>
         </member>
         <member name="T:WarWolfWorks.Internal.Settings">
@@ -769,83 +837,6 @@
         <member name="P:WarWolfWorks.Internal.Settings.LibraryLanguage">
             <summary>
             Language of this library.
-            </summary>
-        </member>
-        <member name="T:WarWolfWorks.Internal.StreamingException">
-            <summary>
-            Exception thrown in case of an error in <see cref="!:WarWolfWorks.Utility.Hooks.RijndaelStreaming"/>.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.Internal.StreamingException.Message">
-            <summary>
-            Message thrown based on <see cref="T:WarWolfWorks.Internal.StreamingResult"/>.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.Internal.StreamingException.Result">
-            <summary>
-            Result of this exception.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Internal.StreamingException.#ctor(WarWolfWorks.Internal.StreamingResult)">
-            <summary>
-            Throws a <see cref="T:WarWolfWorks.Internal.StreamingException"/> based on given <see cref="T:WarWolfWorks.Internal.StreamingResult"/>.
-            </summary>
-            <param name="result"></param>
-        </member>
-        <member name="T:WarWolfWorks.Internal.StreamingResult">
-            <summary>
-            Code of a <see cref="T:WarWolfWorks.Internal.StreamingException"/>.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Internal.StreamingResult.OK">
-            <summary>
-            No exception.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Internal.StreamingResult.CATEGORY_PASSWORD_MISSMATCH">
-            <summary>
-            The category's password was not the same as it's variable.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Internal.StreamingResult.DEFAULT_PATH_NULL">
-            <summary>
-            The category's default path was used without being set.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Internal.StreamingResult.INVALID_ARG">
-            <summary>
-            One or more string values given inside a <see cref="T:WarWolfWorks.Utility.Hooks.Streaming.Catalog"/> were invalid or null.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Internal.StreamingResult.INVALID_CATALOG">
-            <summary>
-            A saving catalog was used to load a variable or vice-versa.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Internal.StreamingResult.CATALOG_MISSMATCH_CATEGORY">
-            <summary>
-            A SaveAll method was called where all catalogs did not have the same Category value.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Internal.StreamingResult.CATALOG_MISSMATCH_PASSWORD">
-            <summary>
-            A SaveAll method was called where all catalogs did not have the same Password value.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Internal.StreamingResult.CATALOG_MISSMATCH_FILEPATH">
-            <summary>
-            A SaveAll method was called where all catalogs did not have the same Path value.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Internal.StreamingResult.INVALID_CATALOG_COLLECTION_SIZE">
-            <summary>
-            A SaveAll method was called where the catalog collection size was null or lesser than 2.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Internal.StreamingResult.INVALID_COLLECTION_SIZE">
-            <summary>
-            Attempted to create multiple catalogs using <see cref="M:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Savers(System.String,System.String,System.String[],System.String[])"/> where 
-            the length of names did not match the length of values.
             </summary>
         </member>
         <member name="T:WarWolfWorks.EntitiesSystem.Attacking.Attack">
@@ -1668,11 +1659,6 @@
             <param name="routine"></param>
             <param name="verifier"></param>
         </member>
-        <member name="T:WarWolfWorks.EntitiesSystem.EntityException">
-            <summary>
-            Exception used by the entity system.
-            </summary>
-        </member>
         <member name="T:WarWolfWorks.EntitiesSystem.EntityHealth">
             <summary>
             Class which acts as the Entity's health.
@@ -1686,6 +1672,11 @@
         <member name="E:WarWolfWorks.EntitiesSystem.EntityHealth.OnDeath">
             <summary>
             What happends when the <see cref="P:WarWolfWorks.EntitiesSystem.EntityHealth.CurrentHealth"/> reaches 0.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.EntitiesSystem.EntityHealth.OnHealthAdded">
+            <summary>
+            Ivoked when <see cref="M:WarWolfWorks.EntitiesSystem.EntityHealth.AddHealth(System.Single)"/> is called. Float value is the amount of health that was added.
             </summary>
         </member>
         <member name="P:WarWolfWorks.EntitiesSystem.EntityHealth.CurrentHealth">
@@ -1707,6 +1698,11 @@
             <summary>
             If true and this component's <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> is <see cref="T:WarWolfWorks.Interfaces.IEntityParentable"/>,
             it will damage the parent's Health instead.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.EntityHealth.PreviousDamage">
+            <summary>
+            Damage previously passed in <see cref="M:WarWolfWorks.EntitiesSystem.EntityHealth.DamageHealth(System.Object)"/>. (Only accepted)
             </summary>
         </member>
         <member name="M:WarWolfWorks.EntitiesSystem.EntityHealth.OnAwake">
@@ -1880,6 +1876,44 @@
             <param name="ofTypes"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetClosestWithinView(UnityEngine.Camera,UnityEngine.Vector3)">
+            <summary>
+            Returns the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> that is visible to the given camera. Only works on entities with a renderer component.
+            Rather slow, avoid using on any Update method.
+            </summary>
+            <param name="from"></param>
+            <param name="position"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetClosestWithinView``1(UnityEngine.Camera,UnityEngine.Vector3)">
+            <summary>
+            Returns the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> that is visible to the given camera. Only works on entities with a renderer component.
+            Rather slow, avoid using on any Update method.
+            </summary>
+            <param name="from"></param>
+            <param name="position"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetClosestWithinView(UnityEngine.Camera,UnityEngine.Vector3,System.Type)">
+            <summary>
+            Returns the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> that is visible to the given camera. Only works on entities with a renderer component.
+            Rather slow, avoid using on any Update method.
+            </summary>
+            <param name="from"></param>
+            <param name="position"></param>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetClosestWithinView(UnityEngine.Camera,UnityEngine.Vector3,System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Returns the closest <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> that is visible to the given camera. Only works on entities with a renderer component.
+            Rather slow, avoid using on any Update method.
+            </summary>
+            <param name="from"></param>
+            <param name="position"></param>
+            <param name="types"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.GetAllWithinView(UnityEngine.Camera)">
             <summary>
             Returns all entities visible to a camera. Only works on entities with a renderer component.
@@ -1967,6 +2001,16 @@
             <param name="includeNonParentableParent"></param>
             <returns></returns>
         </member>
+        <member name="E:WarWolfWorks.EntitiesSystem.EntityManager.OnEntityInstantiated">
+            <summary>
+            Called when an <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> is instantiated.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.EntitiesSystem.EntityManager.OnEntityDestroyed">
+            <summary>
+            Called when an <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/> is destroyed; Boolean value is true if the entity was destroyed officially.
+            </summary>
+        </member>
         <member name="M:WarWolfWorks.EntitiesSystem.EntityManager.New``1(``0,UnityEngine.Vector3,UnityEngine.Quaternion)">
             <summary>
             Creates a new entity from an existing prefab.
@@ -2040,77 +2084,63 @@
         </member>
         <member name="F:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.Value">
             <summary>
-            Direction towards which the velocity will be applied. (read-only)
+            Value of the velocity.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.CurrentTimer">
+        <member name="F:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.DeleteOnCount0">
             <summary>
-            Time remaining for the velocity to be removed. (Only used if VelocityRunsOut is true)
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.StartingTime">
-            <summary>
-            Initial duration of the Velocity. (read-only)
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.ValueScalesWithTime">
-            <summary>
-            If true, Velocity's strength will become weaker as time passes. Applies only when
-            <see cref="F:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.VelocityRunsOut"/> is true. (read-only)
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.VelocityRunsOut">
-            <summary>
-            If true, the velocity will be removed after <see cref="F:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.StartingTime"/> seconds. (read-only)
+            When the velocity timer reaches 0, it will be removed.
             </summary>
         </member>
         <member name="F:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.Affections">
             <summary>
-            Affection used if the Velocity will be affected by the Entity's Statistics. (read-only)
+            Affections. See <see cref="T:WarWolfWorks.Interfaces.IStat"/> for more info.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.BaseStatValue">
+        <member name="P:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.StartTime">
             <summary>
-            Base Velocity.
+            Time which was set for this velocity.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.HasAffection">
+        <member name="P:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.Time">
             <summary>
-            If true, Velocity will scale off of Entity's Statistics.
+            Current countdown time.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.#ctor(UnityEngine.Vector3,System.Single,System.Boolean,System.Boolean,System.Int32[],System.Single)">
+        <member name="P:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.Time01">
             <summary>
-            Creates a Velocity which is affected by stats.
+            Returns the percent of the velocity runout. (Time / StartTime).
             </summary>
-            <param name="val"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.#ctor(UnityEngine.Vector3)">
+            <summary>
+            Creates a simple velocity.
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.#ctor(UnityEngine.Vector3,System.Single,System.Boolean)">
+            <summary>
+            Creates a velocity with a countdown.
+            </summary>
+            <param name="value"></param>
             <param name="time"></param>
-            <param name="scalesWithTime"></param>
-            <param name="usesTime"></param>
+            <param name="deleteOn0"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.#ctor(UnityEngine.Vector3,System.Int32[])">
+            <summary>
+            Creates a velocity with affections.
+            </summary>
+            <param name="value"></param>
             <param name="affections"></param>
-            <param name="baseStatValue"></param>
         </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.#ctor(UnityEngine.Vector3,System.Single,System.Boolean,System.Boolean)">
+        <member name="M:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.#ctor(UnityEngine.Vector3,System.Single,System.Boolean,System.Int32[])">
             <summary>
-            Creates a Velocity which is unaffected by stats.
+            Creates a complete velocity.
             </summary>
-            <param name="val"></param>
+            <param name="value"></param>
             <param name="time"></param>
-            <param name="scalesWithTime"></param>
-            <param name="usesTime"></param>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.Equals(System.Object)">
-            <summary>
-            Returns true if all variables are the same, except for <see cref="F:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.CurrentTimer"/>.
-            </summary>
-            <param name="obj"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.GetHashCode">
-            <summary>
-            Gets the hashcode of this Velocity. (Exludes <see cref="F:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.CurrentTimer"/> from hashcode calculation)
-            </summary>
-            <returns></returns>
+            <param name="deleteOn0"></param>
+            <param name="affections"></param>
         </member>
         <member name="P:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.DefaultVelocity">
             <summary>
@@ -2184,7 +2214,7 @@
         <member name="M:WarWolfWorks.EntitiesSystem.Movement.EntityMovement2D.OnFixed">
             <summary>
             When overriding this class, make sure to call base.OnFixed(); inside it as it is what 
-            calculates the time left in Velocities that have <see cref="F:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.VelocityRunsOut"/>.
+            calculates the time left in Velocities through <see cref="P:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.Time"/>.
             </summary>
         </member>
         <member name="M:WarWolfWorks.EntitiesSystem.Movement.EntityMovement2D.OnUpdate">
@@ -2223,7 +2253,7 @@
         <member name="M:WarWolfWorks.EntitiesSystem.Movement.EntityMovement3D.OnFixed">
             <summary>
             When overriding this class, make sure to call base.OnFixed(); inside it as it is what 
-            calculates the time left in Velocities that have <see cref="F:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.VelocityRunsOut"/>.
+            calculates the time left in Velocities through <see cref="P:WarWolfWorks.EntitiesSystem.Movement.EntityMovement.Velocity.Time"/>.
             </summary>
         </member>
         <member name="M:WarWolfWorks.EntitiesSystem.Movement.EntityMovement3D.OnUpdate">
@@ -2571,6 +2601,414 @@
             </summary>
             <param name="inventory"></param>
         </member>
+        <member name="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile">
+            <summary>
+            Core class of the projectile system.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.BehaviorCall">
+            <summary>
+            Used with <see cref="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.CallBehaviors(WarWolfWorks.EntitiesSystem.Projectiles.Projectile.BehaviorCall,System.Object)"/>; It calls a method inside a <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior"/>
+            according to it's name.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.BehaviorCall.Initiate">
+            <summary>
+            Calls <see cref="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior.Init(WarWolfWorks.EntitiesSystem.Projectiles.Projectile)"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.BehaviorCall.Update">
+            <summary>
+            Calls <see cref="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior.Update"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.BehaviorCall.Fixed">
+            <summary>
+            Calls <see cref="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior.FixedUpdate"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.BehaviorCall.CollideEnter">
+            <summary>
+            Calls a custom method which triggers inside a <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile"/> parent's OnTriggerEnter method (2D or 3D).
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.BehaviorCall.CollideExit">
+            <summary>
+            Calls a custom method which triggers inside a <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile"/> parent's OnTriggerExit method (2D or 3D).
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.BehaviorCall.Destroy">
+            <summary>
+            Called inside <see cref="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Destroy(WarWolfWorks.EntitiesSystem.Projectiles.Projectile)"/>, calls <see cref="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior.OnDestroy"/>.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior">
+            <summary>
+            Base behavioural class for <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile"/> behaviour.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior.Initiated">
+            <summary>
+            Initiated state of this <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior"/>. (<see cref="T:WarWolfWorks.Interfaces.IParentInitiatable`1"/> implementation)
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior.Parent">
+            <summary>
+            Parent of this <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior.Init(WarWolfWorks.EntitiesSystem.Projectiles.Projectile)">
+            <summary>
+            Initiates this <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior"/>.
+            </summary>
+            <param name="parent"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior.OnInitiate">
+            <summary>
+            Called when the behavior is added to a <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior.Update">
+            <summary>
+            Called every in-game frame.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior.FixedUpdate">
+            <summary>
+            Called every in-game physics frame.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior.OnDestroy">
+            <summary>
+            Called when a <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile"/> is destroyed.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.ActiveProjectiles">
+            <summary>
+            List of all active projectiles.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.InactiveProjectiles">
+            <summary>
+            List of all inactive projectiles.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.GetActiveProjectiles">
+            <summary>
+            Returns an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of all active projectiles.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.GetInactiveProjectiles">
+            <summary>
+            Returns an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of all inactive projectiles.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="E:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.OnProjectileNew">
+            <summary>
+            Invoked when a <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile"/>.New method is called.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.OnProjectileDestroy">
+            <summary>
+            Invoked when <see cref="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Destroy(WarWolfWorks.EntitiesSystem.Projectiles.Projectile)"/> is succesfully called.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Populated">
+            <summary>
+            Returns true if <see cref="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Populate``1(System.Int32,System.Action{``0})"/> was previously called.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.PopulationType">
+            <summary>
+            What type the pool population was instantiated as.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.EntityMain">
+            <summary>
+            Owner of this projectile.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Active">
+            <summary>
+            Active state of this <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behaviors">
+            <summary>
+            All behaviors of this <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Position">
+            <summary>
+            Pointer to transform.position.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Rotation">
+            <summary>
+            Pointer to transform.rotation.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Populate``1(System.Int32,System.Action{``0})">
+            <summary>
+            Populates the <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile"/> pool.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="population">How many projectiles will be instantiated in the pool.</param>
+            <param name="OnInstantiate">This action is invoked when a Projectile is instantiated; Useful for adding components into the projectile.</param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.NewArgsSet(WarWolfWorks.EntitiesSystem.Projectiles.Projectile,WarWolfWorks.EntitiesSystem.Entity,System.Collections.Generic.IEnumerable{WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior})">
+            <summary>
+            Sets protected behaviors un-settable throught inherited members for any New/Instantiate methods.
+            </summary>
+            <param name="for"></param>
+            <param name="entityMain"></param>
+            <param name="behaviors"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.PostNew(WarWolfWorks.EntitiesSystem.Projectiles.Projectile)">
+            <summary>
+            You are required to call this method at the end of a New/Instantiate method, as it set all required variables that are inaccessible through inherited members;
+            Creating a projectile without calling this method will result in an exception.
+            </summary>
+            <param name="for"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.CallBehaviors(WarWolfWorks.EntitiesSystem.Projectiles.Projectile.BehaviorCall,System.Object)">
+            <summary>
+            Call a behavior method of all behaviors with optional data.
+            </summary>
+            <param name="type"></param>
+            <param name="data"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.SetBehaviors(System.Collections.Generic.IEnumerable{WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior})">
+            <summary>
+            Sets behaviors of this projectile, then calls <see cref="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.CallBehaviors(WarWolfWorks.EntitiesSystem.Projectiles.Projectile.BehaviorCall,System.Object)"/> with <see cref="F:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.BehaviorCall.Initiate"/>.
+            </summary>
+            <param name="behaviors"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.OnEnabled">
+            <summary>
+            <see cref="T:UnityEngine.MonoBehaviour"/>'s OnEnable equivalent.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Destroy(WarWolfWorks.EntitiesSystem.Projectiles.Projectile)">
+            <summary>
+            Destroys a projectile.
+            </summary>
+            <param name="projectile"></param>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.EnumeratorCurrent">
+            <summary>
+            The current itteration of the Enumerator-like implementation.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.EnumeratorMoveNext">
+            <summary>
+            Enumerator-like implementation for getting a new projectile for instantiation.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.EnumeratorReset">
+            <summary>
+            Enumerator-like implementation to reset the itteration.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile2D">
+            <summary>
+            2D version of <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile"/>.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile2D.Behavior2D">
+            <summary>
+            2D version of <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile2D.Behavior2D.OnTriggerEnter(UnityEngine.Collider2D)">
+            <summary>
+            Called when <see cref="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior.Parent"/> collides with an object.
+            </summary>
+            <param name="collider"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile2D.Behavior2D.OnTriggerExit(UnityEngine.Collider2D)">
+            <summary>
+            Called when <see cref="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior.Parent"/> stops colliding with an object.
+            </summary>
+            <param name="collider"></param>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile2D.SpriteRenderer">
+            <summary>
+            The <see cref="T:UnityEngine.SpriteRenderer"/> attached to this projectile.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile2D.Rigidbody2D">
+            <summary>
+            The <see cref="T:UnityEngine.Rigidbody2D"/> attached to this projectile.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile2D.Populate(System.Int32)">
+            <summary>
+            Populates the projectile pool.
+            </summary>
+            <param name="population"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile2D.New(WarWolfWorks.EntitiesSystem.Entity,UnityEngine.Vector2,UnityEngine.Quaternion,UnityEngine.Sprite,WarWolfWorks.EntitiesSystem.Projectiles.Projectile2D.Behavior2D[])">
+            <summary>
+            Instantiates a new <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile2D"/>.
+            </summary>
+            <param name="owner"></param>
+            <param name="position"></param>
+            <param name="rotation"></param>
+            <param name="sprite"></param>
+            <param name="behaviors"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile2D.CallBehaviors(WarWolfWorks.EntitiesSystem.Projectiles.Projectile.BehaviorCall,System.Object)">
+            <summary>
+            Calls behaviors accordingly to their 2D functionality.
+            </summary>
+            <param name="type"></param>
+            <param name="data"></param>
+        </member>
+        <member name="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile3D">
+            <summary>
+            3D version of <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile"/>.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile3D.Behavior3D">
+            <summary>
+            3D version of <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile3D.Behavior3D.OnTriggerEnter(UnityEngine.Collider)">
+            <summary>
+            Called when <see cref="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior.Parent"/> collides with an object.
+            </summary>
+            <param name="collider"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile3D.Behavior3D.OnTriggerExit(UnityEngine.Collider)">
+            <summary>
+            Called when <see cref="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Behavior.Parent"/> stops colliding with an object.
+            </summary>
+            <param name="collider"></param>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile3D.MeshFilter">
+            <summary>
+            The <see cref="T:UnityEngine.MeshFilter"/> attached to this projectile.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile3D.MeshRenderer">
+            <summary>
+            The <see cref="T:UnityEngine.MeshRenderer"/> attached to this projectile.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile3D.Rigidbody">
+            <summary>
+            The <see cref="T:UnityEngine.Rigidbody"/> attached to this projectile.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile3D.Populate(System.Int32)">
+            <summary>
+            Populates the projectile pool.
+            </summary>
+            <param name="population"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile3D.New(WarWolfWorks.EntitiesSystem.Entity,UnityEngine.Vector3,UnityEngine.Quaternion,UnityEngine.Mesh,UnityEngine.Material[],WarWolfWorks.EntitiesSystem.Projectiles.Projectile3D.Behavior3D[])">
+            <summary>
+            Instantiates a new <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile3D"/>.
+            </summary>
+            <param name="owner"></param>
+            <param name="position"></param>
+            <param name="rotation"></param>
+            <param name="mesh"></param>
+            <param name="meshMaterials"></param>
+            <param name="behaviors"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile3D.CallBehaviors(WarWolfWorks.EntitiesSystem.Projectiles.Projectile.BehaviorCall,System.Object)">
+            <summary>
+            Calls behaviors accordingly to their 3D functionality.
+            </summary>
+            <param name="type"></param>
+            <param name="data"></param>
+        </member>
+        <member name="T:WarWolfWorks.EntitiesSystem.Statistics.CountdownStat">
+            <summary>
+            <see cref="T:WarWolfWorks.Interfaces.IStat"/> which is removed after a given countdown.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Statistics.CountdownStat.SetValue">
+            <summary>
+            Use this value to set the base value of this stat. (Set-Only)
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Statistics.CountdownStat.Stacking">
+            <summary>
+            How the Stat should be calculated.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Statistics.CountdownStat.Affections">
+            <summary>
+            Which stats will this stat interact with.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Statistics.CountdownStat.Countdown">
+            <summary>
+            Starting countdown.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Statistics.CountdownStat.#ctor(System.Single,System.Int32,System.Single,System.Int32[])">
+            <summary>
+            Create a Stat.
+            </summary>
+            <param name="value"></param>
+            <param name="stacking"></param>
+            <param name="countdown"></param>
+            <param name="affections"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Statistics.CountdownStat.#ctor(WarWolfWorks.EntitiesSystem.Statistics.CountdownStat)">
+            <summary>
+            Creates a duplicate of the given stat.
+            </summary>
+            <param name="stat"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Statistics.CountdownStat.#ctor(WarWolfWorks.EntitiesSystem.Statistics.CountdownStat,System.Single)">
+            <summary>
+            Creates a duplicate of the given stat with a different value.
+            </summary>
+            <param name="stat"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Statistics.CountdownStat.Equals(System.Single)">
+            <summary>
+            Returns true if the Stat's value returns other.
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Statistics.CountdownStat.op_Implicit(WarWolfWorks.EntitiesSystem.Statistics.CountdownStat)~System.Single">
+            <summary>
+            Returns the Stat's value implicitly.
+            </summary>
+            <param name="s"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Statistics.CountdownStat.op_Implicit(WarWolfWorks.EntitiesSystem.Statistics.CountdownStat)~System.Int32">
+            <summary>
+            Returns the Stat's value implicitly as int.
+            </summary>
+            <param name="s"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Statistics.CountdownStat.op_Implicit(WarWolfWorks.EntitiesSystem.Statistics.CountdownStat)~WarWolfWorks.EntitiesSystem.Statistics.Stat">
+            <summary>
+            Returns an equivalent Stat to this <see cref="T:WarWolfWorks.EntitiesSystem.Statistics.CountdownStat"/>.
+            </summary>
+            <param name="stat"></param>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Statistics.CountdownStat.ToString">
+            <summary>
+            Returns the <see cref="T:WarWolfWorks.EntitiesSystem.Statistics.CountdownStat"/>'s value in string.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:WarWolfWorks.EntitiesSystem.Statistics.EWWWStacking">
             <summary>
             Enum value depicting <see cref="T:WarWolfWorks.EntitiesSystem.Statistics.WWWStacking"/>'s stacking values. Useful when used with Editor's Enum List Displayer.
@@ -2646,6 +3084,15 @@
             Which stats will this LevelStat interact with.
             </summary>
         </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Statistics.LevelStat.#ctor(System.Single,System.Int32,System.Int32,System.Int32[])">
+            <summary>
+            Creates a <see cref="T:WarWolfWorks.EntitiesSystem.Statistics.LevelStat"/> with a default value, a level, stacking and affections.
+            </summary>
+            <param name="defaultVal"></param>
+            <param name="level"></param>
+            <param name="stacking"></param>
+            <param name="affections"></param>
+        </member>
         <member name="M:WarWolfWorks.EntitiesSystem.Statistics.LevelStat.#ctor(WarWolfWorks.Utility.LevelFloat,System.Int32,System.Int32[])">
             <summary>
             Creates a LevelStat instance with multiple affections.
@@ -2663,19 +3110,19 @@
         </member>
         <member name="M:WarWolfWorks.EntitiesSystem.Statistics.LevelStat.op_Implicit(WarWolfWorks.EntitiesSystem.Statistics.LevelStat)~System.Single">
             <summary>
-            Returns the LevelStat's value implicitly.
+            Returns the <see cref="T:WarWolfWorks.EntitiesSystem.Statistics.LevelStat"/>'s value implicitly.
             </summary>
             <param name="stat"></param>
         </member>
         <member name="M:WarWolfWorks.EntitiesSystem.Statistics.LevelStat.op_Implicit(WarWolfWorks.EntitiesSystem.Statistics.LevelStat)~System.Int32">
             <summary>
-            Returns the LevelStat's value implicitly as int.
+            Returns the <see cref="T:WarWolfWorks.EntitiesSystem.Statistics.LevelStat"/>'s value implicitly as int.
             </summary>
             <param name="stat"></param>
         </member>
         <member name="M:WarWolfWorks.EntitiesSystem.Statistics.LevelStat.op_Implicit(WarWolfWorks.EntitiesSystem.Statistics.LevelStat)~WarWolfWorks.EntitiesSystem.Statistics.Stat">
             <summary>
-            Returns an equivalent Stat to this LevelStat.
+            Returns an equivalent Stat to this <see cref="T:WarWolfWorks.EntitiesSystem.Statistics.LevelStat"/>.
             </summary>
             <param name="stat"></param>
         </member>
@@ -2687,7 +3134,7 @@
         </member>
         <member name="M:WarWolfWorks.EntitiesSystem.Statistics.LevelStat.ToString">
             <summary>
-            Returns the LevelStat's value in string.
+            Returns the <see cref="T:WarWolfWorks.EntitiesSystem.Statistics.LevelStat"/>'s value in string.
             </summary>
             <returns></returns>
         </member>
@@ -2831,6 +3278,12 @@
             <param name="other"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Statistics.Stat.ToString">
+            <summary>
+            Returns the value in string.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.EntitiesSystem.Statistics.Stat.op_Implicit(WarWolfWorks.EntitiesSystem.Statistics.Stat)~System.Single">
             <summary>
             Returns the Stat's value implicitly.
@@ -2866,6 +3319,21 @@
         <member name="P:WarWolfWorks.EntitiesSystem.Statistics.Stats.Stacking">
             <summary>
             
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.EntitiesSystem.Statistics.Stats.OnStatAdded">
+            <summary>
+            Invoked when a stat is added.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.EntitiesSystem.Statistics.Stats.OnStatRemoved">
+            <summary>
+            Invoked when a stat is removed.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Statistics.Stats.EntityMain">
+            <summary>
+            Entity of which these stats belong to.
             </summary>
         </member>
         <member name="M:WarWolfWorks.EntitiesSystem.Statistics.Stats.GetAllStats">
@@ -3160,7 +3628,7 @@
         </member>
         <member name="E:WarWolfWorks.Interfaces.IAdvancedHealth.OnDamaged">
             <summary>
-            Should be invoked inside <see cref="M:WarWolfWorks.Interfaces.IAdvancedHealth.DamageHealth(System.Object)"/>.
+            Invoked when <see cref="M:WarWolfWorks.Interfaces.IAdvancedHealth.DamageHealth(System.Object)"/> was suiccessful.
             </summary>
         </member>
         <member name="P:WarWolfWorks.Interfaces.IAdvancedHealth.ImmunityDuration">
@@ -3294,6 +3762,16 @@
             when the component is created/instantiated.
             </summary>
         </member>
+        <member name="T:WarWolfWorks.Interfaces.IEntityInitiate">
+            <summary>
+            Used for basic initiation of an object.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Interfaces.IEntityInitiate.Init(WarWolfWorks.EntitiesSystem.Entity)">
+            <summary>
+            Initiates it.
+            </summary>
+        </member>
         <member name="T:WarWolfWorks.Interfaces.IEntityParentable">
             <summary>
             Interface used for parent-like behaviour for entities and their components.
@@ -3318,6 +3796,43 @@
             <summary>
             Equivalent to <see cref="T:UnityEngine.MonoBehaviour"/>.FixedUpdate().
             </summary>
+        </member>
+        <member name="T:WarWolfWorks.Interfaces.IHealth">
+            <summary>
+            Basic interface for implementing a Health class.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.Interfaces.IHealth.OnDeath">
+            <summary>
+            Invoked when <see cref="P:WarWolfWorks.Interfaces.IHealth.CurrentHealth"/> reaches 0.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.Interfaces.IHealth.OnHealthAdded">
+            <summary>
+            Invoked when <see cref="M:WarWolfWorks.Interfaces.IHealth.AddHealth(System.Single)"/> is invoked. Float value is the health added.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Interfaces.IHealth.MaxHealth">
+            <summary>
+            Value that clamps <see cref="P:WarWolfWorks.Interfaces.IHealth.CurrentHealth"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Interfaces.IHealth.CurrentHealth">
+            <summary>
+            The current health.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Interfaces.IHealth.AddHealth(System.Single)">
+            <summary>
+            Adds to <see cref="P:WarWolfWorks.Interfaces.IHealth.CurrentHealth"/>.
+            </summary>
+            <param name="amount"></param>
+        </member>
+        <member name="M:WarWolfWorks.Interfaces.IHealth.RemoveHealth(System.Single)">
+            <summary>
+            Removes from <see cref="P:WarWolfWorks.Interfaces.IHealth.CurrentHealth"/>.
+            </summary>
+            <param name="amount"></param>
         </member>
         <member name="T:WarWolfWorks.Interfaces.IHealthDamage">
             <summary>
@@ -3380,10 +3895,30 @@
             All events of this <see cref="T:WarWolfWorks.Interfaces.IIndexMenu"/>.
             </summary>
         </member>
+        <member name="T:WarWolfWorks.Interfaces.IInitiatable">
+            <summary>
+            Used for basic initiation of an object.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Interfaces.IInitiatable.Init">
+            <summary>
+            Initiates it.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.Interfaces.IInitiated">
+            <summary>
+            Interface to be implemented for an initiatable component/object.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Interfaces.IInitiated.Initiated">
+            <summary>
+            Returns the initiated state of this <see cref="T:WarWolfWorks.Interfaces.IInitiated"/>.
+            </summary>
+        </member>
         <member name="T:WarWolfWorks.Interfaces.IInstantiatable">
             <summary>
             Used with an Unity Object to be called right after (preferably still inside) <see cref="M:UnityEngine.Object.Instantiate(UnityEngine.Object)"/>.
-            (Compatible with <see cref="!:Hooks.InstantiateList&lt;T&gt;(IEnumerable&lt;T&gt;)"/>)
+            (Compatible with <see cref="M:WarWolfWorks.Utility.Hooks.Enumeration.InstantiateList``1(System.Collections.Generic.IEnumerable{``0})"/>)
             </summary>
         </member>
         <member name="M:WarWolfWorks.Interfaces.IInstantiatable.PostInstantiate">
@@ -3529,6 +4064,16 @@
             The parent.
             </summary>
         </member>
+        <member name="T:WarWolfWorks.Interfaces.IParentInitiatable`1">
+            <summary>
+            Used for basic initiation of an object.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Interfaces.IParentInitiatable`1.Init(`0)">
+            <summary>
+            Initiates it.
+            </summary>
+        </member>
         <member name="M:WarWolfWorks.Interfaces.IRotation.GetDestination">
             <summary>
             Rotation towards which this <see cref="T:WarWolfWorks.Interfaces.IRotation"/> is destinated.
@@ -3638,6 +4183,12 @@
             <summary>
             How the value should be calculated.
             </summary>
+        </member>
+        <member name="M:WarWolfWorks.Interfaces.IStat.OnAdded(WarWolfWorks.EntitiesSystem.Statistics.Stats)">
+            <summary>
+            Invoked when added to <see cref="T:WarWolfWorks.EntitiesSystem.Statistics.Stats"/> with <see cref="M:WarWolfWorks.EntitiesSystem.Statistics.Stats.AddStat(WarWolfWorks.Interfaces.IStat)"/>.
+            </summary>
+            <param name="to"></param>
         </member>
         <member name="T:WarWolfWorks.Interfaces.IStatus">
             <summary>
@@ -3771,127 +4322,123 @@
             Equivalent to <see cref="T:UnityEngine.MonoBehaviour"/>.Update().
             </summary>
         </member>
-        <member name="T:WarWolfWorks.Security.Cryptography.TwofishManaged">
+        <member name="T:WarWolfWorks.Security.EntityException">
             <summary>
-            Twofish algorithm implementation.
-            This class cannot be inherited.
-            </summary>
-            <remarks>https://www.schneier.com/twofish.html</remarks>
-        </member>
-        <member name="M:WarWolfWorks.Security.Cryptography.TwofishManaged.#ctor">
-            <summary>
-            Initializes a new instance.
+            Exception used by the entity system.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Security.Cryptography.TwofishManaged.CreateDecryptor(System.Byte[],System.Byte[])">
+        <member name="T:WarWolfWorks.Security.ProjectileException">
             <summary>
-            Creates a symmetric decryptor object.
-            </summary>
-            <param name="rgbKey">The secret key to be used for the symmetric algorithm. The key size must be 128, 192, or 256 bits.</param>
-            <param name="rgbIV">The IV to be used for the symmetric algorithm.</param>
-        </member>
-        <member name="M:WarWolfWorks.Security.Cryptography.TwofishManaged.CreateEncryptor(System.Byte[],System.Byte[])">
-            <summary>
-            Creates a symmetric encryptor object.
-            </summary>
-            <param name="rgbKey">The secret key to be used for the symmetric algorithm. The key size must be 128, 192, or 256 bits.</param>
-            <param name="rgbIV">The IV to be used for the symmetric algorithm.</param>
-        </member>
-        <member name="M:WarWolfWorks.Security.Cryptography.TwofishManaged.GenerateIV">
-            <summary>
-            Generates a random initialization vector to be used for the algorithm.
+            Used with <see cref="T:WarWolfWorks.Security.ProjectileException"/> for all unallowed operations.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Security.Cryptography.TwofishManaged.GenerateKey">
+        <member name="P:WarWolfWorks.Security.ProjectileException.Message">
             <summary>
-            Generates a random key to be used for the algorithm.
+            The message of the unallowed operation.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Security.Cryptography.TwofishManaged.Mode">
+        <member name="M:WarWolfWorks.Security.ProjectileException.#ctor(WarWolfWorks.Security.ProjectileExceptionType)">
             <summary>
-            Gets or sets the mode for operation of the symmetric algorithm.
+            Creates a new <see cref="T:WarWolfWorks.Security.ProjectileException"/>.
+            </summary>
+            <param name="type"></param>
+        </member>
+        <member name="T:WarWolfWorks.Security.ProjectileExceptionType">
+            <summary>
+            Used with <see cref="T:WarWolfWorks.Security.ProjectileException"/>.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Security.Cryptography.TwofishManaged.Padding">
+        <member name="F:WarWolfWorks.Security.ProjectileExceptionType.UnpopulatedProjectileNew">
             <summary>
-            Gets or sets the mode for operation of the symmetric algorithm.
+            <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile"/>.New was called when <see cref="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Populate``1(System.Int32,System.Action{``0})"/> was never called.
             </summary>
         </member>
-        <member name="T:WarWolfWorks.Security.Cryptography.TwofishManagedTransform">
+        <member name="F:WarWolfWorks.Security.ProjectileExceptionType.PopulationLessThanOne">
             <summary>
-            Performs a cryptographic transformation of data using the Twofish algorithm.
-            This class cannot be inherited.
+            <see cref="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Populate``1(System.Int32,System.Action{``0})"/> was given a population lesser than one.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Security.Cryptography.TwofishManagedTransform.CanReuseTransform">
+        <member name="F:WarWolfWorks.Security.ProjectileExceptionType.InstantiatedWithoutPostNew">
             <summary>
-            Gets a value indicating whether the current transform can be reused.
+            <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile"/>.New was called when <see cref="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.PostNew(WarWolfWorks.EntitiesSystem.Projectiles.Projectile)"/> was not called at the end of it.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Security.Cryptography.TwofishManagedTransform.CanTransformMultipleBlocks">
+        <member name="T:WarWolfWorks.Security.StreamingException">
             <summary>
-            Gets a value indicating whether multiple blocks can be transformed.
+            Exception thrown in case of an error in <see cref="T:WarWolfWorks.Utility.Hooks.Streaming"/>.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Security.Cryptography.TwofishManagedTransform.InputBlockSize">
+        <member name="P:WarWolfWorks.Security.StreamingException.Message">
             <summary>
-            Gets the input block size (in bytes).
+            Message thrown based on <see cref="T:WarWolfWorks.Security.StreamingResult"/>.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Security.Cryptography.TwofishManagedTransform.OutputBlockSize">
+        <member name="P:WarWolfWorks.Security.StreamingException.Result">
             <summary>
-            Gets the output block size (in bytes).
+            Result of this exception.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Security.Cryptography.TwofishManagedTransform.Dispose">
+        <member name="M:WarWolfWorks.Security.StreamingException.#ctor(WarWolfWorks.Security.StreamingResult)">
             <summary>
-            Releases resources.
+            Throws a <see cref="T:WarWolfWorks.Security.StreamingException"/> based on given <see cref="T:WarWolfWorks.Security.StreamingResult"/>.
+            </summary>
+            <param name="result"></param>
+        </member>
+        <member name="T:WarWolfWorks.Security.StreamingResult">
+            <summary>
+            Code of a <see cref="T:WarWolfWorks.Security.StreamingException"/>.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Security.Cryptography.TwofishManagedTransform.TransformBlock(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+        <member name="F:WarWolfWorks.Security.StreamingResult.OK">
             <summary>
-            Transforms the specified region of the input byte array and copies the resulting transform to the specified region of the output byte array.
-            </summary>
-            <param name="inputBuffer">The input for which to compute the transform.</param>
-            <param name="inputOffset">The offset into the input byte array from which to begin using data.</param>
-            <param name="inputCount">The number of bytes in the input byte array to use as data.</param>
-            <param name="outputBuffer">The output to which to write the transform.</param>
-            <param name="outputOffset">The offset into the output byte array from which to begin writing data.</param>
-        </member>
-        <member name="M:WarWolfWorks.Security.Cryptography.TwofishManagedTransform.TransformFinalBlock(System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            Transforms the specified region of the specified byte array.
-            </summary>
-            <param name="inputBuffer">The input for which to compute the transform.</param>
-            <param name="inputOffset">The offset into the byte array from which to begin using data.</param>
-            <param name="inputCount">The number of bytes in the byte array to use as data.</param>
-        </member>
-        <member name="M:WarWolfWorks.Security.Cryptography.TwofishManagedTransform.TwofishImplementation.ReKey">
-            <summary>
-            Initialize the Twofish key schedule from key32
+            No exception.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Security.Cryptography.TwofishManagedTransform.TwofishImplementation.BlockEncrypt(System.Byte[],System.Int32,System.Byte[],System.Int32)">
+        <member name="F:WarWolfWorks.Security.StreamingResult.CATEGORY_PASSWORD_MISSMATCH">
             <summary>
-            Encrypt block(s) of data using Twofish.
+            The category's password was not the same as it's variable.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Security.Cryptography.TwofishManagedTransform.TwofishImplementation.BlockDecrypt(System.Byte[],System.Int32,System.Byte[],System.Int32)">
+        <member name="F:WarWolfWorks.Security.StreamingResult.DEFAULT_PATH_NULL">
             <summary>
-            Decrypt block(s) of data using Twofish.
+            The category's default path was used without being set.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Security.Cryptography.TwofishManagedTransform.TwofishImplementation.F32(WarWolfWorks.Security.Cryptography.TwofishManagedTransform.TwofishImplementation.DWord,WarWolfWorks.Security.Cryptography.TwofishManagedTransform.TwofishImplementation.DWord[],System.Int32)">
+        <member name="F:WarWolfWorks.Security.StreamingResult.INVALID_ARG">
             <summary>
-            Run four bytes through keyed S-boxes and apply MDS matrix.
+            One or more string values given inside a <see cref="T:WarWolfWorks.Utility.Hooks.Streaming.Catalog"/> were invalid or null.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Security.Cryptography.TwofishManagedTransform.TwofishImplementation.ReedSolomonMdsEncode(WarWolfWorks.Security.Cryptography.TwofishManagedTransform.TwofishImplementation.DWord,WarWolfWorks.Security.Cryptography.TwofishManagedTransform.TwofishImplementation.DWord)">
+        <member name="F:WarWolfWorks.Security.StreamingResult.INVALID_CATALOG">
             <summary>
-            Use (12,8) Reed-Solomon code over GF(256) to produce a key S-box dword from two key material dwords.
+            A saving catalog was used to load a variable or vice-versa.
             </summary>
-            <param name="k0">1st dword</param>
-            <param name="k1">2nd dword</param>
+        </member>
+        <member name="F:WarWolfWorks.Security.StreamingResult.CATALOG_MISSMATCH_CATEGORY">
+            <summary>
+            A SaveAll method was called where all catalogs did not have the same Category value.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Security.StreamingResult.CATALOG_MISSMATCH_PASSWORD">
+            <summary>
+            A SaveAll method was called where all catalogs did not have the same Password value.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Security.StreamingResult.CATALOG_MISSMATCH_FILEPATH">
+            <summary>
+            A SaveAll method was called where all catalogs did not have the same Path value.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Security.StreamingResult.INVALID_CATALOG_COLLECTION_SIZE">
+            <summary>
+            A SaveAll method was called where the catalog collection size was null or lesser than 2.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Security.StreamingResult.INVALID_COLLECTION_SIZE">
+            <summary>
+            Attempted to create multiple catalogs using <see cref="M:WarWolfWorks.Utility.Hooks.Streaming.Catalog.Savers(System.String,System.String,System.String[],System.String[])"/> where 
+            the length of names did not match the length of values.
+            </summary>
         </member>
         <member name="T:WarWolfWorks.Threading.ThreadingUtilities">
             <summary>
@@ -4322,29 +4869,88 @@
             Removes this menu from <see cref="F:WarWolfWorks.UI.MenusSystem.Menu.AllMenus"/> list.
             </summary>
         </member>
-        <member name="T:WarWolfWorks.UI.MouseHUD">
+        <member name="T:WarWolfWorks.UI.MouseGUI">
             <summary>
             Displays an image right next to the cursor.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.UI.MouseHUD.CurrentlyQueued">
+        <member name="T:WarWolfWorks.UI.MouseGUI.MouseGraphic">
+            <summary>
+            Graphic to be displayed in <see cref="T:WarWolfWorks.UI.MouseGUI"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.UI.MouseGUI.MouseGraphic.AnchoredSize">
+            <summary>
+            Anchored size of this <see cref="T:WarWolfWorks.UI.MouseGUI.MouseGraphic"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.UI.MouseGUI.MouseGraphic.MouseSprite">
+            <summary>
+            Sprite of this <see cref="T:WarWolfWorks.UI.MouseGUI.MouseGraphic"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.UI.MouseGUI.MouseGraphic.SpriteColor">
+            <summary>
+            Color of the <see cref="F:WarWolfWorks.UI.MouseGUI.MouseGraphic.MouseSprite"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.UI.MouseGUI.MouseGraphic.MouseText">
+            <summary>
+            Text of this <see cref="T:WarWolfWorks.UI.MouseGUI.MouseGraphic"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.UI.MouseGUI.MouseGraphic.TextColor">
+            <summary>
+            Color of <see cref="F:WarWolfWorks.UI.MouseGUI.MouseGraphic.MouseText"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.MouseGUI.MouseGraphic.#ctor(UnityEngine.Vector2,UnityEngine.Sprite,System.String,UnityEngine.Color,UnityEngine.Color)">
+            <summary>
+            Creates a <see cref="T:WarWolfWorks.UI.MouseGUI.MouseGraphic"/> which displays both a sprite and text.
+            </summary>
+            <param name="anchorSize"></param>
+            <param name="sprite"></param>
+            <param name="text"></param>
+            <param name="spriteColor"></param>
+            <param name="textColor"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.MouseGUI.MouseGraphic.#ctor(UnityEngine.Vector2,UnityEngine.Sprite,UnityEngine.Color)">
+            <summary>
+            Creates a <see cref="T:WarWolfWorks.UI.MouseGUI.MouseGraphic"/> which displays a sprite.
+            </summary>
+            <param name="anchorSize"></param>
+            <param name="sprite"></param>
+            <param name="spriteColor"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.MouseGUI.MouseGraphic.#ctor(UnityEngine.Vector2,System.String,UnityEngine.Color)">
+            <summary>
+            Creates a <see cref="T:WarWolfWorks.UI.MouseGUI.MouseGraphic"/> which displays text.
+            </summary>
+            <param name="anchorSize"></param>
+            <param name="text"></param>
+            <param name="textColor"></param>
+        </member>
+        <member name="P:WarWolfWorks.UI.MouseGUI.CurrentlyQueued">
             <summary>
             Returns the currently displayed Sprite/Color.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.UI.MouseHUD.AddToQueue(UnityEngine.Sprite,UnityEngine.Color)">
+        <member name="M:WarWolfWorks.UI.MouseGUI.AddToQueue(WarWolfWorks.UI.MouseGUI.MouseGraphic)">
             <summary>
             Adds the sprite to the queue of images to be displayed.
             </summary>
-            <param name="sprite"></param>
-            <param name="color"></param>
+            <param name="graphic"></param>
         </member>
-        <member name="M:WarWolfWorks.UI.MouseHUD.RemoveFromQueue(UnityEngine.Sprite,UnityEngine.Color)">
+        <member name="M:WarWolfWorks.UI.MouseGUI.RemoveFromQueue">
             <summary>
-            Removes the sprite from the queue of images to be displayed.
+            Removes the currently displayed <see cref="T:WarWolfWorks.UI.MouseGUI.MouseGraphic"/> from queue.
             </summary>
-            <param name="sprite"></param>
-            <param name="color"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.MouseGUI.RemoveFromQueue(System.Predicate{WarWolfWorks.UI.MouseGUI.MouseGraphic})">
+            <summary>
+            Removes a specific graphic from queue.
+            </summary>
+            <param name="graphic"></param>
         </member>
         <member name="T:WarWolfWorks.UI.MoveableBar">
             <summary>
@@ -4447,6 +5053,91 @@
             Sets <see cref="P:WarWolfWorks.UI.MoveableBar.OriginalRectSize"/> and <see cref="P:WarWolfWorks.UI.MoveableBar.LastRectSize"/> to <see cref="P:WarWolfWorks.UI.MoveableBar.CurrentRectSize"/>.
             </summary>
         </member>
+        <member name="T:WarWolfWorks.UI.Subtitle">
+            <summary>
+            Used with <see cref="T:WarWolfWorks.UI.Subtitles"/> to display text on the screen.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.UI.Subtitle.Text">
+            <summary>
+            The <see cref="T:TMPro.TextMeshProUGUI"/> object assigned to this <see cref="T:WarWolfWorks.UI.Subtitle"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.Subtitle.Content">
+            <summary>
+            Currently displayed text.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.Subtitle.Countdown">
+            <summary>
+            The assigned countdown.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.Subtitle.CurrentCountdown">
+            <summary>
+            The current countdown of this <see cref="T:WarWolfWorks.UI.Subtitle"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.Subtitle.Loops">
+            <summary>
+            If true, <see cref="T:WarWolfWorks.UI.Subtitles"/> will put <see cref="P:WarWolfWorks.UI.Subtitle.CurrentCountdown"/> back to <see cref="P:WarWolfWorks.UI.Subtitle.Countdown"/> instead of removing it.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.Subtitle.Gradient">
+            <summary>
+            The gradient assigned to this <see cref="T:WarWolfWorks.UI.Subtitle"/>. <see cref="F:WarWolfWorks.UI.Subtitle.Text"/>'s color is assigned with <see cref="M:UnityEngine.Gradient.Evaluate(System.Single)"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.Subtitle.AnchorPosition">
+            <summary>
+            The anchored position <see cref="F:WarWolfWorks.UI.Subtitle.Text"/> is set to.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.Subtitle.Progress01">
+            <summary>
+            Returns <see cref="P:WarWolfWorks.UI.Subtitle.CurrentCountdown"/> / <see cref="P:WarWolfWorks.UI.Subtitle.Countdown"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.Subtitle.Reset(System.String,UnityEngine.Gradient)">
+            <summary>
+            Resets the <see cref="T:WarWolfWorks.UI.Subtitle"/>'s countdown and assigns it with new content and a new gradient.
+            </summary>
+            <param name="newContent"></param>
+            <param name="newGradient"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.Subtitle.#ctor(System.String,UnityEngine.Vector4,System.Single,UnityEngine.Gradient,System.Boolean)">
+            <summary>
+            Creates a new <see cref="T:WarWolfWorks.UI.Subtitle"/>.
+            </summary>
+            <param name="content"></param>
+            <param name="anchors"></param>
+            <param name="countdown"></param>
+            <param name="gradient"></param>
+            <param name="loops"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.Subtitle.#ctor(WarWolfWorks.UI.Subtitle)">
+            <summary>
+            Creates a copy of another <see cref="T:WarWolfWorks.UI.Subtitle"/>; Copies everything except <see cref="F:WarWolfWorks.UI.Subtitle.Text"/>.
+            </summary>
+            <param name="copy"></param>
+        </member>
+        <member name="T:WarWolfWorks.UI.Subtitles">
+            <summary>
+            Class used to display text on a canvas; 
+            Uses <see cref="T:WarWolfWorks.UI.Subtitle"/> which has a countdown that displays a certain color from a gradient based on the countdown.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.Subtitles.AllSubtitles">
+            <summary>
+            All currently displayed subtitles.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.Subtitles.New(WarWolfWorks.UI.Subtitle)">
+            <summary>
+            Pushes a <see cref="T:WarWolfWorks.UI.Subtitle"/> on display.
+            </summary>
+            <param name="subtitle"></param>
+        </member>
         <member name="T:WarWolfWorks.Utility.AbstractCloneable`1">
             <summary>
             Used for advanced cloning of a class. An advanced version of <see cref="T:System.ICloneable"/>.
@@ -4473,6 +5164,31 @@
             Plays animation based on name.
             </summary>
             <param name="toPlay"></param>
+        </member>
+        <member name="T:WarWolfWorks.Utility.AsEnumStatAttribute">
+            <summary>
+            Use this attribute to draw a stat's stacking and affection with enum fields instead of int fields.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.AsEnumStatAttribute.StackingType">
+            <summary>
+            What <see cref="T:System.Enum"/> type the stacking is assigned to.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.AsEnumStatAttribute.AffectionType">
+            <summary>
+            What <see cref="T:System.Enum"/> type the affection is assigned to.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.AsEnumStatAttribute.#ctor(System.Type)">
+            <summary>
+            Creates an <see cref="T:WarWolfWorks.Utility.AsEnumStatAttribute"/> which has a custom <see cref="F:WarWolfWorks.Utility.AsEnumStatAttribute.AffectionType"/> and <see cref="F:WarWolfWorks.Utility.AsEnumStatAttribute.StackingType"/> set to <see cref="T:WarWolfWorks.EntitiesSystem.Statistics.EWWWStacking"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.AsEnumStatAttribute.#ctor(System.Type,System.Type)">
+            <summary>
+            Creates an <see cref="T:WarWolfWorks.Utility.AsEnumStatAttribute"/> which has a custom <see cref="F:WarWolfWorks.Utility.AsEnumStatAttribute.AffectionType"/> and <see cref="F:WarWolfWorks.Utility.AsEnumStatAttribute.StackingType"/>.
+            </summary>
         </member>
         <member name="T:WarWolfWorks.Utility.Axis">
             <summary>
@@ -6214,7 +6930,7 @@
             <param name="center"></param>
             <param name="from"></param>
             <param name="amount"></param>
-            <exception cref="T:WarWolfWorks.Internal.WWWException"/>
+            <exception cref="T:WarWolfWorks.Security.WWWException"/>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Vectors.GetFurthestFromPosition``1(UnityEngine.Vector3,System.Collections.Generic.IEnumerable{``0},System.Int32)">
@@ -6437,7 +7153,7 @@
             <param name="value"></param>
             <param name="min"></param>
             <param name="max"></param>
-            <exception cref="T:WarWolfWorks.Internal.WWWException"/>
+            <exception cref="T:WarWolfWorks.Security.WWWException"/>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampRounded(System.Single,WarWolfWorks.Utility.FloatRange)">
@@ -6455,7 +7171,7 @@
             <param name="value"></param>
             <param name="min"></param>
             <param name="max"></param>
-            <exception cref="T:WarWolfWorks.Internal.WWWException"/>
+            <exception cref="T:WarWolfWorks.Security.WWWException"/>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampRounded(System.Int32,WarWolfWorks.Utility.IntRange)">
@@ -7609,6 +8325,28 @@
             A float value which changes based on it's level.
             </summary>
         </member>
+        <member name="T:WarWolfWorks.Utility.LevelFloat.LevelValue">
+            <summary>
+            Used with <see cref="T:WarWolfWorks.Utility.LevelFloat"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.LevelFloat.LevelValue.Value">
+            <summary>
+            Value of this <see cref="T:WarWolfWorks.Utility.LevelFloat.LevelValue"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.LevelFloat.LevelValue.Level">
+            <summary>
+            Level at which <see cref="F:WarWolfWorks.Utility.LevelFloat.LevelValue.Value"/> will be used.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.LevelFloat.LevelValue.#ctor(System.Single,System.Int32)">
+            <summary>
+            Creates a new <see cref="T:WarWolfWorks.Utility.LevelFloat.LevelValue"/>.
+            </summary>
+            <param name="value"></param>
+            <param name="level"></param>
+        </member>
         <member name="P:WarWolfWorks.Utility.LevelFloat.DefaultValue">
             <summary>
             Value which is used when the current level is 0.
@@ -7630,6 +8368,26 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.Utility.LevelFloat.CompareTo(System.Single)">
+            <summary>
+            Implementation of <see cref="T:System.IComparable`1"/>.
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.LevelFloat.Equals(System.Single)">
+            <summary>
+            Returns true if this <see cref="T:WarWolfWorks.Utility.LevelFloat"/>'s current value equals other.
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.LevelFloat.GetTypeCode">
+            <summary>
+            Returns <see cref="F:System.TypeCode.Single"/>.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.Utility.LevelFloat.#ctor(System.Single,System.Int32,WarWolfWorks.Utility.LevelFloat.LevelValue[])">
             <summary>
             Creates a <see cref="T:WarWolfWorks.Utility.LevelFloat"/>.
@@ -7644,18 +8402,33 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.LevelFloat.GetHashCode(System.Single)">
-            <summary>
-            Returns the given obj's hash code.
-            </summary>
-            <param name="obj"></param>
-            <returns></returns>
-        </member>
         <member name="M:WarWolfWorks.Utility.LevelFloat.op_Implicit(WarWolfWorks.Utility.LevelFloat)~System.Single">
             <summary>
             Implicitly returns <see cref="P:WarWolfWorks.Utility.LevelFloat.Value"/>.
             </summary>
             <param name="lf"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.LevelFloat.op_Implicit(System.Single)~WarWolfWorks.Utility.LevelFloat">
+            <summary>
+            Returns a <see cref="T:WarWolfWorks.Utility.LevelFloat"/> with no level values, level at 0 and defaultVal as the implicit value given.
+            </summary>
+            <param name="defval"></param>
+        </member>
+        <member name="T:WarWolfWorks.Utility.RenameAttribute">
+            <summary>
+            Renames a variable in the inspector without changing it in code or creating a custom editor.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.RenameAttribute.label">
+            <summary>
+            Name that it will be changed to.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.RenameAttribute.#ctor(System.String)">
+            <summary>
+            Renames a variable in the inspector without changing it in code or creating a custom editor.
+            </summary>
+            <param name="label">Name that it will be changed to.</param>
         </member>
         <member name="T:WarWolfWorks.Utility.Rotation">
             <summary>
@@ -7759,6 +8532,17 @@
             Sets the destination of this <see cref="T:WarWolfWorks.Utility.Rotation"/> in euler angles.
             </summary>
             <param name="toApply"></param>
+        </member>
+        <member name="T:WarWolfWorks.Utility.Singleton`1">
+            <summary>
+            Inherit from this class with generic type T being the name of your class to make a class that implements a Singleton pattern.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Singleton`1.Instance">
+            <summary>
+            The singleton instance.
+            </summary>
         </member>
         <member name="T:WarWolfWorks.Utility.TransformLimiter">
             <summary>

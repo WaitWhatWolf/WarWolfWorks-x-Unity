@@ -7,6 +7,7 @@ namespace WarWolfWorks.EntitiesSystem
     using Interfaces;
     using Statistics;
     using WarWolfWorks;
+    using WarWolfWorks.Utility;
 
     /// <summary>
     /// Class which acts as the Entity's health.
@@ -50,6 +51,25 @@ namespace WarWolfWorks.EntitiesSystem
             }
         }
 
+        private event Action<IHealth, float> onHlthAdd;
+        /// <summary>
+        /// Ivoked when <see cref="AddHealth(float)"/> is called. Float value is the amount of health that was added.
+        /// </summary>
+        public event Action<IHealth, float> OnHealthAdded
+        {
+            add
+            {
+
+                AdvancedDebug.LogFormat("{0} will now trigger when {1}'s IHealth.AddHealth is called.", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, value.Method.Name, EntityMain.Name);
+                onHlthAdd += value;
+            }
+            remove
+            {
+                AdvancedDebug.LogFormat("{0} will no longer trigger when {1}'s IHealth.AddHealth is called.", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, value.Method.Name, EntityMain.Name);
+                onHlthAdd -= value;
+            }
+        }
+
         /// <summary>
         /// The current health of the <see cref="Entity"/>.
         /// </summary>
@@ -84,6 +104,11 @@ namespace WarWolfWorks.EntitiesSystem
         private IAdvancedHealth Damaged { get; set; }
 
         /// <summary>
+        /// Damage previously passed in <see cref="DamageHealth(object)"/>. (Only accepted)
+        /// </summary>
+        public object PreviousDamage { get; private set; }
+
+        /// <summary>
         /// Unity's Awake method called by <see cref="EntityComponent"/>.
         /// </summary>
         public override void OnAwake()
@@ -109,7 +134,7 @@ namespace WarWolfWorks.EntitiesSystem
 
         private void DeathDestroy(IHealth h)
         {
-            EntityMain.Destroy();
+            EntityManager.Destroy(EntityMain);
         }
 
         [SerializeField]
@@ -149,7 +174,15 @@ namespace WarWolfWorks.EntitiesSystem
         /// Adds the specified amount to <see cref="CurrentHealth"/>.
         /// </summary>
         /// <param name="amount"></param>
-        public void AddHealth(float amount) => CurrentHealth = Math.Min(CurrentHealth + amount, MaxHealth);
+        public void AddHealth(float amount)
+        {
+            float added = (Mathf.Clamp(CurrentHealth + amount, 0, MaxHealth) - MaxHealth).ToPositive();
+            if (added > 0)
+            {
+                CurrentHealth += added;
+                onHlthAdd?.Invoke(this, added);
+            }
+        }
 
         /// <summary>
         /// Removes the specified amount from <see cref="CurrentHealth"/>.
@@ -172,6 +205,7 @@ namespace WarWolfWorks.EntitiesSystem
                 if (!IsImmune && Calculator.AcceptableValue(damage))
                 {
                     Damaged.RemoveHealth(Calculator.FinalValue(damage, this, out bool triggerImmunity));
+                    PreviousDamage = damage;
                     if (triggerImmunity && UsesImmunity) TriggerImmunity(ImmunityDuration);
                     if(Damaged == (IAdvancedHealth)this) OnDmgHandler?.Invoke(this, damage, Calculator);
                     if(CurrentHealth <= 0)

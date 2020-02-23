@@ -5,6 +5,7 @@ using WarWolfWorks.Utility;
 using WarWolfWorks.Interfaces;
 using System.Linq;
 using System.Collections;
+using WarWolfWorks.Security;
 
 namespace WarWolfWorks.EntitiesSystem
 {
@@ -274,6 +275,103 @@ namespace WarWolfWorks.EntitiesSystem
             return entities;
         }
 
+        /// <summary>
+        /// Returns the closest <see cref="Entity"/> that is visible to the given camera. Only works on entities with a renderer component.
+        /// Rather slow, avoid using on any Update method.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public static Entity GetClosestWithinView(Camera from, Vector3 position)
+        {
+            float closest = float.PositiveInfinity;
+            Entity toReturn = null;
+            foreach (Entity e in InitiatedEntities)
+            {
+                float dist = Vector3.Distance(e.Position, position);
+                if (dist < closest && Hooks.Rendering.IsVisibleFrom(e.GetComponentInChildren<Renderer>(), from))
+                {
+                    toReturn = e;
+                    closest = dist;
+                }
+            }
+
+            return toReturn;
+        }
+        
+        /// <summary>
+        /// Returns the closest <see cref="Entity"/> that is visible to the given camera. Only works on entities with a renderer component.
+        /// Rather slow, avoid using on any Update method.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public static T GetClosestWithinView<T>(Camera from, Vector3 position) where T : Entity
+        {
+            float closest = float.PositiveInfinity;
+            Entity toReturn = null;
+            foreach (Entity e in InitiatedEntities)
+            {
+                float dist = Vector3.Distance(e.Position, position);
+                if (dist < closest && e.IsEntity(typeof(T)) && Hooks.Rendering.IsVisibleFrom(e.GetComponentInChildren<Renderer>(), from))
+                {
+                    toReturn = e;
+                    closest = dist;
+                }
+            }
+
+            return (T)toReturn;
+        }
+
+        /// <summary>
+        /// Returns the closest <see cref="Entity"/> that is visible to the given camera. Only works on entities with a renderer component.
+        /// Rather slow, avoid using on any Update method.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="position"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static Entity GetClosestWithinView(Camera from, Vector3 position, Type type)
+        {
+            float closest = float.PositiveInfinity;
+            Entity toReturn = null;
+            foreach (Entity e in InitiatedEntities)
+            {
+                float dist = Vector3.Distance(e.Position, position);
+                if (dist < closest && e.IsEntity(type) && Hooks.Rendering.IsVisibleFrom(e.GetComponentInChildren<Renderer>(), from))
+                {
+                    toReturn = e;
+                    closest = dist;
+                }
+            }
+
+            return toReturn;
+        }
+        
+        /// <summary>
+        /// Returns the closest <see cref="Entity"/> that is visible to the given camera. Only works on entities with a renderer component.
+        /// Rather slow, avoid using on any Update method.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="position"></param>
+        /// <param name="types"></param>
+        /// <returns></returns>
+        public static Entity GetClosestWithinView(Camera from, Vector3 position, IEnumerable<Type> types)
+        {
+            float closest = float.PositiveInfinity;
+            Entity toReturn = null;
+            foreach (Entity e in InitiatedEntities)
+            {
+                float dist = Vector3.Distance(e.Position, position);
+                if (dist < closest && types.Contains(e.EntityType) && Hooks.Rendering.IsVisibleFrom(e.GetComponentInChildren<Renderer>(), from))
+                {
+                    toReturn = e;
+                    closest = dist;
+                }
+            }
+
+            return toReturn;
+        }
 
         /// <summary>
         /// Returns all entities visible to a camera. Only works on entities with a renderer component.
@@ -286,7 +384,7 @@ namespace WarWolfWorks.EntitiesSystem
             List<Entity> toReturn = new List<Entity>();
             foreach (Entity e in InitiatedEntities)
             {
-                if (!Hooks.Rendering.IsVisibleFrom(e.GetComponent<Renderer>(), from))
+                if (!Hooks.Rendering.IsVisibleFrom(e.GetComponentInChildren<Renderer>(), from))
                     continue;
 
                 toReturn.Add(e);
@@ -307,7 +405,7 @@ namespace WarWolfWorks.EntitiesSystem
             List<Entity> toReturn = new List<Entity>();
             foreach (Entity e in InitiatedEntities)
             {
-                if (!Hooks.Rendering.IsVisibleFrom(e.GetComponent<Renderer>(), from))
+                if (!Hooks.Rendering.IsVisibleFrom(e.GetComponentInChildren<Renderer>(), from))
                     continue;
 
                 if (e.IsEntity(of))
@@ -328,7 +426,7 @@ namespace WarWolfWorks.EntitiesSystem
             List<Entity> toReturn = new List<Entity>();
             foreach (Entity e in InitiatedEntities)
             {
-                if (!Hooks.Rendering.IsVisibleFrom(e.GetComponent<Renderer>(), from))
+                if (!Hooks.Rendering.IsVisibleFrom(e.GetComponentInChildren<Renderer>(), from))
                     continue;
 
                 if (e.IsEntity(typeof(T)))
@@ -420,6 +518,21 @@ namespace WarWolfWorks.EntitiesSystem
 
         #region Instantiation
         /// <summary>
+        /// Called when an <see cref="Entity"/> is instantiated.
+        /// </summary>
+        public static event Action<Entity> OnEntityInstantiated;
+        /// <summary>
+        /// Called when an <see cref="Entity"/> is destroyed; Boolean value is true if the entity was destroyed officially.
+        /// </summary>
+        public static event Action<Entity, bool> OnEntityDestroyed;
+
+        internal static void OnEntityInstantiatedCall(Entity entity)
+            => OnEntityInstantiated?.Invoke(entity);
+
+        internal static void OnEntityDestroyedCall(Entity entity, bool official)
+            => OnEntityDestroyed?.Invoke(entity, official);
+
+        /// <summary>
         /// Creates a new entity from an existing prefab.
         /// </summary>
         /// <param name="original"></param>
@@ -434,12 +547,15 @@ namespace WarWolfWorks.EntitiesSystem
             T toReturn = Instantiate(original, position, rotation);
 
             toReturn.InitiatedViaManager = true;
-            toReturn.Stats.Initiate();
+            toReturn.Stats.Initiate(toReturn);
             InitiatedEntities.Add(toReturn);
 
             toReturn.gameObject.SetActive(wasActive);
             original.gameObject.SetActive(wasActive);
-            
+
+            OnEntityInstantiated?.Invoke(toReturn);
+
+
             return toReturn;
         }
 
@@ -491,10 +607,12 @@ namespace WarWolfWorks.EntitiesSystem
             for (int i = 0; i < components.Length; i++)
                 toReturn.AddEntityComponent(entityComponents[i]);
 
-            toReturn.Stats.Initiate();
+            toReturn.Stats.Initiate(toReturn);
             InitiatedEntities.Add(toReturn);
 
             toUse.SetActive(true);
+
+            OnEntityInstantiated?.Invoke(toReturn);
 
             return toReturn;
         }
@@ -525,8 +643,10 @@ namespace WarWolfWorks.EntitiesSystem
             for (int i = 0; i < components.Length; i++)
                 toReturn.AddEntityComponent(entityComponents[i]);
 
-            toReturn.Stats.Initiate();
+            toReturn.Stats.Initiate(toReturn);
             InitiatedEntities.Add(toReturn);
+
+            OnEntityInstantiated?.Invoke(toReturn);
 
             toUse.SetActive(true);
 
@@ -546,7 +666,10 @@ namespace WarWolfWorks.EntitiesSystem
             if (!entity || !InitiatedEntities.Contains(entity))
                 return false;
 
+            entity.CallsEventDestroy = false;
             entity.Destroy();
+            OnEntityDestroyed?.Invoke(entity, true);
+            Destroy(entity.gameObject);
             return true;
         }
 
@@ -560,7 +683,9 @@ namespace WarWolfWorks.EntitiesSystem
             if (!entity || !InitiatedEntities.Contains(entity))
                 return false;
 
-            entity.DestroyUnofficially();
+            InitiatedEntities.Remove(entity);
+            OnEntityDestroyed?.Invoke(entity, false);
+            Destroy(entity.gameObject);
             return true;
         }
         #endregion

@@ -4,9 +4,11 @@ using UnityEngine;
 namespace WarWolfWorks.EntitiesSystem
 {
     using Statistics;
+    using System.Collections;
     using System.Collections.Generic;
     using WarWolfWorks.Debugging;
     using WarWolfWorks.Interfaces;
+    using WarWolfWorks.Security;
     using WarWolfWorks.Utility;
 
     /// <summary>
@@ -337,9 +339,11 @@ namespace WarWolfWorks.EntitiesSystem
             if (!InitiatedViaManager)
             {
                 AdvancedDebug.LogWarning(EntityException.MESSAGE_WARNING_NOT_INITIATED_PROPERLY, AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
-                Stats.Initiate();
+                Stats.Initiate(this);
                 EntityManager.InitiatedEntities.Add(this);
+                EntityManager.OnEntityInstantiatedCall(this);
             }
+
             CallComponentMethods(CallType.awake);
             OnAwake();
             OnCallEventTrigger?.Invoke(this, CallType.awake);
@@ -414,6 +418,8 @@ namespace WarWolfWorks.EntitiesSystem
         /// </summary>
         protected virtual void OnBeforeDestroy() { }
 
+        internal bool CallsEventDestroy = true;
+
         /// <summary>
         /// Destroys this entity officially, removing it from all Entity lists inside the WWW library and calls it's <see cref="OnDestroyed"/> method.
         /// </summary>
@@ -424,7 +430,12 @@ namespace WarWolfWorks.EntitiesSystem
             CallComponentMethods(CallType.destroy);
             OnCallEventTrigger?.Invoke(this, CallType.destroy);
             OnDestroyed();
-            Destroy(gameObject);
+            if (CallsEventDestroy)
+                EntityManager.OnEntityDestroyedCall(this, true);
+            else
+            {
+                Destroy(gameObject);
+            }
         }
 
         /// <summary>
@@ -433,6 +444,7 @@ namespace WarWolfWorks.EntitiesSystem
         public void DestroyUnofficially()
         {
             EntityManager.InitiatedEntities.Remove(this);
+            EntityManager.OnEntityDestroyedCall(this, false);
             Destroy(gameObject);
         }
 

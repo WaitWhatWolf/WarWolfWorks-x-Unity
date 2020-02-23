@@ -81,18 +81,19 @@ namespace WarWolfWorks.Debugging
 
         private static int insrtOffstIndx;
 
-#pragma warning disable IDE0051
         private const int BackspaceRemoveAmount = 1;
-#pragma warning restore IDE0051
+
+        /// <summary>
+        /// What separates the command name from it's argument.
+        /// </summary>
+        public const char COMMAND_ARG_SEPARATOR = '=';
 
         /// <summary>
         /// All previous inputs confirmed inside the console.
         /// </summary>
-        public static List<StringBuilder> PreviousInputs { get; private set; } = new List<StringBuilder>();
+        public static List<string> PreviousInputs { get; private set; } = new List<string>();
 
-#pragma warning disable IDE0051
         private static int CurrentInputIndex
-#pragma warning restore IDE0051
         {
             get
             {
@@ -145,11 +146,51 @@ namespace WarWolfWorks.Debugging
         }
 
         /// <summary>
-        /// Called when Input inside the console is confirmed; Use this to add commands.
+        /// All commands.
         /// </summary>
-        public static event Action<StringBuilder> OnConfirmInput = ConsoleHelper;
+        private static List<Command> Commands = new List<Command>()
+        {
+            new Command(nameof(Help), false, "Displays information about the console.", Help),
+            new Command(nameof(g_all_commands), true, "Displays all commands.", g_all_commands),
+            new Command(nameof(s_console_size), true, "Allows you to change the size of the console menu. Arg{[SizeX]x[SizeY]} (0 to 1)", s_console_size),
+            new Command(nameof(s_console_scroll_speed), true, "Sets the scroll sensivity of the console. Arg{[speed]}", s_console_scroll_speed),
+            new Command(nameof(s_console_font_size), true, "Sets the size of the font. Arg{[size]}", s_console_font_size),
+        };
+
         /// <summary>
-        /// Called when text is inserted inside the console content.
+        /// Adds a command to the list of commands. (Note: Cannot add two commands of the same <see cref="Command.Name"/> value)
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        public static bool AddCommand(Command command)
+        {
+            if (Commands.FindIndex(c => c.Name == command.Name) != -1)
+                return false;
+
+            Commands.Add(command);
+            return true;
+        }
+
+        /// <summary>
+        /// Removes a command under the given name from the list of commands.
+        /// </summary>
+        /// <param name="commandName"></param>
+        /// <returns></returns>
+        public static bool RemoveCommand(string commandName)
+        {
+            return Commands.Remove(Commands.Find(c => c.Name == commandName));
+        }
+
+        /// <summary>
+        /// Invoked when Input inside the console is confirmed.
+        /// </summary>
+        public static event Action<string> OnInputConfirmed;
+        /// <summary>
+        /// Invoked when a command was successfully called.
+        /// </summary>
+        public static event Action<Command, string> OnCommandConfirmed;
+        /// <summary>
+        /// Invoked when text is inserted inside the console content.
         /// </summary>
         public static event Action<string> OnConsoleTextInsert;
 
@@ -169,16 +210,39 @@ namespace WarWolfWorks.Debugging
         public static void WriteCommandHelper(string commandListText)
         {
             InsertTextToConsole(string.Empty);
-            InsertTextToConsole("All fields with [text] indicate that [text] should be replaced with a number, for example: \nExample_Command = [number] \nShould be: \nExample_Command = 4");
+            InsertTextToConsole("All fields with Arg{} indicate that the method should be used with '" + COMMAND_ARG_SEPARATOR + "' and given an argument as described inside the curly brackets.");
+            InsertTextToConsole("All fields with [text] indicate that [text] should be replaced with a number.");
+            InsertTextToConsole("Example:\nExample_Command: An Example Command. Arg{[number1]x[number2]}");
+            InsertTextToConsole("Should be used as follows:\nExample_Command=4x5");
             InsertTextToConsole("\nList of " + commandListText + " commands:");
         }
 
-        private static void ConsoleHelper(StringBuilder sb)
+        private static void Help(string arg)
         {
-            if (sb.ToString().ToUpper() == "HELP")
+            WriteCommandHelper("general");
+
+            InsertTextToConsole(string.Empty);
+
+            IEnumerable<Command> used = Commands.GetRange(0, 5);
+            foreach(Command c in used)
+                GetCommandNameDescriptionText(c);
+        }
+
+        private static void g_all_commands(string arg)
+        {
+            foreach(Command c in Commands)
             {
-                WriteCommandHelper("general");
+                GetCommandNameDescriptionText(c);
             }
+        }
+
+        /// <summary>
+        /// Returns a nicely formatted text of a command.
+        /// </summary>
+        /// <param name="command"></param>
+        public static void GetCommandNameDescriptionText(Command command)
+        {
+            InsertTextToConsole($"{command.Name}{(command.CaseSensitiveName ? "(Case-Sensitive)" : string.Empty)}: {command.Description}");
         }
 
         /// <summary>
@@ -321,17 +385,108 @@ namespace WarWolfWorks.Debugging
         /// </summary>
         public static void ConfirmInput()
         {
-            if (CurrentInput.ToString() != string.Empty)
+            string actInput = CurrentInput.ToString();
+            if (!string.IsNullOrEmpty(actInput))
             {
-                StringBuilder obj = new StringBuilder(CurrentInput.ToString());
-                PreviousInputs.Add(CurrentInput);
-                InsertTextToConsole(CurrentInput.ToString());
+                PreviousInputs.Add(actInput);
+                InsertTextToConsole(actInput);
                 InsertOffsetIndex = 0;
                 CurrentInputIndex = 0;
                 CurrentInput = new StringBuilder(string.Empty);
-                WWWConsole.OnConfirmInput?.Invoke(obj);
+                int argSepIndex = actInput.IndexOf(COMMAND_ARG_SEPARATOR);
+                foreach (Command c in Commands)
+                {
+                    bool passed = false;
+                    if (c.CaseSensitiveName)
+                    {
+                        if (actInput.Contains(c.Name))
+                        {
+                            passed = true;
+                        }
+                    }
+                    else if (actInput.ToUpper().Contains(c.Name.ToUpper()))
+                        passed = true;
+
+                    if (passed)
+                    {
+                        string arg = actInput.Substring(argSepIndex + 1);
+                        c.OnCommandUsed?.Invoke(argSepIndex == -1 ? string.Empty : arg);
+                        OnCommandConfirmed?.Invoke(c, arg);
+                        break;
+                    }
+                }
+
+                OnInputConfirmed?.Invoke(actInput);
             }
         }
+
+        #region UI
+        private static int inptFldIndx = 0;
+
+        /// <summary>
+        /// Index of the Console's UI input field.
+        /// </summary>
+        public static int InputFieldIndex
+        {
+            get
+            {
+                return inptFldIndx;
+            }
+            internal set
+            {
+                inptFldIndx = value;
+                if (inptFldIndx < 0)
+                {
+                    inptFldIndx = 0;
+                }
+                if (inptFldIndx >= PreviousInputs.Count)
+                {
+                    inptFldIndx = PreviousInputs.Count - 1;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Scroll speed of the console's UI.
+        /// </summary>
+        public static float ScrollSpeed { get; set; }
+
+        /// <summary>
+        /// Font size of the console's UI.
+        /// </summary>
+        public static float FontSize { get; set; }
+
+        internal static Vector4 AnchoredPosition { get; private set; }
+
+        internal static void s_console_scroll_speed(string arg)
+        {
+            ScrollSpeed = Convert.ToSingle(arg);
+        }
+
+        internal static void s_console_font_size(string arg)
+        {
+            FontSize = Convert.ToSingle(arg);
+        }
+
+        internal static void s_console_size(string arg)
+        {
+            InputFieldIndex = PreviousInputs.Count - 1;
+            try
+            {
+                string[] array = arg.Split(new char[1]
+                {
+                    'x'
+                });
+                float x = Convert.ToSingle(array[0]);
+                float num = Convert.ToSingle(array[1]);
+                AnchoredPosition = new Vector4(0f, 1f - num, x, 1f);
+            }
+            catch (Exception e)
+            {
+                DebugException(e);
+            }
+        }
+        #endregion
     }
 
 }

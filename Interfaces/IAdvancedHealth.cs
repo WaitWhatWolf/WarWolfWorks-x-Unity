@@ -8,7 +8,7 @@ namespace WarWolfWorks.Interfaces
     public interface IAdvancedHealth : IHealth
     {
         /// <summary>
-        /// Should be invoked inside <see cref="DamageHealth(object)"/>.
+        /// Invoked when <see cref="DamageHealth(object)"/> was suiccessful.
         /// </summary>
         event Action<IAdvancedHealth, object, IHealthDamage> OnDamaged;
         /// <summary>

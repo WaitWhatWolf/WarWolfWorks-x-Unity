@@ -38,6 +38,8 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
         /// </summary>
         public float SetValue { set => this.value.DefaultValue = value; }
 
+        void IStat.OnAdded(Stats to) { }
+
         [SerializeField]
         [FormerlySerializedAs("Stacks")]
         private int stacking;
@@ -56,12 +58,26 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
         public int[] Affections { get => affections; set => affections = value; }
 
         /// <summary>
+        /// Creates a <see cref="LevelStat"/> with a default value, a level, stacking and affections.
+        /// </summary>
+        /// <param name="defaultVal"></param>
+        /// <param name="level"></param>
+        /// <param name="stacking"></param>
+        /// <param name="affections"></param>
+        public LevelStat(float defaultVal, int level, int stacking, params int[] affections)
+        {
+            value = new LevelFloat(defaultVal, level);
+            this.stacking = stacking;
+            this.affections = affections;
+        }
+
+        /// <summary>
         /// Creates a LevelStat instance with multiple affections.
         /// </summary>
         /// <param name="levelval"></param>
         /// <param name="stacking"></param>
         /// <param name="affections"></param>
-        public LevelStat(LevelFloat levelval, int stacking, int[] affections)
+        public LevelStat(LevelFloat levelval, int stacking, params int[] affections)
         {
             value = levelval;
             this.stacking = stacking;
@@ -82,17 +98,17 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
         }
 
         /// <summary>
-        /// Returns the LevelStat's value implicitly.
+        /// Returns the <see cref="LevelStat"/>'s value implicitly.
         /// </summary>
         /// <param name="stat"></param>
         public static implicit operator float(LevelStat stat) => stat.value;
         /// <summary>
-        /// Returns the LevelStat's value implicitly as int.
+        /// Returns the <see cref="LevelStat"/>'s value implicitly as int.
         /// </summary>
         /// <param name="stat"></param>
         public static implicit operator int(LevelStat stat) => (int)stat.value;
         /// <summary>
-        /// Returns an equivalent Stat to this LevelStat.
+        /// Returns an equivalent Stat to this <see cref="LevelStat"/>.
         /// </summary>
         /// <param name="stat"></param>
         public static implicit operator Stat(LevelStat stat) => new Stat(stat.value, stat.Stacking, stat.Affections);
@@ -103,12 +119,20 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
         public static explicit operator LevelFloat(LevelStat stat) => stat.value;
 
         /// <summary>
-        /// Returns the LevelStat's value in string.
+        /// Returns the <see cref="LevelStat"/>'s value in string.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return value.ToString();
+            string baseText = $"{(float)value}|{Stacking}|";
+            for (int i = 0; i < Affections.Length; i++)
+            {
+                baseText += $"{Affections[i]}";
+                if (i != Affections.Length - 1)
+                    baseText += ',';
+            }
+            baseText += $"|{Level}";
+            return baseText;
         }
 
         /// <summary>

@@ -84,6 +84,16 @@ namespace WarWolfWorks.EditorBase.Utility
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
             EditorGUILayout.Space();
         }
+        
+        /// <summary>
+        /// Makes a separator line by exploiting <see cref="EditorGUILayout"/>.
+        /// </summary>
+        public static void SlickSeparator(Rect rect)
+        {
+            Rect used = new Rect(rect);
+            used.height = EditorGUIUtility.singleLineHeight;
+            EditorGUI.LabelField(rect, "", GUI.skin.horizontalSlider);
+        }
 
         /// <summary>
         /// Makes a separator line by exploiting <see cref="EditorGUILayout"/>. Doesn't make spaces before or after the line.
@@ -101,6 +111,22 @@ namespace WarWolfWorks.EditorBase.Utility
             EditorGUILayout.Space();
             EditorGUILayout.LabelField(title, titleStyle);
             EditorGUILayout.Space();
+        }
+
+        /// <summary>
+        /// Makes a square filled with the given color.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="color"></param>
+        public static void DrawColoredSquare(Rect position, Color color)
+        {
+            Texture2D texture = new Texture2D(1, 1);
+            texture.SetPixel(0, 0, color);
+            texture.Apply();
+            Texture2D prevTexture = GUI.skin.box.normal.background;
+            GUI.skin.box.normal.background = texture;
+            GUI.Box(position, GUIContent.none);
+            GUI.skin.box.normal.background = prevTexture;
         }
     }
 }

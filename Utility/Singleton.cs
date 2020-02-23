@@ -2,6 +2,10 @@
 
 namespace WarWolfWorks.Utility
 {
+    /// <summary>
+    /// Inherit from this class with generic type T being the name of your class to make a class that implements a Singleton pattern.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         private static bool m_ShuttingDown = false;
@@ -10,6 +14,9 @@ namespace WarWolfWorks.Utility
 
         private static T m_Instance;
 
+        /// <summary>
+        /// The singleton instance.
+        /// </summary>
         public static T Instance
         {
             get
@@ -28,7 +35,7 @@ namespace WarWolfWorks.Utility
                         {
                             GameObject gameObject = new GameObject();
                             m_Instance = gameObject.AddComponent<T>();
-                            gameObject.name = typeof(T).ToString() + " (Singleton)";
+                            gameObject.name = m_Instance.ToString() + " (Singleton)";
                             DontDestroyOnLoad(gameObject);
                         }
                     }

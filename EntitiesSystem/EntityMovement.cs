@@ -6,6 +6,7 @@ namespace WarWolfWorks.EntitiesSystem.Movement
 {
     using System;
     using UnityEngine.Serialization;
+    using WarWolfWorks.EntitiesSystem.Statistics;
     using WarWolfWorks.Interfaces;
 
     /// <summary>
@@ -19,118 +20,92 @@ namespace WarWolfWorks.EntitiesSystem.Movement
         public class Velocity
         {
             /// <summary>
-            /// Direction towards which the velocity will be applied. (read-only)
+            /// Value of the velocity.
             /// </summary>
             public Vector3 Value;
             /// <summary>
-            /// Time remaining for the velocity to be removed. (Only used if VelocityRunsOut is true)
+            /// When the velocity timer reaches 0, it will be removed.
             /// </summary>
-            public float CurrentTimer;
+            public bool DeleteOnCount0;
             /// <summary>
-            /// Initial duration of the Velocity. (read-only)
+            /// Affections. See <see cref="IStat"/> for more info.
             /// </summary>
-            public readonly float StartingTime;
-            /// <summary>
-            /// If true, Velocity's strength will become weaker as time passes. Applies only when
-            /// <see cref="VelocityRunsOut"/> is true. (read-only)
-            /// </summary>
-            public readonly bool ValueScalesWithTime;
-            /// <summary>
-            /// If true, the velocity will be removed after <see cref="StartingTime"/> seconds. (read-only)
-            /// </summary>
-            public readonly bool VelocityRunsOut;
-            /// <summary>
-            /// Affection used if the Velocity will be affected by the Entity's Statistics. (read-only)
-            /// </summary>
-            [FormerlySerializedAs("Affection")]
-            public readonly int[] Affections;
-            /// <summary>
-            /// Base Velocity.
-            /// </summary>
-            public float BaseStatValue;
-            /// <summary>
-            /// If true, Velocity will scale off of Entity's Statistics.
-            /// </summary>
-            public readonly bool HasAffection;
+            public int[] Affections;
 
             /// <summary>
-            /// Creates a Velocity which is affected by stats.
+            /// Time which was set for this velocity.
             /// </summary>
-            /// <param name="val"></param>
-            /// <param name="time"></param>
-            /// <param name="scalesWithTime"></param>
-            /// <param name="usesTime"></param>
-            /// <param name="affections"></param>
-            /// <param name="baseStatValue"></param>
-            public Velocity(Vector3 val, float time, bool scalesWithTime, bool usesTime, int[] affections, float baseStatValue)
-            {
-                Value = val;
-                CurrentTimer = StartingTime = time;
-                VelocityRunsOut = usesTime;
-                ValueScalesWithTime = scalesWithTime;
-                Affections = affections;
-                BaseStatValue = baseStatValue;
-                HasAffection = true;
-            }
+            public float StartTime { get; set; }
+            /// <summary>
+            /// Current countdown time.
+            /// </summary>
+            public float Time { get; set; }
 
             /// <summary>
-            /// Creates a Velocity which is unaffected by stats.
+            /// Returns the percent of the velocity runout. (Time / StartTime).
             /// </summary>
-            /// <param name="val"></param>
-            /// <param name="time"></param>
-            /// <param name="scalesWithTime"></param>
-            /// <param name="usesTime"></param>
-            public Velocity(Vector3 val, float time, bool scalesWithTime, bool usesTime)
+            public float Time01 => Time / StartTime;
+
+            internal bool UsesStat;
+
+            /// <summary>
+            /// Creates a simple velocity.
+            /// </summary>
+            /// <param name="value"></param>
+            public Velocity(Vector3 value)
             {
-                Value = val;
-                CurrentTimer = StartingTime = time;
-                VelocityRunsOut = usesTime;
-                ValueScalesWithTime = scalesWithTime;
+                Value = value;
+                DeleteOnCount0 = false;
+                StartTime = Time = 0;
+                UsesStat = false;
                 Affections = null;
-                BaseStatValue = 0;
-                HasAffection = false;
             }
 
             /// <summary>
-            /// Returns true if all variables are the same, except for <see cref="CurrentTimer"/>.
+            /// Creates a velocity with a countdown.
             /// </summary>
-            /// <param name="obj"></param>
-            /// <returns></returns>
-            public override bool Equals(object obj)
+            /// <param name="value"></param>
+            /// <param name="time"></param>
+            /// <param name="deleteOn0"></param>
+            public Velocity(Vector3 value, float time, bool deleteOn0)
             {
-                try
-                {
-                    Velocity objAsVel = ((Velocity)obj);
-                    return objAsVel.HasAffection == HasAffection &&
-                        objAsVel.Value == Value &&
-                        objAsVel.ValueScalesWithTime == ValueScalesWithTime &&
-                        objAsVel.VelocityRunsOut == VelocityRunsOut &&
-                        objAsVel.StartingTime == StartingTime &&
-                        objAsVel.BaseStatValue == BaseStatValue &&
-                        objAsVel.Affections == Affections;
-                }
-                catch
-                {
-                    return base.Equals(obj);
-                }
+                Value = value;
+                DeleteOnCount0 = deleteOn0;
+                StartTime = Time = time;
+                UsesStat = false;
+                Affections = null;
             }
 
             /// <summary>
-            /// Gets the hashcode of this Velocity. (Exludes <see cref="CurrentTimer"/> from hashcode calculation)
+            /// Creates a velocity with affections.
             /// </summary>
-            /// <returns></returns>
-            public override int GetHashCode()
+            /// <param name="value"></param>
+            /// <param name="affections"></param>
+            public Velocity(Vector3 value, params int[] affections)
             {
-                var hashCode = -670195169;
-                hashCode = hashCode * -1521134295 + EqualityComparer<Vector3>.Default.GetHashCode(Value);
-                hashCode = hashCode * -1521134295 + StartingTime.GetHashCode();
-                hashCode = hashCode * -1521134295 + ValueScalesWithTime.GetHashCode();
-                hashCode = hashCode * -1521134295 + VelocityRunsOut.GetHashCode();
-                hashCode = hashCode * -1521134295 + Affections.GetHashCode();
-                hashCode = hashCode * -1521134295 + BaseStatValue.GetHashCode();
-                hashCode = hashCode * -1521134295 + HasAffection.GetHashCode();
-                return hashCode;
+                Value = value;
+                DeleteOnCount0 = false;
+                UsesStat = true;
+                StartTime = Time = 0;
+                Affections = affections;
             }
+
+            /// <summary>
+            /// Creates a complete velocity.
+            /// </summary>
+            /// <param name="value"></param>
+            /// <param name="time"></param>
+            /// <param name="deleteOn0"></param>
+            /// <param name="affections"></param>
+            public Velocity(Vector3 value, float time, bool deleteOn0, params int[] affections)
+            {
+                Value = value;
+                DeleteOnCount0 = deleteOn0;
+                StartTime = Time = time;
+                UsesStat = true;
+                Affections = affections;
+            }
+
         }
 
         /// <summary>
@@ -159,13 +134,12 @@ namespace WarWolfWorks.EntitiesSystem.Movement
                 (
                     val =>
                     {
-                        float spd = val.HasAffection ? EntityMain.Stats.CalculatedValue(val.BaseStatValue, val.Affections) : 1;
-                        Vector3 used = val.Value * spd;
-                        toReturn += val.ValueScalesWithTime && val.VelocityRunsOut ? used * (val.CurrentTimer / val.StartingTime) : used;
+                        float multi = val.UsesStat ? EntityMain.Stats.CalculatedValue(1, val.Affections) : 1;
+                        toReturn += val.Value * multi;
                     }
                 );
 
-                return Locked ? default : toReturn * Hooks.FixedFullSecond;
+                return Locked ? default : toReturn;
             }
         }
 

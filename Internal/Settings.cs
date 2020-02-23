@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using WarWolfWorks.Debugging;
+using WarWolfWorks.Security;
 using WarWolfWorks.Utility;
 using static WarWolfWorks.AdvancedDebug;
 using static WarWolfWorks.Utility.Hooks.Streaming;

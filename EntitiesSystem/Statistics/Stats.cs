@@ -9,7 +9,7 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
     /// Class used by entities to get Stat values.
     /// </summary>
     [System.Serializable]
-    public sealed class Stats
+    public sealed class Stats : IEntity
     {
         /// <summary>
         /// Pointer to <see cref="Stacking.CalculatedValue(IStat)"/>.
@@ -48,9 +48,21 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
             }
         }
 
+        /// <summary>
+        /// Invoked when a stat is added.
+        /// </summary>
         public event System.Action<IStat> OnStatAdded;
+
+        /// <summary>
+        /// Invoked when a stat is removed.
+        /// </summary>
         public event System.Action<IStat> OnStatRemoved;
         internal List<IStat> すべてスタット { get; set; } = new List<IStat>();
+
+        /// <summary>
+        /// Entity of which these stats belong to.
+        /// </summary>
+        public Entity EntityMain { get; private set; }
 
         /// <summary>
         /// Gets all stats returned in an array.
@@ -64,6 +76,7 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
         public void AddStat(IStat toAdd)
         {
             すべてスタット.Add(toAdd);
+            toAdd.OnAdded(this);
             OnStatAdded?.Invoke(toAdd);
         }
         /// <summary>
@@ -88,6 +101,7 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
 
             foreach (IStat @is in stats)
             {
+                @is.OnAdded(this);
                 OnStatAdded.Invoke(@is);
             }
         }
@@ -115,8 +129,9 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
         /// <returns></returns>
         public bool Contains(IStat stat) => すべてスタット.Contains(stat);
 
-        internal void Initiate()
+        internal void Initiate(Entity parent)
         {
+            EntityMain = parent;
             if (Stacking == null) Stacking = ScriptableObject.CreateInstance<WWWStacking>();
             Stacking.Parent = this;
         }

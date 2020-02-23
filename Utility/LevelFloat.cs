@@ -8,14 +8,28 @@ namespace WarWolfWorks.Utility
     /// A float value which changes based on it's level.
     /// </summary>
     [Serializable]
-    public struct LevelFloat : ICloneable, IEquatable<float>, IComparable<float>, IConvertible, IEqualityComparer<float>
+    public struct LevelFloat : ICloneable, IEquatable<float>, IComparable<float>
     {
+        /// <summary>
+        /// Used with <see cref="LevelFloat"/>.
+        /// </summary>
         [Serializable]
         public struct LevelValue
         {
+            /// <summary>
+            /// Value of this <see cref="LevelValue"/>.
+            /// </summary>
             public float Value;
+            /// <summary>
+            /// Level at which <see cref="Value"/> will be used.
+            /// </summary>
             public int Level;
 
+            /// <summary>
+            /// Creates a new <see cref="LevelValue"/>.
+            /// </summary>
+            /// <param name="value"></param>
+            /// <param name="level"></param>
             public LevelValue(float value, int level)
             {
                 Value = value;
@@ -98,6 +112,11 @@ namespace WarWolfWorks.Utility
             }
         }
 
+        /// <summary>
+        /// Implementation of <see cref="IComparable{T}"/>.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public int CompareTo(float other)
         {
             if (this > other)
@@ -107,99 +126,23 @@ namespace WarWolfWorks.Utility
             else return 0;
         }
 
+        /// <summary>
+        /// Returns true if this <see cref="LevelFloat"/>'s current value equals other.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public bool Equals(float other)
         {
             return other == this;
         }
 
-        public bool Equals(float x, float y)
-        {
-            return x == y;
-        }
-
+        /// <summary>
+        /// Returns <see cref="TypeCode.Single"/>.
+        /// </summary>
+        /// <returns></returns>
         public TypeCode GetTypeCode()
         {
             return TypeCode.Single;
-        }
-
-        public bool ToBoolean(IFormatProvider provider)
-        {
-            return Value > 0;
-        }
-
-        public byte ToByte(IFormatProvider provider)
-        {
-            return Convert.ToByte(Value);
-        }
-
-        public char ToChar(IFormatProvider provider)
-        {
-            return Convert.ToChar(Value);
-        }
-
-        public DateTime ToDateTime(IFormatProvider provider)
-        {
-            return Convert.ToDateTime(Value);
-        }
-
-        public decimal ToDecimal(IFormatProvider provider)
-        {
-            return Convert.ToDecimal(Value);
-        }
-
-        public double ToDouble(IFormatProvider provider)
-        {
-            return Convert.ToDouble(Value);
-        }
-
-        public short ToInt16(IFormatProvider provider)
-        {
-            return Convert.ToInt16(Value);
-        }
-
-        public int ToInt32(IFormatProvider provider)
-        {
-            return Convert.ToInt32(Value);
-        }
-
-        public long ToInt64(IFormatProvider provider)
-        {
-            return Convert.ToInt64(Value);
-        }
-
-        public sbyte ToSByte(IFormatProvider provider)
-        {
-            return Convert.ToSByte(Value);
-        }
-
-        public float ToSingle(IFormatProvider provider)
-        {
-            return Value;
-        }
-
-        public string ToString(IFormatProvider provider)
-        {
-            return Value.ToString();
-        }
-
-        public object ToType(Type conversionType, IFormatProvider provider)
-        {
-            return Convert.ChangeType(Value, conversionType);
-        }
-
-        public ushort ToUInt16(IFormatProvider provider)
-        {
-            return Convert.ToUInt16(Value);
-        }
-
-        public uint ToUInt32(IFormatProvider provider)
-        {
-            return Convert.ToUInt32(Value);
-        }
-
-        public ulong ToUInt64(IFormatProvider provider)
-        {
-            return Convert.ToUInt64(Value);
         }
 
         /// <summary>
@@ -230,22 +173,21 @@ namespace WarWolfWorks.Utility
         }
 
         /// <summary>
-        /// Returns the given obj's hash code.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public int GetHashCode(float obj)
-        {
-            return obj.GetHashCode();
-        }
-
-        /// <summary>
-        /// Implicitly returns <see cref="LevelFloat.Value"/>.
+        /// Implicitly returns <see cref="Value"/>.
         /// </summary>
         /// <param name="lf"></param>
         public static implicit operator float(LevelFloat lf)
         {
             return lf.Value;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="LevelFloat"/> with no level values, level at 0 and defaultVal as the implicit value given.
+        /// </summary>
+        /// <param name="defval"></param>
+        public static implicit operator LevelFloat(float defval)
+        {
+            return new LevelFloat(defval, 0);
         }
     }
 }

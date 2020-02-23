@@ -75,7 +75,7 @@ namespace WarWolfWorks.UI
         /// <summary>
         /// Last position at which anchors were before the window was released.
         /// </summary>
-        private Vector4 LastRectSize { get; set; }
+        public Vector4 LastRectSize { get; set; }
 
         /// <summary>
         /// Position at which the mouse is relative to the bar.

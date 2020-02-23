@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace WarWolfWorks.Utility
 {
@@ -28,12 +27,12 @@ namespace WarWolfWorks.Utility
         public T Peek() => items.Last();
         public T Lift() => items.First();
 
-        public void Remove(Predicate<T> when)
+        public bool Remove(Predicate<T> match)
         {
-            items.Remove(items.Find(when));
+            return items.Remove(items.Find(match));
         }
 
-        public void Remove(T item) => items.Remove(item);
+        public bool Remove(T item) => items.Remove(item);
 
         public bool Equals(List<T> compared) => items == compared;
 

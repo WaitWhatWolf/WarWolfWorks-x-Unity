@@ -16,6 +16,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using WarWolfWorks.Interfaces;
 using WarWolfWorks.Internal;
+using WarWolfWorks.Security;
 
 namespace WarWolfWorks.Utility
 {

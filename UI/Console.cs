@@ -254,7 +254,7 @@ namespace WarWolfWorks.UI
             RectTransform component = consoleContentText.GetComponent<RectTransform>();
             component.anchorMin = new Vector2(component.anchorMin.x, component.anchorMin.y + num);
             component.anchorMax = new Vector2(component.anchorMax.x, component.anchorMax.y + num);
-            Vector2 vector2 = component.offsetMin = (component.offsetMax = Vector2.zero);
+            //Vector2 vector2 = component.offsetMin = (component.offsetMax = Vector2.zero);
         }
     }
 }

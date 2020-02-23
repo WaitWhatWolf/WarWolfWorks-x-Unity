@@ -55,16 +55,14 @@ namespace WarWolfWorks.EntitiesSystem.Movement
 
         /// <summary>
         /// When overriding this class, make sure to call base.OnFixed(); inside it as it is what 
-        /// calculates the time left in Velocities that have <see cref="Velocity.VelocityRunsOut"/>.
+        /// calculates the time left in Velocities through <see cref="Velocity.Time"/>.
         /// </summary>
         public override void OnFixed()
         {
             for (int i = 0; i < Velocities.Count; i++)
             {
-                if (!Velocities[i].VelocityRunsOut)
-                    continue;
-                Velocities[i].CurrentTimer -= Time.fixedDeltaTime;
-                if (Velocities[i].CurrentTimer <= 0)
+                Velocities[i].Time = Mathf.Clamp(Velocities[i].Time - Time.deltaTime, 0, Velocities[i].StartTime);
+                if (Velocities[i].Time <= 0 && Velocities[i].DeleteOnCount0)
                     Velocities.RemoveAt(i);
             }
         }

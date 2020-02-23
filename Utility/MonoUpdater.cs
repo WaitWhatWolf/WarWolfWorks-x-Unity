@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace WarWolfWorks.Utility
 {
-    public sealed class MonoUpdater : MonoBehaviour
+    internal sealed class MonoUpdater : MonoBehaviour
     {
         public event Action OnUpdate;
         private void Update()

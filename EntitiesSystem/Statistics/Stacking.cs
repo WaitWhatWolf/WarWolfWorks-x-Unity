@@ -70,7 +70,6 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
             List<IStat> toReturn = new List<IStat>();
             foreach (IStat s in stats)
             {
-
                 if (s.Affections.Intersect(affections).Any()) toReturn.Add(s);
             }
 

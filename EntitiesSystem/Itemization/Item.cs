@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
-using WarWolfWorks.Debugging;
 using WarWolfWorks.Interfaces;
+using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.EntitiesSystem.Itemization
 {

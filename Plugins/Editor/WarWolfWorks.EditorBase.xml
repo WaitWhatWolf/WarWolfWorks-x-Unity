@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WarWolfWorks.EditorBase</name>
+    </assembly>
+    <members>
+        <member name="M:WarWolfWorks.EditorBase.Custom.CreateEmptyScriptableObject.Create">
+            <summary>
+            Creates the missing file to the selected file's folder.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.EditorBase.Utility.EditorHooks">
+            <summary>
+            Like <see cref="T:WarWolfWorks.Utility.Hooks"/>, but for the editor :Pog:.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EditorBase.Utility.EditorHooks.GetAllSerializedProperties(UnityEditor.SerializedObject,System.Boolean)">
+            <summary>
+            Returns all serialized properties inside a serialized object.
+            </summary>
+            <param name="serializedObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EditorBase.Utility.EditorHooks.GetAllVisibleProperties(UnityEditor.SerializedObject,System.Boolean)">
+            <summary>
+            Returns all visible serialized properties inside a serialized object.
+            (Does not include the first two entries m_Script and Base)
+            </summary>
+            <param name="serializedObject"></param>
+            <param name="enterChildren"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EditorBase.Utility.EditorHooks.MultiSpace(System.Int32)">
+            <summary>
+            Calls <see cref="M:UnityEditor.EditorGUILayout.Space"/> in the multitude of counts.
+            </summary>
+            <param name="count"></param>
+        </member>
+        <member name="M:WarWolfWorks.EditorBase.Utility.EditorHooks.DividedWidth(UnityEngine.Rect,System.Int32)">
+            <summary>
+            Short for <see cref="P:UnityEngine.Rect.width"/> / <see cref="T:System.Int32"/>.
+            </summary>
+            <param name="of"></param>
+            <param name="by"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EditorBase.Utility.EditorHooks.SlickSeparator">
+            <summary>
+            Makes a separator line by exploiting <see cref="T:UnityEditor.EditorGUILayout"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EditorBase.Utility.EditorHooks.SlickSeparator(UnityEngine.Rect)">
+            <summary>
+            Makes a separator line by exploiting <see cref="T:UnityEditor.EditorGUILayout"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EditorBase.Utility.EditorHooks.SlickSeparatorNS">
+            <summary>
+            Makes a separator line by exploiting <see cref="T:UnityEditor.EditorGUILayout"/>. Doesn't make spaces before or after the line.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EditorBase.Utility.EditorHooks.SpacedLabel(System.String,UnityEngine.GUIStyle)">
+            <summary>
+            Makes a label with <see cref="M:UnityEditor.EditorGUILayout.Space"/> before and after it.
+            </summary>
+            <param name="title"></param>
+            <param name="titleStyle"></param>
+        </member>
+        <member name="M:WarWolfWorks.EditorBase.Utility.EditorHooks.DrawColoredSquare(UnityEngine.Rect,UnityEngine.Color)">
+            <summary>
+            Makes a square filled with the given color.
+            </summary>
+            <param name="position"></param>
+            <param name="color"></param>
+        </member>
+    </members>
+</doc>
