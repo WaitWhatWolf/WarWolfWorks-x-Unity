@@ -328,9 +328,10 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
         /// <returns></returns>
         protected static bool EnumeratorMoveNext()
         {
+            EnumeratorIndex++;
+
             if (EnumeratorIndex < Projectiles.Length)
             {
-                EnumeratorIndex++;
                 return true;
             }
 
