@@ -6,6 +6,7 @@ namespace WarWolfWorks.EntitiesSystem
     using Statistics;
     using System.Collections;
     using System.Collections.Generic;
+    using WarWolfWorks.Attributes;
     using WarWolfWorks.Debugging;
     using WarWolfWorks.Interfaces;
     using WarWolfWorks.Security;
@@ -187,7 +188,13 @@ namespace WarWolfWorks.EntitiesSystem
         /// <returns></returns>
         public T GetEntityComponent<T>()
         {
-            return (T)Components.Find(ec => ec is T);
+            foreach (IEntityComponent component in Components)
+            {
+                if (component is T tElement)
+                    return tElement;
+            }
+
+            return default(T);
         }
         /// <summary>
         /// Equivalent to <see cref="GetEntityComponent{T}"/> with a shorter name.
@@ -196,7 +203,13 @@ namespace WarWolfWorks.EntitiesSystem
         /// <returns></returns>
         public T GEC<T>()
         {
-            return (T)Components.Find(ec => ec is T);
+            foreach (IEntityComponent component in Components)
+            {
+                if (component is T tElement)
+                    return tElement;
+            }
+
+            return default(T);
         }
 
         /// <summary>
@@ -204,9 +217,17 @@ namespace WarWolfWorks.EntitiesSystem
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public IEnumerable<T> GetEntityComponents<T>()
+        public List<T> GetEntityComponents<T>()
         {
-            return (IEnumerable<T>)Components.FindAll(ec => ec is T);
+            List<T> toReturn = new List<T>(Components.Count);
+
+            foreach(IEntityComponent component in Components)
+            {
+                if (component is T tElement)
+                    toReturn.Add(tElement);
+            }
+
+            return toReturn;
         }
 
         /// <summary>
@@ -217,10 +238,17 @@ namespace WarWolfWorks.EntitiesSystem
         /// <returns></returns>
         public bool TryGetEntityComponent<T>(out T component)
         {
-            component = (T)Components.Find(ec => ec is T);
-            if (component != null)
-                return true;
-            else return false;
+            foreach (IEntityComponent comp in Components)
+            {
+                if (comp is T tElement)
+                {
+                    component = tElement;
+                    return true;
+                }
+            }
+
+            component = default(T);
+            return false;
         }
 
         /// <summary>
@@ -231,10 +259,17 @@ namespace WarWolfWorks.EntitiesSystem
         /// <returns></returns>
         public bool TGEC<T>(out T component)
         {
-            component = (T)Components.Find(ec => ec is T);
-            if (component != null)
-                return true;
-            else return false;
+            foreach (IEntityComponent comp in Components)
+            {
+                if (comp is T tElement)
+                {
+                    component = tElement;
+                    return true;
+                }
+            }
+
+            component = default(T);
+            return false;
         }
 
         /// <summary>

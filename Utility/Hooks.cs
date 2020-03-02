@@ -38,7 +38,7 @@ namespace WarWolfWorks.Utility
             /// <summary>
             /// Returns anything between Vector3.zero and Vector3.one.
             /// </summary>
-            public static Vector3 RandomVector01 => new Vector3(UnityEngine.Random.Range(0, 1), UnityEngine.Random.Range(0, 1), UnityEngine.Random.Range(0, 1));
+            public static Vector3 RandomVector01 => new Vector3(UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f));
 
             /// <summary>
             /// Shuffles all items inside a list, changing their index.
@@ -3234,6 +3234,49 @@ namespace WarWolfWorks.Utility
             {
                 Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera);
                 return GeometryUtility.TestPlanesAABB(planes, renderer.bounds);
+            }
+
+            /// <summary>
+            /// Returns how many anchored positions are between 0 and 1.
+            /// </summary>
+            /// <returns></returns>
+            /// <param name="rect"></param>
+            private static int GetVisibleCorners(RectTransform rect)
+            {
+                int toReturn = 0;
+
+                Vector4 rectAnchors = rect.GetAnchoredPosition();
+
+                FloatRange range = new FloatRange(0, 1);
+
+                for(int i = 0; i < 4; i++)
+                {
+                    if (range.IsWithinRange(rectAnchors[i]))
+                        toReturn++;
+                }
+
+                return toReturn;
+            }
+
+            /// <summary>
+            /// Returns true if the given <see cref="RectTransform"/> is fully visible in anchored position bounds.
+            /// </summary>
+            /// <returns></returns>
+            /// <param name="rectTransform"></param>
+            public static bool IsFullyVisible(RectTransform rectTransform)
+            {
+                return GetVisibleCorners(rectTransform) == 4;
+            }
+
+            /// <summary>
+            /// Determines if this <see cref="RectTransform"/> is visible to the camera.
+            /// </summary>
+            /// <returns></returns>
+            /// <param name="rectTransform"></param>
+            /// <param name="camera"></param>
+            public static bool IsVisible(RectTransform rectTransform)
+            {
+                return GetVisibleCorners(rectTransform) > 0;
             }
 
             /// <summary>

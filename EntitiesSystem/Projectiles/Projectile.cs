@@ -62,15 +62,16 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
             /// Initiates this <see cref="Behavior"/>.
             /// </summary>
             /// <param name="parent"></param>
-            public void Init(Projectile parent)
+            public bool Init(Projectile parent)
             {
-                if (Initiated)
-                    return;
+                if (Initiated || parent == null)
+                    return false;
 
                 Parent = parent;
                 Initiated = true;
 
                 OnInitiate();
+                return true;
             }
 
             /// <summary>

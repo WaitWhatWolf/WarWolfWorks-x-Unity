@@ -71,6 +71,15 @@ namespace WarWolfWorks.EntitiesSystem
         }
 
         /// <summary>
+        /// Invoked when any <see cref="EntityHealth"/> gets successfully damaged.
+        /// </summary>
+        public static event Action<EntityHealth> OnAnyDamaged;
+        /// <summary>
+        /// Invoked when any <see cref="EntityHealth"/> invokes <see cref="AddHealth(float)"/> successfully.
+        /// </summary>
+        public static event Action<EntityHealth> OnAnyHealed;
+
+        /// <summary>
         /// The current health of the <see cref="Entity"/>.
         /// </summary>
         public float CurrentHealth { get; private set; }
@@ -171,16 +180,25 @@ namespace WarWolfWorks.EntitiesSystem
         }
 
         /// <summary>
+        /// The amount that was successfully healed using <see cref="AddHealth(float)"/> on it's most recent use.
+        /// </summary>
+        public float PreviousHeal { get; private set; }
+
+        /// <summary>
         /// Adds the specified amount to <see cref="CurrentHealth"/>.
         /// </summary>
         /// <param name="amount"></param>
         public void AddHealth(float amount)
         {
-            float added = (Mathf.Clamp(CurrentHealth + amount, 0, MaxHealth) - MaxHealth).ToPositive();
+            amount = amount.ToPositive();
+            float prevHealth = CurrentHealth;
+            CurrentHealth = Mathf.Clamp(CurrentHealth + amount, 0, MaxHealth);
+            float added = CurrentHealth - prevHealth;
             if (added > 0)
             {
-                CurrentHealth += added;
+                PreviousHeal = added;
                 onHlthAdd?.Invoke(this, added);
+                OnAnyHealed?.Invoke(this);
             }
         }
 
@@ -207,7 +225,11 @@ namespace WarWolfWorks.EntitiesSystem
                     Damaged.RemoveHealth(Calculator.FinalValue(damage, this, out bool triggerImmunity));
                     PreviousDamage = damage;
                     if (triggerImmunity && UsesImmunity) TriggerImmunity(ImmunityDuration);
-                    if(Damaged == (IAdvancedHealth)this) OnDmgHandler?.Invoke(this, damage, Calculator);
+                    if (Damaged == (IAdvancedHealth)this)
+                    {
+                        OnDmgHandler?.Invoke(Damaged, damage, Calculator);
+                        OnAnyDamaged?.Invoke((Damaged as EntityHealth) ?? this);
+                    }
                     if(CurrentHealth <= 0)
                         OnDthHandler?.Invoke(this);
                 }

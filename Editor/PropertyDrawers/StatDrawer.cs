@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using WarWolfWorks.Attributes;
 using WarWolfWorks.EntitiesSystem.Statistics;
 using WarWolfWorks.Interfaces;
+using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.EditorBase.PropertyDrawers
 {
@@ -149,7 +151,6 @@ namespace WarWolfWorks.EditorBase.PropertyDrawers
                 IncrementRectHeight(ref affectionRect, BaseHeight);
                 if (GUI.Button(affectionRect, "Add Affection"))
                     property.InsertArrayElementAtIndex(property.arraySize == 0 ? 0 : property.arraySize - 1);
-
 
                 if (property.arraySize > 0)
                 {

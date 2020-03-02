@@ -1,17 +1,17 @@
-using UnityEngine;
+﻿using System.Collections;
 using TMPro;
-using static WarWolfWorks.UI.GUIViewport.GUI;
-using WarWolfWorks.Utility;
-using System.Collections;
+using UnityEngine;
 using WarWolfWorks.Attributes;
+using WarWolfWorks.Utility;
+using static WarWolfWorks.UI.GUIViewport.GUI;
 
 namespace WarWolfWorks.UI
 {
     /// <summary>
-    /// Used with <see cref="GUIViewport"/> to display text on the screen.
+    /// Used with <see cref="GUIViewport"/> to display a text in world position.
     /// </summary>
     [System.Serializable]
-    public sealed class Subtitle : GUIViewport.GUI
+    public sealed class WorldText : GUIViewport.GUI
     {
 #pragma warning disable 0649
 #pragma warning disable IDE0044
@@ -24,7 +24,9 @@ namespace WarWolfWorks.UI
         [SerializeField, NoS]
         private Vector2 s_AnchoredSize;
         [SerializeField, NoS]
-        private Vector2 s_AnchoredPosition;
+        private Vector3 s_Offset;
+        [SerializeField, NoS]
+        private Transform s_Followed;
         [SerializeField, NoS]
         private string s_Content;
         [SerializeField, NoS]
@@ -47,7 +49,7 @@ namespace WarWolfWorks.UI
         /// <summary>
         /// The position at which the text displays.
         /// </summary>
-        public override Vector3 Position { get => s_AnchoredPosition; protected set => s_AnchoredPosition = value; }
+        public override Vector3 Position { get => (s_Followed ? s_Followed.position : Vector3.zero) + s_Offset; protected set => s_Followed.position = value; }
 
         /// <summary>
         /// The color of the text. (Uses <see cref="Gradient.Evaluate(float)"/> to set the color of the text)
@@ -72,9 +74,9 @@ namespace WarWolfWorks.UI
         public bool Loops { get; private set; }
 
         /// <summary>
-        /// <see cref="Subtitle"/> is directly set with it's anchored position. (<see cref="GUIType.AsAnchors"/>)
+        /// <see cref="WorldText"/> uses <see cref="GUIType.WorldPosToViewport"/>.
         /// </summary>
-        public override GUIType Type => GUIType.AsAnchors;
+        public override GUIType Type => GUIType.WorldPosToViewport;
 
         /// <summary>
         /// Resets the <see cref="Subtitle"/>'s countdown and assigns it with new content and a new gradient.
@@ -111,7 +113,7 @@ namespace WarWolfWorks.UI
         private bool IUpdateIsRunning;
         private IEnumerator IUpdate()
         {
-            while(IUpdateIsRunning)
+            while (IUpdateIsRunning)
             {
                 CurrentCountdown -= Time.deltaTime;
                 if (CurrentCountdown <= 0)
@@ -141,10 +143,10 @@ namespace WarWolfWorks.UI
         /// <summary>
         /// Sets the anchored position of the text.
         /// </summary>
-        /// <param name="anchoredPos"></param>
-        public void SetPosition(Vector2 anchoredPos)
+        /// <param name="to"></param>
+        public void SetFollowed(Transform to)
         {
-            s_AnchoredPosition = anchoredPos;
+            s_Followed = to;
         }
 
         /// <summary>
@@ -160,15 +162,17 @@ namespace WarWolfWorks.UI
         /// Creates a new <see cref="Subtitle"/>.
         /// </summary>
         /// <param name="content"></param>
-        /// <param name="anchoredPosition"></param>
+        /// <param name="followed"></param>
+        /// <param name="offset"></param>
         /// <param name="anchoredSize"></param>
         /// <param name="countdown"></param>
         /// <param name="textColor"></param>
         /// <param name="loops"></param>
-        public Subtitle(string content, Vector2 anchoredPosition, Vector2 anchoredSize, float countdown, Gradient textColor, bool loops)
+        public WorldText(string content, Transform followed, Vector3 offset, Vector2 anchoredSize, float countdown, Gradient textColor, bool loops)
         {
             s_Content = content;
-            s_AnchoredPosition = anchoredPosition;
+            s_Followed = followed;
+            s_Offset = offset;
             s_AnchoredSize = anchoredSize;
             s_Countdown = countdown;
             s_TextColor = textColor;
@@ -179,11 +183,12 @@ namespace WarWolfWorks.UI
         /// Creates a copy of another <see cref="Subtitle"/>; Copies everything except <see cref="TextGraphic"/>.
         /// </summary>
         /// <param name="copy"></param>
-        public Subtitle(Subtitle copy)
+        public WorldText(WorldText copy)
         {
             s_Content = copy.s_Content;
             CoreGraphic = null;
-            s_AnchoredPosition = copy.s_AnchoredPosition;
+            s_Followed = copy.s_Followed;
+            s_Offset = copy.s_Offset;
             s_AnchoredSize = copy.s_AnchoredSize;
             s_Countdown = copy.s_Countdown;
             CurrentCountdown = copy.Countdown;

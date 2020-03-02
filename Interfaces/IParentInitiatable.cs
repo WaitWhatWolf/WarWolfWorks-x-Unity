@@ -8,6 +8,6 @@
         /// <summary>
         /// Initiates it.
         /// </summary>
-        void Init(T parent);
+        bool Init(T parent);
     }
 }

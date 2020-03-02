@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using WarWolfWorks.Interfaces;
+using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.EntitiesSystem.Statusing
 {
@@ -64,6 +65,20 @@ namespace WarWolfWorks.EntitiesSystem.Statusing
             if (status == null || ContainsResistance(status.GetType()))
                 return false;
 
+            Type statusType = status.GetType();
+            int sameTypeIndex = Statuses.FindIndex(s => s.GetType() == statusType);
+            if (sameTypeIndex != -1)
+            {
+                switch(status.OverlapType)
+                {
+                    case StatusOverlapType.ignore:
+                        return false;
+                    case StatusOverlapType.replace:
+                        RemoveStatus(Statuses[sameTypeIndex], false);
+                        break;
+                }
+            }
+
             Statuses.Add(status);
             status.OnStart(this);
             status.CurrentDuration = status.MaxDuration;
@@ -78,12 +93,7 @@ namespace WarWolfWorks.EntitiesSystem.Statusing
         {
             for(int i = 0; i < statuses.Length; i++)
             {
-                if (statuses[i] == null || ContainsResistance(statuses[i].GetType()))
-                    continue;
-
-                Statuses.Add(statuses[i]);
-                statuses[i].OnStart(this);
-                statuses[i].CurrentDuration = statuses[i].MaxDuration;
+                AddStatus(statuses[i]);
             }
         }
 
@@ -95,6 +105,11 @@ namespace WarWolfWorks.EntitiesSystem.Statusing
         {
             Resistances.Add(resistance);
             resistance.OnAdded?.Invoke(this);
+            for (int i = 0; i < Statuses.Count; i++)
+            {
+                if (Statuses[i].GetType().Equals(resistance.ResistantTo))
+                    RemoveStatus(Statuses[i], false);
+            }
         }
 
         /// <summary>
@@ -160,7 +175,7 @@ namespace WarWolfWorks.EntitiesSystem.Statusing
         /// <summary>
         /// Calls <see cref="IStatus.OnTick(IStatusApplier)"/> for all statuses currently applied to this <see cref="EntityStatusApplier"/>.
         /// </summary>
-        public override void OnFixed()
+        public override void OnUpdate()
         {
             if (Locked)
                 return;
@@ -169,10 +184,9 @@ namespace WarWolfWorks.EntitiesSystem.Statusing
             {
                 Statuses[i].OnTick(this);
                 Statuses[i].CurrentDuration = Mathf.Clamp(Statuses[i].CurrentDuration - Time.deltaTime, 0, Statuses[i].MaxDuration);
-                if (Statuses[i].CurrentDuration <= 0)
+                if (Statuses[i].CurrentDuration == 0)
                 {
-                    Statuses[i].OnEnd(this);
-                    Statuses.Remove(Statuses[i]);
+                    RemoveStatus(Statuses[i], false);
                 }
             }
         }

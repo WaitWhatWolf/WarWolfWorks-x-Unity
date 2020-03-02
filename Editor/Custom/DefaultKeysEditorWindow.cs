@@ -26,7 +26,7 @@ namespace WarWolfWorks.EditorBase.Custom
         private readonly LanguageString LS_SaveAll = new LanguageString("Save All Keys", ("Zapisz wszystkie przyciski", SystemLanguage.Polish), ("全てキー保存", SystemLanguage.Japanese));
         private readonly LanguageString LS_SwitchViewEnum = new LanguageString("Switch to Enum View", ("Zmień na widok 'Enum'", SystemLanguage.Polish), ("'Enum' 見る", SystemLanguage.Japanese));
         private readonly LanguageString LS_SwitchViewParse = new LanguageString("Switch to Parse View", ("Zmień na widok 'Parse'", SystemLanguage.Polish), ("'Parse' 見る", SystemLanguage.Japanese));
-
+        
         private ReorderableList list;
 
         private Vector2 ScrollPosition;
@@ -175,12 +175,16 @@ namespace WarWolfWorks.EditorBase.Custom
             EditorHooks.SlickSeparator();
 
             pops[1] = GUILayout.Button(LS_SaveAll);
-            if (pops[1] && Keys != null)
+
+            if (Keys != null)
             {
-                List<DefaultKeys.WKey> keyz = GetSortedList();
-                for (int i = 0; i < Keys.Count; i++)
+                if (pops[1])
                 {
-                    DefaultKeys.AddKey(keyz[i]);
+                    List<DefaultKeys.WKey> keyz = GetSortedList();
+                    for (int i = 0; i < Keys.Count; i++)
+                    {
+                        DefaultKeys.AddKey(keyz[i]);
+                    }
                 }
             }
 

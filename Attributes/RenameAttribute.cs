@@ -1,4 +1,4 @@
-﻿namespace WarWolfWorks.Utility
+﻿namespace WarWolfWorks.Attributes
 {
     using UnityEngine;
 

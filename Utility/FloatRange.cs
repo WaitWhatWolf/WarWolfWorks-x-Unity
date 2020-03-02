@@ -9,7 +9,13 @@ namespace WarWolfWorks.Utility
     [Serializable]
     public struct FloatRange : IEquatable<FloatRange>
     {
+        /// <summary>
+        /// The minimal value of this <see cref="FloatRange"/>.
+        /// </summary>
         public float Min;
+        /// <summary>
+        /// The maximal value of this <see cref="FloatRange"/>.
+        /// </summary>
         public float Max;
 
         /// <summary>
@@ -32,11 +38,27 @@ namespace WarWolfWorks.Utility
             return value >= Min && value <= Max;
         }
 
+        /// <summary>
+        /// Returns a random value between <see cref="Min"/> (inclusive) and <see cref="Max"/> (inclusive).
+        /// </summary>
+        /// <returns></returns>
+        public float GetRandom()
+            => UnityEngine.Random.Range(Min, Max);
+        
+        /// <summary>
+        /// Returns a <see cref="Tuple{T1, T2}"/> of <see cref="Min"/> and <see cref="Max"/>.
+        /// </summary>
+        /// <returns></returns>
         public (float min, float max) GetTupleRange() => (Min, Max);
 
         public bool Equals(FloatRange other)
             => other.Min == Min && other.Max == Max;
 
+        /// <summary>
+        /// Creates a new <see cref="FloatRange"/>.
+        /// </summary>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
         public FloatRange(float min, float max)
         {
             Min = min;

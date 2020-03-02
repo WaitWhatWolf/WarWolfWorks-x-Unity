@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -114,6 +115,21 @@ namespace WarWolfWorks.EditorBase.Utility
         }
 
         /// <summary>
+        /// Returns true if a property is an expand-like property, similar to an array. (All custom Serialized structs/classes return true)
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public static bool PropertyIsArray(SerializedProperty property)
+        {
+            string path = property.propertyPath;
+            int dotIndex = path.IndexOf('.');
+            if (dotIndex == -1) return false;
+            string propName = path.Substring(0, dotIndex);
+            SerializedProperty p = property.serializedObject.FindProperty(propName);
+            return p.isArray;
+        }
+
+        /// <summary>
         /// Makes a square filled with the given color.
         /// </summary>
         /// <param name="position"></param>
@@ -128,5 +144,26 @@ namespace WarWolfWorks.EditorBase.Utility
             GUI.Box(position, GUIContent.none);
             GUI.skin.box.normal.background = prevTexture;
         }
+
+        /* This is here for the future, ignore
+        /// <summary>
+        /// Draws a stat field; Determines what type of stat it is, and draws it accordingly.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="stackingType"></param>
+        /// <param name="affectionType"></param>
+        /// <returns></returns>
+        public static bool StatAutoField(SerializedProperty property, Type stackingType, Type affectionType)
+        {
+            SerializedProperty valueProp = property.FindPropertyRelative("value");
+            switch (property)
+            {
+                default: return StatField(property, stackingType, affectionType);
+                case SerializedProperty _ when valueProp.FindPropertyRelative("level") != null:
+                    return LevelStatField(property, stackingType, affectionType);
+                case SerializedProperty _ when valueProp.FindPropertyRelative("countdown") != null:
+                    return CountdownStatField(property, stackingType, affectionType);
+            }
+        }*/
     }
 }

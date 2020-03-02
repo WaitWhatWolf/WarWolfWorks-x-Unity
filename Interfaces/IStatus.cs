@@ -31,7 +31,7 @@ namespace WarWolfWorks.Interfaces
         /// <param name="of"></param>
         void OnEnd(IStatusApplier of);
         /// <summary>
-        /// Invoked every in-game physics frame.
+        /// Invoked every in-game frame.
         /// </summary>
         /// <param name="of"></param>
         void OnTick(IStatusApplier of);

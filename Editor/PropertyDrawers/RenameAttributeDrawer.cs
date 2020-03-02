@@ -1,6 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using WarWolfWorks.Debugging;
+using WarWolfWorks.Attributes;
+using WarWolfWorks.EditorBase.Utility;
 
 namespace WarWolfWorks.EditorBase.PropertyDrawers
 {
@@ -12,7 +13,7 @@ namespace WarWolfWorks.EditorBase.PropertyDrawers
             try
             {
                 var propertyAttribute = attribute as RenameAttribute;
-                if (!IsItBloodyArrayTho(property))
+                if (!EditorHooks.PropertyIsArray(property))
                     label.text = propertyAttribute.label;
                 else
                 {
@@ -25,16 +26,6 @@ namespace WarWolfWorks.EditorBase.PropertyDrawers
                 EditorGUI.PropertyField(position, property, label);
             }
             catch (System.Exception ex) { Debug.LogException(ex); }
-        }
-
-        bool IsItBloodyArrayTho(SerializedProperty property)
-        {
-            string path = property.propertyPath;
-            int idot = path.IndexOf('.');
-            if (idot == -1) return false;
-            string propName = path.Substring(0, idot);
-            SerializedProperty p = property.serializedObject.FindProperty(propName);
-            return p.isArray;
         }
     }
 }

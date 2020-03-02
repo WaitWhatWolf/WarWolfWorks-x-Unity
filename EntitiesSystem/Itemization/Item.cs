@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 using WarWolfWorks.Interfaces;
-using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.EntitiesSystem.Itemization
 {
@@ -9,38 +9,41 @@ namespace WarWolfWorks.EntitiesSystem.Itemization
     /// </summary>
 	public abstract class Item : ScriptableObject
 	{
-        [SerializeField][Rename("Name")]
-        private string itemName;
+        [FormerlySerializedAs("itemName")]
+        [SerializeField]
+        private string s_Name;
         /// <summary>
         /// Name of the item.
         /// </summary>
-        public virtual string Name => itemName;
+        public virtual string Name => s_Name;
 
+        [FormerlySerializedAs("description")]
         [SerializeField][TextArea]
-        private string description;
+        private string s_Description;
         /// <summary>
         /// Description of the item. (for In-Game use)
         /// </summary>
-        public virtual string Description => description;
+        public virtual string Description => s_Description;
 
+        [FormerlySerializedAs("sprite")]
         [SerializeField]
-        private Sprite sprite;
+        private Sprite s_Sprite;
         /// <summary>
         /// The item's UI.
         /// </summary>
-        public virtual Sprite Sprite => sprite;
+        public virtual Sprite Sprite => s_Sprite;
 
         /// <summary>
         /// Rarity of the item in integer value; You can use a custom enum value and cast it as an integer.
         /// </summary>
         public abstract int Rarity { get; }
 
-        [SerializeField]
-        private int id;
+        [SerializeField][HideInInspector]
+        private int s_ID = -1;
         /// <summary>
         /// Unique ID of this item.
         /// </summary>
-        public int ID => id;
+        public int ID => s_ID;
 
         internal void ManipulateFromInventory(IInventory owner, bool add)
         {
@@ -64,6 +67,26 @@ namespace WarWolfWorks.EntitiesSystem.Itemization
         protected virtual void OnRemovedFromInventory(IInventory inventory)
         {
 
+        }
+
+        private static Item[] ResourceItems;
+        /// <summary>
+        /// Searches for all resource items by their <see cref="ID"/>      
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        public static Item Find(int ID)
+        {
+            if (ResourceItems == null)
+                ResourceItems = Resources.LoadAll<Item>("/");
+
+            foreach(Item item in ResourceItems)
+            {
+                if (item.ID == ID)
+                    return item;
+            }
+
+            return null;
         }
 	}
 }

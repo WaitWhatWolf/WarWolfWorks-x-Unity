@@ -108,7 +108,7 @@ namespace WarWolfWorks
         /// <param name="exception"></param>
         public static void LogException(Exception exception)
         {
-            LogError(exception.ToString(), DEBUG_LAYER_EXCEPTIONS_INDEX);
+            Debug.LogErrorFormat("<color=#{0}>{1}</color>\n{2}", GetConsoleHexColor(MessageType.Error),exception.Message, exception.StackTrace);
         }
 
         private static void InternalLog(object message, int layer, MessageType messageType)

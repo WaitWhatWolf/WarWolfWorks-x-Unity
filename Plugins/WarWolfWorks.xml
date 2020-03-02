@@ -4,330 +4,99 @@
         <name>WarWolfWorks</name>
     </assembly>
     <members>
-        <member name="T:WarWolfWorks.CollisionSystem.Collidable">
+        <member name="T:WarWolfWorks.Attributes.AsEnumStatAttribute">
             <summary>
-            Base class for all scripts inside WWW.CollisionSystem.
+            Use this attribute to draw a stat's stacking and affection with enum fields instead of int fields.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.CollisionSystem.Collidable.IsUsable">
+        <member name="F:WarWolfWorks.Attributes.AsEnumStatAttribute.StackingType">
             <summary>
-            Determines if the class is usable or not, based on if the required conditions are met.
+            What <see cref="T:System.Enum"/> type the stacking is assigned to.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.CollisionSystem.Collidable.コンディション">
+        <member name="F:WarWolfWorks.Attributes.AsEnumStatAttribute.AffectionType">
             <summary>
-            Condition to be met for Collidable class functions to work.
+            What <see cref="T:System.Enum"/> type the affection is assigned to.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.CollisionSystem.Collidable.Awake">
+        <member name="M:WarWolfWorks.Attributes.AsEnumStatAttribute.#ctor(System.Type)">
             <summary>
-            Unity's awake method.
+            Creates an <see cref="T:WarWolfWorks.Attributes.AsEnumStatAttribute"/> which has a custom <see cref="F:WarWolfWorks.Attributes.AsEnumStatAttribute.AffectionType"/> and <see cref="F:WarWolfWorks.Attributes.AsEnumStatAttribute.StackingType"/> set to <see cref="T:WarWolfWorks.EntitiesSystem.Statistics.EWWWStacking"/>.
             </summary>
         </member>
-        <member name="T:WarWolfWorks.CollisionSystem.ColliderDetector2D">
+        <member name="M:WarWolfWorks.Attributes.AsEnumStatAttribute.#ctor(System.Type,System.Type)">
             <summary>
-            Used to detect 2D collisions using collision2D methods.
+            Creates an <see cref="T:WarWolfWorks.Attributes.AsEnumStatAttribute"/> which has a custom <see cref="F:WarWolfWorks.Attributes.AsEnumStatAttribute.AffectionType"/> and <see cref="F:WarWolfWorks.Attributes.AsEnumStatAttribute.StackingType"/>.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.CollisionSystem.ColliderDetector2D.コンディション">
+        <member name="T:WarWolfWorks.Attributes.AttackStat">
             <summary>
-            Returns true if <see cref="P:WarWolfWorks.CollisionSystem.ColliderDetector2D.AttachedCollider"/> and <see cref="P:WarWolfWorks.CollisionSystem.ColliderDetector2D.AttachedRigidbody"/> are not null.
+            Attribute which is used with <see cref="T:WarWolfWorks.EntitiesSystem.Attacking.Attack"/> to flag fields which are used as stats such as range, recoil, etc...
             </summary>
         </member>
-        <member name="P:WarWolfWorks.CollisionSystem.ColliderDetector2D.AttachedRigidbody">
+        <member name="F:WarWolfWorks.Attributes.AttackStat.DisplayName">
             <summary>
-            Rigidbody attached to this Detector.
+            The name to be displayed for the flagged stat.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.CollisionSystem.ColliderDetector2D.AttachedCollider">
+        <member name="M:WarWolfWorks.Attributes.AttackStat.#ctor(System.String)">
             <summary>
-            Collider attached to this Detector. 
-            (Gets the first collider in the hierarchy, doesn't have function by itself)
+            Creates an <see cref="T:WarWolfWorks.Attributes.AttackStat"/>.
+            </summary>
+            <param name="displayName"></param>
+        </member>
+        <member name="T:WarWolfWorks.Attributes.NonEntityUsage">
+            <summary>
+            Use this attribute if a Stat isn't always owned by an Entity.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.CollisionSystem.ColliderDetector2D.Awake">
+        <member name="F:WarWolfWorks.Attributes.NonEntityUsage.NeverUsed">
             <summary>
-            Unity's awake function, used to get rigidbody and base collider.
+            If true, it means that the stat will never be used by an Entity, not just temporary.
             </summary>
         </member>
-        <member name="T:WarWolfWorks.CollisionSystem.Detector`1">
+        <member name="M:WarWolfWorks.Attributes.NonEntityUsage.#ctor(System.Boolean)">
             <summary>
-            Contains collision triggers to be detected.
+            Determines a Stat that may sometimes not be used by an Entity.
+            </summary>
+            <param name="neverUsed">If true, it means that the stat will never be used by an Entity, not just temporary.</param>
+        </member>
+        <member name="T:WarWolfWorks.Attributes.NoSAttribute">
+            <summary>
+            Removes "s_" from a serialized field inside the inspector; Useful for naming variables.
             </summary>
         </member>
-        <member name="T:WarWolfWorks.CollisionSystem.Detector`1.衝突グループ">
+        <member name="F:WarWolfWorks.Attributes.NoSAttribute.Padding">
             <summary>
-            Group used to manage collisions. (しょうとつ)
+            In case some field get cropped out.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.CollisionSystem.Detector`1.衝突グループ.コリダー">
+        <member name="M:WarWolfWorks.Attributes.NoSAttribute.#ctor">
             <summary>
-            Collider of the group.
+            Creates a new <see cref="T:WarWolfWorks.Attributes.NoSAttribute"/>.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.CollisionSystem.Detector`1.衝突グループ.トリガーは">
+        <member name="M:WarWolfWorks.Attributes.NoSAttribute.#ctor(System.Single)">
             <summary>
-            If the collider was drawn from an OnTrigger collision.
+            Creates a <see cref="T:WarWolfWorks.Attributes.NoSAttribute"/> with extra space at the end; This is here in case a field gets cropped off.
+            </summary>
+            <param name="padding"></param>
+        </member>
+        <member name="T:WarWolfWorks.Attributes.RenameAttribute">
+            <summary>
+            Renames a variable in the inspector without changing it in code or creating a custom editor.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.CollisionSystem.Detector`1.衝突グループ.#ctor(`0,System.Boolean)">
+        <member name="F:WarWolfWorks.Attributes.RenameAttribute.label">
             <summary>
-            Creates a new CollisionGroup.
-            </summary>
-            <param name="collider"></param>
-            <param name="isTrigger"></param>
-        </member>
-        <member name="E:WarWolfWorks.CollisionSystem.Detector`1.OnEnter">
-            <summary>
-            Event is triggered when ColliderDetector detects an Enter collision.
-            Collider is the collider which was detected,
-            Boolean is if the collision was an OnTrigger type collision.
+            Name that it will be changed to.
             </summary>
         </member>
-        <member name="E:WarWolfWorks.CollisionSystem.Detector`1.OnStay">
+        <member name="M:WarWolfWorks.Attributes.RenameAttribute.#ctor(System.String)">
             <summary>
-            Event is triggered as long as previously entered collision did not exit.
-            Collider is the collider which was detected,
-            Boolean is if the collision was an OnTrigger type collision.
+            Renames a variable in the inspector without changing it in code or creating a custom editor.
             </summary>
-        </member>
-        <member name="E:WarWolfWorks.CollisionSystem.Detector`1.OnExit">
-            <summary>
-            Event is triggered when ColliderDetector detects an Exit collision.
-            Collider is the collider which was detected,
-            Boolean is if the collision was an OnTrigger type collision.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.CollisionSystem.Detector`1.エンター呼び出す(`0,System.Boolean)">
-            <summary>
-            Invokes the <see cref="E:WarWolfWorks.CollisionSystem.Detector`1.OnEnter"/> event action. (よびだす)
-            </summary>
-            <param name="arg1"></param>
-            <param name="arg2"></param>
-        </member>
-        <member name="M:WarWolfWorks.CollisionSystem.Detector`1.ソテー呼び出す(`0,System.Boolean)">
-            <summary>
-            Invokes the <see cref="E:WarWolfWorks.CollisionSystem.Detector`1.OnStay"/> event action.(よびだす)
-            </summary>
-            <param name="arg1"></param>
-            <param name="arg2"></param>
-        </member>
-        <member name="M:WarWolfWorks.CollisionSystem.Detector`1.出口呼び出す(`0,System.Boolean)">
-            <summary>
-            Invokes the <see cref="E:WarWolfWorks.CollisionSystem.Detector`1.OnExit"/> event action.(でぐちよびだす)
-            </summary>
-            <param name="arg1"></param>
-            <param name="arg2"></param>
-        </member>
-        <member name="M:WarWolfWorks.CollisionSystem.Detector`1.FixedUpdate">
-            <summary>
-            Unity's FixedUpdate method.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.CollisionSystem.Detector`1.グループ追加(`0,System.Boolean)">
-            <summary>
-            Adds a group to CollisionGroups.
-            </summary>
-            <param name="ち"></param>
-            <param name="てい"></param>
-        </member>
-        <member name="M:WarWolfWorks.CollisionSystem.Detector`1.グループ削除(`0)">
-            <summary>
-            Removes a group containing ち as collider.
-            </summary>
-            <param name="ち"></param>
-        </member>
-        <member name="M:WarWolfWorks.CollisionSystem.Detector`1.CollisionGroupExists(`0)">
-            <summary>
-            Returns true if a group contains the given collider.
-            </summary>
-            <param name="groupCollider"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.CollisionSystem.Detector`1.ホーイチ(System.Action{WarWolfWorks.CollisionSystem.Detector{`0}.衝突グループ})">
-            <summary>
-            Executes the action given on CollisionGroups.ForEach.
-            </summary>
-            <param name="アクション"></param>
-        </member>
-        <member name="T:WarWolfWorks.CollisionSystem.RaycastDetector2D">
-            <summary>
-            Used to detect 2D collisions using raycasts.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.CollisionSystem.RaycastDetector2D.DisplayGizmos">
-            <summary>
-            If true, all raycasts will be displayed with wire-type gizmos.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.CollisionSystem.RaycastDetector2D.IsFixedUpdate">
-            <summary>
-            Determines if calculations are made inside FixedUpdate or Update.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.CollisionSystem.RaycastDetector2D.RaycastFilter">
-            <summary>
-            Filter applied to raycasts.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.CollisionSystem.RaycastDetector2D.RaycastType">
-            <summary>
-            What type of raycasting will the <see cref="T:WarWolfWorks.CollisionSystem.RaycastDetector2D"/> perform.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.CollisionSystem.RaycastDetector2D.レーキヤスト方面">
-            <summary>
-            (ほうめん)
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.CollisionSystem.RaycastDetector2D.RaycastDirection">
-            <summary>
-            Direction at which all raycasts will be performed.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.CollisionSystem.RaycastDetector2D.レーキヤスト距離">
-            <summary>
-            (きょり)
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.CollisionSystem.RaycastDetector2D.RaycastDistance">
-            <summary>
-            Distance at which all raycasts will be performed.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.CollisionSystem.RaycastDetector2D.レーキヤスト面積">
-            <summary>
-            (めんせき)
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.CollisionSystem.RaycastDetector2D.RaycastSize">
-            <summary>
-            Size of all raycasts performed (If raycast takes float value instead of Vector2 to determine size, it will simply take the X value for non-overlap raycasts and Y value for overlap raycasts).
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.CollisionSystem.RaycastDetector2D.AreaCastPointA">
-            <summary>
-            Point A used for <see cref="M:UnityEngine.Physics2D.OverlapAreaAll(UnityEngine.Vector2,UnityEngine.Vector2,System.Int32,System.Single,System.Single)"/>.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.CollisionSystem.RaycastDetector2D.AreaCastPointB">
-            <summary>
-            Point B used for <see cref="M:UnityEngine.Physics2D.OverlapAreaAll(UnityEngine.Vector2,UnityEngine.Vector2,System.Int32,System.Single,System.Single)"/>.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.CollisionSystem.RaycastDetector2D.中心ポイント">
-            <summary>
-            (ちゅうしん)
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.CollisionSystem.RaycastDetector2D.CenterPoint">
-            <summary>
-            Origin point of all raycasts.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.CollisionSystem.RaycastDetector2D.Center">
-            <summary>
-            Equivalent to <see cref="P:WarWolfWorks.CollisionSystem.RaycastDetector2D.CenterPoint"/>.position.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.CollisionSystem.RaycastDetector2D.コンディション">
-            <summary>
-            No condition, always true.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.CollisionSystem.RaycastDetector2D.FixedUpdate">
-            <summary>
-            Unity's FixedUpdate Method. All calculations are made here.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.CollisionSystem.RaycastDetector2D.算定">
-            <summary>
-            Calculates all raycasts. (さんてい)
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.CollisionSystem.RaycastDetector2D.レーキヤスト">
-            <summary>
-            Performs a raycast.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.CollisionSystem.RaycastDetector2D.箱キヤスト">
-            <summary>
-            Performs a boxcast. (はこ)
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.CollisionSystem.RaycastDetector2D.丸キヤスト">
-            <summary>
-            Performs a circlecast. (まる)
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.CollisionSystem.RaycastDetector2D.打ち合わせ丸キヤスト">
-            <summary>
-            Performs a overlapcircle cast. (うちあわせまる)
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.CollisionSystem.RaycastDetector2D.打ち合わせ辺キヤスト">
-            <summary>
-            Performs a overlaparea cast. (うちあわせへん)
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.CollisionSystem.RaycastDetector2D.打ち合わせ箱キヤスト">
-            <summary>
-            Performs a overlapbox cast. (うちあわせはこ)
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:WarWolfWorks.CollisionSystem.RaycastFilter2D">
-            <summary>
-            Used by <see cref="T:WarWolfWorks.CollisionSystem.RaycastDetector2D"/> for raycasting settings.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.CollisionSystem.RaycastFilter2D.LayerMask">
-            <summary>
-            Layermask used for raycasts.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.CollisionSystem.RaycastFilter2D.Depth">
-            <summary>
-            Min-Max Depth for raycasting.
-            </summary>
-        </member>
-        <member name="T:WarWolfWorks.CollisionSystem.RD2DType">
-            <summary>
-            Used by <see cref="T:WarWolfWorks.CollisionSystem.RaycastDetector2D"/> to adapt it's raycasting.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.CollisionSystem.RD2DType.raycast">
-            <summary>
-            If flagged, it will perform a <see cref="M:UnityEngine.Physics2D.RaycastAll(UnityEngine.Vector2,UnityEngine.Vector2,System.Single,System.Int32,System.Single,System.Single)"/>.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.CollisionSystem.RD2DType.boxcast">
-            <summary>
-            If flagged, it will perform a <see cref="M:UnityEngine.Physics2D.BoxCastAll(UnityEngine.Vector2,UnityEngine.Vector2,System.Single,UnityEngine.Vector2,System.Single,System.Int32,System.Single,System.Single)"/>.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.CollisionSystem.RD2DType.circlecast">
-            <summary>
-            If flagged, it will perform a <see cref="M:UnityEngine.Physics2D.CircleCastAll(UnityEngine.Vector2,System.Single,UnityEngine.Vector2,System.Single,System.Int32,System.Single,System.Single)"/>.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.CollisionSystem.RD2DType.overlapCircle">
-            <summary>
-            If flagged, it will perform a <see cref="M:UnityEngine.Physics2D.OverlapCircleAll(UnityEngine.Vector2,System.Single,System.Int32,System.Single,System.Single)"/>.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.CollisionSystem.RD2DType.overlapArea">
-            <summary>
-            If flagged, it will perform a <see cref="M:UnityEngine.Physics2D.OverlapAreaAll(UnityEngine.Vector2,UnityEngine.Vector2,System.Int32,System.Single,System.Single)"/>.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.CollisionSystem.RD2DType.overlapBox">
-            <summary>
-            If flagged, it will perform a <see cref="M:UnityEngine.Physics2D.OverlapBoxAll(UnityEngine.Vector2,UnityEngine.Vector2,System.Single,System.Int32,System.Single,System.Single)"/>.
-            </summary>
+            <param name="label">Name that it will be changed to.</param>
         </member>
         <member name="T:WarWolfWorks.AdvancedDebug">
             <summary>
@@ -1679,6 +1448,16 @@
             Ivoked when <see cref="M:WarWolfWorks.EntitiesSystem.EntityHealth.AddHealth(System.Single)"/> is called. Float value is the amount of health that was added.
             </summary>
         </member>
+        <member name="E:WarWolfWorks.EntitiesSystem.EntityHealth.OnAnyDamaged">
+            <summary>
+            Invoked when any <see cref="T:WarWolfWorks.EntitiesSystem.EntityHealth"/> gets successfully damaged.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.EntitiesSystem.EntityHealth.OnAnyHealed">
+            <summary>
+            Invoked when any <see cref="T:WarWolfWorks.EntitiesSystem.EntityHealth"/> invokes <see cref="M:WarWolfWorks.EntitiesSystem.EntityHealth.AddHealth(System.Single)"/> successfully.
+            </summary>
+        </member>
         <member name="P:WarWolfWorks.EntitiesSystem.EntityHealth.CurrentHealth">
             <summary>
             The current health of the <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/>.
@@ -1728,6 +1507,11 @@
         <member name="P:WarWolfWorks.EntitiesSystem.EntityHealth.Calculator">
             <summary>
             The calculator used by this <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/>. If null on Awake, it will be set to <see cref="T:WarWolfWorks.EntitiesSystem.DefaultHealthDamage"/> by default.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.EntityHealth.PreviousHeal">
+            <summary>
+            The amount that was successfully healed using <see cref="M:WarWolfWorks.EntitiesSystem.EntityHealth.AddHealth(System.Single)"/> on it's most recent use.
             </summary>
         </member>
         <member name="M:WarWolfWorks.EntitiesSystem.EntityHealth.AddHealth(System.Single)">
@@ -2601,6 +2385,13 @@
             </summary>
             <param name="inventory"></param>
         </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Itemization.Item.Find(System.Int32)">
+            <summary>
+            Searches for all resource items by their <see cref="P:WarWolfWorks.EntitiesSystem.Itemization.Item.ID"/>      
+            </summary>
+            <param name="ID"></param>
+            <returns></returns>
+        </member>
         <member name="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile">
             <summary>
             Core class of the projectile system.
@@ -3189,22 +2980,6 @@
             <param name="other"></param>
             <returns></returns>
         </member>
-        <member name="T:WarWolfWorks.EntitiesSystem.Statistics.NonEntityUsage">
-            <summary>
-            Use this attribute if a Stat isn't always owned by an Entity.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.EntitiesSystem.Statistics.NonEntityUsage.NeverUsed">
-            <summary>
-            If true, it means that the stat will never be used by an Entity, not just temporary.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.Statistics.NonEntityUsage.#ctor(System.Boolean)">
-            <summary>
-            Determines a Stat that may sometimes not be used by an Entity.
-            </summary>
-            <param name="neverUsed">If true, it means that the stat will never be used by an Entity, not just temporary.</param>
-        </member>
         <member name="T:WarWolfWorks.EntitiesSystem.Statistics.Stacking">
             <summary>
             Base class to use to apply to a <see cref="P:WarWolfWorks.EntitiesSystem.Statistics.Stats.Stacking"/>.
@@ -3563,7 +3338,7 @@
             </summary>
             <param name="resistances"></param>
         </member>
-        <member name="M:WarWolfWorks.EntitiesSystem.Statusing.EntityStatusApplier.OnFixed">
+        <member name="M:WarWolfWorks.EntitiesSystem.Statusing.EntityStatusApplier.OnUpdate">
             <summary>
             Calls <see cref="M:WarWolfWorks.Interfaces.IStatus.OnTick(WarWolfWorks.Interfaces.IStatusApplier)"/> for all statuses currently applied to this <see cref="T:WarWolfWorks.EntitiesSystem.Statusing.EntityStatusApplier"/>.
             </summary>
@@ -4262,7 +4037,7 @@
         </member>
         <member name="M:WarWolfWorks.Interfaces.IStatus.OnTick(WarWolfWorks.Interfaces.IStatusApplier)">
             <summary>
-            Invoked every in-game physics frame.
+            Invoked every in-game frame.
             </summary>
             <param name="of"></param>
         </member>
@@ -4513,6 +4288,280 @@
             <summary>
             Updates the size of the console and the scroll position.
             </summary>
+        </member>
+        <member name="T:WarWolfWorks.UI.FillableMarker">
+            <summary>
+            A <see cref="T:WarWolfWorks.UI.Marker"/> with a fillable image inside of it.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.FillableMarker.FillSprite">
+            <summary>
+            Sprite used for the fillable image.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.FillableMarker.ImageFillGraphic">
+            <summary>
+            The fillable image inside of <see cref="P:WarWolfWorks.UI.Marker.ImageGraphic"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.FillableMarker.#ctor(WarWolfWorks.UI.FillableMarker)">
+            <summary>
+            Creates a copy of another <see cref="T:WarWolfWorks.UI.FillableMarker"/>.
+            </summary>
+            <param name="copy"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.FillableMarker.#ctor(UnityEngine.Transform,UnityEngine.Sprite,UnityEngine.Sprite,UnityEngine.Vector2,UnityEngine.Vector3)">
+            <summary>
+            Creates a <see cref="T:WarWolfWorks.UI.FillableMarker"/>.
+            </summary>
+            <param name="followed"></param>
+            <param name="markerSprite"></param>
+            <param name="fillSprite"></param>
+            <param name="anchoredSize"></param>
+            <param name="offset"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.FillableMarker.OnInit">
+            <summary>
+            Initiates both graphics.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.FillableMarker.Dispose">
+            <summary>
+            Disposes of both gameobject graphics.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.UI.FillableTextMarker">
+            <summary>
+            A <see cref="T:WarWolfWorks.UI.FillableMarker"/> with text inside of it.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.FillableTextMarker.TextGraphic">
+            <summary>
+            The text graphic inside of <see cref="P:WarWolfWorks.UI.GUIViewport.GUI.CoreGraphic"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.FillableTextMarker.#ctor(WarWolfWorks.UI.FillableTextMarker)">
+            <summary>
+            Creates a copy of another <see cref="T:WarWolfWorks.UI.FillableMarker"/>.
+            </summary>
+            <param name="copy"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.FillableTextMarker.#ctor(UnityEngine.Transform,UnityEngine.Sprite,UnityEngine.Sprite,UnityEngine.Vector2,UnityEngine.Vector3)">
+            <summary>
+            Creates a <see cref="T:WarWolfWorks.UI.FillableTextMarker"/>.
+            </summary>
+            <param name="followed"></param>
+            <param name="markerSprite"></param>
+            <param name="fillSprite"></param>
+            <param name="anchoredSize"></param>
+            <param name="offset"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.FillableTextMarker.OnInit">
+            <summary>
+            Initiates both graphics.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.FillableTextMarker.Dispose">
+            <summary>
+            Disposes of both gameobject graphics.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.UI.GUIViewport">
+            <summary>
+            The manager class of the markers system.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.UI.GUIViewport.GUI">
+            <summary>
+            Used with <see cref="T:WarWolfWorks.UI.GUIViewport"/> to display a <see cref="T:UnityEngine.UI.Graphic"/> on screen through ViewportPoint.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.UI.GUIViewport.GUI.GUIType">
+            <summary>
+            How the <see cref="P:WarWolfWorks.UI.GUIViewport.GUI.Position"/> is used.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.UI.GUIViewport.GUI.GUIType.WorldPosToViewport">
+            <summary>
+            <see cref="P:WarWolfWorks.UI.GUIViewport.GUI.Position"/> is a world position, and <see cref="T:WarWolfWorks.UI.GUIViewport"/> uses <see cref="M:UnityEngine.Camera.WorldToViewportPoint(UnityEngine.Vector3)"/>
+            to set to to an achored position.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.UI.GUIViewport.GUI.GUIType.AsAnchors">
+            <summary>
+            The <see cref="P:WarWolfWorks.UI.GUIViewport.GUI.Position"/> is the anchored position. (0-1)
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.GUIViewport.GUI.ID">
+            <summary>
+            Name of this <see cref="T:WarWolfWorks.UI.GUIViewport.GUI"/>; This is required to be different from other <see cref="T:WarWolfWorks.UI.GUIViewport.GUI"/> elements
+            as it will not be identifiable otherwise, and <see cref="M:WarWolfWorks.UI.GUIViewport.New(WarWolfWorks.UI.GUIViewport.GUI,System.Int32@)"/> will return false.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.GUIViewport.GUI.CoreGraphic">
+            <summary>
+            Core graphic of the GUI.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.GUIViewport.GUI.Initiated">
+            <summary>
+            Is this <see cref="T:WarWolfWorks.UI.GUIViewport.GUI"/> initiated?
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.GUIViewport.GUI.Parent">
+            <summary>
+            <see cref="T:WarWolfWorks.UI.GUIViewport"/> parent; Set after <see cref="M:WarWolfWorks.UI.GUIViewport.New(WarWolfWorks.UI.GUIViewport.GUI,System.Int32@)"/> was successfully called.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.GUIViewport.GUI.Visible">
+            <summary>
+            Returns true if the <see cref="P:WarWolfWorks.UI.GUIViewport.GUI.CoreGraphic"/> is visible on it's parent canvas.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.GUIViewport.GUI.Deinit">
+            <summary>
+            Deinitializes this <see cref="T:WarWolfWorks.UI.GUIViewport.GUI"/>, making it Initiable again.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.GUIViewport.GUI.AnchoredSize">
+            <summary>
+            The size of the <see cref="P:WarWolfWorks.UI.GUIViewport.GUI.CoreGraphic"/> on screen.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.GUIViewport.GUI.Position">
+            <summary>
+            Position at which <see cref="P:WarWolfWorks.UI.GUIViewport.GUI.CoreGraphic"/> displays itself.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.GUIViewport.GUI.OnInit">
+            <summary>
+            Called the parent successfully sets this <see cref="T:WarWolfWorks.UI.GUIViewport.GUI"/> through <see cref="M:WarWolfWorks.UI.GUIViewport.New(WarWolfWorks.UI.GUIViewport.GUI,System.Int32@)"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.GUIViewport.GUI.Dispose">
+            <summary>
+            Called the parent successfully removes this <see cref="T:WarWolfWorks.UI.GUIViewport.GUI"/> through <see cref="M:WarWolfWorks.UI.GUIViewport.Remove(WarWolfWorks.UI.GUIViewport.GUI)"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.GUIViewport.GUI.Type">
+            <summary>
+            How this <see cref="T:WarWolfWorks.UI.GUIViewport.GUI"/>'s <see cref="P:WarWolfWorks.UI.GUIViewport.GUI.Position"/> is used by <see cref="T:WarWolfWorks.UI.GUIViewport"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.GUIViewport.AllGUI">
+            <summary>
+            All markers currently active.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.GUIViewport.GUICount">
+            <summary>
+            The amount of <see cref="T:WarWolfWorks.UI.GUIViewport.GUI"/> elements that are active inside this <see cref="T:WarWolfWorks.UI.GUIViewport"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.GUIViewport.Initiated">
+            <summary>
+            Is the <see cref="T:WarWolfWorks.UI.GUIViewport"/> menu initiated?
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.GUIViewport.Parent">
+            <summary>
+            The camera used to display markers on screen.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.GUIViewport.New(WarWolfWorks.UI.GUIViewport.GUI,System.Int32@)">
+            <summary>
+            Adds a new <see cref="T:WarWolfWorks.UI.GUIViewport.GUI"/> and returns it's given ID.
+            </summary>
+            <param name="gui"></param>
+            <param name="guiID"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.GUIViewport.New(WarWolfWorks.UI.GUIViewport.GUI)">
+            <summary>
+            Adds a new <see cref="T:WarWolfWorks.UI.GUIViewport.GUI"/>.
+            </summary>
+            <param name="gui"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.GUIViewport.GetGUI(System.Int32)">
+            <summary>
+            Sets the world position of a marker by name.
+            </summary>
+            <param name="id"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.GUIViewport.Remove(WarWolfWorks.UI.GUIViewport.GUI)">
+            <summary>
+            Removes a marker.
+            </summary>
+            <param name="gui"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.UI.GUIViewport.Init(UnityEngine.Camera)">
+            <summary>
+            Initiates the <see cref="T:WarWolfWorks.UI.GUIViewport"/>.
+            </summary>
+            <param name="parent"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WarWolfWorks.UI.Marker">
+            <summary>
+            Used with <see cref="T:WarWolfWorks.UI.GUIViewport"/> to display an image on screen based on a worldview.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.Marker.ImageGraphic">
+            <summary>
+            <see cref="P:WarWolfWorks.UI.GUIViewport.GUI.CoreGraphic"/> as <see cref="T:UnityEngine.UI.Image"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.Marker.AnchoredSize">
+            <summary>
+            The anchored size of the image.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.Marker.Position">
+            <summary>
+            The position of the <see cref="T:UnityEngine.Transform"/> followed.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.Marker.MarkerSprite">
+            <summary>
+            The sprite used for the marker.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.Marker.Offset">
+            <summary>
+            The offset of the world position.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.Marker.Type">
+            <summary>
+            <see cref="T:WarWolfWorks.UI.FillableMarker"/> 
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.Marker.Dispose">
+            <summary>
+            Destroys the attached <see cref="T:UnityEngine.UI.Image"/> component.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.Marker.OnInit">
+            <summary>
+            Sets the cooldown and starts a coroutine to calculate the countdown.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.Marker.SetFollwed(UnityEngine.Transform)">
+            <summary>
+            Sets the followed transform to a new transform.
+            </summary>
+            <param name="to"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.Marker.#ctor(UnityEngine.Transform,UnityEngine.Sprite,UnityEngine.Vector2,UnityEngine.Vector3)">
+            <summary>
+            Creates a new <see cref="T:WarWolfWorks.UI.Marker"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.Marker.#ctor(WarWolfWorks.UI.Marker)">
+            <summary>
+            Creates a copy of another <see cref="T:WarWolfWorks.UI.Marker"/>; Copies everything except <see cref="P:WarWolfWorks.UI.Marker.ImageGraphic"/>.
+            </summary>
+            <param name="copy"></param>
         </member>
         <member name="T:WarWolfWorks.UI.MenusSystem.Assets.BasicIndexEvent">
             <summary>
@@ -5092,47 +5141,53 @@
         </member>
         <member name="T:WarWolfWorks.UI.Subtitle">
             <summary>
-            Used with <see cref="T:WarWolfWorks.UI.Subtitles"/> to display text on the screen.
+            Used with <see cref="T:WarWolfWorks.UI.GUIViewport"/> to display text on the screen.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.UI.Subtitle.Text">
+        <member name="P:WarWolfWorks.UI.Subtitle.TextGraphic">
             <summary>
             The <see cref="T:TMPro.TextMeshProUGUI"/> object assigned to this <see cref="T:WarWolfWorks.UI.Subtitle"/>.
             </summary>
         </member>
         <member name="P:WarWolfWorks.UI.Subtitle.Content">
             <summary>
-            Currently displayed text.
+            The text to be displayed on screen.
             </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.Subtitle.AnchoredSize">
+            <summary>
+            The anchored size of this <see cref="T:WarWolfWorks.UI.Subtitle"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.Subtitle.Position">
+            <summary>
+            The position at which the text displays.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.Subtitle.TextColor">
+            <summary>
+            The color of the text. (Uses <see cref="M:UnityEngine.Gradient.Evaluate(System.Single)"/> to set the color of the text)
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.Subtitle.GetCurrentCountdown">
+            <summary>
+            Returns the current countdown.
+            </summary>
+            <returns></returns>
         </member>
         <member name="P:WarWolfWorks.UI.Subtitle.Countdown">
             <summary>
-            The assigned countdown.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.UI.Subtitle.CurrentCountdown">
-            <summary>
-            The current countdown of this <see cref="T:WarWolfWorks.UI.Subtitle"/>.
+            The countdown that the text counts down from.
             </summary>
         </member>
         <member name="P:WarWolfWorks.UI.Subtitle.Loops">
             <summary>
-            If true, <see cref="T:WarWolfWorks.UI.Subtitles"/> will put <see cref="P:WarWolfWorks.UI.Subtitle.CurrentCountdown"/> back to <see cref="P:WarWolfWorks.UI.Subtitle.Countdown"/> instead of removing it.
+            If true, the <see cref="T:WarWolfWorks.UI.Subtitle"/> will not get removed when countdown reaches 0; Instead, it will reset the countdown.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.UI.Subtitle.Gradient">
+        <member name="P:WarWolfWorks.UI.Subtitle.Type">
             <summary>
-            The gradient assigned to this <see cref="T:WarWolfWorks.UI.Subtitle"/>. <see cref="F:WarWolfWorks.UI.Subtitle.Text"/>'s color is assigned with <see cref="M:UnityEngine.Gradient.Evaluate(System.Single)"/>.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.UI.Subtitle.AnchorPosition">
-            <summary>
-            The anchored position <see cref="F:WarWolfWorks.UI.Subtitle.Text"/> is set to.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.UI.Subtitle.Progress01">
-            <summary>
-            Returns <see cref="P:WarWolfWorks.UI.Subtitle.CurrentCountdown"/> / <see cref="P:WarWolfWorks.UI.Subtitle.Countdown"/>.
+            <see cref="T:WarWolfWorks.UI.Subtitle"/> is directly set with it's anchored position. (<see cref="F:WarWolfWorks.UI.GUIViewport.GUI.GUIType.AsAnchors"/>)
             </summary>
         </member>
         <member name="M:WarWolfWorks.UI.Subtitle.Reset(System.String,UnityEngine.Gradient)">
@@ -5142,38 +5197,142 @@
             <param name="newContent"></param>
             <param name="newGradient"></param>
         </member>
-        <member name="M:WarWolfWorks.UI.Subtitle.#ctor(System.String,UnityEngine.Vector4,System.Single,UnityEngine.Gradient,System.Boolean)">
+        <member name="M:WarWolfWorks.UI.Subtitle.OnInit">
+            <summary>
+            Sets the cooldown and starts a coroutine to calculate the countdown.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.Subtitle.Dispose">
+            <summary>
+            Destroys the <see cref="T:TMPro.TextMeshProUGUI"/> used.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.Subtitle.SetPosition(UnityEngine.Vector2)">
+            <summary>
+            Sets the anchored position of the text.
+            </summary>
+            <param name="anchoredPos"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.Subtitle.SetSize(UnityEngine.Vector2)">
+            <summary>
+            Sets the anchored size of the text.
+            </summary>
+            <param name="size"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.Subtitle.#ctor(System.String,UnityEngine.Vector2,UnityEngine.Vector2,System.Single,UnityEngine.Gradient,System.Boolean)">
             <summary>
             Creates a new <see cref="T:WarWolfWorks.UI.Subtitle"/>.
             </summary>
             <param name="content"></param>
-            <param name="anchors"></param>
+            <param name="anchoredPosition"></param>
+            <param name="anchoredSize"></param>
             <param name="countdown"></param>
-            <param name="gradient"></param>
+            <param name="textColor"></param>
             <param name="loops"></param>
         </member>
         <member name="M:WarWolfWorks.UI.Subtitle.#ctor(WarWolfWorks.UI.Subtitle)">
             <summary>
-            Creates a copy of another <see cref="T:WarWolfWorks.UI.Subtitle"/>; Copies everything except <see cref="F:WarWolfWorks.UI.Subtitle.Text"/>.
+            Creates a copy of another <see cref="T:WarWolfWorks.UI.Subtitle"/>; Copies everything except <see cref="P:WarWolfWorks.UI.Subtitle.TextGraphic"/>.
             </summary>
             <param name="copy"></param>
         </member>
-        <member name="T:WarWolfWorks.UI.Subtitles">
+        <member name="T:WarWolfWorks.UI.WorldText">
             <summary>
-            Class used to display text on a canvas; 
-            Uses <see cref="T:WarWolfWorks.UI.Subtitle"/> which has a countdown that displays a certain color from a gradient based on the countdown.
+            Used with <see cref="T:WarWolfWorks.UI.GUIViewport"/> to display a text in world position.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.UI.Subtitles.AllSubtitles">
+        <member name="P:WarWolfWorks.UI.WorldText.TextGraphic">
             <summary>
-            All currently displayed subtitles.
+            The <see cref="T:TMPro.TextMeshProUGUI"/> object assigned to this <see cref="T:WarWolfWorks.UI.Subtitle"/>.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.UI.Subtitles.New(WarWolfWorks.UI.Subtitle)">
+        <member name="P:WarWolfWorks.UI.WorldText.Content">
             <summary>
-            Pushes a <see cref="T:WarWolfWorks.UI.Subtitle"/> on display.
+            The text to be displayed on screen.
             </summary>
-            <param name="subtitle"></param>
+        </member>
+        <member name="P:WarWolfWorks.UI.WorldText.AnchoredSize">
+            <summary>
+            The anchored size of this <see cref="T:WarWolfWorks.UI.Subtitle"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.WorldText.Position">
+            <summary>
+            The position at which the text displays.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.WorldText.TextColor">
+            <summary>
+            The color of the text. (Uses <see cref="M:UnityEngine.Gradient.Evaluate(System.Single)"/> to set the color of the text)
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.WorldText.GetCurrentCountdown">
+            <summary>
+            Returns the current countdown.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:WarWolfWorks.UI.WorldText.Countdown">
+            <summary>
+            The countdown that the text counts down from.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.WorldText.Loops">
+            <summary>
+            If true, the <see cref="T:WarWolfWorks.UI.Subtitle"/> will not get removed when countdown reaches 0; Instead, it will reset the countdown.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.WorldText.Type">
+            <summary>
+            <see cref="T:WarWolfWorks.UI.WorldText"/> uses <see cref="F:WarWolfWorks.UI.GUIViewport.GUI.GUIType.WorldPosToViewport"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.WorldText.Reset(System.String,UnityEngine.Gradient)">
+            <summary>
+            Resets the <see cref="T:WarWolfWorks.UI.Subtitle"/>'s countdown and assigns it with new content and a new gradient.
+            </summary>
+            <param name="newContent"></param>
+            <param name="newGradient"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.WorldText.OnInit">
+            <summary>
+            Sets the cooldown and starts a coroutine to calculate the countdown.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.WorldText.Dispose">
+            <summary>
+            Destroys the <see cref="T:TMPro.TextMeshProUGUI"/> used.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.WorldText.SetFollowed(UnityEngine.Transform)">
+            <summary>
+            Sets the anchored position of the text.
+            </summary>
+            <param name="to"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.WorldText.SetSize(UnityEngine.Vector2)">
+            <summary>
+            Sets the anchored size of the text.
+            </summary>
+            <param name="size"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.WorldText.#ctor(System.String,UnityEngine.Transform,UnityEngine.Vector3,UnityEngine.Vector2,System.Single,UnityEngine.Gradient,System.Boolean)">
+            <summary>
+            Creates a new <see cref="T:WarWolfWorks.UI.Subtitle"/>.
+            </summary>
+            <param name="content"></param>
+            <param name="followed"></param>
+            <param name="offset"></param>
+            <param name="anchoredSize"></param>
+            <param name="countdown"></param>
+            <param name="textColor"></param>
+            <param name="loops"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.WorldText.#ctor(WarWolfWorks.UI.WorldText)">
+            <summary>
+            Creates a copy of another <see cref="T:WarWolfWorks.UI.Subtitle"/>; Copies everything except <see cref="P:WarWolfWorks.UI.WorldText.TextGraphic"/>.
+            </summary>
+            <param name="copy"></param>
         </member>
         <member name="T:WarWolfWorks.Utility.AbstractCloneable`1">
             <summary>
@@ -5201,31 +5360,6 @@
             Plays animation based on name.
             </summary>
             <param name="toPlay"></param>
-        </member>
-        <member name="T:WarWolfWorks.Utility.AsEnumStatAttribute">
-            <summary>
-            Use this attribute to draw a stat's stacking and affection with enum fields instead of int fields.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.AsEnumStatAttribute.StackingType">
-            <summary>
-            What <see cref="T:System.Enum"/> type the stacking is assigned to.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.AsEnumStatAttribute.AffectionType">
-            <summary>
-            What <see cref="T:System.Enum"/> type the affection is assigned to.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.AsEnumStatAttribute.#ctor(System.Type)">
-            <summary>
-            Creates an <see cref="T:WarWolfWorks.Utility.AsEnumStatAttribute"/> which has a custom <see cref="F:WarWolfWorks.Utility.AsEnumStatAttribute.AffectionType"/> and <see cref="F:WarWolfWorks.Utility.AsEnumStatAttribute.StackingType"/> set to <see cref="T:WarWolfWorks.EntitiesSystem.Statistics.EWWWStacking"/>.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.AsEnumStatAttribute.#ctor(System.Type,System.Type)">
-            <summary>
-            Creates an <see cref="T:WarWolfWorks.Utility.AsEnumStatAttribute"/> which has a custom <see cref="F:WarWolfWorks.Utility.AsEnumStatAttribute.AffectionType"/> and <see cref="F:WarWolfWorks.Utility.AsEnumStatAttribute.StackingType"/>.
-            </summary>
         </member>
         <member name="T:WarWolfWorks.Utility.Axis">
             <summary>
@@ -5794,6 +5928,16 @@
             Range struct for Clamping/Range utility in <see cref="T:System.Single"/> value.
             </summary>
         </member>
+        <member name="F:WarWolfWorks.Utility.FloatRange.Min">
+            <summary>
+            The minimal value of this <see cref="T:WarWolfWorks.Utility.FloatRange"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.FloatRange.Max">
+            <summary>
+            The maximal value of this <see cref="T:WarWolfWorks.Utility.FloatRange"/>.
+            </summary>
+        </member>
         <member name="M:WarWolfWorks.Utility.FloatRange.GetClampedValue(System.Single)">
             <summary>
             Returns the value given clamped between MinRange and MaxRange.
@@ -5807,6 +5951,25 @@
             </summary>
             <param name="value"></param>
             <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.FloatRange.GetRandom">
+            <summary>
+            Returns a random value between <see cref="F:WarWolfWorks.Utility.FloatRange.Min"/> (inclusive) and <see cref="F:WarWolfWorks.Utility.FloatRange.Max"/> (inclusive).
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.FloatRange.GetTupleRange">
+            <summary>
+            Returns a <see cref="T:System.Tuple`2"/> of <see cref="F:WarWolfWorks.Utility.FloatRange.Min"/> and <see cref="F:WarWolfWorks.Utility.FloatRange.Max"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.FloatRange.#ctor(System.Single,System.Single)">
+            <summary>
+            Creates a new <see cref="T:WarWolfWorks.Utility.FloatRange"/>.
+            </summary>
+            <param name="min"></param>
+            <param name="max"></param>
         </member>
         <member name="T:WarWolfWorks.Utility.FollowBehaviour">
             <summary>
@@ -7376,6 +7539,28 @@
             <param name="camera"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.GetVisibleCorners(UnityEngine.RectTransform)">
+            <summary>
+            Returns how many anchored positions are between 0 and 1.
+            </summary>
+            <returns></returns>
+            <param name="rect"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.IsFullyVisible(UnityEngine.RectTransform)">
+            <summary>
+            Returns true if the given <see cref="T:UnityEngine.RectTransform"/> is fully visible in anchored position bounds.
+            </summary>
+            <returns></returns>
+            <param name="rectTransform"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.IsVisible(UnityEngine.RectTransform)">
+            <summary>
+            Determines if this <see cref="T:UnityEngine.RectTransform"/> is visible to the camera.
+            </summary>
+            <returns></returns>
+            <param name="rectTransform"></param>
+            <param name="camera"></param>
+        </member>
         <member name="T:WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType">
             <summary>
             Determines the shaking type of <see cref="M:WarWolfWorks.Utility.Hooks.Rendering.Shake(UnityEngine.MonoBehaviour,UnityEngine.Vector3,UnityEngine.Vector3,System.Single,System.Single,System.Single,WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType)"/>.
@@ -8265,19 +8450,48 @@
             Range struct for Clamping/Range utility in <see cref="T:System.Int32"/> value.
             </summary>
         </member>
+        <member name="F:WarWolfWorks.Utility.IntRange.Min">
+            <summary>
+            The minimal value of this <see cref="T:WarWolfWorks.Utility.IntRange"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.IntRange.Max">
+            <summary>
+            The maximal value of this <see cref="T:WarWolfWorks.Utility.IntRange"/>.
+            </summary>
+        </member>
         <member name="M:WarWolfWorks.Utility.IntRange.GetClampedValue(System.Int32)">
             <summary>
-            Returns the value given clamped between MinRange and MaxRange.
+            Returns the value given clamped between <see cref="F:WarWolfWorks.Utility.IntRange.Min"/> (inclusive) and <see cref="F:WarWolfWorks.Utility.IntRange.Max"/> (exclusive).
             </summary>
             <param name="value"></param>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.IntRange.IsWithinRange(System.Int32)">
             <summary>
-            Returns true if the given value is within Min (inclusive) and Max (inclusive).
+            Returns true if the given value is within <see cref="F:WarWolfWorks.Utility.IntRange.Min"/> (inclusive) and <see cref="F:WarWolfWorks.Utility.IntRange.Max"/> (exclusive).
             </summary>
             <param name="value"></param>
             <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.IntRange.GetRandom">
+            <summary>
+            Returns a random value between <see cref="F:WarWolfWorks.Utility.IntRange.Min"/> (inclusive) and <see cref="F:WarWolfWorks.Utility.IntRange.Max"/> (exclusive).
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.IntRange.GetTupleRange">
+            <summary>
+            Returns a <see cref="T:System.Tuple`2"/> of <see cref="F:WarWolfWorks.Utility.IntRange.Min"/> and <see cref="F:WarWolfWorks.Utility.IntRange.Max"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.IntRange.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Creates a new <see cref="T:WarWolfWorks.Utility.IntRange"/>.
+            </summary>
+            <param name="min"></param>
+            <param name="max"></param>
         </member>
         <member name="T:WarWolfWorks.Utility.Langroup">
             <summary>
@@ -8450,22 +8664,6 @@
             Returns a <see cref="T:WarWolfWorks.Utility.LevelFloat"/> with no level values, level at 0 and defaultVal as the implicit value given.
             </summary>
             <param name="defval"></param>
-        </member>
-        <member name="T:WarWolfWorks.Utility.RenameAttribute">
-            <summary>
-            Renames a variable in the inspector without changing it in code or creating a custom editor.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.RenameAttribute.label">
-            <summary>
-            Name that it will be changed to.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.RenameAttribute.#ctor(System.String)">
-            <summary>
-            Renames a variable in the inspector without changing it in code or creating a custom editor.
-            </summary>
-            <param name="label">Name that it will be changed to.</param>
         </member>
         <member name="T:WarWolfWorks.Utility.Rotation">
             <summary>

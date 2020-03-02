@@ -9,29 +9,46 @@ namespace WarWolfWorks.Utility
     [Serializable]
     public struct IntRange : IEquatable<IntRange>
     {
+        /// <summary>
+        /// The minimal value of this <see cref="IntRange"/>.
+        /// </summary>
         public int Min;
+        /// <summary>
+        /// The maximal value of this <see cref="IntRange"/>.
+        /// </summary>
         public int Max;
 
         /// <summary>
-        /// Returns the value given clamped between MinRange and MaxRange.
+        /// Returns the value given clamped between <see cref="Min"/> (inclusive) and <see cref="Max"/> (exclusive).
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public int GetClampedValue(int value)
         {
-            return Mathf.Clamp(value, Min, Max);
+            return Mathf.Clamp(value, Min, Max - 1);
         }
 
         /// <summary>
-        /// Returns true if the given value is within Min (inclusive) and Max (inclusive).
+        /// Returns true if the given value is within <see cref="Min"/> (inclusive) and <see cref="Max"/> (exclusive).
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public bool IsWithinRange(int value)
         {
-            return value >= Min && value <= Max;
+            return value >= Min && value < Max;
         }
 
+        /// <summary>
+        /// Returns a random value between <see cref="Min"/> (inclusive) and <see cref="Max"/> (exclusive).
+        /// </summary>
+        /// <returns></returns>
+        public int GetRandom()
+            => UnityEngine.Random.Range(Min, Max);
+
+        /// <summary>
+        /// Returns a <see cref="Tuple{T1, T2}"/> of <see cref="Min"/> and <see cref="Max"/>.
+        /// </summary>
+        /// <returns></returns>
         public (int min, int max) GetTupleRange() => (Min, Max);
 
         public bool Equals(IntRange other)
@@ -39,6 +56,11 @@ namespace WarWolfWorks.Utility
             return other.Min == Min && other.Max == Max;
         }
 
+        /// <summary>
+        /// Creates a new <see cref="IntRange"/>.
+        /// </summary>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
         public IntRange(int min, int max)
         {
             Min = min;

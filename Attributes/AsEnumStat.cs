@@ -1,6 +1,7 @@
 ﻿using System;
+using WarWolfWorks.EntitiesSystem.Statistics;
 
-namespace WarWolfWorks.EntitiesSystem.Statistics
+namespace WarWolfWorks.Attributes
 {
     /// <summary>
     /// Use this attribute to draw a stat's stacking and affection with enum fields instead of int fields.

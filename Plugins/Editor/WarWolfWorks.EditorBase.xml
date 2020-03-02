@@ -9,6 +9,52 @@
             Creates the missing file to the selected file's folder.
             </summary>
         </member>
+        <member name="T:WarWolfWorks.EditorBase.EntitiesSystem.Itemization.ItemEditor">
+            <summary>
+            Custom editor for <see cref="T:WarWolfWorks.EditorBase.EntitiesSystem.Itemization.ItemEditor"/>; It is also what sets an <see cref="T:WarWolfWorks.EntitiesSystem.Itemization.Item"/>'s ID when not set.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EditorBase.EntitiesSystem.Itemization.ItemEditor.OnInspectorGUI">
+            <summary>
+            Draws the custom inspector.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.EditorBase.Preferences">
+            <summary>
+            All preferences for the editor.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.EditorBase.Preferences.EDITOR_ITEM_NAME_WIDTH_DIV">
+            <summary>
+            The amount by which the width gets divided for <see cref="T:WarWolfWorks.EditorBase.EntitiesSystem.Itemization.ItemEditor"/>'s name field.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.EditorBase.PropertyDrawers.NoSPropertyDrawer">
+            <summary>
+            Property drawer for <see cref="T:WarWolfWorks.Attributes.NoSAttribute"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.EditorBase.PropertyDrawers.NoSPropertyDrawer.NoS_Detector">
+            <summary>
+            Detects a string that starts with "s_" or "S_".
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EditorBase.PropertyDrawers.NoSPropertyDrawer.GetPropertyHeight(UnityEditor.SerializedProperty,UnityEngine.GUIContent)">
+            <summary>
+            Sets the height to appropriate value based on if the property is of array type.
+            </summary>
+            <param name="property"></param>
+            <param name="label"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EditorBase.PropertyDrawers.NoSPropertyDrawer.OnGUI(UnityEngine.Rect,UnityEditor.SerializedProperty,UnityEngine.GUIContent)">
+            <summary>
+            Changes the name of the label if <see cref="F:WarWolfWorks.EditorBase.PropertyDrawers.NoSPropertyDrawer.NoS_Detector"/> is a match.
+            </summary>
+            <param name="position"></param>
+            <param name="property"></param>
+            <param name="label"></param>
+        </member>
         <member name="T:WarWolfWorks.EditorBase.Utility.EditorHooks">
             <summary>
             Like <see cref="T:WarWolfWorks.Utility.Hooks"/>, but for the editor :Pog:.
@@ -65,6 +111,13 @@
             </summary>
             <param name="title"></param>
             <param name="titleStyle"></param>
+        </member>
+        <member name="M:WarWolfWorks.EditorBase.Utility.EditorHooks.PropertyIsArray(UnityEditor.SerializedProperty)">
+            <summary>
+            Returns true if a property is an expand-like property, similar to an array. (All custom Serialized structs/classes return true)
+            </summary>
+            <param name="property"></param>
+            <returns></returns>
         </member>
         <member name="M:WarWolfWorks.EditorBase.Utility.EditorHooks.DrawColoredSquare(UnityEngine.Rect,UnityEngine.Color)">
             <summary>

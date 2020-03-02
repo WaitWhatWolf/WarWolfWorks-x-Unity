@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
-using WarWolfWorks.Debugging;
+using WarWolfWorks.Attributes;
 using WarWolfWorks.EntitiesSystem.Statistics;
 using WarWolfWorks.Interfaces;
 using WarWolfWorks.Utility;
@@ -41,24 +41,6 @@ namespace WarWolfWorks.EntitiesSystem.Attacking
         /// </summary>
         public bool IsInitiated { get => isInitiated; private set => isInitiated = value; }
 
-#if WWW2_0
-        [FormerlySerializedAs("Name")]
-        [SerializeField]
-        [Rename("Attack Title")]
-        private string 名前;
-        /// <summary>
-        /// The name of the Attack, serialized in the inspector as "Attack Title".
-        /// </summary>
-        public string Name => 名前;
-
-        [SerializeField]
-        [TextArea]
-        private string attackDescription;
-        /// <summary>
-        /// The description of the Attack, serialized as "Attack Description" in inspector.
-        /// </summary>
-        public string Description => attackDescription;
-#else
         [FormerlySerializedAs("Name")]
         [Rename("Name")]
         [SerializeField]
@@ -75,12 +57,12 @@ namespace WarWolfWorks.EntitiesSystem.Attacking
         /// The description of the Attack, serialized as "Attack Description" in the inspector.
         /// </summary>
         public string Description => attackDescription;
-#endif
 
         /// <summary>
         /// Uncalculated damage. (overridable through <see cref="Damage"/>)
         /// </summary>
         [SerializeField]
+        [AttackStat("Damage")]
         protected Stat damage;
         /// <summary>
         /// The calculated damage of the attack. (overridable)
@@ -91,6 +73,7 @@ namespace WarWolfWorks.EntitiesSystem.Attacking
         /// Uncalculated attack speed.
         /// </summary>
         [SerializeField]
+        [AttackStat("Fire Rate (RPM)")]
         protected Stat attackSpeed;
         /// <summary>
         /// Rate at which Attack.Trigger() can be called. (Calculated as 60 / AttackSpeed for an RPM-like functionality).
@@ -101,6 +84,7 @@ namespace WarWolfWorks.EntitiesSystem.Attacking
         /// Uncalculated magazine size.
         /// </summary>
         [SerializeField]
+        [AttackStat("Magazine Size")]
         protected Stat magazineSize;
         /// <summary>
         /// Calculated maximum capacity of the attack's magazine.
@@ -140,6 +124,7 @@ namespace WarWolfWorks.EntitiesSystem.Attacking
         /// Uncalculated reload speed.
         /// </summary>
         [SerializeField]
+        [AttackStat("Reload Speed")]
         protected Stat reloadSpeed;
         /// <summary>
         /// Calculated speed at which <see cref="Reload()"/> is invoked.
