@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using WarWolfWorks.Utility;
 
-namespace WarWolfWorks.Extentions
+namespace WarWolfWorks.Extensions
 {
     /// <summary>
     /// An extention class for a more reusable input detection. Depends on <see cref="DefaultKeys"/> for key names.

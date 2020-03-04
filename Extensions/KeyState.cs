@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace WarWolfWorks.Extentions
+namespace WarWolfWorks.Extensions
 {
     /// <summary>
     /// State of a key; Used by <see cref="Keys"/> to give a key's input state.
