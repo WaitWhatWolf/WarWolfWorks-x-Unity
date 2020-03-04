@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -22,7 +23,9 @@ namespace WarWolfWorks.Extensions
             {
                 if(!Checked)
                 {
-                    if(Getter)
+                    UpdateServicedKeys();
+
+                    if (Getter)
                     {
                         Checked = true;
                         return Getter;
@@ -32,15 +35,23 @@ namespace WarWolfWorks.Extensions
                         Getter = new GameObject(KEYS_OBJECT_NAME).AddComponent<Keys>();
 
                     DontDestroyOnLoad(Getter);
-
-                    List<DefaultKeys.WKey> wKeys = DefaultKeys.GetAllKeys();
-                    SKeys = new Dictionary<string, KeyState>(wKeys.Count);
-                    foreach (DefaultKeys.WKey key in wKeys)
-                        SKeys.Add(key.Name, KeyState.None);
                 }
 
                 return Getter;
             }
+        }
+
+        /// <summary>
+        /// Updates all keys used by <see cref="Keys"/>; Draws all key names and values from <see cref="DefaultKeys"/>.
+        /// </summary>
+        public static void UpdateServicedKeys()
+        {
+            List<DefaultKeys.WKey> wKeys = DefaultKeys.GetAllKeys();
+            SKeys.Clear();
+            foreach (DefaultKeys.WKey key in wKeys)
+                SKeys.Add(key.Name, KeyState.None);
+
+            UsedKeys = SKeys.ToArray();
         }
 
         /// <summary>
@@ -50,19 +61,31 @@ namespace WarWolfWorks.Extensions
         /// <returns></returns>
         public KeyState this[string key] => SKeys[key];
 
-        private static Dictionary<string, KeyState> SKeys;
+        private static Dictionary<string, KeyState> SKeys = new Dictionary<string, KeyState>();
+        private static KeyValuePair<string, KeyState>[] UsedKeys;
 
         private void Update()
         {
-            foreach (KeyValuePair<string, KeyState> entry in SKeys)
+            if (!Checked)
+                return;
+
+            try
             {
-                if (DefaultKeys.GetKeyDown(entry.Key))
-                    SKeys[entry.Key] = KeyState.Pressed;
-                else if (DefaultKeys.GetKey(entry.Key))
-                    SKeys[entry.Key] = KeyState.Held;
-                else if (DefaultKeys.GetKeyUp(entry.Key))
-                    SKeys[entry.Key] = KeyState.Released;
-                else SKeys[entry.Key] = KeyState.None;
+                foreach (KeyValuePair<string, KeyState> entry in UsedKeys)
+                {
+                    if (DefaultKeys.GetKeyDown(entry.Key))
+                        SKeys[entry.Key] = KeyState.Pressed;
+                    else if (DefaultKeys.GetKey(entry.Key))
+                        SKeys[entry.Key] = KeyState.Held;
+                    else if (DefaultKeys.GetKeyUp(entry.Key))
+                        SKeys[entry.Key] = KeyState.Released;
+                    else SKeys[entry.Key] = KeyState.None;
+                }
+            }
+            catch
+            {
+                AdvancedDebug.LogWarning("There was a problem updating Keys; Refreshing...", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
+                UpdateServicedKeys();
             }
         }
 

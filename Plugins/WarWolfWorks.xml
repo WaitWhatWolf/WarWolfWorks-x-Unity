@@ -3497,6 +3497,11 @@
             (Example: Keys.Get["AwesomeKey"])
             </summary>
         </member>
+        <member name="M:WarWolfWorks.Extensions.Keys.UpdateServicedKeys">
+            <summary>
+            Updates all keys used by <see cref="T:WarWolfWorks.Extensions.Keys"/>; Draws all key names and values from <see cref="T:WarWolfWorks.Utility.DefaultKeys"/>.
+            </summary>
+        </member>
         <member name="P:WarWolfWorks.Extensions.Keys.Item(System.String)">
             <summary>
             Gets the state of a key under the given name.
