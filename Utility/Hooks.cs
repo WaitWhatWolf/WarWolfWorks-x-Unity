@@ -1564,13 +1564,13 @@ namespace WarWolfWorks.Utility
             /// </summary>
             /// <param name="objects"></param>
             /// <returns></returns>
-            public static IEnumerable<T> InstantiateList<T>(IEnumerable<T> objects) where T : UnityEngine.Object
+            public static List<T> InstantiateList<T>(IEnumerable<T> objects) where T : UnityEngine.Object
             {
-                T[] toReturn = objects.ToArray();
-                for (int i = 0; i < toReturn.Length; i++)
+                List<T> toReturn = new List<T>(objects);
+                for (int i = 0; i < toReturn.Count; i++)
                 {
                     toReturn[i] = UnityEngine.Object.Instantiate(toReturn[i]);
-                    if (toReturn[i] is IInstantiatable) ((IInstantiatable)toReturn[i]).PostInstantiate();
+                    if (toReturn[i] is IInstantiatable instantiatable) instantiatable.PostInstantiate();
                 }
 
                 return toReturn;
@@ -3818,7 +3818,7 @@ namespace WarWolfWorks.Utility
             return list.Where(t => t != null);
         }
         /// <summary>
-        /// Returns true if the given <see cref="ICollection{T}"/> has toLookfor.
+        /// Returns true if the given <see cref="IEnumerable{T}"/> has toLookfor.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>

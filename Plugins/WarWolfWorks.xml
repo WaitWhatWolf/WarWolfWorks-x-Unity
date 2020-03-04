@@ -2496,6 +2496,21 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Exists``1(System.Predicate{``0})">
+            <summary>
+            Returns true if the given projectile match exists.
+            </summary>
+            <param name="match"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Find``1(System.Predicate{``0})">
+            <summary>
+            Returns the first projectile that meets the match conditions.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="match"></param>
+            <returns></returns>
+        </member>
         <member name="E:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.OnProjectileNew">
             <summary>
             Invoked when a <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile"/>.New method is called.
@@ -2504,6 +2519,16 @@
         <member name="E:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.OnProjectileDestroy">
             <summary>
             Invoked when <see cref="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Destroy(WarWolfWorks.EntitiesSystem.Projectiles.Projectile)"/> is succesfully called.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.OnLocked">
+            <summary>
+            <see cref="T:WarWolfWorks.Interfaces.ILockable"/> implementation; Invoked when <see cref="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.SetLock(System.Boolean)"/> is successfully set to true.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.OnUnlocked">
+            <summary>
+            <see cref="T:WarWolfWorks.Interfaces.ILockable"/> implementation; Invoked when <see cref="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.SetLock(System.Boolean)"/> is successfully set to false.
             </summary>
         </member>
         <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Populated">
@@ -2549,6 +2574,23 @@
         <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.SceneSegregator">
             <summary>
             The scene <see cref="T:UnityEngine.GameObject"/> that holds all pooled projectiles.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Tag">
+            <summary>
+            The current tag of this projectile.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.SetTag(System.String)">
+            <summary>
+            Sets the <see cref="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Tag"/> to the given value.
+            </summary>
+            <param name="to"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.RemoveTag">
+            <summary>
+            Removes the <see cref="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Tag"/>.
             </summary>
         </member>
         <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Populate``1(System.Int32,System.Action{``0})">
@@ -2610,6 +2652,11 @@
             The current itteration of the Enumerator-like implementation.
             </summary>
         </member>
+        <member name="P:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.Locked">
+            <summary>
+            The locked state of this <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile"/>. (<see cref="T:WarWolfWorks.Interfaces.ILockable"/> implementation)
+            </summary>
+        </member>
         <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.EnumeratorMoveNext">
             <summary>
             Enumerator-like implementation for getting a new projectile for instantiation.
@@ -2620,6 +2667,12 @@
             <summary>
             Enumerator-like implementation to reset the itteration.
             </summary>
+        </member>
+        <member name="M:WarWolfWorks.EntitiesSystem.Projectiles.Projectile.SetLock(System.Boolean)">
+            <summary>
+            Attempts to set the locked state of this <see cref="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile"/>. (<see cref="T:WarWolfWorks.Interfaces.ILockable"/> implementation)
+            </summary>
+            <param name="to"></param>
         </member>
         <member name="T:WarWolfWorks.EntitiesSystem.Projectiles.Projectile2D">
             <summary>
@@ -3431,6 +3484,55 @@
         <member name="M:WarWolfWorks.EntitiesSystem.ImmunityEffect.WhileTrigger">
             <summary>
             Equivalent to Unity's update method.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.Extentions.Keys">
+            <summary>
+            An extention class for a more reusable input detection. Depends on <see cref="T:WarWolfWorks.Utility.DefaultKeys"/> for key names.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Extentions.Keys.Get">
+            <summary>
+            Use the indexer of this to access a key's state.
+            (Example: Keys.Get["AwesomeKey"])
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Extentions.Keys.Item(System.String)">
+            <summary>
+            Gets the state of a key under the given name.
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Extentions.Keys.ToString">
+            <summary>
+            Returns <see cref="F:WarWolfWorks.Extentions.Keys.KEYS_OBJECT_NAME"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:WarWolfWorks.Extentions.KeyState">
+            <summary>
+            State of a key; Used by <see cref="T:WarWolfWorks.Extentions.Keys"/> to give a key's input state.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Extentions.KeyState.None">
+            <summary>
+            The key is not interacted with.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Extentions.KeyState.Pressed">
+            <summary>
+            The key is first pressed. (Equivalent to <see cref="M:UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode)"/>)
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Extentions.KeyState.Held">
+            <summary>
+            The key is held down. (Equivalent to <see cref="M:UnityEngine.Input.GetKey(UnityEngine.KeyCode)"/>)
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Extentions.KeyState.Released">
+            <summary>
+            The key is being released. (Equivalent to <see cref="M:UnityEngine.Input.GetKeyUp(UnityEngine.KeyCode)"/>)
             </summary>
         </member>
         <member name="T:WarWolfWorks.Interfaces.IAdvancedHealth">
@@ -4263,11 +4365,11 @@
             </summary>
             <param name="action"></param>
         </member>
-        <member name="M:WarWolfWorks.Threading.ThreadingUtilities.RunAsync(System.Action)">
+        <member name="M:WarWolfWorks.Threading.ThreadingUtilities.ToString">
             <summary>
-            Runs an action on a separate thread.
+            Returns "WarWolfWorks Threader".
             </summary>
-            <param name="a"></param>
+            <returns></returns>
         </member>
         <member name="T:WarWolfWorks.UI.ConsoleMenu">
             <summary>
@@ -4908,6 +5010,20 @@
             <param name="type"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.UI.MenusSystem.Menu.GetMenus``1">
+            <summary>
+            Returns a list of menu of given T type.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.UI.MenusSystem.Menu.GetMenus(System.Type)">
+            <summary>
+            Returns a list of menu of given T type.
+            </summary>
+            <param name="of"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.UI.MenusSystem.Menu.OnActivate">
             <summary>
             Invoked when this menu is activated. (Invoked before <see cref="E:WarWolfWorks.UI.MenusSystem.Menu.OnActivated"/>)
@@ -4934,9 +5050,21 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
+        <member name="M:WarWolfWorks.UI.MenusSystem.Menu.ActivateMenu(System.Type)">
+            <summary>
+            Activates the menu of given type.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
         <member name="M:WarWolfWorks.UI.MenusSystem.Menu.DeactivateMenu``1">
             <summary>
             Deactivates the menu of given T type.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:WarWolfWorks.UI.MenusSystem.Menu.DeactivateMenu(System.Type)">
+            <summary>
+            Activates the menu of given type.
             </summary>
             <typeparam name="T"></typeparam>
         </member>
@@ -7939,7 +8067,7 @@
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.EnumerableContains``1(System.Collections.Generic.IEnumerable{``0},``0)">
             <summary>
-            Returns true if the given <see cref="T:System.Collections.Generic.ICollection`1"/> has toLookfor.
+            Returns true if the given <see cref="T:System.Collections.Generic.IEnumerable`1"/> has toLookfor.
             </summary>
             <typeparam name="T"></typeparam>
             <param name="list"></param>

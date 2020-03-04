@@ -48,7 +48,13 @@ namespace WarWolfWorks.UI.MenusSystem
         /// <returns></returns>
         public static T GetMenu<T>() where T : Menu
         {
-            return (T)AllMenus.Find(m => m is T);
+            foreach(Menu menu in AllMenus)
+            {
+                if (menu is T tMenu)
+                    return tMenu;
+            }
+
+            return default(T);
         }
 
         /// <summary>
@@ -58,7 +64,47 @@ namespace WarWolfWorks.UI.MenusSystem
         /// <returns></returns>
         public static Menu GetMenu(Type type)
         {
-            return AllMenus.Find(m => m.GetType() == type);
+            foreach (Menu menu in AllMenus)
+            {
+                if (menu.GetType() == type)
+                    return menu;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a list of menu of given T type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static List<T> GetMenus<T>()
+        {
+            List<T> toReturn = new List<T>(AllMenus.Count);
+            foreach(Menu menu in AllMenus)
+            {
+                if (menu is T tMenu)
+                    toReturn.Add(tMenu);
+            }
+
+            return toReturn;
+        }
+
+        /// <summary>
+        /// Returns a list of menu of given T type.
+        /// </summary>
+        /// <param name="of"></param>
+        /// <returns></returns>
+        public static List<Menu> GetMenus(Type of)
+        {
+            List<Menu> toReturn = new List<Menu>(AllMenus.Count);
+            foreach (Menu menu in AllMenus)
+            {
+                if (menu.GetType().Equals(of))
+                    toReturn.Add(menu);
+            }
+
+            return toReturn;
         }
 
         /// <summary>
@@ -102,8 +148,30 @@ namespace WarWolfWorks.UI.MenusSystem
         /// <typeparam name="T"></typeparam>
         public static void ActivateMenu<T>() where T : Menu
         {
-            T menu = GetMenu<T>();
-            menu.ActivateMenu();
+            foreach(Menu menu in AllMenus)
+            {
+                if(menu is T)
+                {
+                    menu.ActivateMenu();
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Activates the menu of given type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public static void ActivateMenu(Type type)
+        {
+            foreach (Menu menu in AllMenus)
+            {
+                if (menu.GetType() == type)
+                {
+                    menu.ActivateMenu();
+                    return;
+                }
+            }
         }
 
         /// <summary>
@@ -112,8 +180,30 @@ namespace WarWolfWorks.UI.MenusSystem
         /// <typeparam name="T"></typeparam>
         public static void DeactivateMenu<T>() where T : Menu
         {
-            T menu = GetMenu<T>();
-            menu.DeactivateMenu();
+            foreach (Menu menu in AllMenus)
+            {
+                if (menu is T)
+                {
+                    menu.DeactivateMenu();
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Activates the menu of given type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public static void DeactivateMenu(Type type)
+        {
+            foreach (Menu menu in AllMenus)
+            {
+                if (menu.GetType() == type)
+                {
+                    menu.DeactivateMenu();
+                    return;
+                }
+            }
         }
 
         /// <summary>

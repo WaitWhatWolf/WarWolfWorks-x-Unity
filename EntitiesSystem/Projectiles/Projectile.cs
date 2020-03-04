@@ -9,7 +9,7 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
     /// <summary>
     /// Core class of the projectile system.
     /// </summary>
-    public abstract class Projectile : MonoBehaviour, IEntity
+    public abstract class Projectile : MonoBehaviour, IEntity, ILockable
     {
         /// <summary>
         /// Used with <see cref="CallBehaviors(BehaviorCall, object)"/>; It calls a method inside a <see cref="Behavior"/>
@@ -118,6 +118,35 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
         public static IEnumerable<Projectile> GetInactiveProjectiles() => InactiveProjectiles;
 
         /// <summary>
+        /// Returns true if the given projectile match exists.
+        /// </summary>
+        /// <param name="match"></param>
+        /// <returns></returns>
+        public static bool Exists<T>(Predicate<T> match) where T : Projectile
+        {
+            foreach (Projectile p in ActiveProjectiles)
+                if (p is T tp && match(tp))
+                    return true;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Returns the first projectile that meets the match conditions.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="match"></param>
+        /// <returns></returns>
+        public static T Find<T>(Predicate<T> match) where T : Projectile
+        {
+            foreach (Projectile p in ActiveProjectiles)
+                if (p is T tp && match(tp))
+                    return tp;
+
+            return default(T);
+        }
+
+        /// <summary>
         /// Invoked when a <see cref="Projectile"/>.New method is called.
         /// </summary>
         public static event Action<Projectile> OnProjectileNew;
@@ -125,6 +154,16 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
         /// Invoked when <see cref="Projectile.Destroy(Projectile)"/> is succesfully called.
         /// </summary>
         public static event Action<Projectile> OnProjectileDestroy;
+
+        /// <summary>
+        /// <see cref="ILockable"/> implementation; Invoked when <see cref="SetLock(bool)"/> is successfully set to true.
+        /// </summary>
+        public event Action<ILockable> OnLocked;
+
+        /// <summary>
+        /// <see cref="ILockable"/> implementation; Invoked when <see cref="SetLock(bool)"/> is successfully set to false.
+        /// </summary>
+        public event Action<ILockable> OnUnlocked;
 
         /// <summary>
         /// Returns true if <see cref="Populate{T}(int, Action{T})"/> was previously called.
@@ -171,6 +210,33 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
         /// The scene <see cref="GameObject"/> that holds all pooled projectiles.
         /// </summary>
         protected static Transform SceneSegregator { get; private set; }
+
+        /// <summary>
+        /// The current tag of this projectile.
+        /// </summary>
+        public string Tag { get; private set; } = string.Empty;
+
+        /// <summary>
+        /// Sets the <see cref="Tag"/> to the given value.
+        /// </summary>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        public bool SetTag(string to)
+        {
+            if (string.IsNullOrEmpty(to) || to == Tag)
+                return false;
+
+            Tag = to;
+            return true;
+        }
+
+        /// <summary>
+        /// Removes the <see cref="Tag"/>.
+        /// </summary>
+        public void RemoveTag()
+        {
+            Tag = string.Empty;
+        }
 
         /// <summary>
         /// Populates the <see cref="Projectile"/> pool.
@@ -324,6 +390,11 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
         protected static Projectile EnumeratorCurrent => Projectiles[EnumeratorIndex];
 
         /// <summary>
+        /// The locked state of this <see cref="Projectile"/>. (<see cref="ILockable"/> implementation)
+        /// </summary>
+        public bool Locked { get; private set; }
+
+        /// <summary>
         /// Enumerator-like implementation for getting a new projectile for instantiation.
         /// </summary>
         /// <returns></returns>
@@ -345,6 +416,21 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
         protected static void EnumeratorReset()
         {
             EnumeratorIndex = -1;
+        }
+
+        /// <summary>
+        /// Attempts to set the locked state of this <see cref="Projectile"/>. (<see cref="ILockable"/> implementation)
+        /// </summary>
+        /// <param name="to"></param>
+        public void SetLock(bool to)
+        {
+            if (to == Locked)
+                return;
+
+            Locked = to;
+            if (Locked)
+                OnLocked?.Invoke(this);
+            else OnUnlocked?.Invoke(this);
         }
     }
 }
