@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
+using UnityEngine.Serialization;
+using WarWolfWorks.Attributes;
 using WarWolfWorks.Interfaces;
 using WarWolfWorks.Utility;
 
@@ -10,22 +11,23 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
     /// <summary>
     /// Indexed menu which implements various utility for handling a Index-based menu. Uses <see cref="IndexEvent"/> to make menu choices.
     /// </summary>
+    [CompleteNoS]
     public abstract class IndexMenu : Menu, IIndexMenu
     {
-        private int actIndex;
+        private int ns_MenuIndex;
         /// <summary>
         /// Current index of this menu.
         /// </summary>
         public virtual int MenuIndex
         {
-            get => actIndex;
+            get => ns_MenuIndex;
             set
             {
-                int prev = actIndex;
-                actIndex = InteractibleRange.GetClampedValue(value);
+                int prev = ns_MenuIndex;
+                ns_MenuIndex = InteractibleRange.GetClampedValue(value);
                 OnIndexChanged(prev);
-                for (int i = 0; i < events.Count; i++)
-                    events[i].InternalOnIndexChanged();
+                for (int i = 0; i < s_Events.Count; i++)
+                    s_Events[i].InternalOnIndexChanged();
             }
         }
 
@@ -33,12 +35,12 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         /// Returns how many <see cref="IndexEvent"/> are attached to this <see cref="IndexMenu"/>.
         /// </summary>
         /// <returns></returns>
-        public int GetIndexEventCount() => events.Count;
+        public int GetIndexEventCount() => s_Events.Count;
 
         /// <summary>
         /// Limits the <see cref="MenuIndex"/> to this range.
         /// </summary>
-        protected virtual IntRange InteractibleRange => new IntRange(0, events.Count);
+        protected virtual IntRange InteractibleRange => new IntRange(0, s_Events.Count);
 
         /// <summary>
         /// When this method returns true, <see cref="MenuIndex"/> will increase by 1.
@@ -56,19 +58,19 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         /// <returns></returns>
         protected abstract bool ActivatesIndexEvent();
 
-        [SerializeField]
-        private protected List<IndexEvent> events;
+        [FormerlySerializedAs("events"), SerializeField]
+        private protected List<IndexEvent> s_Events;
         /// <summary>
         /// All events held/used by this menu.
         /// </summary>
-        public IEnumerable<IndexEvent> Events => events;
+        public IEnumerable<IndexEvent> Events => s_Events;
 
         /// <summary>
         /// Returns the <see cref="IndexEvent"/> at the given index.
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public IndexEvent this[int index] => events[index];
+        public IndexEvent this[int index] => s_Events[index];
 
         /// <summary>
         /// Invoked when <see cref="MenuIndex"/> is changed.
@@ -84,8 +86,8 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
             if (@event == null)
                 throw new ArgumentNullException(nameof(@event));
 
-            @event.Initiate(this, events.Count);
-            events.Add(@event);
+            @event.Initiate(this, s_Events.Count);
+            s_Events.Add(@event);
         }
 
         /// <summary>
@@ -98,19 +100,19 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
             if (@event == null)
                 throw new ArgumentNullException(nameof(@event));
 
-            if(at > events.Count)
+            if(at > s_Events.Count)
             {
-                AdvancedDebug.LogWarningFormat("Cannot add {0} as the index ({1}) given is above the allowed range ({2})", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, nameof(@event), at, events.Count);
+                AdvancedDebug.LogWarningFormat("Cannot add {0} as the index ({1}) given is above the allowed range ({2})", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, nameof(@event), at, s_Events.Count);
                 return;
             }
 
-            foreach(IndexEvent ie in events)
+            foreach(IndexEvent ie in s_Events)
             {
                 if (ie.IndexInMenu >= at) ie.IndexInMenu++;
             }
 
             @event.Initiate(this, at);
-            events.Insert(at, @event);
+            s_Events.Insert(at, @event);
         }
 
         /// <summary>
@@ -124,9 +126,9 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
 
             int @eventIndex = @event.IndexInMenu;
             @event.InternalOnRemove();
-            events.Remove(@event);
+            s_Events.Remove(@event);
 
-            foreach (IndexEvent ie in events)
+            foreach (IndexEvent ie in s_Events)
             {
                 if (ie.IndexInMenu > eventIndex) ie.IndexInMenu--;
             }
@@ -138,13 +140,13 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         /// <param name="at"></param>
         public void RemoveIndexEvent(int at)
         {
-            if (at < 0 || at > events.Count)
+            if (at < 0 || at > s_Events.Count)
                 throw new IndexOutOfRangeException();
 
-            events[at].InternalOnRemove();
-            events.RemoveAt(at);
+            s_Events[at].InternalOnRemove();
+            s_Events.RemoveAt(at);
 
-            foreach (IndexEvent ie in events)
+            foreach (IndexEvent ie in s_Events)
             {
                 if (ie.IndexInMenu > at) ie.IndexInMenu--;
             }
@@ -157,8 +159,8 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         {
             base.Awake();
 
-            for (int i = 0; i < events.Count; i++)
-                events[i].Initiate(this, i);
+            for (int i = 0; i < s_Events.Count; i++)
+                s_Events[i].Initiate(this, i);
         }
 
         /// <summary>
@@ -170,7 +172,7 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
             {
                 if (IncreasesIndex()) MenuIndex++;
                 if (DecreasesIndex()) MenuIndex--;
-                if (ActivatesIndexEvent()) events[MenuIndex].Activate(0);
+                if (ActivatesIndexEvent()) s_Events[MenuIndex].Activate(0);
             }
         }
     }

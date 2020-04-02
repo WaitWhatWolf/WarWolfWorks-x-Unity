@@ -9,6 +9,7 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
     /// Class used by entities to get Stat values.
     /// </summary>
     [System.Serializable]
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public sealed class Stats : IEntity
     {
         /// <summary>
@@ -34,7 +35,7 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
         [UnityEngine.SerializeField]
         private Stacking stackingUsed;
         /// <summary>
-        /// 
+        /// The object which calculates all stats to return a final value.
         /// </summary>
         public IStacking Stacking
         {

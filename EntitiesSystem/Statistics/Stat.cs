@@ -9,6 +9,7 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
     /// Base class used for all <see cref="Entity"/> statistics.
     /// </summary>
     [Serializable]
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public sealed class Stat : IStat
     {
         [SerializeField][FormerlySerializedAs("Value")]

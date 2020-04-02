@@ -5,6 +5,7 @@ namespace WarWolfWorks.Interfaces
     /// <summary>
     /// Core class used for all statuses.
     /// </summary>
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public interface IStatus : IEntity
     {
         /// <summary>

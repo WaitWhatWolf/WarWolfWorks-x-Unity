@@ -3,11 +3,24 @@ using UnityEngine;
 
 namespace WarWolfWorks.Interfaces
 {
+    /// <summary>
+    /// Interface used for detailed/advanced rotation of an object.
+    /// </summary>
 	public interface IRotation
 	{
+        /// <summary>
+        /// The transform that will be rotated for the X axis.
+        /// </summary>
         Transform ToRotateX { get; }
+        /// <summary>
+        /// The transform that will be rotated for the Y axis.
+        /// </summary>
         Transform ToRotateY { get; }
+        /// <summary>
+        /// The transform that will be rotated for the Z axis.
+        /// </summary>
         Transform ToRotateZ { get; }
+
         /// <summary>
         /// Rotation towards which this <see cref="IRotation"/> is destinated.
         /// </summary>

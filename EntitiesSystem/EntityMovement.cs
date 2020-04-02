@@ -1,22 +1,21 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using WarWolfWorks.Utility;
+using System;
+using WarWolfWorks.Interfaces;
 
 namespace WarWolfWorks.EntitiesSystem.Movement
 {
-    using System;
-    using UnityEngine.Serialization;
-    using WarWolfWorks.EntitiesSystem.Statistics;
-    using WarWolfWorks.Interfaces;
 
     /// <summary>
     /// Base class of all EntityMovement scripts. Use only this to move entites.
     /// </summary>
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public abstract class EntityMovement : EntityComponent, ILockable
     {
         /// <summary>
         /// Class which is used to add or remove velocity from the Entity.
         /// </summary>
+        [Serializable]
         public class Velocity
         {
             /// <summary>
@@ -32,10 +31,12 @@ namespace WarWolfWorks.EntitiesSystem.Movement
             /// </summary>
             public int[] Affections;
 
+            [SerializeField]
+            private float s_StartTime;
             /// <summary>
             /// Time which was set for this velocity.
             /// </summary>
-            public float StartTime { get; set; }
+            public float StartTime { get => s_StartTime; set => s_StartTime = value; }
             /// <summary>
             /// Current countdown time.
             /// </summary>
@@ -105,7 +106,6 @@ namespace WarWolfWorks.EntitiesSystem.Movement
                 UsesStat = true;
                 Affections = affections;
             }
-
         }
 
         /// <summary>
@@ -117,10 +117,14 @@ namespace WarWolfWorks.EntitiesSystem.Movement
         /// Boolean which returns true if the <see cref="Entity"/> is moving. (Doesn't have any function  by itself, if you want it to be functional you would need to give it the functionality yourself).
         /// </summary>
         public bool IsMoving { get; protected set; }
+
+        [SerializeField]
+        private List<Velocity> s_Velocities = new List<Velocity>();
         /// <summary>
         /// Every velocity stacked onto the entity's movement.
         /// </summary>
-        public List<Velocity> Velocities { get; } = new List<Velocity>();
+        public List<Velocity> Velocities => s_Velocities;
+
         /// <summary>
         /// Final Velocity that will be applied to this entity.
         /// </summary>
@@ -128,18 +132,18 @@ namespace WarWolfWorks.EntitiesSystem.Movement
         {
             get
             {
+                if (Locked)
+                    return default;
+
                 Vector3 toReturn = DefaultVelocity;
 
-                Velocities.ForEach
-                (
-                    val =>
-                    {
-                        float multi = val.UsesStat ? EntityMain.Stats.CalculatedValue(1, val.Affections) : 1;
-                        toReturn += val.Value * multi;
-                    }
-                );
+                for(int i = 0; i < Velocities.Count; i++)
+                {
+                    float multi = Velocities[i].UsesStat ? EntityMain.Stats.CalculatedValue(1, Velocities[i].Affections) : 1;
+                    toReturn += Velocities[i].Value * multi;
+                }
 
-                return Locked ? default : toReturn;
+                return toReturn;
             }
         }
 
@@ -167,7 +171,8 @@ namespace WarWolfWorks.EntitiesSystem.Movement
                 return;
 
             Locked = to;
-            if (Locked) OnLocked?.Invoke(this);
+            if (Locked)
+                OnLocked?.Invoke(this);
             else OnUnlocked?.Invoke(this);
         }
 

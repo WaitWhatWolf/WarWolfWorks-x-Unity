@@ -9,6 +9,7 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
     /// <see cref="IStat"/> which is removed after a given countdown.
     /// </summary>
     [Serializable]
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public sealed class CountdownStat : IStat
     {
         [SerializeField]

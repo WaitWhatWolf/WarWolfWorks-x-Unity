@@ -1,8 +1,14 @@
 ﻿namespace WarWolfWorks.Interfaces
 {
-    public interface IRefresher
+    /// <summary>
+    /// Indicates a refreshable object.
+    /// </summary>
+    public interface IRefreshable
     {
-        void RefreshUI();
+        /// <summary>
+        /// Refreshes this object.
+        /// </summary>
+        void Refresh();
     }
 
 }

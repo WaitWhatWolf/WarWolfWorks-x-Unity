@@ -6,6 +6,7 @@ namespace WarWolfWorks.Interfaces
     /// <summary>
     /// Base interface used for Stat calculations.
     /// </summary>
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public interface IStat : IEquatable<float>
     {
         /// <summary>

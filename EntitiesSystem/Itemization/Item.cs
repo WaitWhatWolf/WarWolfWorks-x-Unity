@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Serialization;
+using WarWolfWorks.Attributes;
 using WarWolfWorks.Interfaces;
 
 namespace WarWolfWorks.EntitiesSystem.Itemization
@@ -7,45 +8,39 @@ namespace WarWolfWorks.EntitiesSystem.Itemization
     /// <summary>
     /// Base class for Itemization in the WWWLibrary.
     /// </summary>
-	public abstract class Item : ScriptableObject
+    [CompleteNoS]
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
+    public abstract class Item : ScriptableObject, IItem
 	{
-        [FormerlySerializedAs("itemName")]
-        [SerializeField]
+        [FormerlySerializedAs("itemName"), SerializeField]
         private string s_Name;
         /// <summary>
         /// Name of the item.
         /// </summary>
         public virtual string Name => s_Name;
 
-        [FormerlySerializedAs("description")]
-        [SerializeField][TextArea]
+        [FormerlySerializedAs("description"), SerializeField, TextArea]
         private string s_Description;
         /// <summary>
         /// Description of the item. (for In-Game use)
         /// </summary>
         public virtual string Description => s_Description;
 
-        [FormerlySerializedAs("sprite")]
-        [SerializeField]
+        [FormerlySerializedAs("sprite"), SerializeField]
         private Sprite s_Sprite;
         /// <summary>
         /// The item's UI.
         /// </summary>
         public virtual Sprite Sprite => s_Sprite;
 
-        /// <summary>
-        /// Rarity of the item in integer value; You can use a custom enum value and cast it as an integer.
-        /// </summary>
-        public abstract int Rarity { get; }
-
-        [SerializeField][HideInInspector]
+        [SerializeField, HideInInspector]
         private int s_ID = -1;
         /// <summary>
         /// Unique ID of this item.
         /// </summary>
-        public int ID => s_ID;
+        public int GetID() => s_ID;
 
-        internal void ManipulateFromInventory(IInventory owner, bool add)
+        internal void ManipulateFromInventory(IInventory<Item> owner, bool add)
         {
             if (add) OnAddedToInventory(owner);
             else OnRemovedFromInventory(owner);
@@ -55,7 +50,7 @@ namespace WarWolfWorks.EntitiesSystem.Itemization
         /// Invoked when this item is added to an Inventory.
         /// </summary>
         /// <param name="inventory"></param>
-        protected virtual void OnAddedToInventory(IInventory inventory)
+        protected virtual void OnAddedToInventory(IInventory<Item> inventory)
         {
 
         }
@@ -64,14 +59,16 @@ namespace WarWolfWorks.EntitiesSystem.Itemization
         /// Invoked when this item is removed from an Inventory.
         /// </summary>
         /// <param name="inventory"></param>
-        protected virtual void OnRemovedFromInventory(IInventory inventory)
+        protected virtual void OnRemovedFromInventory(IInventory<Item> inventory)
         {
 
         }
 
+
+
         private static Item[] ResourceItems;
         /// <summary>
-        /// Searches for all resource items by their <see cref="ID"/>      
+        /// Searches for all resource items by their ID.      
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
@@ -82,7 +79,7 @@ namespace WarWolfWorks.EntitiesSystem.Itemization
 
             foreach(Item item in ResourceItems)
             {
-                if (item.ID == ID)
+                if (item.GetID() == ID)
                     return item;
             }
 

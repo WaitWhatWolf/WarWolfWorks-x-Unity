@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
+using WarWolfWorks.Internal;
 
 namespace WarWolfWorks.Utility
 {
     /// <summary>
     /// Class used for transitions between events.
     /// </summary>
-    public class TransitionManager : MonoBehaviour
+    public sealed class TransitionManager : MonoBehaviour
     {
         private static TransitionManager Instance;
         
@@ -28,7 +29,7 @@ namespace WarWolfWorks.Utility
             TransitionImage = g.AddComponent<Image>();
             TransitionImage.color = Color.clear;
             TransitionImage.raycastTarget = false;
-            if (!Hooks.UtilityCanvas) TransitorSetter.Start();
+            if (!Settings.UtilityCanvas) TransitorSetter.Start();
             else InitializeTransitionManager();
         }
 
@@ -36,9 +37,9 @@ namespace WarWolfWorks.Utility
         {
             while (true)
             {
-                if (Hooks.UtilityCanvas)
+                if (Settings.UtilityCanvas)
                 {
-                    TransitionImage.rectTransform.SetParent(Hooks.UtilityCanvas.transform);
+                    TransitionImage.rectTransform.SetParent(Settings.UtilityCanvas.transform);
                     TransitionImage.rectTransform.SetAnchoredUI(new Vector4(0, 0, 1, 1));
                     TransitionImage.rectTransform.SetAsLastSibling();
                     break;

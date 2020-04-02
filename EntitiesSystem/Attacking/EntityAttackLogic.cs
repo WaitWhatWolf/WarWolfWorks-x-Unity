@@ -135,7 +135,7 @@ namespace WarWolfWorks.EntitiesSystem.Attacking
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public bool GetCanAttack(int index) => AllAttacks[index].CanAttack;
+        public bool GetCanAttack(int index) => AllAttacks[index].Active;
 
         /// <summary>
         /// Gets the index of the group in which the given <see cref="Attack"/> component resides.
@@ -241,7 +241,7 @@ namespace WarWolfWorks.EntitiesSystem.Attacking
         /// <param name="to"></param>
         public void SetCanAttack(int groupIndex, bool to)
         {
-            AllAttacks[groupIndex].CanAttack = to;
+            AllAttacks[groupIndex].Active = to;
         }
 
         /// <summary>
@@ -379,7 +379,7 @@ namespace WarWolfWorks.EntitiesSystem.Attacking
                 Instantiate(stored.Condition) : stored.Condition,
 
                 stored.Point,
-                stored.CanAttack,
+                stored.Active,
                 stored.InstantiatesAttack,
                 stored.InstantiatesCondition,
                 this
@@ -399,7 +399,7 @@ namespace WarWolfWorks.EntitiesSystem.Attacking
                     sac.Attack.TimeScale = Locked ? 0 : 1;
                     sac.Attack.Update();
 
-                    if (sac.Condition && sac.Condition.ConditionIsMet(sac.Attack) && sac.CanAttack)
+                    if (sac.Condition && sac.Condition.ConditionIsMet(sac.Attack) && sac.Active)
                     {
                         if (sac.Attack.CanAttack)
                             OnBeforeAttackTriggered?.Invoke(sac.Attack);

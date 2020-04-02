@@ -4,10 +4,8 @@ using UnityEngine;
 namespace WarWolfWorks.EntitiesSystem
 {
     using Statistics;
-    using System.Collections;
     using System.Collections.Generic;
     using WarWolfWorks.Attributes;
-    using WarWolfWorks.Debugging;
     using WarWolfWorks.Interfaces;
     using WarWolfWorks.Security;
     using WarWolfWorks.Utility;
@@ -15,6 +13,7 @@ namespace WarWolfWorks.EntitiesSystem
     /// <summary>
     /// The core class of everything inside <see cref="WarWolfWorks.EntitiesSystem"/>
     /// </summary>
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public abstract class Entity : MonoBehaviour
     {
         /// <summary>
@@ -165,13 +164,13 @@ namespace WarWolfWorks.EntitiesSystem
             {
                 switch (callType)
                 {
-                    case CallType.awake: Components[i].OnAwake(); break;
-                    case CallType.start: Components[i].OnStart(); break;
-                    case CallType.enable: Components[i].OnEnabled(); break;
-                    case CallType.update: Components[i].OnUpdate(); break;
-                    case CallType.fixedU: Components[i].OnFixed(); break;
-                    case CallType.disable: Components[i].OnDisabled(); break;
-                    case CallType.destroy: Components[i].OnDestroyed(); break;
+                    case CallType.awake: Components[i].Awake(); break;
+                    case CallType.start: Components[i].Start(); break;
+                    case CallType.enable: Components[i].OnEnable(); break;
+                    case CallType.update: Components[i].Update(); break;
+                    case CallType.fixedU: Components[i].FixedUpdate(); break;
+                    case CallType.disable: Components[i].OnDisable(); break;
+                    case CallType.destroy: Components[i].OnDestroy(); break;
                 }
             }
         }
@@ -344,7 +343,7 @@ namespace WarWolfWorks.EntitiesSystem
                 return false;
 
             Components.Remove(toUse);
-            toUse.OnDestroyed();
+            toUse.OnDestroy();
             Destroy(toUse);
             return true;
         }
@@ -494,7 +493,7 @@ namespace WarWolfWorks.EntitiesSystem
             
             if(Components.Remove(toRemove))
             {
-                toRemove.OnDestroyed();
+                toRemove.OnDestroy();
                 return true;
             }
 
@@ -511,7 +510,7 @@ namespace WarWolfWorks.EntitiesSystem
             IEntityComponent removed = Components.Find(c => c == toRemove);
             if (Components.Remove(removed))
             {
-                removed.OnDestroyed();
+                removed.OnDestroy();
                 return true;
             }
 

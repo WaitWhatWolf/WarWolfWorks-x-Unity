@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using WarWolfWorks.Interfaces;
+using WarWolfWorks.Interfaces.UnityMethods;
 using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.EntitiesSystem
@@ -7,6 +8,7 @@ namespace WarWolfWorks.EntitiesSystem
     /// <summary>
     /// Basic script for controling an entity's rotation.
     /// </summary>
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public sealed class EntityRotation : Rotation, IEntityComponent
     {
         /// <summary>
@@ -17,18 +19,18 @@ namespace WarWolfWorks.EntitiesSystem
             get; private set;
         }
 
-        void IAwake.OnAwake() { EntityMain = GetComponentInParent<Entity>(); }
-        void IDestroy.OnDestroyed() { }
+        void IAwake.Awake() { EntityMain = GetComponentInParent<Entity>(); }
+        void IOnDestroy.OnDestroy() { }
 
-        void IEnableDisable.OnDisabled() { }
+        void IOnDisable.OnDisable() { }
 
-        void IEnableDisable.OnEnabled() { }
+        void IOnEnable.OnEnable() { }
 
-        void IFixedUpdate.OnFixed() { }
+        void IFixedUpdate.FixedUpdate() { }
 
-        void IStart.OnStart() { }
+        void IStart.Start() { }
 
-        void IUpdate.OnUpdate()
+        void IUpdate.Update()
         {
             base.Update();
         }

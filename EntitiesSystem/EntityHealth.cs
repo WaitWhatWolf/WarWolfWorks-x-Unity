@@ -1,17 +1,20 @@
 ﻿using UnityEngine;
+using System;
+using System.Threading.Tasks;
+using WarWolfWorks.Interfaces;
+using WarWolfWorks.EntitiesSystem.Statistics;
+using UnityEngine.Serialization;
+using WarWolfWorks.Attributes;
+using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.EntitiesSystem
 {
-    using System;
-    using System.Collections;
-    using Interfaces;
-    using Statistics;
-    using WarWolfWorks;
-    using WarWolfWorks.Utility;
 
     /// <summary>
     /// Class which acts as the Entity's health.
     /// </summary>
+    [CompleteNoS]
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public sealed class EntityHealth : EntityComponent, IAdvancedHealth
     {
         private Action<IAdvancedHealth, object, IHealthDamage> OnDmgHandler;
@@ -84,31 +87,24 @@ namespace WarWolfWorks.EntitiesSystem
         /// </summary>
         public float CurrentHealth { get; private set; }
 
-        [SerializeField]
-        private Stat maxHealth;
+        [SerializeField, FormerlySerializedAs("maxHealth")]
+        private Stat s_MaxHealth;
         /// <summary>
         /// The maximum value at which <see cref="CurrentHealth"/> can be.
         /// </summary>
         public float MaxHealth
         {
-            get => EntityMain.Stats.CalculatedValue(maxHealth);
-            set => maxHealth.SetValue = value;
+            get => EntityMain.Stats.CalculatedValue(s_MaxHealth);
+            set => s_MaxHealth.SetValue = value;
         }
 
-        [SerializeField]
-        private Stat defense;
-        /// <summary>
-        /// The <see cref="Entity"/>'s defense.
-        /// </summary>
-        public float Defense => EntityMain.Stats.CalculatedValue(defense);
-
-        [SerializeField]
-        private bool damageParent = true;
+        [SerializeField ,FormerlySerializedAs("damageParent")]
+        private bool s_DamageParent = true;
         /// <summary>
         /// If true and this component's <see cref="Entity"/> is <see cref="IEntityParentable"/>,
         /// it will damage the parent's Health instead.
         /// </summary>
-        public bool DamageParent { get => damageParent; set => damageParent = value; }
+        public bool DamageParent { get => s_DamageParent; set => s_DamageParent = value; }
 
         private IAdvancedHealth Damaged { get; set; }
 
@@ -123,60 +119,61 @@ namespace WarWolfWorks.EntitiesSystem
         public override void OnAwake()
         {
             CurrentHealth = MaxHealth;
-            if (DestroyOnDeath)
+            if (s_DestroyOnDeath)
             {
-                OnDeath += DeathDestroy;
+                OnDeath += Event_DeathDestroy;
             }
 
             if (Calculator == null) Calculator = ScriptableObject.CreateInstance<DefaultHealthDamage>();
-            if (immunityEffect != null) ImmunityEffect = Instantiate(immunityEffect);
+            else Calculator = Instantiate(s_Calculator);
+            if (s_ImmunityEffect != null) ImmunityEffect = Instantiate(s_ImmunityEffect);
 
-            SetDamagedHealth(EntityMain, EntityManager.OldestOf(EntityMain, true));
-            if (EntityMain is IEntityParentable) ((IEntityParentable)EntityMain).OnParentSet += SetDamagedHealth; 
+            Event_SetDamagedHealth(EntityMain, EntityManager.OldestOf(EntityMain, true));
+            if (EntityMain is IEntityParentable) ((IEntityParentable)EntityMain).OnParentSet += Event_SetDamagedHealth; 
         }
 
-        private void SetDamagedHealth(Entity child, Entity parent)
+        private void Event_SetDamagedHealth(Entity child, Entity parent)
         {
             if (DamageParent && parent != null) Damaged = parent.GEC<IAdvancedHealth>();
             if (Damaged == null) Damaged = this;
         }
 
-        private void DeathDestroy(IHealth h)
+        private void Event_DeathDestroy(IHealth h)
         {
             EntityManager.Destroy(EntityMain);
         }
 
-        [SerializeField]
-        private Stat immnunityDuration;
+        [SerializeField, FormerlySerializedAs("immnunityDuration")]
+        private Stat s_ImmnunityDuration;
         /// <summary>
         /// Duration in which the <see cref="Entity"/> is unable to take damage. (Only works if <see cref="UsesImmunity"/> is true)
         /// </summary>
-        public float ImmunityDuration => EntityMain.Stats.CalculatedValue(immnunityDuration);
+        public float ImmunityDuration => EntityMain.Stats.CalculatedValue(s_ImmnunityDuration);
 
-        [SerializeField]
-        private bool usesImmunity;
+        [SerializeField, FormerlySerializedAs("usesImmunity")]
+        private bool s_UsesImmunity;
         /// <summary>
         /// Determines if the <see cref="Entity"/> can use the immunity system.
         /// </summary>
-        public bool UsesImmunity => usesImmunity;
+        public bool UsesImmunity => s_UsesImmunity;
 
-        [SerializeField]
-        private bool DestroyOnDeath;
+        [SerializeField, FormerlySerializedAs("DestroyOnDeath")]
+        private bool s_DestroyOnDeath;
 
         /// <summary>
         /// Is the <see cref="Entity"/> currently immune?
         /// </summary>
         public bool IsImmune { get; set; }
 
-        [SerializeField]
-        private HealthDamage calculator;
+        [SerializeField, FormerlySerializedAs("calculator")]
+        private HealthDamage s_Calculator;
         /// <summary>
         /// The calculator used by this <see cref="Entity"/>. If null on Awake, it will be set to <see cref="DefaultHealthDamage"/> by default.
         /// </summary>
         public IHealthDamage Calculator
         {
-            get => calculator;
-            set => calculator = value is HealthDamage ? (HealthDamage)value : calculator;
+            get => s_Calculator;
+            set => s_Calculator = value is HealthDamage ? (HealthDamage)value : s_Calculator;
         }
 
         /// <summary>
@@ -228,7 +225,7 @@ namespace WarWolfWorks.EntitiesSystem
                     if (Damaged == (IAdvancedHealth)this)
                     {
                         OnDmgHandler?.Invoke(Damaged, damage, Calculator);
-                        OnAnyDamaged?.Invoke((Damaged as EntityHealth) ?? this);
+                        OnAnyDamaged?.Invoke(Damaged as EntityHealth);
                     }
                     if(CurrentHealth <= 0)
                         OnDthHandler?.Invoke(this);
@@ -236,35 +233,61 @@ namespace WarWolfWorks.EntitiesSystem
             }
             catch
             {
-                AdvancedDebug.LogFormat("Couldn't damage {0} as either the damage given was of incorrect type or Caclucator was not set.", 0, EntityMain.Name);
+                AdvancedDebug.LogFormat("Couldn't damage {0} as either the damage given was of incorrect type," +
+                    " an event generated an Exception or Caclucator was not set.", 0, EntityMain.Name);
             }
         }
 
         /// <summary>
         /// Triggers the immunity of this <see cref="Entity"/>. (Works only if <see cref="UsesImmunity"/> is true)
         /// </summary>
-        public void TriggerImmunity(float @for)
+        public async void TriggerImmunity(float @for)
         {
-            if(UsesImmunity && !IsImmune)StartCoroutine(IImmunity(@for));
+            if (UsesImmunity && !IsImmune)
+            {
+                ImmunityTask = Task.Run(() =>
+                {
+                    IsImmune = true;
+                    if (!s_ImmunityEffect)
+                        return;
+
+                    ImmunityEffect.OnTrigger();
+                    s_ImmunityEffect.ImmunityTime = s_ImmunityEffect.ImmunityCountdown = @for;
+                    float timer = @for;
+
+                    while (timer > 0)
+                    {
+                        timer -= Time.deltaTime;
+                        s_ImmunityEffect.ImmunityCountdown = timer;
+                        s_ImmunityEffect.WhileTrigger();
+                    }
+
+                    IsImmune = false;
+
+                    ImmunityEffect?.OnEnd();
+                });
+
+                await ImmunityTask;
+            }
         }
 
-        [SerializeField]
-        private ImmunityEffect immunityEffect;
+        [SerializeField, FormerlySerializedAs("immunityEffect")]
+        private ImmunityEffect s_ImmunityEffect;
         /// <summary>
         /// Effect which will be Invoked when Immunity is triggered.
         /// </summary>
         public IImmunityEffect<EntityHealth> ImmunityEffect
         {
-            get => immunityEffect;
+            get => s_ImmunityEffect;
             set
             {
-                if (immunityEffect.Equals(value))
+                if (s_ImmunityEffect.Equals(value))
                     return;
 
-                immunityEffect = value is ImmunityEffect ? (ImmunityEffect)value : immunityEffect;
+                s_ImmunityEffect = value is ImmunityEffect ? (ImmunityEffect)value : s_ImmunityEffect;
 
-                immunityEffect.internalParent = this;
-                immunityEffect.OnAdded();
+                s_ImmunityEffect.internalParent = this;
+                s_ImmunityEffect.OnAdded();
             }
         }
 
@@ -285,46 +308,22 @@ namespace WarWolfWorks.EntitiesSystem
             }
         }
 
-        private IEnumerator IImmunity(float @for)
-        {
-            IsImmune = true;
-
-            if(!immunityEffect)
-            {
-                StopCoroutine(IImmunity(@for));
-                yield break;
-            }
-
-            ImmunityEffect.OnTrigger();
-
-            immunityEffect.ImmunityTime = immunityEffect.ImmunityCountdown = @for;
-            float timer = @for;
-
-            while(timer > 0)
-            {
-                timer -= Time.deltaTime;
-                immunityEffect.ImmunityCountdown = timer;
-                immunityEffect.WhileTrigger();
-                yield return null;
-            }
-
-            StopImmunityInternal(@for);
-        }
-
-        private void StopImmunityInternal(float @for)
-        {
-            IsImmune = false;
-
-            ImmunityEffect?.OnEnd();
-            StopCoroutine(IImmunity(@for));
-        }
+        /// <summary>
+        /// The current immunity task.
+        /// </summary>
+        private Task ImmunityTask;
 
         /// <summary>
         /// Stops an immunity previously triggered with <see cref="TriggerImmunity(float)"/>.
         /// </summary>
         public void StopImmunity()
         {
-            if (IsImmune) StopImmunityInternal(ImmunityDuration);
+            if (IsImmune)
+            {
+                ImmunityTask.Dispose();
+                ImmunityEffect.OnEnd();
+                IsImmune = false;
+            }
         }
     }
 }

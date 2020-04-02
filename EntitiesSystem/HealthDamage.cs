@@ -6,6 +6,7 @@ namespace WarWolfWorks.EntitiesSystem
     /// <summary>
     /// Base class to use with <see cref="EntityHealth"/>.
     /// </summary>
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public abstract class HealthDamage : ScriptableObject, IHealthDamage
     {
         /// <summary>

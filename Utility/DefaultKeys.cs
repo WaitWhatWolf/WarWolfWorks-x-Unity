@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using static WarWolfWorks.Utility.Hooks.Streaming;
+using static WarWolfWorks.Constants;
 
 [assembly: InternalsVisibleTo("WarWolfWorks.EditorBase")]
 namespace WarWolfWorks.Utility
@@ -51,17 +52,13 @@ namespace WarWolfWorks.Utility
             }
         }
 
-        private static readonly string KeysPath = Path.Combine(Application.streamingAssetsPath.Replace("/", "\\"), "DefaultKeys.kfidk");
-
-        private static readonly string CategoryName = "Keys";
-
         private static Dictionary<string, KeyCode> OptimizedKeys = new Dictionary<string, KeyCode>();
 
         internal static Catalog KeysSaver(string name, string value)
-            => Catalog.Saver(KeysPath, CategoryName, name, value);
+            => Catalog.Saver(SVARNPTH_KEYS, SVARNCN_KEYS, name, value);
 
         internal static Catalog KeysLoader(string name)
-            => Catalog.Loader(KeysPath, CategoryName, name);
+            => Catalog.Loader(SVARNPTH_KEYS, SVARNCN_KEYS, name);
 
         /// <summary>
         /// Is the optimization mode currently on?
@@ -125,7 +122,7 @@ namespace WarWolfWorks.Utility
         /// <returns></returns>
         public static KeyCode GetDatabaseKey(string key)
         {
-            return IsOptimized ? OptimizedKeys[key] : Hooks.Parse<KeyCode>(Load(Catalog.Loader(KeysPath, CategoryName, key)));
+            return IsOptimized ? OptimizedKeys[key] : Hooks.Parse<KeyCode>(Load(Catalog.Loader(SVARNPTH_KEYS, SVARNCN_KEYS, key)));
         }
 
         /// <summary>
@@ -237,7 +234,7 @@ namespace WarWolfWorks.Utility
             }
             else
             {
-                string[] allVariablesFromCategory = LoadAll(Catalog.LoaderFull(KeysPath, CategoryName), true).ToArray();
+                string[] allVariablesFromCategory = LoadAll(Catalog.LoaderFull(SVARNPTH_KEYS, SVARNCN_KEYS), true).ToArray();
                 for (int j = 0; j < allVariablesFromCategory.Length; j++)
                 {
                     list.Add(new WKey(allVariablesFromCategory[j]));
@@ -264,7 +261,7 @@ namespace WarWolfWorks.Utility
         {
             if (!IsOptimized)
             {
-                return !string.IsNullOrEmpty(Load(Catalog.Loader(KeysPath, CategoryName, keyName)));
+                return !string.IsNullOrEmpty(Load(Catalog.Loader(SVARNPTH_KEYS, SVARNCN_KEYS, keyName)));
             }
             return OptimizedKeys.ContainsKey(keyName);
         }
@@ -287,8 +284,8 @@ namespace WarWolfWorks.Utility
             {
                 try
                 {
-                    CreateFolder(KeysPath);
-                    Save(Catalog.Saver(KeysPath, CategoryName, name, value.ToString()));
+                    CreateFolder(SVARNPTH_KEYS);
+                    Save(Catalog.Saver(SVARNPTH_KEYS, SVARNCN_KEYS, name, value.ToString()));
                     Debug.Log($"{name} Key was successfully saved as {value}!");
                 }
                 catch (Exception ex)
@@ -338,7 +335,7 @@ namespace WarWolfWorks.Utility
 
             if (!IsOptimizedCheck())
             {
-                if (!ChangeVariableName(Catalog.Loader(KeysPath, CategoryName, of), to))
+                if (!ChangeVariableName(Catalog.Loader(SVARNPTH_KEYS, SVARNCN_KEYS, of), to))
                     goto FalseReturn;
 
                 AdvancedDebug.Log($"{of}'s name was successfully changed to {to}", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
@@ -358,7 +355,7 @@ namespace WarWolfWorks.Utility
         {
             if (!IsOptimizedCheck())
             {
-                Remove(Catalog.Loader(KeysPath, CategoryName, key));
+                Remove(Catalog.Loader(SVARNPTH_KEYS, SVARNCN_KEYS, key));
             }
         }
 

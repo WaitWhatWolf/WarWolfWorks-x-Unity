@@ -2,18 +2,25 @@
 using UnityEditor;
 using WarWolfWorks.EditorBase.Utility;
 using WarWolfWorks.EntitiesSystem;
-using UnityEngine;
-using System.Linq;
 using System;
+using WarWolfWorks.Attributes;
+using UnityEngine;
 
 namespace WarWolfWorks.EditorBase.EntitiesSystem
 {
+    /// <summary>
+    /// Custom editor for <see cref="Entity"/>. All fields with "s_" or "S_" will be removed if the
+    /// surface class is marked with <see cref="CompleteNoS"/>.
+    /// </summary>
     [CustomEditor(typeof(Entity), true)]
-    public class EntityEditor : Editor
+    public sealed class EntityEditor : Editor
     {
+        private bool RemovesS;
+
         private List<SerializedProperty> Properties;
+        private List<GUIContent> PropertyContents;
+
         private SerializedProperty Name;
-        private SerializedProperty Stats;
 
         private void OnEnable()
         {
@@ -22,11 +29,20 @@ namespace WarWolfWorks.EditorBase.EntitiesSystem
 
         private void UpdateProperties()
         {
-            Properties = EditorHooks.GetAllVisibleProperties(serializedObject, false);
-            Name = Properties.Find(sp => sp.name == "名前");
-            Properties.Remove(Name);
+            try { RemovesS = target.GetType().GetCustomAttributes(typeof(CompleteNoS), true).Length > 0; }
+            catch { RemovesS = false; }
+
+            if (EditorHooks.GetAllVisibleProperties(serializedObject, false, out Properties, out PropertyContents, RemovesS))
+            {
+                Name = Properties[0];
+                Properties.RemoveAt(0);
+                PropertyContents.RemoveAt(0);
+            }
         }
 
+        /// <summary>
+        /// Draws the <see cref="Entity"/>'s custom inspector.
+        /// </summary>
         public override void OnInspectorGUI()
         {
             int count = 0;
@@ -40,7 +56,7 @@ namespace WarWolfWorks.EditorBase.EntitiesSystem
 
                 for (int i = 0; i < Properties.Count; i++)
                 {
-                    bool disp = EditorGUILayout.PropertyField(Properties[i], Properties[i].hasVisibleChildren);
+                    EditorGUILayout.PropertyField(Properties[i], PropertyContents[i], Properties[i].hasVisibleChildren);
                 }
             }
             catch (Exception e)

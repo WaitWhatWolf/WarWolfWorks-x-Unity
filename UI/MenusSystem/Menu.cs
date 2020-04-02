@@ -42,6 +42,12 @@ namespace WarWolfWorks.UI.MenusSystem
         public RectTransform GetHolder() => Holder;
 
         /// <summary>
+        /// Returns a list of all menus inside the scene.
+        /// </summary>
+        /// <returns></returns>
+        public static Menu[] GetAllMenus() => AllMenus.ToArray();
+
+        /// <summary>
         /// Returns a menu of the given T type.
         /// </summary>
         /// <typeparam name="T"></typeparam>

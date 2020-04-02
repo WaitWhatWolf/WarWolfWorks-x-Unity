@@ -54,7 +54,7 @@ namespace WarWolfWorks.Utility
         {
             get
             {
-                if (language == SystemLanguage.English)
+                if (language == SystemLanguage.English || Values == null)
                     return English;
 
                 int index = Array.FindIndex(Values, v => v.Language == language);

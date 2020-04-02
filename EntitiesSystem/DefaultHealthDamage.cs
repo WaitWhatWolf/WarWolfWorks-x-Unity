@@ -6,6 +6,7 @@ namespace WarWolfWorks.EntitiesSystem
     /// Default health damage set on <see cref="EntityHealth"/> when <see cref="EntityHealth.Calculator"/> is null. 
     /// Uses <see cref="float"/> as it's base type.
     /// </summary>
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public class DefaultHealthDamage : HealthDamage
     {
         /// <summary>

@@ -9,6 +9,7 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
     /// <summary>
     /// Core class of the projectile system.
     /// </summary>
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public abstract class Projectile : MonoBehaviour, IEntity, ILockable
     {
         /// <summary>

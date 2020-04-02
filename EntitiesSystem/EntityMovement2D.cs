@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
+using WarWolfWorks.Attributes;
 using WarWolfWorks.Interfaces;
 using static WarWolfWorks.EntitiesSystem.Movement.EntityMovement;
 
@@ -8,6 +10,8 @@ namespace WarWolfWorks.EntitiesSystem.Movement
     /// Base class used for 2D movement of an <see cref="Entity"/>. (Requires a <see cref="Rigidbody2D"/> component) (Inheritable)
     /// </summary>
     [RequireComponent(typeof(Rigidbody2D))]
+    [CompleteNoS]
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public class EntityMovement2D : EntityMovement
     {
         private bool rigidSaved;
@@ -29,13 +33,13 @@ namespace WarWolfWorks.EntitiesSystem.Movement
             }
         }
 
-        [SerializeField]
-        private bool moveParent = true;
+        [SerializeField, FormerlySerializedAs("moveParent")]
+        private bool s_MoveParent = true;
         /// <summary>
         /// If true and this component's <see cref="Entity"/> is <see cref="IEntityParentable"/>,
         /// it will move the parent instead.
         /// </summary>
-        public bool MoveParent { get => moveParent; set => moveParent = value; }
+        public bool MoveParent { get => s_MoveParent; set => s_MoveParent = value; }
 
         /// <summary>
         /// Unity's Awake method called by EntityComponent system.
@@ -59,6 +63,9 @@ namespace WarWolfWorks.EntitiesSystem.Movement
         /// </summary>
         public override void OnFixed()
         {
+            if (Locked)
+                return;
+
             for (int i = 0; i < Velocities.Count; i++)
             {
                 Velocities[i].Time = Mathf.Clamp(Velocities[i].Time - Time.deltaTime, 0, Velocities[i].StartTime);

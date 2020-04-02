@@ -1,14 +1,18 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.EntitiesSystem
 {
     using Interfaces;
+    using WarWolfWorks.Interfaces.UnityMethods;
+
     /// <summary>
     /// Base class for all Components used by an Entity.
     /// </summary>
     [RequireComponent(typeof(Entity))]
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public class EntityComponent : MonoBehaviour, IEntityComponent
     {
         private bool checkedEntity = false;
@@ -61,6 +65,8 @@ namespace WarWolfWorks.EntitiesSystem
             if (!EntityMain.Components.Contains(this)) EntityMain.InternalAddComponent(this);
         }
 
+
+
         public virtual void OnAwake() { }
         public virtual void OnEnabled() { }
         public virtual void OnDisabled() { }
@@ -68,6 +74,14 @@ namespace WarWolfWorks.EntitiesSystem
         public virtual void OnUpdate() { }
         public virtual void OnFixed() { }
         public virtual void OnDestroyed() { }
+
+        void IUpdate.Update() => OnUpdate();
+        void IFixedUpdate.FixedUpdate() => OnFixed();
+        void IOnEnable.OnEnable() => OnEnabled();
+        void IOnDisable.OnDisable() => OnDisabled();
+        void IStart.Start() => OnStart();
+        void IOnDestroy.OnDestroy() => OnDestroyed();
+        void IAwake.Awake() => OnAwake();
 
         /// <summary>
         /// Pointer to <see cref="Hooks.StartCoroutine(MonoBehaviour, IEnumerator, ref bool)"/>.

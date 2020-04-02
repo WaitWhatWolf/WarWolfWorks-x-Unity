@@ -7,6 +7,7 @@ namespace WarWolfWorks.Interfaces
     /// <summary>
     /// The interface used as implementation for <see cref="IStatus"/> handling. (Inherits from <see cref="IEntity"/>)
     /// </summary>
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public interface IStatusApplier : IEntity
     {
         /// <summary>

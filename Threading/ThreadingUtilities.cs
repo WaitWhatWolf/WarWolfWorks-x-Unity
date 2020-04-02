@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 using WarWolfWorks.Utility;
 
@@ -31,8 +30,6 @@ namespace WarWolfWorks.Threading
                 AllActions.Add(action);
             }
         }
-
-        private Action[] PerformedActions = new Action[1000];
 
         private void Update()
         {

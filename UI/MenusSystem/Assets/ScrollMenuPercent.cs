@@ -10,31 +10,29 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
     /// </summary>
     public abstract class ScrollMenuPercent : Menu, IScrollablePercentMenu
     {
-        [SerializeField]
-        private Vector2 minPosition;
-        //[Tooltip("Position at which this menu will go to when Percent is at 1; MinPosition is the starting position.")]
-        [SerializeField]
-        private Vector2 maxPosition;
+        [FormerlySerializedAs("minPosition"), SerializeField]
+        private Vector2 s_MinPosition;
+        [FormerlySerializedAs("maxPosition"), SerializeField]
+        private Vector2 s_MaxPosition;
 
         /// <summary>
         /// Pointer to minimal Position assigned in the inspector.
         /// </summary>
-        public Vector3 MinPosition { get { return minPosition; } set { minPosition = value; } }
+        public Vector3 MinPosition { get { return s_MinPosition; } set { s_MinPosition = value; } }
         /// <summary>
         /// Pointer minimal Position assigned in the inspector.
         /// </summary>
-        public Vector3 MaxPosition { get { return maxPosition; } set { maxPosition = value; } }
+        public Vector3 MaxPosition { get { return s_MaxPosition; } set { s_MaxPosition = value; } }
 
         /// <summary>
         /// UI Rect moved.
         /// </summary>
-        [FormerlySerializedAs("movedUI")]
-        [SerializeField]
-        protected RectTransform scrollHolder;
+        [FormerlySerializedAs("scrollHolder"), SerializeField]
+        protected RectTransform s_ScrollHolder;
         /// <summary>
         /// <see cref="RectTransform"/> which is moved based on <see cref="Percent"/>.
         /// </summary>
-        public RectTransform ScrollHolder => scrollHolder;
+        public RectTransform ScrollHolder => s_ScrollHolder;
 
         /// <summary>
         /// Rect min and max anchores stored in a vector4. Sorted as follows: anchorMin.x, anchorMin.y, anchorMax.x, anchorMax.y.
@@ -44,24 +42,24 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         /// <summary>
         /// Returns current rect size.
         /// </summary>
-        public Vector4 CurrentRectSize => scrollHolder != null ? scrollHolder.GetAnchoredPosition() : Vector4.zero;
+        public Vector4 CurrentRectSize => s_ScrollHolder != null ? s_ScrollHolder.GetAnchoredPosition() : Vector4.zero;
 
-        private float percent;
-        private readonly FloatRange percentRange = new FloatRange(0f, 1f);
+        private float ns_Percent;
+        private readonly FloatRange PercentRange = new FloatRange(0f, 1f);
         /// <summary>
         /// The current percentage of this menu. (Clamped 0-1)
         /// </summary>
         public float Percent
         {
-            get => percent;
+            get => ns_Percent;
             set
             {
-                percent = percentRange.GetClampedValue(value);
-                scrollHolder.SetAnchoredUI(GetFinalAnchor());
+                ns_Percent = PercentRange.GetClampedValue(value);
+                s_ScrollHolder.SetAnchoredUI(GetFinalAnchor());
             }
         }
 
-        private Vector2 PercentPosition => Hooks.Vectors.MiddleMan(minPosition, maxPosition, Percent);
+        private Vector2 PercentPosition => Hooks.Vectors.MiddleMan(s_MinPosition, s_MaxPosition, Percent);
 
         private Vector4 GetFinalAnchor()
         {
@@ -74,7 +72,7 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         }
 
         /// <summary>
-        /// Gets the <see cref="scrollHolder"/>'s size.
+        /// Gets the <see cref="s_ScrollHolder"/>'s size.
         /// </summary>
         protected virtual void Start()
         {

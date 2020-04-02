@@ -1,60 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
+using WarWolfWorks.Attributes;
 
 namespace WarWolfWorks.Utility.Coloring
 {
     /// <summary>
-    /// Color struct used to apply colors to a <see cref="ColorManager"/>.
+    /// Color class used to apply colors to a <see cref="ColorManager"/>.
     /// </summary>
     [System.Serializable]
     public sealed class CMColor : IEquatable<CMColor>
     {
-        [SerializeField]
-        private Color value;
+        [FormerlySerializedAs("value"), NoS, SerializeField]
+        private Color s_Value;
         /// <summary>
         /// The color value this <see cref="CMColor"/> originally applies.
         /// </summary>
         public Color Value
         {
-            get => value;
-            set => this.value = value;
+            get => s_Value;
+            set => this.s_Value = value;
         }
 
-        [SerializeField]
-        private float duration;
+        [FormerlySerializedAs("duration"), NoS, SerializeField]
+        private float s_Duration;
         /// <summary>
-        /// The duration at which this <see cref="CMColor"/> will stay inside a <see cref="ColorManager"/> based on <see cref="ColorBehaviour"/>.
+        /// The duration at which this <see cref="CMColor"/> will stay inside a <see cref="ColorManager"/> based on <see cref="ColorBehavior"/>.
         /// (Serialized as "Duration" inside the inspector)
         /// </summary>
-        public float MaxDuration => duration;
+        public float MaxDuration => s_Duration;
 
         /// <summary>
-        /// The current countdown of this <see cref="CMColor"/>. Used based on <see cref="ColorBehaviour"/>.
+        /// The current countdown of this <see cref="CMColor"/>. Used based on <see cref="ColorBehavior"/>.
         /// </summary>
         public float CurrentDuration { get; set; }
 
-        [SerializeField]
-        private ColorBehaviour behaviour;
+        [FormerlySerializedAs("behaviour"), NoS, SerializeField]
+        private ColorBehavior s_Behavior;
 
         /// <summary>
         /// Determines how this <see cref="CMColor"/>'s countdown behaves.
         /// </summary>
-        public ColorBehaviour Behaviour
+        public ColorBehavior Behavior
         {
-            get => behaviour;
-            set => behaviour = value;
+            get => s_Behavior;
+            set => s_Behavior = value;
         }
         
-        [SerializeField]
-        private ColorApplication application;
+        [FormerlySerializedAs("application"), NoS, SerializeField]
+        private ColorApplication s_Application;
         /// <summary>
         /// Determines how the color is applied to a <see cref="ColorManager"/>.
         /// </summary>
         public ColorApplication Application
         {
-            get => application;
-            set => application = value;
+            get => s_Application;
+            set => s_Application = value;
         }
 
         /// <summary>
@@ -64,20 +66,20 @@ namespace WarWolfWorks.Utility.Coloring
         /// <param name="duration"></param>
         /// <param name="behaviour"></param>
         /// <param name="application"></param>
-        public CMColor(Color color, float duration, ColorBehaviour behaviour, ColorApplication application)
+        public CMColor(Color color, float duration, ColorBehavior behaviour, ColorApplication application)
         {
             Value = color;
-            this.duration = duration;
+            this.s_Duration = duration;
             CurrentDuration = MaxDuration;
-            Behaviour = behaviour;
+            Behavior = behaviour;
             Application = application;
         }
 
         /// <summary>
-        /// The explicit returning of a <see cref="Behaviour"/>.
+        /// The explicit returning of a <see cref="Behavior"/>.
         /// </summary>
         /// <param name="color"></param>
-        public static explicit operator ColorBehaviour(CMColor color) => color.Behaviour;
+        public static explicit operator ColorBehavior(CMColor color) => color.Behavior;
 
         /// <summary>
         /// The explicit returning of a <see cref="Application"/>.
@@ -128,7 +130,7 @@ namespace WarWolfWorks.Utility.Coloring
         {
             return Value.Equals(other.Value) &&
                    MaxDuration == other.MaxDuration &&
-                   Behaviour == other.Behaviour &&
+                   Behavior == other.Behavior &&
                    Application == other.Application;
         }
 
@@ -141,7 +143,7 @@ namespace WarWolfWorks.Utility.Coloring
             var hashCode = 102643408;
             hashCode = hashCode * -1521134295 + EqualityComparer<Color>.Default.GetHashCode(Value);
             hashCode = hashCode * -1521134295 + MaxDuration.GetHashCode();
-            hashCode = hashCode * -1521134295 + Behaviour.GetHashCode();
+            hashCode = hashCode * -1521134295 + Behavior.GetHashCode();
             hashCode = hashCode * -1521134295 + Application.GetHashCode();
             return hashCode;
         }

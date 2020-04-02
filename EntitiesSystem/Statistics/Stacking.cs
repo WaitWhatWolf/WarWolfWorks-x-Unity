@@ -10,6 +10,7 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
     /// <summary>
     /// Base class to use to apply to a <see cref="Stats.Stacking"/>.
     /// </summary>
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public abstract class Stacking : ScriptableObject, IStacking
     {
         /// <summary>

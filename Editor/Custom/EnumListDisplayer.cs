@@ -5,20 +5,23 @@ using UnityEngine;
 using WarWolfWorks.Internal;
 using WarWolfWorks.Utility;
 using static WarWolfWorks.Utility.Hooks.Streaming;
+using static WarWolfWorks.Constants;
 
 namespace WarWolfWorks.EditorBase.Custom
 {
-    public class EnumListDisplayer : EditorWindow
+    /// <summary>
+    /// Use this editor to display an <see cref="Enum"/>'s value in a list fashion.
+    /// </summary>
+    public sealed class EnumListDisplayer : EditorWindow
     {
+        /// <summary>
+        /// Shows a <see cref="EnumListDisplayer"/> menu.
+        /// </summary>
         [MenuItem("WarWolfWorks/Enum Displayer")]
         public static void Enable()
         {
             GetWindow<EnumListDisplayer>("Enum List Displayer").Show();
         }
-
-        private const float RECT_BOTBUTTON_SIZE_Y = 20;
-        private const float RECT_BOTBUTTON_SMALL_SIZE_Y = 14;
-        private const float RECT_BOTBUTTON_SMALL_PADDING_X = 10;
 
         private Type CurrentType = null;
         private string ParsedType = "";
@@ -27,8 +30,17 @@ namespace WarWolfWorks.EditorBase.Custom
 
         private bool ActivatedWindow;
 
+        /// <summary>
+        /// Currently displayed Enum values (Only used for int-type enums)
+        /// </summary>
         public (string[] EnumName, int[] EnumVal) EnumValues;
+        /// <summary>
+        /// Currently displayed Enum values (Only used for short-type enums)
+        /// </summary>
         public (string[] EnumName, short[] EnumVal) EnumValuesShort;
+        /// <summary>
+        /// Currently displayed Enum values (Only used for long-type enums)
+        /// </summary>
         public (string[] EnumName, long[] EnumVal) EnumValuesLong;
 
         private LanguageString LS_Previous = new LanguageString("Previous", ("Poprzedni", SystemLanguage.Polish), ("前に", SystemLanguage.Japanese));
@@ -45,7 +57,7 @@ namespace WarWolfWorks.EditorBase.Custom
 
         private Vector3 ScrollPosition;
 
-        enum IntType : short
+        enum IntType : byte
         {
             int16,
             int32,
@@ -76,7 +88,7 @@ namespace WarWolfWorks.EditorBase.Custom
 
         private void SetEntries()
         {
-            try { PreviousEntries = LoadAll(Catalog.LoaderFull(Settings.SettingsPath, Category), false).ToArray(); }
+            try { PreviousEntries = LoadAll(Catalog.LoaderFull(Path_Settings, Category), false).ToArray(); }
             catch { goto DefaultSetter; }
 
             if (PreviousEntries != null && PreviousEntries.Length > 0)
@@ -105,7 +117,7 @@ namespace WarWolfWorks.EditorBase.Custom
                             Type underlyingType = Enum.GetUnderlyingType(CurrentType);
                             CurrentIntType = underlyingType == typeof(int) ? IntType.int32 :
                                 underlyingType == typeof(short) ? IntType.int16 : IntType.int64;
-                            if(PreviousEntries == null || !PreviousEntries.Contains(ParsedType)) Save(Catalog.Saver(Settings.SettingsPath, Category, $"Entry{PreviousEntries.Length}", ParsedType));
+                            if(PreviousEntries == null || !PreviousEntries.Contains(ParsedType)) Save(Catalog.Saver(Path_Settings, Category, $"Entry{PreviousEntries.Length}", ParsedType));
                             switch (CurrentIntType)
                             {
                                 default:
@@ -134,7 +146,7 @@ namespace WarWolfWorks.EditorBase.Custom
                     }
                     if (GUILayout.Button(LS_Remove))
                     {
-                        Remove(Catalog.Loader(Settings.SettingsPath, Category, PreviousEntries[EntryIndex]));
+                        Remove(Catalog.Loader(Path_Settings, Category, PreviousEntries[EntryIndex]));
                         SetEntries();
                     }
                 }

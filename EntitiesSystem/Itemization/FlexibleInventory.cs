@@ -7,7 +7,8 @@ namespace WarWolfWorks.EntitiesSystem.Itemization
     /// <summary>
     /// Advanced Non-Fixed-Size Inventory for your Non-Fixed-Size Inventory needs.
     /// </summary>
-    public class FlexibleInventory : EntityComponent, IInventory
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
+    public class FlexibleInventory : EntityComponent, IInventory<Item>
     {
         private List<Item> Items = new List<Item>();
         /// <summary>
@@ -85,7 +86,7 @@ namespace WarWolfWorks.EntitiesSystem.Itemization
         /// <returns></returns>
         public Item GetItem(int itemID)
         {
-            return Items.Find(i => i.ID == itemID);
+            return Items.Find(i => i.GetID() == itemID);
         }
 
         /// <summary>

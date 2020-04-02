@@ -7,6 +7,7 @@ namespace WarWolfWorks.EntitiesSystem.Projectiles
     /// <summary>
     /// 3D version of <see cref="Projectile"/>.
     /// </summary>
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public class Projectile3D : Projectile
     {
         /// <summary>

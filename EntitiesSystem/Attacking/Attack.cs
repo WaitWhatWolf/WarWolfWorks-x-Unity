@@ -12,6 +12,8 @@ namespace WarWolfWorks.EntitiesSystem.Attacking
     /// <summary>
     /// Base scriptable object to use with the <see cref="Attacking.EntityAttack"/> component.
     /// </summary>
+    [CompleteNoS]
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public abstract class Attack : ScriptableObject, IEntity
     {
         /// <summary>
@@ -41,79 +43,73 @@ namespace WarWolfWorks.EntitiesSystem.Attacking
         /// </summary>
         public bool IsInitiated { get => isInitiated; private set => isInitiated = value; }
 
-        [FormerlySerializedAs("Name")]
-        [Rename("Name")]
-        [SerializeField]
-        private string 名前;
+        [FormerlySerializedAs("Name"), FormerlySerializedAs("名前"), SerializeField]
+        private string s_Name;
         /// <summary>
         /// Name given to this attack through the inspector.
         /// </summary>
-        public string Name => 名前;
+        public string Name => s_Name;
 
-        [SerializeField]
-        [TextArea]
-        private string attackDescription;
+        [FormerlySerializedAs("attackDescription"), SerializeField, TextArea]
+        private string s_AttackDescription;
         /// <summary>
         /// The description of the Attack, serialized as "Attack Description" in the inspector.
         /// </summary>
-        public string Description => attackDescription;
+        public string Description => s_AttackDescription;
 
         /// <summary>
         /// Uncalculated damage. (overridable through <see cref="Damage"/>)
         /// </summary>
-        [SerializeField]
-        [AttackStat("Damage")]
-        protected Stat damage;
+        [FormerlySerializedAs("damage"), SerializeField, AttackStat("Damage")]
+        protected Stat s_Damage;
         /// <summary>
         /// The calculated damage of the attack. (overridable)
         /// </summary>
-        public virtual float Damage => EntityMain.Stats.CalculatedValue(damage);
+        public virtual float Damage => EntityMain.Stats.CalculatedValue(s_Damage);
 
         /// <summary>
         /// Uncalculated attack speed.
         /// </summary>
-        [SerializeField]
-        [AttackStat("Fire Rate (RPM)")]
-        protected Stat attackSpeed;
+        [FormerlySerializedAs("attackSpeed"), SerializeField, AttackStat("Fire Rate (RPM)")]
+        protected Stat s_AttackSpeed;
         /// <summary>
         /// Rate at which Attack.Trigger() can be called. (Calculated as 60 / AttackSpeed for an RPM-like functionality).
         /// </summary>
-        public virtual float AttackSpeed => EntityMain.Stats.CalculatedValue(attackSpeed);
+        public virtual float AttackSpeed => EntityMain.Stats.CalculatedValue(s_AttackSpeed);
 
         /// <summary>
         /// Uncalculated magazine size.
         /// </summary>
-        [SerializeField]
-        [AttackStat("Magazine Size")]
-        protected Stat magazineSize;
+        [FormerlySerializedAs("magazineSize"), SerializeField, AttackStat("Magazine Size")]
+        protected Stat s_MagazineSize;
         /// <summary>
         /// Calculated maximum capacity of the attack's magazine.
         /// </summary>
-        public virtual int MagazineSize => (int)EntityMain.Stats.CalculatedValue(magazineSize);
+        public virtual int MagazineSize => (int)EntityMain.Stats.CalculatedValue(s_MagazineSize);
 
-        [SerializeField]
-        private bool infiniteAmmo;
+        [FormerlySerializedAs("infiniteAmmo"), SerializeField]
+        private bool s_InfiniteAmmo;
         /// <summary>
         /// If true, MagazineSize and ReloadSpeed will be ignored and all shots will not consume any ammunition.
         /// </summary>
-        public bool InfiniteAmmo => infiniteAmmo;
+        public bool InfiniteAmmo => s_InfiniteAmmo;
         /// <summary>
         /// Sets <see cref="InfiniteAmmo"/> to given value.
         /// </summary>
         /// <param name="to"></param>
         public void SetInfiniteAmmo(bool to)
         {
-            infiniteAmmo = to;
+            s_InfiniteAmmo = to;
         }
 
         /// <summary>
         /// Used by <see cref="CurrentMagazine"/>.
         /// </summary>
-        protected int currentMagazine;
+        protected int ns_currentMagazine;
         /// <summary>
         /// How many "bullets" are currently in the magazine.
         /// </summary>
-        public virtual int CurrentMagazine { get => currentMagazine; protected set => currentMagazine = value; }
+        public virtual int CurrentMagazine { get => ns_currentMagazine; protected set => ns_currentMagazine = value; }
 
         /// <summary>
         /// The ammo consumption of the attack per <see cref="Trigger"/>. (1 by default)
@@ -123,20 +119,19 @@ namespace WarWolfWorks.EntitiesSystem.Attacking
         /// <summary>
         /// Uncalculated reload speed.
         /// </summary>
-        [SerializeField]
-        [AttackStat("Reload Speed")]
-        protected Stat reloadSpeed;
+        [FormerlySerializedAs("reloadSpeed"), SerializeField, AttackStat("Reload Speed")]
+        protected Stat s_ReloadSpeed;
         /// <summary>
         /// Calculated speed at which <see cref="Reload()"/> is invoked.
         /// The lower this value is the faster it will reload.
         /// </summary>
-        public virtual float ReloadSpeed => Mathf.Clamp(EntityMain.Stats.CalculatedValue(reloadSpeed), 0, float.MaxValue);
-        [SerializeField]
-        private Condition defaultAttackCondition;
+        public virtual float ReloadSpeed => Mathf.Clamp(EntityMain.Stats.CalculatedValue(s_ReloadSpeed), 0, float.MaxValue);
+        [FormerlySerializedAs("defaultAttackCondition"), SerializeField]
+        private Condition s_DefaultAttackCondition;
         /// <summary>
         /// The default attack condition which is set when an attack group inside <see cref="EntityAttack"/> is not set.
         /// </summary>
-        public Condition DefaultAttackCondition => defaultAttackCondition;
+        public Condition DefaultAttackCondition => s_DefaultAttackCondition;
 
         internal void Initiate(Entity entity)
         {
@@ -147,7 +142,7 @@ namespace WarWolfWorks.EntitiesSystem.Attacking
             EntityMain = entity;
             EntityAttack = entity.GetEntityComponent<EntityAttack>();
 
-            currentMagazine = MagazineSize;
+            ns_currentMagazine = MagazineSize;
             CancelReload(true);
 
             IsInitiated = true;

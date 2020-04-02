@@ -4,6 +4,7 @@ using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using WarWolfWorks.Internal;
 using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.UI
@@ -140,7 +141,7 @@ namespace WarWolfWorks.UI
             MouseText.rectTransform.SetAnchoredUI(0, 0, 1, 1);
 
             MouseGUIHolder.gameObject.AddComponent<MonoUGUI>().OnGUIevent += SetMouseImagePosition;
-            if (!Hooks.UtilityCanvas) MouseSetter.Start();
+            if (!Settings.UtilityCanvas) MouseSetter.Start();
             else InitiateMouseHUD();
         }
 
@@ -148,9 +149,9 @@ namespace WarWolfWorks.UI
         {
             while (true)
             {
-                if (Hooks.UtilityCanvas)
+                if (Settings.UtilityCanvas)
                 {
-                    MouseGUIHolder.transform.SetParent(Hooks.UtilityCanvas.transform);
+                    MouseGUIHolder.transform.SetParent(Settings.UtilityCanvas.transform);
                     MouseGUIHolder.transform.localScale = Vector3.one;
                     MouseGUIHolder.transform.localPosition = Vector3.zero;
                     RefreshMouseHUD();

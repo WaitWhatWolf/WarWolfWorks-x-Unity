@@ -1,21 +1,16 @@
 ﻿using UnityEngine;
-using WarWolfWorks.Interfaces;
-using WarWolfWorks.Utility.Getting;
 
 namespace WarWolfWorks.Utility
 {
     /// <summary>
     /// Camera Manager for 2D use. Can be explicitly converted to FollowBehaviour, TransformLimiter and Camera.
-    /// Uses <see cref="IGetter{T}"/> for singleton-like behaviour; See <see cref="Getter{T}.Draw"/>
     /// </summary>
     [RequireComponent(typeof(FollowBehaviour), typeof(TransformLimiter), typeof(Camera))]
-    public sealed class CameraManager2D : MonoBehaviour, IGetter<CameraManager2D>
+    public sealed class CameraManager2D : MonoBehaviour
     {
         internal FollowBehaviour FollowBehaviour;
         internal TransformLimiter TransformLimiter;
         internal Camera Camera;
-
-        CameraManager2D IGetter<CameraManager2D>.Drawer => this;
 
         /// <summary>
         /// Default size of the camera.
@@ -40,7 +35,6 @@ namespace WarWolfWorks.Utility
 
         private void Awake()
         {
-            Getter<CameraManager2D>.AddDraw(this);
             FollowBehaviour = GetComponent<FollowBehaviour>();
             TransformLimiter = GetComponent<TransformLimiter>();
             TransformLimiter.Is2D = true;

@@ -12,6 +12,7 @@ namespace WarWolfWorks.EntitiesSystem
     /// <summary>
     /// Utility class based around Entities.
     /// </summary>
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public sealed class EntityManager : Singleton<EntityManager>
     {
         #region Internal Init

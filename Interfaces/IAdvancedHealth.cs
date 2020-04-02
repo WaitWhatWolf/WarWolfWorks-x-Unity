@@ -16,10 +16,6 @@ namespace WarWolfWorks.Interfaces
         /// </summary>
         float ImmunityDuration { get; }
         /// <summary>
-        /// Defense applies to Damage calculation.
-        /// </summary>
-        float Defense { get; }
-        /// <summary>
         /// Determines if this instance implements Immunity.
         /// </summary>
         bool UsesImmunity { get; }

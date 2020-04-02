@@ -5,6 +5,7 @@ namespace WarWolfWorks.EntitiesSystem.Statusing
     /// <summary>
     /// Determines how the <see cref="IStatus"/> is handled when a <see cref="IStatus"/> of the same type was found inside a <see cref="IStatus"/>.
     /// </summary>
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public enum StatusOverlapType
     {
         /// <summary>

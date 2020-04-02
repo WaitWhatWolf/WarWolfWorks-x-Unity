@@ -4,20 +4,22 @@ using UnityEngine;
 using System.Linq;
 using WarWolfWorks.Interfaces;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 namespace WarWolfWorks.EntitiesSystem.Itemization
 {
     /// <summary>
     /// Advanced Fixed-Size Inventory for your Fixed-Size Inventory needs.
     /// </summary>
-	public class Inventory : EntityComponent, IInventory
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
+    public class Inventory : EntityComponent, IInventory<Item>
 	{
-        [SerializeField]
-        private int inventorySize;
+        [FormerlySerializedAs("inventorySize"), SerializeField]
+        private int s_InventorySize;
         /// <summary>
         /// The max capacity of the inventory. (Settable only through the inspector)
         /// </summary>
-        public int InventorySize => inventorySize;
+        public int InventorySize => s_InventorySize;
 
         private Item[] Items;
         /// <summary>
@@ -64,7 +66,7 @@ namespace WarWolfWorks.EntitiesSystem.Itemization
         /// </summary>
         /// <param name="itemID"></param>
         /// <returns></returns>
-        public Item GetItem(int itemID) => Items.Find(it => it.ID == itemID);
+        public Item GetItem(int itemID) => Items.Find(it => it.GetID() == itemID);
         /// <summary>
         /// Gets an Item through custom predicate.
         /// </summary>
@@ -80,13 +82,21 @@ namespace WarWolfWorks.EntitiesSystem.Itemization
         public int GetItemIndex(Item item) => Items.FindIndex(it => item == it);
 
         /// <summary>
-        /// Triggers when an item is added to the inventory.
+        /// Invoked when an item is successfully added to the inventory.
         /// </summary>
         public event Action<Item> OnItemAdded;
         /// <summary>
-        /// Triggers when an item is removed from the inventory. Int indicates it's index in the inventory.
+        /// Invoked when an item is successfully removed from the inventory. Int indicates it's index in the inventory.
         /// </summary>
         public event Action<Item, int> OnItemRemoved;
+        /*/// <summary>
+        /// Invoked when an item's stacks are successfully incremented; Int indicates stacks before increment.
+        /// </summary>
+        public event Action<Item, int> OnItemStacksAdded;
+        /// <summary>
+        /// Invoked when an item's stacks are successfully decremented; Int indicates stacks before decrement.
+        /// </summary>
+        public event Action<Item, int> OnItemStacksRemoved;*/
 
         /// <summary>
         /// Returns the item under specified index.
@@ -114,7 +124,7 @@ namespace WarWolfWorks.EntitiesSystem.Itemization
         }
 
         /// <summary>
-        /// Call this instead of <see cref="OnAwake"/>.
+        /// Call this instead of <see cref="Awake"/>.
         /// </summary>
         protected virtual void PostAwake() { }
 
@@ -166,9 +176,11 @@ namespace WarWolfWorks.EntitiesSystem.Itemization
         /// <returns></returns>
         public bool AddItem(Item item, int toIndex, out Item replacedItem)
         {
-            replacedItem = null;
-            if (toIndex >= Items.Length || item == null)
-                return replacedItem;
+            if (toIndex < 0 || toIndex >= Items.Length || item == null)
+            {
+                replacedItem = null;
+                return false;
+            }
 
             replacedItem = Items[toIndex];
             Items[toIndex] = item;
@@ -243,5 +255,5 @@ namespace WarWolfWorks.EntitiesSystem.Itemization
             item = toRemove;
             return true;
         }
-	}
+    }
 }

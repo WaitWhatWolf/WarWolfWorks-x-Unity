@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using WarWolfWorks.Attributes;
-using WarWolfWorks.EntitiesSystem.Statistics;
 using WarWolfWorks.Interfaces;
-using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.EditorBase.PropertyDrawers
 {
@@ -26,7 +24,7 @@ namespace WarWolfWorks.EditorBase.PropertyDrawers
         {
             GUIStart(ref position);
             EditorGUI.BeginProperty(position, label, property);
-            GUIDraw(ref position, property);
+            GUIDraw(ref position, property, label);
             EditorGUI.EndProperty();
             GUIEnd();
         }
@@ -47,9 +45,9 @@ namespace WarWolfWorks.EditorBase.PropertyDrawers
             ApplyFinalHeights();
         }
 
-        protected virtual void GUIDraw(ref Rect position, SerializedProperty property)
+        protected virtual void GUIDraw(ref Rect position, SerializedProperty property, GUIContent label)
         {
-            DrawValue(position, property.FindPropertyRelative("value"), position.x, $"{property.displayName} Value", out _);
+            DrawValue(position, property.FindPropertyRelative("value"), position.x, $"{label.text} Value", out _);
 
             AsEnumStatAttribute enumAttribute = null;
 
@@ -59,16 +57,26 @@ namespace WarWolfWorks.EditorBase.PropertyDrawers
             }
             catch { }
 
-            if (enumAttribute != null)
+            Type stackingAttribute = enumAttribute?.StackingType ?? WarWolfWorks.Internal.Settings.DefaultStackingType;
+            Type affectionsAttribute = enumAttribute?.AffectionType ?? WarWolfWorks.Internal.Settings.DefaultAffectionsType;
+
+            if (stackingAttribute !=  null)
             {
-                DrawValueAsEnum(position, enumAttribute.StackingType, property.FindPropertyRelative("stacking"),
+                DrawValueAsEnum(position, stackingAttribute, property.FindPropertyRelative("stacking"),
                     position.x + FinalWidth(position), "Stacking", out _);
-                DrawAffectionsAsEnum(position, enumAttribute.AffectionType, property.FindPropertyRelative("affections"),
-                    position.x + FinalWidth(position) * 2);
             }
             else
             {
                 DrawValue(position, property.FindPropertyRelative("stacking"), position.x + FinalWidth(position), "Stacking", out _);
+            }
+
+            if (affectionsAttribute != null)
+            {
+                DrawAffectionsAsEnum(position, affectionsAttribute, property.FindPropertyRelative("affections"),
+                    position.x + FinalWidth(position) * 2);
+            }
+            else
+            {
                 DrawAffections(position, property.FindPropertyRelative("affections"), position.x + FinalWidth(position) * 2);
             }
         }

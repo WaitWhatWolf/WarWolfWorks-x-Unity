@@ -1,4 +1,5 @@
 ﻿using WarWolfWorks.EntitiesSystem;
+using WarWolfWorks.Interfaces.UnityMethods;
 
 namespace WarWolfWorks.Interfaces
 {
@@ -8,7 +9,8 @@ namespace WarWolfWorks.Interfaces
     /// an <see cref="Entity"/> through <see cref="Entity.InternalAddComponent(IEntityComponent)"/>
     /// when the component is created/instantiated.
     /// </summary>
-    public interface IEntityComponent : IEntity, ICoroutinable, IAwake, IStart, IEnableDisable, IUpdate, IFixedUpdate, IDestroy
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
+    public interface IEntityComponent : IEntity, ICoroutinable, IAwake, IStart, IOnEnableDisable, IUpdate, IFixedUpdate, IOnDestroy
     {
         
     }

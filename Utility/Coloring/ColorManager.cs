@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using WarWolfWorks.Interfaces;
 
 namespace WarWolfWorks.Utility.Coloring
@@ -13,15 +14,15 @@ namespace WarWolfWorks.Utility.Coloring
     {
         private const int MaxLayers = 8;
 
-        [SerializeField]
-        private Color baseColor;
+        [FormerlySerializedAs("baseColor"), SerializeField]
+        private Color s_BaseColor;
         /// <summary>
         /// The base color to apply.
         /// </summary>
         public Color BaseColor
         {
-            get => baseColor;
-            set => baseColor = value;
+            get => s_BaseColor;
+            set => s_BaseColor = value;
         }
 
         private Dictionary<int, List<CMColor>> Colors = new Dictionary<int, List<CMColor>>(MaxLayers);
@@ -72,12 +73,12 @@ namespace WarWolfWorks.Utility.Coloring
                     }
                     for (int j = 0; j < Colors[i].Count; j++)
                     {
-                        ColorBehaviour beh = (ColorBehaviour)Colors[i][j];
-                        if (beh == ColorBehaviour.NoDurationCountdown)
+                        ColorBehavior beh = (ColorBehavior)Colors[i][j];
+                        if (beh == ColorBehavior.NoDurationCountdown)
                             continue;
 
                         Colors[i][j].CurrentDuration -= Time.deltaTime;//Mathf.Clamp(Colors[i][j].CurrentDuration - Time.deltaTime, 0, Colors[i][j].CurrentDuration);
-                        if (Colors[i][j].CurrentDuration <= 0 && beh == ColorBehaviour.RemoveOnDurationEnd)
+                        if (Colors[i][j].CurrentDuration <= 0 && beh == ColorBehavior.RemoveOnDurationEnd)
                         {
                             Colors[i].Remove(Colors[i][j]);
                         }

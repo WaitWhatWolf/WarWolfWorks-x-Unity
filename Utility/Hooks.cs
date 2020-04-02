@@ -2080,7 +2080,8 @@ namespace WarWolfWorks.Utility
             /// <param name="size"></param>
             /// <param name="position"></param>
             /// <returns></returns>
-            public static bool IsInsideBounds(Vector3 position, Vector3 center, Vector3 size)
+            [Obsolete]
+            public static bool IsInsideBoundsOld(Vector3 position, Vector3 center, Vector3 size)
             {
                 float minX = center.x - size.x, maxX = center.x + size.x;
                 float minY = center.y - size.y, maxY = center.y + size.y;
@@ -2089,6 +2090,22 @@ namespace WarWolfWorks.Utility
                 return position.x > minX && position.x < maxX &&
                     position.y > minY && position.y < maxY &&
                     position.z > minZ && position.z < maxZ;
+            }
+
+            /// <summary>
+            /// Returns true if position is within size from center. 
+            /// </summary>
+            /// <param name="position"></param>
+            /// <param name="center"></param>
+            /// <param name="size"></param>
+            /// <returns></returns>
+            public static bool IsInsideBounds(Vector3 position, Vector3 center, Vector3 size)
+            {
+                Vector3 compared = position - center;
+
+                return compared.x > -size.x && compared.x < size.x
+                    && compared.y > -size.y && compared.y < size.y
+                    && compared.z > -size.z && compared.x < size.z;
             }
 
             /// <summary>
@@ -2325,7 +2342,7 @@ namespace WarWolfWorks.Utility
             {
                 int count = from.Count();
                 if (amount > count)
-                    throw new WWWException("Cannot use GetClosestToPosition when collection given is lower in size than amount requested. Aborting");
+                    throw new Exception("Cannot use GetClosestToPosition when collection given is lower in size than amount requested. Aborting");
                 else if (amount == count)
                 {
                     AdvancedDebug.LogWarning("Using GetClosestToPosition with amount equal to the collection size is pointless. Returning original collection...", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
@@ -2357,7 +2374,7 @@ namespace WarWolfWorks.Utility
             {
                 int count = from.Count();
                 if (amount > count)
-                    throw new WWWException("Cannot use GetFurthestFromPosition when collection given is lower in size than amount requested. Aborting");
+                    throw new Exception("Cannot use GetFurthestFromPosition when collection given is lower in size than amount requested. Aborting");
                 else if (amount == count)
                 {
                     AdvancedDebug.LogWarning("Using GetFurthestFromPosition with amount equal to the collection size is pointless. Returning original collection...", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
@@ -2764,7 +2781,7 @@ namespace WarWolfWorks.Utility
                 float num = value;
                 if (min >= max)
                 {
-                    throw new WWWException("Cannot use Utilities.ClampRounded if the minimal value is equal or higher than the maximal value.");
+                    throw new Exception("Cannot use Utilities.ClampRounded if the minimal value is equal or higher than the maximal value.");
                 }
                 while (num > max)
                 {
@@ -2788,7 +2805,7 @@ namespace WarWolfWorks.Utility
                 float num = value;
                 if (range.Min >= range.Max)
                 {
-                    throw new WWWException("Cannot use Utilities.ClampRounded if the minimal value is equal or higher than the maximal value.");
+                    throw new Exception("Cannot use Utilities.ClampRounded if the minimal value is equal or higher than the maximal value.");
                 }
                 while (num > range.Max)
                 {
@@ -2814,7 +2831,7 @@ namespace WarWolfWorks.Utility
                 int i = value;
                 if (min >= max)
                 {
-                    throw new WWWException("Cannot use Utilities.ClampRounded if the minimal value is equal or higher than the maximal value.");
+                    throw new Exception("Cannot use Utilities.ClampRounded if the minimal value is equal or higher than the maximal value.");
                 }
                 while (i > max || i < min)
                 {
@@ -2844,7 +2861,7 @@ namespace WarWolfWorks.Utility
                 int i = value;
                 if (range.Min >= range.Max)
                 {
-                    throw new WWWException("Cannot use Utilities.ClampRounded if the minimal value is equal or higher than the maximal value.");
+                    throw new Exception("Cannot use Utilities.ClampRounded if the minimal value is equal or higher than the maximal value.");
                 }
                 while (i > range.Max || i < range.Min)
                 {
@@ -3359,6 +3376,16 @@ namespace WarWolfWorks.Utility
         public static class Text
         {
             /// <summary>
+            /// A regex expression used to match a given string as an acceptable interface name. (Used for files, as .cs is also counted as true)
+            /// </summary>
+            public static readonly Regex Is_InterfaceFile_Name = new Regex("^I[A-Z].+$");
+            
+            /// <summary>
+            /// A regex expression used to see if a given string is an acceptable interface name. (Used for full names only, .cs is counted as invalid)
+            /// </summary>
+            public static readonly Regex Is_Interface_Name = new Regex("^I[A-Z][a-zA-Z]+$");
+
+            /// <summary>
             /// Used to tag a string section to start a rainbow text.
             /// </summary>
             public const string RainbowTextStarter = "(Color=Rainbow)";
@@ -3512,6 +3539,18 @@ namespace WarWolfWorks.Utility
         /// </summary>
         public static class Colors
         {
+            /// <summary>
+            /// Returns the Vector4.MoveTowards equivalent for colors.
+            /// </summary>
+            /// <param name="point"></param>
+            /// <param name="destination"></param>
+            /// <param name="speed"></param>
+            /// <returns></returns>
+            public static Color MoveTowards(Color point, Color destination, float speed)
+            {
+                return Vector4.MoveTowards(point, destination, speed);
+            }
+
             /// <summary>
             /// Returns the original color with it's values being put into negatives. (If a value is negative, it will be put back to positive)
             /// </summary>
@@ -4526,7 +4565,7 @@ namespace WarWolfWorks.Utility
                 }
             }
 
-            throw new WWWException("Not on main thread!");
+            throw new Exception("Not on main thread!");
         }
 
 #if WWWREG
@@ -4554,39 +4593,6 @@ namespace WarWolfWorks.Utility
         return RegistryFromPath(RegKeyPath, CategorySearch)?.GetValueNames() ?? null;
     }
 #endif
-
-        private static Canvas utilCanvas = null;
-        /// <summary>
-        /// Canvas which is created under the name UtilitiesCanvas if no canvas was present on the scene.
-        /// </summary>
-        internal static Canvas UtilityCanvas
-        {
-            get
-            {
-                if (!utilCanvas)
-                {
-                    switch(Settings.GetUtilityCanvasType())
-                    {
-                        default:
-                            utilCanvas = UnityEngine.Object.FindObjectOfType<Canvas>();
-                            break;
-                        case Settings.UtilityCanvasType.PREFABBED:
-                            utilCanvas = UnityEngine.Object.Instantiate(Resources.Load<GameObject>(Settings.GetUtilityCanvasResourcesPath())).GetComponent<Canvas>();
-                            break;
-                        case Settings.UtilityCanvasType.BY_NAME_IN_SCENE:
-                            utilCanvas = GameObject.Find(Settings.GetUtilityCanvasNameLoad())?.GetComponent<Canvas>();
-                            break;
-                        case Settings.UtilityCanvasType.INSTANTIATE_NEW:
-                            utilCanvas = new GameObject(Settings.CanvasDefaultName).AddComponent<Canvas>();
-                            utilCanvas.gameObject.AddComponent<CanvasScaler>();
-                            utilCanvas.gameObject.AddComponent<GraphicRaycaster>();
-                            break;
-                    }
-                }
-
-                return utilCanvas;
-            }
-        }
 
         /// <summary>
         /// Equivalent to <see cref="float.Parse(string, IFormatProvider)"/> where <see cref="IFormatProvider"/>

@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.IO;
+using WarWolfWorks.Utility;
+using System.Text.RegularExpressions;
 
 namespace WarWolfWorks.EditorBase.Internal
 {
     internal sealed class ScriptKeywordProcessor : UnityEditor.AssetModificationProcessor
     {
+
         public static void OnWillCreateAsset(string path)
         {
             path = path.Replace(".meta", "");
@@ -24,11 +27,17 @@ namespace WarWolfWorks.EditorBase.Internal
                 return;
 
             string fileContent = File.ReadAllText(path);
-            fileContent = fileContent.Replace("#NAMESPACE#", Application.productName);
 
-            string nameCut = originalPath.Substring(originalPath.LastIndexOf('/'), 3);
-            bool isInterface = nameCut[1] == 'I' && nameCut[2] == char.ToUpper(nameCut[2]);
+            string nameCut = originalPath.Substring(originalPath.LastIndexOf('/') + 1); // Retrieves the name of the file.
+
+            bool isInterface = Hooks.Text.Is_InterfaceFile_Name.IsMatch(nameCut); //Checks if the file is an iterface
             fileContent = fileContent.Replace("#SCRIPTTYPE#", isInterface ? "interface" : "class");
+
+            string @namespace = Application.productName.Replace(' ', '_');
+
+            fileContent = fileContent.Replace("using static #NAMESPACE#", "using static " + @namespace);
+            string NAMESPACEReplace = isInterface ? @namespace + ".Interfaces" : @namespace;
+            fileContent = fileContent.Replace("#NAMESPACE#", NAMESPACEReplace);
 
             if (isInterface)
                 fileContent = fileContent.Replace(" : MonoBehaviour", string.Empty);

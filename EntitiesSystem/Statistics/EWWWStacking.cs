@@ -3,6 +3,7 @@
     /// <summary>
     /// Enum value depicting <see cref="WWWStacking"/>'s stacking values. Useful when used with Editor's Enum List Displayer.
     /// </summary>
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public enum EWWWStacking
     {
         /// <summary>

@@ -11,7 +11,7 @@ namespace WarWolfWorks.UI
     /// <summary>
     /// The manager class of the markers system.
     /// </summary>
-    public class GUIViewport : Menu, IParentInitiatable<Camera>
+    public class GUIViewport : Menu, IParentInitiatable<Camera>, IDeinitiatable
     {
         /// <summary>
         /// Used with <see cref="GUIViewport"/> to display a <see cref="Graphic"/> on screen through ViewportPoint.
@@ -260,5 +260,18 @@ namespace WarWolfWorks.UI
             return true;
         }
 
+        /// <summary>
+        /// Deinitiates this <see cref="GUIViewport"/>.
+        /// </summary>
+        /// <returns></returns>
+        public bool Deinit()
+        {
+            if (!Initiated)
+                return false;
+
+            Initiated = false;
+            Parent = null;
+            return true;
+        }
     }
 }

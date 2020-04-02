@@ -6,6 +6,7 @@ namespace WarWolfWorks.Interfaces
     /// <summary>
     /// Interface used for parent-like behaviour for entities and their components.
     /// </summary>
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public interface IEntityParentable
     {
         /// <summary>

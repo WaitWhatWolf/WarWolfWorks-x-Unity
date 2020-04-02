@@ -10,6 +10,7 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
     /// Stat which uses <see cref="LevelFloat"/> as value.
     /// </summary>
     [Serializable]
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public sealed class LevelStat : IStat, IEquatable<Stat>
     {
         [SerializeField]

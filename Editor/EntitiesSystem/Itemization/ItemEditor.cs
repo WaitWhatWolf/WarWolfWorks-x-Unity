@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
+using WarWolfWorks.Attributes;
 using WarWolfWorks.EditorBase.Utility;
 using WarWolfWorks.EntitiesSystem.Itemization;
 
@@ -26,6 +27,8 @@ namespace WarWolfWorks.EditorBase.EntitiesSystem.Itemization
         private GUIContent guic_Sprite = new GUIContent("Sprite");
 
         private List<SerializedProperty> Properties;
+        private List<GUIContent> PropertyContents;
+        private bool RemovesS;
 
         private bool IsInResources = true;
 
@@ -45,7 +48,7 @@ namespace WarWolfWorks.EditorBase.EntitiesSystem.Itemization
                 else
                     for(int i = 0; i < items.Length; i++)
                     {
-                        if (Array.Exists(items, itm => itm.ID == i))
+                        if (Array.Exists(items, itm => itm.GetID() == i))
                             continue;
 
                         sp_ID.intValue = i;
@@ -55,8 +58,11 @@ namespace WarWolfWorks.EditorBase.EntitiesSystem.Itemization
                 serializedObject.ApplyModifiedProperties();
             }
 
-            Properties = EditorHooks.GetAllVisibleProperties(serializedObject, false);
-            Properties = Properties.GetRange(3, Properties.Count - 3);
+            try { RemovesS = target.GetType().GetCustomAttributes(typeof(CompleteNoS), true).Length > 0; }
+            catch { RemovesS = false; }
+            EditorHooks.GetAllVisibleProperties(serializedObject, false, out Properties, out PropertyContents, RemovesS);
+            Properties.RemoveRange(0, 3);
+            PropertyContents.RemoveRange(0, 3);
         }
 
         /// <summary>
@@ -64,6 +70,8 @@ namespace WarWolfWorks.EditorBase.EntitiesSystem.Itemization
         /// </summary>
         public override void OnInspectorGUI()
         {
+            serializedObject.Update();
+
             if(!IsInResources)
             {
                 EditorGUILayout.HelpBox("This item is not inside a resources folder; This is not allowed.", MessageType.Error);
@@ -72,7 +80,7 @@ namespace WarWolfWorks.EditorBase.EntitiesSystem.Itemization
             #region Name and ID
             Rect nameRect = EditorGUILayout.GetControlRect();
             float idxMax = nameRect.xMax;
-            nameRect.width /= Preferences.EDITOR_ITEM_NAME_WIDTH_DIV;
+            nameRect.width /= Constants.EVARV_ITEM_NAME_WIDTH_DIV;
             EditorGUI.PropertyField(nameRect, sp_Name, guic_Name);
 
             nameRect.xMin = nameRect.xMax;
@@ -86,11 +94,14 @@ namespace WarWolfWorks.EditorBase.EntitiesSystem.Itemization
             EditorGUILayout.PropertyField(sp_Sprite, guic_Sprite);
 
             EditorHooks.SlickSeparator();
+            EditorHooks.SlickSeparator();
 
-            foreach(SerializedProperty sp in Properties)
+            for(int i = 0; i < Properties.Count; i++)
             {
-                EditorGUILayout.PropertyField(sp);
+                EditorGUILayout.PropertyField(Properties[i], PropertyContents[i], Properties[i].hasVisibleChildren);
             }
+
+            serializedObject.ApplyModifiedProperties();
         }
     }
 }

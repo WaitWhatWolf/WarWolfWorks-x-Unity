@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 using WarWolfWorks.Interfaces;
-using WarWolfWorks.Utility;
 using System;
+using WarWolfWorks.Attributes;
 
 namespace WarWolfWorks.Utility
 {
     /// <summary>
     /// Utility component for rotation.
     /// </summary>
+    [CompleteNoS]
 	public class Rotation : MonoBehaviour, IRotation, ILockable
 	{
         private Quaternion RotationToApply;
@@ -28,11 +29,11 @@ namespace WarWolfWorks.Utility
         /// Determines the base rotation speed of this <see cref="Rotation"/>.
         /// </summary>
         [SerializeField]
-        protected float baseRotationSpeed;
+        internal float s_BaseRotationSpeed;
         /// <summary>
-        /// Pointer to <see cref="baseRotationSpeed"/>, overridable.
+        /// Pointer to <see cref="s_BaseRotationSpeed"/>, overridable.
         /// </summary>
-        protected virtual float BaseRotationSpeed => baseRotationSpeed;
+        protected virtual float BaseRotationSpeed => s_BaseRotationSpeed;
         /// <summary>
         /// The absolute RotationSpeed used by this <see cref="Rotation"/>.
         /// </summary>
@@ -41,7 +42,7 @@ namespace WarWolfWorks.Utility
 
 #pragma warning disable 0649
         [SerializeField]
-        private Transform toRotateX, toRotateY, toRotateZ;
+        internal Transform s_ToRotateX, s_ToRotateY, s_ToRotateZ;
 #pragma warning restore 0649
 
         /// <summary>
@@ -75,15 +76,15 @@ namespace WarWolfWorks.Utility
         /// <summary>
         /// <see cref="Transform"/> which will be used for the X rotation.
         /// </summary>
-        public Transform ToRotateX { get => toRotateX; internal set => toRotateX = value; }
+        public Transform ToRotateX { get => s_ToRotateX; internal set => s_ToRotateX = value; }
         /// <summary>
         /// <see cref="Transform"/> which will be used for the Y rotation.
         /// </summary>
-        public Transform ToRotateY { get => toRotateY; internal set => toRotateY = value; }
+        public Transform ToRotateY { get => s_ToRotateY; internal set => s_ToRotateY = value; }
         /// <summary>
         /// <see cref="Transform"/> which will be used for the Z rotation.
         /// </summary>
-        public Transform ToRotateZ { get => toRotateZ; internal set => toRotateZ = value; }
+        public Transform ToRotateZ { get => s_ToRotateZ; internal set => s_ToRotateZ = value; }
         /// <summary>
         /// Unity's Update method, used by the <see cref="Rotation"/> to apply it's transform.rotation.
         /// </summary>

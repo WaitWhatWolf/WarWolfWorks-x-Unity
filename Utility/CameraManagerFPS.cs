@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 using WarWolfWorks.Interfaces;
 
 namespace WarWolfWorks.Utility
@@ -8,38 +9,39 @@ namespace WarWolfWorks.Utility
     /// Camera manager for an FPS game.
     /// </summary>
     [RequireComponent(typeof(Camera))]
-    public class CameraManagerFPS : MonoBehaviour, IGetter<CameraManagerFPS>
+    public sealed class CameraManagerFPS : MonoBehaviour
     {
-        CameraManagerFPS IGetter<CameraManagerFPS>.Drawer => this;
-        
         private IRotation Rotation;
         private Camera Camera;
 
-        [SerializeField]
-        private float sensitivityHorizontal, sensitivityVertical;
+        [FormerlySerializedAs("sensitivityHorizontal"), SerializeField]
+        private float s_SensitivityHorizontal;
+        [FormerlySerializedAs("sensitivityVertical"), SerializeField]
+        private float s_SensitivityVertical;
         /// <summary>
         /// Sensitivity of the camera controller's horizontal axis.
         /// </summary>
-        public float SensitivityHorizontal { get => sensitivityHorizontal; set => sensitivityHorizontal = value; }
+        public float SensitivityHorizontal { get => s_SensitivityHorizontal; set => s_SensitivityHorizontal = value; }
         /// <summary>
         /// Sensitivity of the camera controller's vertical axis.
         /// </summary>
-        public float SensitivityVertical { get => sensitivityVertical; set => sensitivityVertical = value; }
-        [SerializeField]
-        [Range(0, 180)]
-        private float maxVerticalRotation;
+        public float SensitivityVertical { get => s_SensitivityVertical; set => s_SensitivityVertical = value; }
+        [FormerlySerializedAs("maxVerticalRotation"), SerializeField, Range(0, 180)]
+        private float s_MaxVerticalRotation;
         /// <summary>
         /// Sets the maximum rotation allowed vertically.
         /// </summary>
-        public float MaxVerticalRotation { get => maxVerticalRotation; set => maxVerticalRotation = Mathf.Clamp(value, 0, 180); }
+        public float MaxVerticalRotation { get => s_MaxVerticalRotation; set => s_MaxVerticalRotation = Mathf.Clamp(value, 0, 180); }
 
         private Vector3 previousPos;
 
-        [SerializeField]
-        private bool InversedHorizontal, InversedVertical;
+        [FormerlySerializedAs("InversedHorizontal"), SerializeField]
+        private bool s_InversedHorizontal;
+        [FormerlySerializedAs("InversedVertical"), SerializeField]
+        private bool s_InversedVertical;
 
-        [SerializeField]
-        private CursorLockMode LockStateStart;
+        [FormerlySerializedAs("LockStateStart"), SerializeField]
+        private CursorLockMode s_LockStateStart;
 
         /// <summary>
         /// Returns true if an axis is inverted.
@@ -50,8 +52,8 @@ namespace WarWolfWorks.Utility
         {
             switch(axis)
             {
-                default: return InversedHorizontal;
-                case RectTransform.Axis.Vertical: return InversedVertical;
+                default: return s_InversedHorizontal;
+                case RectTransform.Axis.Vertical: return s_InversedVertical;
             }
         }
 
@@ -64,8 +66,8 @@ namespace WarWolfWorks.Utility
         {
             switch (axis)
             {
-                default: InversedHorizontal = to; break;
-                case RectTransform.Axis.Vertical: InversedVertical = to; break;
+                default: s_InversedHorizontal = to; break;
+                case RectTransform.Axis.Vertical: s_InversedVertical = to; break;
             }
         }
 
@@ -74,7 +76,7 @@ namespace WarWolfWorks.Utility
         {
             Rotation = GetComponentInParent<IRotation>();
             Camera = GetComponent<Camera>();
-            Cursor.lockState = LockStateStart;
+            Cursor.lockState = s_LockStateStart;
         }
 
         private Vector3 GetMouseRotation()
@@ -91,16 +93,16 @@ namespace WarWolfWorks.Utility
                 default:
                     toReturn = new Vector3(
                     Hooks.WWWMath.ClampAngle(Rotation.ToRotateX.localEulerAngles.x +
-                    (InversedVertical ? (CurrentPos.y * SensitivityVertical) : -(CurrentPos.y * SensitivityVertical)), -(MaxVerticalRotation / 2), MaxVerticalRotation / 2),
+                    (s_InversedVertical ? (CurrentPos.y * SensitivityVertical) : -(CurrentPos.y * SensitivityVertical)), -(MaxVerticalRotation / 2), MaxVerticalRotation / 2),
                     Rotation.ToRotateY.localEulerAngles.y +
-                    (InversedHorizontal ? -(CurrentPos.x * SensitivityHorizontal) : (CurrentPos.x * SensitivityHorizontal)), 0);
+                    (s_InversedHorizontal ? -(CurrentPos.x * SensitivityHorizontal) : (CurrentPos.x * SensitivityHorizontal)), 0);
                     break;
                 case CursorLockMode.Locked:
                     toReturn = new Vector3(
                     Hooks.WWWMath.ClampAngle(Rotation.ToRotateX.localEulerAngles.x +
-                    (InversedVertical ? MouseY * SensitivityVertical
+                    (s_InversedVertical ? MouseY * SensitivityVertical
                     : -MouseY * SensitivityVertical), -(MaxVerticalRotation / 2), MaxVerticalRotation / 2),
-                    Rotation.ToRotateY.localEulerAngles.y + (InversedHorizontal ? -MouseX * SensitivityHorizontal :
+                    Rotation.ToRotateY.localEulerAngles.y + (s_InversedHorizontal ? -MouseX * SensitivityHorizontal :
                     MouseX * SensitivityHorizontal), Rotation.ToRotateZ.localEulerAngles.z);
                     break;
             }

@@ -9,6 +9,7 @@ namespace WarWolfWorks.EntitiesSystem.Statusing
     /// <summary>
     /// The class which handles status application.
     /// </summary>
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public sealed class EntityStatusApplier : EntityComponent, IStatusApplier, ILockable
     {
         /// <summary>

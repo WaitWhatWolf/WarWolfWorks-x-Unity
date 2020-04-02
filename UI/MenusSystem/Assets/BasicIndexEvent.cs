@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using WarWolfWorks.AudioSystem;
+using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.UI.MenusSystem.Assets
 {
@@ -15,10 +17,32 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         public List<MaskableGraphic> Graphics;
 
         /// <summary>
-        /// Colors used with <see cref="OnFocused"/> and <see cref="OnUnfocused"/>.
+        /// The speed at which the color transition is performed.
         /// </summary>
-        public Color FocusedColor = Color.yellow, UnfocusedColor = Color.cyan * .75f;
-
+        [Range(0.1f, 10f)]
+        public float ColorTransitionSpeed = 2;
+        /// <summary>
+        /// The speed at which the size transition is performed.
+        /// </summary>
+        [Range(0.1f, 10f)]
+        public float SizeTransitionSpeed = 2;
+        /// <summary>
+        /// Color used with <see cref="OnFocused"/>.
+        /// </summary>
+        public Color FocusedColor = Color.yellow;
+        /// <summary>
+        /// Color used with <see cref="OnUnfocused"/>.
+        /// </summary>
+        public Color UnfocusedColor = Color.cyan * .75f;
+        /// <summary>
+        /// The size used with <see cref="OnFocused"/>.
+        /// </summary>
+        public Vector2 FocusedSize = Vector2.one * 1.1f;
+        /// <summary>
+        /// The size used with <see cref="OnUnfocused"/>
+        /// </summary>
+        public Vector2 UnfocusedSize = Vector2.one;
+        
         /// <summary>
         /// Returns true if the mouse is currently inside this <see cref="IndexEvent"/>'s graphic.
         /// </summary>
@@ -30,11 +54,30 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         public bool Focused { get; private set; }
 
         /// <summary>
+        /// The color towards which the graphs will go to.
+        /// </summary>
+        public Color DestinationColor { get; private set; }
+
+        /// <summary>
+        /// The size towards which the graphs will go to.
+        /// </summary>
+        public Vector2 DestinationSize { get; private set; }
+
+        /// <summary>
         /// Invokes this <see cref="IndexEvent"/>'s activation.
         /// </summary>
         protected override void EventOnPointerClick()
         {
             Activate(0);
+        }
+
+        /// <summary>
+        /// When overriding, make sure to include "base.Awake();" as it sets the <see cref="DestinationColor"/> to an appropriate color.
+        /// </summary>
+        protected virtual void Awake()
+        {
+            DestinationColor = UnfocusedColor;
+            DestinationSize = UnfocusedSize;
         }
 
         /// <summary>
@@ -67,14 +110,25 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         }
 
         /// <summary>
+        /// When overriding, make sure to include "base.Update();" as it takes care of color lerping.
+        /// </summary>
+        protected virtual void Update()
+        {
+            for (int i = 0; i < Graphics.Count; i++)
+            {
+                Graphics[i].color = Hooks.Colors.MoveTowards(Graphics[i].color, DestinationColor, ColorTransitionSpeed * Time.deltaTime);
+                Graphics[i].rectTransform.localScale = Vector3.MoveTowards(Graphics[i].rectTransform.localScale, 
+                    new Vector3(DestinationSize.x, DestinationSize.y, Graphics[i].rectTransform.localScale.z), SizeTransitionSpeed * Time.deltaTime);
+            }
+        }
+
+        /// <summary>
         /// Invoked when this <see cref="IndexEvent"/> is first focused.
         /// </summary>
         protected virtual void OnFocused()
         {
-            for (int i = 0; i < Graphics.Count; i++)
-            {
-                Graphics[i].color = FocusedColor;
-            }
+            DestinationColor = FocusedColor;
+            DestinationSize = FocusedSize;
             Focused = true;
         }
 
@@ -83,10 +137,8 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         /// </summary>
         protected virtual void OnUnfocused()
         {
-            for (int i = 0; i < Graphics.Count; i++)
-            {
-                Graphics[i].color = UnfocusedColor;
-            }
+            DestinationColor = UnfocusedColor;
+            DestinationSize = UnfocusedSize;
             Focused = false;
         }
     }

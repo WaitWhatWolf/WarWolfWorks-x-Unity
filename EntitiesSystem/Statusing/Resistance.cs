@@ -6,6 +6,7 @@ namespace WarWolfWorks.EntitiesSystem.Statusing
     /// <summary>
     /// Class used to give resistance towards <see cref="IStatus"/>es.
     /// </summary>
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public sealed class Resistance
     {
         /// <summary>

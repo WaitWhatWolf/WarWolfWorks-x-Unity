@@ -7,6 +7,7 @@ namespace WarWolfWorks.EntitiesSystem.Statistics
     /// <summary>
     /// Default stacking which is used if <see cref="Stats.Stacking"/> is not set.
     /// </summary>
+    [System.Obsolete(Constants.VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE, Constants.VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR)]
     public class WWWStacking : Stacking
     {
         /// <summary>
