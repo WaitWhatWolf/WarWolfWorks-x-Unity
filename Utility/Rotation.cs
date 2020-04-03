@@ -9,7 +9,7 @@ namespace WarWolfWorks.Utility
     /// Utility component for rotation.
     /// </summary>
     [CompleteNoS]
-	public class Rotation : MonoBehaviour, IRotation, ILockable
+	public class Rotation : MonoBehaviour, IRotatable, ILockable
 	{
         private Quaternion RotationToApply;
         /// <summary>

@@ -167,7 +167,6 @@ namespace WarWolfWorks.UI.MenusSystem
         /// <summary>
         /// Activates the menu of given type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         public static void ActivateMenu(Type type)
         {
             foreach (Menu menu in AllMenus)
@@ -199,7 +198,6 @@ namespace WarWolfWorks.UI.MenusSystem
         /// <summary>
         /// Activates the menu of given type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         public static void DeactivateMenu(Type type)
         {
             foreach (Menu menu in AllMenus)

@@ -147,6 +147,7 @@ namespace WarWolfWorks
 
         #region Misc
         internal const int VARV_AUDIOMANAGER_MIN_POOLSIZE = 15;
+        internal const int VARV_TRANSITIONMANAGER_TRANSITIONS_SIZE = 32;
         #endregion
     }
 }

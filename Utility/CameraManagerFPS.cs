@@ -9,9 +9,9 @@ namespace WarWolfWorks.Utility
     /// Camera manager for an FPS game.
     /// </summary>
     [RequireComponent(typeof(Camera))]
-    public sealed class CameraManagerFPS : MonoBehaviour
+    public sealed class CameraManagerFPS : MonoBehaviour, IPosition, IEulerAngles, IRotation
     {
-        private IRotation Rotation;
+        private IRotatable Rotatable;
         private Camera Camera;
 
         [FormerlySerializedAs("sensitivityHorizontal"), SerializeField]
@@ -42,6 +42,20 @@ namespace WarWolfWorks.Utility
 
         [FormerlySerializedAs("LockStateStart"), SerializeField]
         private CursorLockMode s_LockStateStart;
+
+
+        /// <summary>
+        /// Pointer to transform.position.
+        /// </summary>
+        public Vector3 Position { get => transform.position; set => transform.position = value; }
+        /// <summary>
+        /// Pointer to transform.rotation.
+        /// </summary>
+        public Quaternion Rotation { get => transform.rotation; set => transform.rotation = value; }
+        /// <summary>
+        /// Pointer to transform.eulerAngles.
+        /// </summary>
+        public Vector3 EulerAngles { get => transform.eulerAngles; set => transform.eulerAngles = value; }
 
         /// <summary>
         /// Returns true if an axis is inverted.
@@ -74,7 +88,7 @@ namespace WarWolfWorks.Utility
 
         private void Awake()
         {
-            Rotation = GetComponentInParent<IRotation>();
+            Rotatable = GetComponentInParent<IRotatable>();
             Camera = GetComponent<Camera>();
             Cursor.lockState = s_LockStateStart;
         }
@@ -92,18 +106,18 @@ namespace WarWolfWorks.Utility
             {
                 default:
                     toReturn = new Vector3(
-                    Hooks.WWWMath.ClampAngle(Rotation.ToRotateX.localEulerAngles.x +
+                    Hooks.WWWMath.ClampAngle(Rotatable.ToRotateX.localEulerAngles.x +
                     (s_InversedVertical ? (CurrentPos.y * SensitivityVertical) : -(CurrentPos.y * SensitivityVertical)), -(MaxVerticalRotation / 2), MaxVerticalRotation / 2),
-                    Rotation.ToRotateY.localEulerAngles.y +
+                    Rotatable.ToRotateY.localEulerAngles.y +
                     (s_InversedHorizontal ? -(CurrentPos.x * SensitivityHorizontal) : (CurrentPos.x * SensitivityHorizontal)), 0);
                     break;
                 case CursorLockMode.Locked:
                     toReturn = new Vector3(
-                    Hooks.WWWMath.ClampAngle(Rotation.ToRotateX.localEulerAngles.x +
+                    Hooks.WWWMath.ClampAngle(Rotatable.ToRotateX.localEulerAngles.x +
                     (s_InversedVertical ? MouseY * SensitivityVertical
                     : -MouseY * SensitivityVertical), -(MaxVerticalRotation / 2), MaxVerticalRotation / 2),
-                    Rotation.ToRotateY.localEulerAngles.y + (s_InversedHorizontal ? -MouseX * SensitivityHorizontal :
-                    MouseX * SensitivityHorizontal), Rotation.ToRotateZ.localEulerAngles.z);
+                    Rotatable.ToRotateY.localEulerAngles.y + (s_InversedHorizontal ? -MouseX * SensitivityHorizontal :
+                    MouseX * SensitivityHorizontal), Rotatable.ToRotateZ.localEulerAngles.z);
                     break;
             }
 
@@ -113,7 +127,7 @@ namespace WarWolfWorks.Utility
 
         private void Update()
         {
-            try { Rotation.SetRotation(GetMouseRotation()); }
+            try { Rotatable.SetRotation(GetMouseRotation()); }
             catch(NullReferenceException)
             { AdvancedDebug.LogError($"No IRotation component was found in {gameObject.name}, " +
                 $"make sure you set one by either setting a premade WWWLibrary script (Rotation or EntityRotation) " +

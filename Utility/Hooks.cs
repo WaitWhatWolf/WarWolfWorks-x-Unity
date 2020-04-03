@@ -1404,6 +1404,36 @@ namespace WarWolfWorks.Utility
         public static class Enumeration
         {
             /// <summary>
+            /// Returns the first empty index of a list; Returns -1 if none were found.
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="list"></param>
+            /// <returns></returns>
+            public static int GetEmptyIndex<T>(IList<T> list)
+            {
+                for (int i = 0; i < list.Count; i++)
+                    if (list[i] == null)
+                        return i;
+
+                return -1;
+            }
+            
+            /// <summary>
+            /// Returns the first empty index of an array; Returns -1 if none were found.
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="array"></param>
+            /// <returns></returns>
+            public static int GetEmptyIndex<T>(T[] array)
+            {
+                for (int i = 0; i < array.Length; i++)
+                    if (array[i] == null)
+                        return i;
+
+                return -1;
+            }
+
+            /// <summary>
             /// Returns true if a list contains an item of type. (Only works on inherited classes)
             /// </summary>
             /// <typeparam name="T"></typeparam>

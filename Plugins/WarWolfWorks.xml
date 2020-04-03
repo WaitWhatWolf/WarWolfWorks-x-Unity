@@ -431,6 +431,12 @@
             <param name="loopClip"></param>
             <param name="endClip"></param>
         </member>
+        <member name="M:WarWolfWorks.AudioSystem.MusicAudioPlayer.#ctor(WarWolfWorks.AudioSystem.MusicAudioPlayer)">
+            <summary>
+            Creates a duplicate of another <see cref="T:WarWolfWorks.AudioSystem.MusicAudioPlayer"/>.
+            </summary>
+            <param name="original"></param>
+        </member>
         <member name="T:WarWolfWorks.Constants">
             <summary>
             All constant and readonly values of the <see cref="N:WarWolfWorks"/> library.
@@ -3903,6 +3909,16 @@
             Invokes when the Parent is set. T1 is child, T2 is Parent.
             </summary>
         </member>
+        <member name="T:WarWolfWorks.Interfaces.IEulerAngles">
+            <summary>
+            Indicates an object which has euler angles.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Interfaces.IEulerAngles.EulerAngles">
+            <summary>
+            The euler angles.
+            </summary>
+        </member>
         <member name="T:WarWolfWorks.Interfaces.IHealth">
             <summary>
             Basic interface for implementing a Health class.
@@ -4181,6 +4197,16 @@
             Initiates it.
             </summary>
         </member>
+        <member name="T:WarWolfWorks.Interfaces.IPosition">
+            <summary>
+            Indicates an object which has a position.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Interfaces.IPosition.Position">
+            <summary>
+            The position.
+            </summary>
+        </member>
         <member name="T:WarWolfWorks.Interfaces.IRefreshable">
             <summary>
             Indicates a refreshable object.
@@ -4191,58 +4217,68 @@
             Refreshes this object.
             </summary>
         </member>
-        <member name="T:WarWolfWorks.Interfaces.IRotation">
+        <member name="T:WarWolfWorks.Interfaces.IRotatable">
             <summary>
             Interface used for detailed/advanced rotation of an object.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Interfaces.IRotation.ToRotateX">
+        <member name="P:WarWolfWorks.Interfaces.IRotatable.ToRotateX">
             <summary>
             The transform that will be rotated for the X axis.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Interfaces.IRotation.ToRotateY">
+        <member name="P:WarWolfWorks.Interfaces.IRotatable.ToRotateY">
             <summary>
             The transform that will be rotated for the Y axis.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Interfaces.IRotation.ToRotateZ">
+        <member name="P:WarWolfWorks.Interfaces.IRotatable.ToRotateZ">
             <summary>
             The transform that will be rotated for the Z axis.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Interfaces.IRotation.GetDestination">
+        <member name="M:WarWolfWorks.Interfaces.IRotatable.GetDestination">
             <summary>
-            Rotation towards which this <see cref="T:WarWolfWorks.Interfaces.IRotation"/> is destinated.
+            Rotation towards which this <see cref="T:WarWolfWorks.Interfaces.IRotatable"/> is destinated.
             </summary>
             <returns></returns>
         </member>
-        <member name="P:WarWolfWorks.Interfaces.IRotation.DefaultEulerRotation">
+        <member name="P:WarWolfWorks.Interfaces.IRotatable.DefaultEulerRotation">
             <summary>
-            The default rotation of the <see cref="T:WarWolfWorks.Interfaces.IRotation"/>.
+            The default rotation of the <see cref="T:WarWolfWorks.Interfaces.IRotatable"/>.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Interfaces.IRotation.CurrentRotation">
+        <member name="P:WarWolfWorks.Interfaces.IRotatable.CurrentRotation">
             <summary>
-            Where this <see cref="T:WarWolfWorks.Interfaces.IRotation"/> currently is.
+            Where this <see cref="T:WarWolfWorks.Interfaces.IRotatable"/> currently is.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Interfaces.IRotation.RotationSpeed">
+        <member name="P:WarWolfWorks.Interfaces.IRotatable.RotationSpeed">
             <summary>
-            Speed at which this <see cref="T:WarWolfWorks.Interfaces.IRotation"/> is rotating.
+            Speed at which this <see cref="T:WarWolfWorks.Interfaces.IRotatable"/> is rotating.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Interfaces.IRotation.SetRotation(UnityEngine.Vector3)">
+        <member name="M:WarWolfWorks.Interfaces.IRotatable.SetRotation(UnityEngine.Vector3)">
             <summary>
-            Sets the destination of this <see cref="T:WarWolfWorks.Interfaces.IRotation"/>.
+            Sets the destination of this <see cref="T:WarWolfWorks.Interfaces.IRotatable"/>.
             </summary>
             <param name="toApply"></param>
         </member>
-        <member name="M:WarWolfWorks.Interfaces.IRotation.SetRotation(UnityEngine.Quaternion)">
+        <member name="M:WarWolfWorks.Interfaces.IRotatable.SetRotation(UnityEngine.Quaternion)">
             <summary>
-            Sets the destination of this <see cref="T:WarWolfWorks.Interfaces.IRotation"/> in euler angles.
+            Sets the destination of this <see cref="T:WarWolfWorks.Interfaces.IRotatable"/> in euler angles.
             </summary>
             <param name="toApply"></param>
+        </member>
+        <member name="T:WarWolfWorks.Interfaces.IRotation">
+            <summary>
+            Indicates an object which has a rotation.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Interfaces.IRotation.Rotation">
+            <summary>
+            The rotation.
+            </summary>
         </member>
         <member name="T:WarWolfWorks.Interfaces.IScrollablePercentMenu">
             <summary>
@@ -4464,7 +4500,7 @@
             The rotation of the parent Nyu.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Interfaces.NyuEntities.INyuComponent.Euler">
+        <member name="P:WarWolfWorks.Interfaces.NyuEntities.INyuComponent.EulerAngles">
             <summary>
             The Euler rotation of the parent Nyu.
             </summary>
@@ -5921,7 +5957,7 @@
             The rotation of the parent.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.NyuEntities.NyuRotation.Euler">
+        <member name="P:WarWolfWorks.NyuEntities.NyuRotation.EulerAngles">
             <summary>
             The euler rotation of the parent.
             </summary>
@@ -6165,7 +6201,7 @@
             Pointer to transform.rotation.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.NyuEntities.Nyu.Euler">
+        <member name="P:WarWolfWorks.NyuEntities.Nyu.EulerAngles">
             <summary>
             Pointer to transform.eulerAngles.
             </summary>
@@ -6338,7 +6374,7 @@
             The rotation of the parent.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.NyuEntities.NyuComponent.Euler">
+        <member name="P:WarWolfWorks.NyuEntities.NyuComponent.EulerAngles">
             <summary>
             The euler rotation of the parent.
             </summary>
@@ -8473,7 +8509,6 @@
             <summary>
             Activates the menu of given type.
             </summary>
-            <typeparam name="T"></typeparam>
         </member>
         <member name="M:WarWolfWorks.UI.MenusSystem.Menu.DeactivateMenu``1">
             <summary>
@@ -8485,7 +8520,6 @@
             <summary>
             Activates the menu of given type.
             </summary>
-            <typeparam name="T"></typeparam>
         </member>
         <member name="M:WarWolfWorks.UI.MenusSystem.Menu.DeactivateAllMenus">
             <summary>
@@ -8958,6 +8992,21 @@
             The speed at which the camera is currently resizing.
             </summary>
         </member>
+        <member name="P:WarWolfWorks.Utility.CameraManager2D.Position">
+            <summary>
+            Pointer to transform.position.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.CameraManager2D.Rotation">
+            <summary>
+            Pointer to transform.rotation.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.CameraManager2D.EulerAngles">
+            <summary>
+            Pointer to transform.eulerAngles.
+            </summary>
+        </member>
         <member name="M:WarWolfWorks.Utility.CameraManager2D.SetCameraSize(System.Single)">
             <summary>
             Sets camera size to the specified size.
@@ -9018,6 +9067,21 @@
         <member name="P:WarWolfWorks.Utility.CameraManagerFPS.MaxVerticalRotation">
             <summary>
             Sets the maximum rotation allowed vertically.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.CameraManagerFPS.Position">
+            <summary>
+            Pointer to transform.position.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.CameraManagerFPS.Rotation">
+            <summary>
+            Pointer to transform.rotation.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.CameraManagerFPS.EulerAngles">
+            <summary>
+            Pointer to transform.eulerAngles.
             </summary>
         </member>
         <member name="M:WarWolfWorks.Utility.CameraManagerFPS.IsInversed(UnityEngine.RectTransform.Axis)">
@@ -10163,6 +10227,22 @@
             <summary>
             Contains some utility methods concerting enumeration and generic collections.
             </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.GetEmptyIndex``1(System.Collections.Generic.IList{``0})">
+            <summary>
+            Returns the first empty index of a list; Returns -1 if none were found.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.GetEmptyIndex``1(``0[])">
+            <summary>
+            Returns the first empty index of an array; Returns -1 if none were found.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="array"></param>
+            <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.ListContainsType``1(System.Collections.Generic.List{``0},System.Type)">
             <summary>
@@ -12354,45 +12434,130 @@
             (Explicitly convertible to Transform)
             </summary>
         </member>
-        <member name="T:WarWolfWorks.Utility.TransitionManager">
+        <member name="T:WarWolfWorks.Utility.Transitioning.ColorTransition">
+            <summary>
+            A transition class which makes a solid color appear on the screen with it's alpha based on the progression of the transition.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Transitioning.ColorTransition.Graphic">
+            <summary>
+            The image used for the color display.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Transitioning.ColorTransition.Color">
+            <summary>
+            The color used.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Transitioning.ColorTransition.#ctor(UnityEngine.Color)">
+            <summary>
+            Creates a color transition.
+            </summary>
+            <param name="color"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Transitioning.ColorTransition.#ctor">
+            <summary>
+            Creates a color transition with a black color.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.Utility.Transitioning.Transition">
+            <summary>
+            Base class for implementing a transition inside the <see cref="T:WarWolfWorks.Utility.Transitioning.TransitionManager"/>.
+            (Supported interfaces: <see cref="T:WarWolfWorks.Interfaces.UnityMethods.IAwake"/>, <see cref="T:WarWolfWorks.Interfaces.UnityMethods.IStart"/>, <see cref="T:WarWolfWorks.Interfaces.UnityMethods.IUpdate"/>, <see cref="T:WarWolfWorks.Interfaces.UnityMethods.IFixedUpdate"/>, <see cref="T:WarWolfWorks.Interfaces.UnityMethods.ILateUpdate"/>,
+            <see cref="T:WarWolfWorks.Interfaces.UnityMethods.IOnDestroy"/>)
+            (Note: <see cref="T:WarWolfWorks.Interfaces.UnityMethods.IAwake"/> is called when this <see cref="T:WarWolfWorks.Utility.Transitioning.Transition"/> is added to a <see cref="T:WarWolfWorks.Utility.Transitioning.TransitionManager"/>,
+            while <see cref="T:WarWolfWorks.Interfaces.UnityMethods.IStart"/> is called when this <see cref="T:WarWolfWorks.Utility.Transitioning.Transition"/> is started.)
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Transitioning.Transition.Initiated">
+            <summary>
+            The initiated state of this <see cref="T:WarWolfWorks.Utility.Transitioning.Transition"/>. (<see cref="T:WarWolfWorks.Interfaces.IParentInitiatable`1"/> implementation)
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Transitioning.Transition.Parent">
+            <summary>
+            The <see cref="T:WarWolfWorks.Utility.Transitioning.TransitionManager"/> parent.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Transitioning.Transition.TransitionProgress">
+            <summary>
+            The progress of the transition; 0 is start, 1 is end.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Transitioning.Transition.IsDetransitioning">
+            <summary>
+            Returns true if the <see cref="P:WarWolfWorks.Utility.Transitioning.Transition.TransitionProgress"/> has hit 1, and goes back to 0 to simulate a fade-out.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Transitioning.Transition.Speed">
+            <summary>
+            The speed at which this transition is going. (Set through <see cref="M:WarWolfWorks.Utility.Transitioning.TransitionManager.SetTransition``1(System.Int32,``0,System.Single)"/>).
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.Transitioning.Transition.Index">
+            <summary>
+            The index in which this <see cref="T:WarWolfWorks.Utility.Transitioning.Transition"/> resides in it's parent.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Transitioning.Transition.WarWolfWorks#Interfaces#IParentInitiatable{WarWolfWorks#Utility#Transitioning#TransitionManager}#Init(WarWolfWorks.Utility.Transitioning.TransitionManager)">
+            <summary>
+            Initiates this transition.
+            </summary>
+            <param name="parent"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WarWolfWorks.Utility.Transitioning.TransitionManager">
             <summary>
             Class used for transitions between events.
             </summary>
         </member>
-        <member name="E:WarWolfWorks.Utility.TransitionManager.OnTransitionStart">
+        <member name="P:WarWolfWorks.Utility.Transitioning.TransitionManager.CurrentlyActive">
+            <summary>
+            The currently active transition.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.Utility.Transitioning.TransitionManager.OnTransitionStart">
             <summary>
             This event is invoked when ActivateTransition(int ofIndex) is called.
             </summary>
         </member>
-        <member name="E:WarWolfWorks.Utility.TransitionManager.OnTransitionComplete">
+        <member name="E:WarWolfWorks.Utility.Transitioning.TransitionManager.OnTransitionComplete">
             <summary>
             This event is invoked once the transition's alpha is at 1.
             </summary>
         </member>
-        <member name="E:WarWolfWorks.Utility.TransitionManager.OnTransitionEnd">
+        <member name="E:WarWolfWorks.Utility.Transitioning.TransitionManager.OnTransitionEnd">
             <summary>
             This event is invoked after OnTransitionComplete when transition's alpha is at 0.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Utility.TransitionManager.SetTransition(System.Int32,UnityEngine.Sprite,UnityEngine.Color,System.Single)">
+        <member name="M:WarWolfWorks.Utility.Transitioning.TransitionManager.GetTransition(System.Int32)">
             <summary>
-            Sets a transition to the specified index.
+            Returns the transition under the specified index.s
             </summary>
-            <param name="ofIndex"></param>
-            <param name="spriteUsed"></param>
-            <param name="color"></param>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Transitioning.TransitionManager.SetTransition``1(System.Int32,``0,System.Single)">
+            <summary>
+            Sets a transition to the specified index. (Note: This does not start the transition)
+            </summary>
+            <param name="index"></param>
+            <param name="transition"></param>
             <param name="speed"></param>
         </member>
-        <member name="M:WarWolfWorks.Utility.TransitionManager.ActivateTransition(System.Int32)">
+        <member name="M:WarWolfWorks.Utility.Transitioning.TransitionManager.SetTransitionSpeed(System.Int32,System.Single)">
+            <summary>
+            Sets the speed of a transition.
+            </summary>
+            <param name="index"></param>
+            <param name="to"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Transitioning.TransitionManager.RunTransition(System.Int32)">
             <summary>
             Activates a transition of the specified index.
             </summary>
             <param name="ofIndex"></param>
-        </member>
-        <member name="P:WarWolfWorks.Utility.TransitionManager.CurrentTransitionProgress">
-            <summary>
-            Gets the progress of the currently played transition.
-            </summary>
         </member>
     </members>
 </doc>

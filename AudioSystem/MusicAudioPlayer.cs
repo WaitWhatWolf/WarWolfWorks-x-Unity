@@ -8,7 +8,7 @@ namespace WarWolfWorks.AudioSystem
     /// is called on this <see cref="MusicAudioPlayer"/>.
     /// </summary>
     [System.Serializable]
-    public sealed class MusicAudioPlayer : AudioPlayer, IUpdate, IStart
+    public sealed class MusicAudioPlayer : AudioPlayer, IUpdate, IStart, IAwake
     {
         [SerializeField]
         private AudioClip s_StartClip, s_LoopClip, s_EndClip;
@@ -45,9 +45,9 @@ namespace WarWolfWorks.AudioSystem
             {
                 if(ParentSource.time >= playedClip.length)
                 {
-                    PastStart = true;
                     playedClip = s_LoopClip;
                     ParentSource.loop = true;
+                    PastStart = true;
                 }
             }
         }
@@ -56,8 +56,15 @@ namespace WarWolfWorks.AudioSystem
         {
             ParentSource = Parent.GetAudioSourceAtIndex(Index);
             ParentSource.loop = false;
+        }
 
+        void IAwake.Awake()
+        {
+            PastStart = PastLoop = false;
             playedClip = s_StartClip;
+
+            //if (s_StartClip == s_EndClip)
+            //    throw new System.Exception("The start clip and end clip of the MusicAudioPlayer are identical; This is not allowed.");
         }
 
         /// <summary>
@@ -71,6 +78,17 @@ namespace WarWolfWorks.AudioSystem
             s_StartClip = startClip;
             s_LoopClip = loopClip;
             s_EndClip = endClip;
+        }
+
+        /// <summary>
+        /// Creates a duplicate of another <see cref="MusicAudioPlayer"/>.
+        /// </summary>
+        /// <param name="original"></param>
+        public MusicAudioPlayer(MusicAudioPlayer original)
+        {
+            s_StartClip = original.s_StartClip;
+            s_LoopClip = original.s_LoopClip;
+            s_EndClip = original.s_EndClip;
         }
     }
 }

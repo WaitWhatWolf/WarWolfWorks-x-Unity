@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using WarWolfWorks.Interfaces;
 
 namespace WarWolfWorks.Utility
 {
@@ -6,7 +7,7 @@ namespace WarWolfWorks.Utility
     /// Camera Manager for 2D use. Can be explicitly converted to FollowBehaviour, TransformLimiter and Camera.
     /// </summary>
     [RequireComponent(typeof(FollowBehaviour), typeof(TransformLimiter), typeof(Camera))]
-    public sealed class CameraManager2D : MonoBehaviour
+    public sealed class CameraManager2D : MonoBehaviour, IPosition, IEulerAngles, IRotation
     {
         internal FollowBehaviour FollowBehaviour;
         internal TransformLimiter TransformLimiter;
@@ -32,6 +33,19 @@ namespace WarWolfWorks.Utility
         /// The speed at which the camera is currently resizing.
         /// </summary>
         public float DelayedSpeed { get; private set; }
+        
+        /// <summary>
+        /// Pointer to transform.position.
+        /// </summary>
+        public Vector3 Position { get => transform.position; set => transform.position = value; }
+        /// <summary>
+        /// Pointer to transform.rotation.
+        /// </summary>
+        public Quaternion Rotation { get => transform.rotation; set => transform.rotation = value; }
+        /// <summary>
+        /// Pointer to transform.eulerAngles.
+        /// </summary>
+        public Vector3 EulerAngles { get => transform.eulerAngles; set => transform.eulerAngles = value; }
 
         private void Awake()
         {

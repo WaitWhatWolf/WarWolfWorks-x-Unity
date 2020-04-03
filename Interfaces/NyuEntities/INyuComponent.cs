@@ -19,6 +19,6 @@ namespace WarWolfWorks.Interfaces.NyuEntities
         /// <summary>
         /// The Euler rotation of the parent Nyu.
         /// </summary>
-        Vector3 Euler { get; }
+        Vector3 EulerAngles { get; }
     }
 }

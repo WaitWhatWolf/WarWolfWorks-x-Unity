@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using WarWolfWorks.Interfaces;
 using WarWolfWorks.Interfaces.NyuEntities;
 using WarWolfWorks.NyuEntities.Statistics;
 using WarWolfWorks.Security;
@@ -18,7 +19,7 @@ namespace WarWolfWorks.NyuEntities
     /// <see cref="INyuOnCollisionEnter"/>, <see cref="INyuOnCollisionEnter2D"/>,
     /// <see cref="INyuOnCollisionExit"/> and <see cref="INyuOnCollisionExit2D"/>.
     /// </summary>
-    public abstract class Nyu : MonoBehaviour
+    public abstract class Nyu : MonoBehaviour, IPosition, IRotation, IEulerAngles
     {
         /// <summary>
         /// The entity's stats manager.
@@ -64,7 +65,7 @@ namespace WarWolfWorks.NyuEntities
         /// <summary>
         /// Pointer to transform.eulerAngles.
         /// </summary>
-        public Vector3 Euler { get => transform.eulerAngles; set => transform.eulerAngles = value; }
+        public Vector3 EulerAngles { get => transform.eulerAngles; set => transform.eulerAngles = value; }
         #endregion
 
         #region Enabling and Disabling

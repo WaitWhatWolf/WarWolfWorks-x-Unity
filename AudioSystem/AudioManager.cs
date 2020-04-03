@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Audio;
 using WarWolfWorks.Attributes;
 using WarWolfWorks.Interfaces.UnityMethods;
+using WarWolfWorks.Utility;
 using static WarWolfWorks.Constants;
 
 namespace WarWolfWorks.AudioSystem
@@ -22,6 +24,8 @@ namespace WarWolfWorks.AudioSystem
 
         private List<AudioSource> ns_AudioSources;
         private List<AudioPlayer> ns_AudioPlayers;
+
+        private int PreviousIndex;
 
         /// <summary>
         /// The default <see cref="AudioMixerGroup"/> that will be assigned to new <see cref="AudioSource"/> components.
@@ -42,7 +46,7 @@ namespace WarWolfWorks.AudioSystem
             ns_AudioSources = new List<AudioSource>(s_PoolSize);
             ns_AudioPlayers = new List<AudioPlayer>(s_PoolSize);
 
-            if(s_PoolSize != 0)
+            if (s_PoolSize != 0)
                 Init(s_PoolSize);
         }
 
@@ -74,19 +78,26 @@ namespace WarWolfWorks.AudioSystem
             if (ns_AudioSources.Count == poolSize)
                 throw new System.Exception("Cannot re-initiate an audio manager with the same pool size.");
 
-            for(int i = ns_AudioSources.Count - 1; i > 0; i--)
+            for (int i = ns_AudioSources.Count - 1; i > 0; i--)
             {
                 Destroy(ns_AudioSources[i]);
             }
 
             ns_AudioSources.Clear();
+            ns_AudioPlayers.Clear();
 
-            for(int i = 0; i < poolSize; i++)
+            for (int i = 0; i < poolSize; i++)
             {
-                AudioSource used = gameObject.AddComponent<AudioSource>();
-                used.outputAudioMixerGroup = s_DefaultMixerGroup;
-                ns_AudioSources.Add(used);
+                ns_AudioSources.Add(NewAudioSource());
+                ns_AudioPlayers.Add(null);
             }
+        }
+
+        private AudioSource NewAudioSource()
+        {
+            AudioSource used = gameObject.AddComponent<AudioSource>();
+            used.outputAudioMixerGroup = s_DefaultMixerGroup;
+            return used;
         }
 
         /// <summary>
@@ -96,26 +107,28 @@ namespace WarWolfWorks.AudioSystem
         /// <param name="audioPlayer"></param>
         public AudioSource AddAudioPlayer(AudioPlayer audioPlayer)
         {
-            int index = ns_AudioPlayers.Count;
-            audioPlayer.Index = index;
-            audioPlayer.Parent = this;
-            ns_AudioPlayers.Add(audioPlayer);
-
-            if(ns_AudioPlayers.Count > ns_AudioSources.Count)
+            PreviousIndex = Hooks.Enumeration.GetEmptyIndex(ns_AudioPlayers);
+            if(PreviousIndex == -1)
             {
-                ns_AudioSources.Add(gameObject.AddComponent<AudioSource>());
+                PreviousIndex = ns_AudioPlayers.Count;
+                ns_AudioPlayers.Add(audioPlayer);
+                ns_AudioSources.Add(NewAudioSource());
             }
 
-            if (ns_AudioPlayers[index] is IAwake awake)
+            audioPlayer.Index = PreviousIndex;
+            audioPlayer.Parent = this;
+            ns_AudioPlayers[PreviousIndex] = audioPlayer;
+
+            if (ns_AudioPlayers[PreviousIndex] is IAwake awake)
                 awake.Awake();
 
-            ns_AudioSources[index].clip = ns_AudioPlayers[index].Played;
-            ns_AudioSources[index].Play();
+            ns_AudioSources[PreviousIndex].clip = ns_AudioPlayers[PreviousIndex].Played;
+            ns_AudioSources[PreviousIndex].Play();
 
-            if (ns_AudioPlayers[index] is IStart start)
+            if (ns_AudioPlayers[PreviousIndex] is IStart start)
                 start.Start();
 
-            return ns_AudioSources[index];
+            return ns_AudioSources[PreviousIndex];
         }
 
         /// <summary>
@@ -127,10 +140,13 @@ namespace WarWolfWorks.AudioSystem
         {
             if (audioPlayer.Disposable)
             {
-                if (ns_AudioPlayers.Remove(audioPlayer))
+                if (ns_AudioPlayers[audioPlayer.Index] != null)
                 {
                     ns_AudioSources[audioPlayer.Index].Stop();
                     ns_AudioSources[audioPlayer.Index].clip = null;
+                    if (ns_AudioPlayers[audioPlayer.Index] is IOnDestroy destroy)
+                        destroy.OnDestroy();
+                    ns_AudioPlayers[audioPlayer.Index] = null;
                     return true;
                 }
             }
@@ -145,10 +161,13 @@ namespace WarWolfWorks.AudioSystem
         /// <returns></returns>
         public bool ForceRemoveAudioPlayer(AudioPlayer audioPlayer)
         {
-            if(ns_AudioPlayers.Remove(audioPlayer))
+            if (ns_AudioPlayers[audioPlayer.Index] != null)
             {
                 ns_AudioSources[audioPlayer.Index].Stop();
                 ns_AudioSources[audioPlayer.Index].clip = null;
+                if (ns_AudioPlayers[audioPlayer.Index] is IOnDestroy destroy)
+                    destroy.OnDestroy();
+                ns_AudioPlayers[audioPlayer.Index] = null;
                 return true;
             }
             return false;
@@ -161,7 +180,7 @@ namespace WarWolfWorks.AudioSystem
         /// <param name="audioPlayer"></param>
         public void QueueRemoveAudioPlayer(AudioPlayer audioPlayer)
         {
-            if(!ns_AudioPlayers.Contains(audioPlayer))
+            if (!ns_AudioPlayers.Contains(audioPlayer))
             {
                 AdvancedDebug.LogWarning("Couldn't queue an AudioPlayer for removal as it is not contained in the list of active audio players.", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
                 return;
@@ -177,10 +196,16 @@ namespace WarWolfWorks.AudioSystem
             {
                 while (true)
                 {
-                    if(player.Disposable)
+                    if (player.Disposable)
                     {
-                        ns_AudioPlayers.Remove(player);
-                        Threading.ThreadingUtilities.QueueOnMainThread(() => { ns_AudioSources[player.Index].Stop(); ns_AudioSources[player.Index].clip = null; });
+                        ns_AudioPlayers[player.Index] = null;
+                        Threading.ThreadingUtilities.QueueOnMainThread(() => 
+                        {
+                            ns_AudioSources[player.Index].Stop();
+                            ns_AudioSources[player.Index].clip = null;
+                            if (ns_AudioPlayers[player.Index] is IOnDestroy destroy)
+                                destroy.OnDestroy();
+                        });
                         break;
                     }
                 };
@@ -191,6 +216,9 @@ namespace WarWolfWorks.AudioSystem
         {
             for(int i = 0; i < ns_AudioPlayers.Count; i++)
             {
+                if (ns_AudioPlayers[i] == null)
+                    continue;
+
                 if (ns_AudioPlayers[i] is IUpdate update)
                     update.Update();
 
@@ -206,6 +234,9 @@ namespace WarWolfWorks.AudioSystem
         {
             for (int i = 0; i < ns_AudioPlayers.Count; i++)
             {
+                if (ns_AudioPlayers[i] == null)
+                    continue;
+
                 if (ns_AudioPlayers[i] is IFixedUpdate fixedUpdate)
                     fixedUpdate.FixedUpdate();
             }
