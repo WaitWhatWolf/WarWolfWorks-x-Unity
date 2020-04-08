@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using WarWolfWorks.Interfaces.UnityMethods;
+using WarWolfWorks.Interfaces.NyuEntities;
 
 namespace WarWolfWorks.NyuEntities.ProjectileSystem
 {
@@ -29,18 +29,40 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
         #endregion
 
         #region Interface Calling
-        private void OnTriggerEnter2D(Collider2D other)
+        private void OnTriggerEnter2D(Collider2D collision)
         {
-            foreach (Behavior behavior in Behaviors)
-                if (behavior is IOnTriggerEnter2D behaviorTriggerEnter)
-                    behaviorTriggerEnter.OnTriggerEnter2D(other);
+            for (int i = 0; i < ns_Behaviors.Length; i++)
+            {
+                if (ns_Behaviors[i] is INyuOnTriggerEnter2D nyuEnter2D)
+                    nyuEnter2D.NyuOnTriggerEnter2D(collision);
+            }
         }
 
-        private void OnTriggerExit2D(Collider2D other)
+        private void OnTriggerExit2D(Collider2D collision)
         {
-            foreach (Behavior behavior in Behaviors)
-                if (behavior is IOnTriggerExit2D behaviorTriggerExit)
-                    behaviorTriggerExit.OnTriggerExit2D(other);
+            for (int i = 0; i < ns_Behaviors.Length; i++)
+            {
+                if (ns_Behaviors[i] is INyuOnTriggerExit2D nyuExit2D)
+                    nyuExit2D.NyuOnTriggerExit2D(collision);
+            }
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            for (int i = 0; i < ns_Behaviors.Length; i++)
+            {
+                if (ns_Behaviors[i] is INyuOnCollisionEnter2D nyuEnter2D)
+                    nyuEnter2D.NyuOnCollisionEnter2D(collision);
+            }
+        }
+
+        private void OnCollisionExit2D(Collision2D collision)
+        {
+            for (int i = 0; i < ns_Behaviors.Length; i++)
+            {
+                if (ns_Behaviors[i] is INyuOnCollisionExit2D nyuExit2D)
+                    nyuExit2D.NyuOnCollisionExit2D(collision);
+            }
         }
         #endregion
     }

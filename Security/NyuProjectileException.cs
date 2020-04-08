@@ -36,7 +36,8 @@ namespace WarWolfWorks.Security
                     ActMessage = "NyuProjectileManager.Initiate<TProjectile>(int) was given a value less than 1.";
                     break;
                 case 2:
-                    ActMessage = "NyuProjectileManager.Initiate<TProjectile>(int) was called when it's singleton instance was null.";
+                    ActMessage = "NyuProjectileManager.Initiate<TProjectile>(int) was called when it's singleton instance was null; Make sure to " +
+                        "add a GameObject to your scene with a ProjectileManager attached to it.";
                     break;
                 case 3:
                     ActMessage = "NyuProjectileManager.New or NyuProjectileManager.End was called when it's singleton instance was null.";

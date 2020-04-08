@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using WarWolfWorks.Interfaces.UnityMethods;
+using WarWolfWorks.Interfaces.NyuEntities;
 
 namespace WarWolfWorks.NyuEntities.ProjectileSystem
 {
@@ -35,16 +35,35 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
         #region Interface Calling
         private void OnTriggerEnter(Collider other)
         {
-            foreach (Behavior behavior in Behaviors)
-                if (behavior is IOnTriggerEnter behaviorTriggerEnter)
-                    behaviorTriggerEnter.OnTriggerEnter(other);
+            for (int i = 0; i < ns_Behaviors.Length; i++)
+            {
+                if (ns_Behaviors[i] is INyuOnTriggerEnter nyuEnter)
+                    nyuEnter.NyuOnTriggerEnter(other);
+            }
         }
-
         private void OnTriggerExit(Collider other)
         {
-            foreach (Behavior behavior in Behaviors)
-                if (behavior is IOnTriggerExit behaviorTriggerExit)
-                    behaviorTriggerExit.OnTriggerExit(other);
+            for (int i = 0; i < ns_Behaviors.Length; i++)
+            {
+                if (ns_Behaviors[i] is INyuOnTriggerExit nyuExit)
+                    nyuExit.NyuOnTriggerExit(other);
+            }
+        }
+        private void OnCollisionEnter(Collision collision)
+        {
+            for (int i = 0; i < ns_Behaviors.Length; i++)
+            {
+                if (ns_Behaviors[i] is INyuOnCollisionEnter nyuEnter)
+                    nyuEnter.NyuOnCollisionEnter(collision);
+            }
+        }
+        private void OnCollisionExit(Collision collision)
+        {
+            for (int i = 0; i < ns_Behaviors.Length; i++)
+            {
+                if (ns_Behaviors[i] is INyuOnCollisionExit nyuExit)
+                    nyuExit.NyuOnCollisionExit(collision);
+            }
         }
         #endregion
     }

@@ -7,9 +7,13 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
     /// </summary>
     public sealed class NyuProjectile3DManager : NyuProjectileManager<NyuProjectile3D>
     {
+        [SerializeField, Header("The size of the pool; Leave at 0 to Init the pool manually.")]
+        private int s_PoolSize;
+
         private void Awake()
         {
             Instance = this;
+            if (s_PoolSize > 0) Init(s_PoolSize);
         }
 
         /// <summary>

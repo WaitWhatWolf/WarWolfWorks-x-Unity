@@ -444,7 +444,7 @@ namespace WarWolfWorks.NyuEntities
         /// <returns></returns>
         public T GetNyuComponent<T>()
         {
-            foreach(NyuComponent ec in hs_Components)
+            foreach(INyuComponent ec in hs_Components)
             {
                 if (ec is T toReturn)
                     return toReturn;
@@ -460,7 +460,7 @@ namespace WarWolfWorks.NyuEntities
         /// <returns></returns>
         public T GNC<T>()
         {
-            foreach (NyuComponent ec in hs_Components)
+            foreach (INyuComponent ec in hs_Components)
             {
                 if (ec is T toReturn)
                     return toReturn;
@@ -474,9 +474,9 @@ namespace WarWolfWorks.NyuEntities
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public NyuComponent GetNyuComponent(Type type)
+        public INyuComponent GetNyuComponent(Type type)
         {
-            foreach (NyuComponent ec in hs_Components)
+            foreach (INyuComponent ec in hs_Components)
             {
                 if (ec.GetType().IsAssignableFrom(type))
                     return ec;
@@ -490,9 +490,9 @@ namespace WarWolfWorks.NyuEntities
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public NyuComponent GNC(Type type)
+        public INyuComponent GNC(Type type)
         {
-            foreach (NyuComponent ec in hs_Components)
+            foreach (INyuComponent ec in hs_Components)
             {
                 if (ec.GetType().IsAssignableFrom(type))
                     return ec;
@@ -509,7 +509,7 @@ namespace WarWolfWorks.NyuEntities
         /// <returns></returns>
         public bool TryGetNyuComponent<T>(out T component)
         {
-            foreach(NyuComponent ec in hs_Components)
+            foreach(INyuComponent ec in hs_Components)
             {
                 if(ec is T toReturn)
                 {
@@ -530,7 +530,7 @@ namespace WarWolfWorks.NyuEntities
         /// <returns></returns>
         public bool TGNC<T>(out T component)
         {
-            foreach (NyuComponent ec in hs_Components)
+            foreach (INyuComponent ec in hs_Components)
             {
                 if (ec is T toReturn)
                 {

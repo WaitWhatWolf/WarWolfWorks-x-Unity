@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using WarWolfWorks.Interfaces;
 using WarWolfWorks.Interfaces.NyuEntities;
@@ -26,7 +27,119 @@ namespace WarWolfWorks.NyuEntities.MovementSystem
         /// <summary>
         /// Every velocity stacked onto the entity's movement.
         /// </summary>
-        public List<Velocity> Velocities => hs_Velocities;
+        public IEnumerable<Velocity> Velocities => hs_Velocities;
+
+        /// <summary>
+        /// Adds a velocity to this <see cref="NyuMovement"/>.
+        /// </summary>
+        /// <param name="velocity"></param>
+        public void AddVelocity(Velocity velocity)
+        {
+            hs_Velocities.Add(velocity);
+            OnVelocityAdded?.Invoke(velocity);
+        }
+
+        /// <summary>
+        /// Adds a list of velocities to this <see cref="NyuMovement"/>.
+        /// </summary>
+        /// <param name="velocities"></param>
+        public void AddVelocities(params Velocity[] velocities)
+        {
+            hs_Velocities.AddRange(velocities);
+            for(int i = 9; i < velocities.Length; i++)
+            {
+                OnVelocityAdded?.Invoke(velocities[i]);
+            }
+        }
+
+        /// <summary>
+        /// Removes an existing velocity.
+        /// </summary>
+        /// <param name="velocity"></param>
+        /// <returns></returns>
+        public bool RemoveVelocity(Velocity velocity)
+        {
+            if(hs_Velocities.Remove(velocity))
+            {
+                OnVelocityRemoved?.Invoke(velocity);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Removes a list of velocities.
+        /// </summary>
+        /// <param name="velocities"></param>
+        /// <returns></returns>
+        public bool[] RemoveVelocities(params Velocity[] velocities)
+        {
+            bool[] toReturn = new bool[velocities.Length];
+
+            for(int i = 0; i < velocities.Length; i++)
+            {
+                Velocity toRemove = velocities[i];
+                if(toReturn[i] = hs_Velocities.Remove(toRemove))
+                    OnVelocityRemoved?.Invoke(toRemove);
+            }
+
+            return toReturn;
+        }
+
+        /// <summary>
+        /// Removes a IEnumerable of velocities.
+        /// </summary>
+        /// <param name="velocities"></param>
+        /// <returns></returns>
+        public bool[] RemoveVelocities(IEnumerable<Velocity> velocities)
+        {
+            Velocity[] used = velocities.ToArray();
+            bool[] toReturn = new bool[used.Length];
+
+            for (int i = 0; i < used.Length; i++)
+            {
+                Velocity toRemove = used[i];
+                if(toReturn[i] = hs_Velocities.Remove(toRemove))
+                    OnVelocityRemoved?.Invoke(toRemove);
+            }
+
+            return toReturn;
+        }
+
+        /// <summary>
+        /// Returns true if the given velocity is contained within this <see cref="NyuMovement"/>.
+        /// </summary>
+        /// <returns></returns>
+        public bool ContainsVelocity(Velocity velocity)
+        {
+            return hs_Velocities.Contains(velocity);
+        }
+
+        /// <summary>
+        /// Finds a velocity.
+        /// </summary>
+        /// <param name="match"></param>
+        /// <returns></returns>
+        public Velocity FindVelocity(Predicate<Velocity> match)
+            => hs_Velocities.Find(match);
+        
+        /// <summary>
+        /// Finds all velocities that match the given condition.
+        /// </summary>
+        /// <param name="match"></param>
+        /// <returns></returns>
+        public Velocity FindAllVelocities(Predicate<Velocity> match)
+            => hs_Velocities.Find(match);
+
+        /// <summary>
+        /// Invoked when a velocity is added.
+        /// </summary>
+        public event Action<Velocity> OnVelocityAdded;
+        /// <summary>
+        /// Invoked when a velocity is removed.
+        /// </summary>
+        public event Action<Velocity> OnVelocityRemoved;
 
         /// <summary>
         /// Final Velocity that will be applied to this entity.
@@ -40,10 +153,10 @@ namespace WarWolfWorks.NyuEntities.MovementSystem
 
                 Vector3 toReturn = DefaultVelocity;
 
-                for (int i = 0; i < Velocities.Count; i++)
+                for (int i = 0; i < hs_Velocities.Count; i++)
                 {
-                    float multi = Velocities[i].UsesStat ? NyuMain.Stats.CalculatedValue(1, Velocities[i].Affections) : 1;
-                    toReturn += Velocities[i].Value * multi;
+                    float multi = hs_Velocities[i].UsesStat ? NyuMain.Stats.CalculatedValue(1, hs_Velocities[i].Affections) : 1;
+                    toReturn += hs_Velocities[i].Value * multi;
                 }
 
                 return toReturn;
@@ -96,11 +209,11 @@ namespace WarWolfWorks.NyuEntities.MovementSystem
             if (Locked)
                 return;
 
-            for (int i = 0; i < Velocities.Count; i++)
+            for (int i = 0; i < hs_Velocities.Count; i++)
             {
-                Velocities[i].Time = Mathf.Clamp(Velocities[i].Time - Time.deltaTime, 0, Velocities[i].StartTime);
-                if (Velocities[i].Time <= 0 && Velocities[i].DeleteOnCount0)
-                    Velocities.RemoveAt(i);
+                hs_Velocities[i].Time = Mathf.Clamp(hs_Velocities[i].Time - Time.deltaTime, 0, hs_Velocities[i].StartTime);
+                if (hs_Velocities[i].Time <= 0 && hs_Velocities[i].DeleteOnCount0)
+                    RemoveVelocity(hs_Velocities[i]);
             }
         }
     }

@@ -1,15 +1,21 @@
 ﻿using UnityEngine;
+using WarWolfWorks.Attributes;
 
 namespace WarWolfWorks.NyuEntities.ProjectileSystem
 {
     /// <summary>
     /// Projectile manager for 2D bullets.
     /// </summary>
+    [CompleteNoS]
     public sealed class NyuProjectile2DManager : NyuProjectileManager<NyuProjectile2D>
     {
+        [SerializeField, Header("The size of the pool; Leave at 0 to Init the pool manually.")]
+        private int s_PoolSize;
+
         private void Awake()
         {
             Instance = this;
+            if(s_PoolSize > 0) Init(s_PoolSize);
         }
 
         /// <summary>
@@ -22,6 +28,7 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
             projectile.Rigidbody = projectile.gameObject.AddComponent<Rigidbody2D>();
             projectile.Rigidbody.gravityScale = 0;
             projectile.Collider = projectile.gameObject.AddComponent<BoxCollider2D>();
+            projectile.Collider.isTrigger = true;
         }
 
         /// <summary>

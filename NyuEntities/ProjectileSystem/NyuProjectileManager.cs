@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using WarWolfWorks.Interfaces.NyuEntities;
 using WarWolfWorks.Interfaces.UnityMethods;
 using WarWolfWorks.Security;
-using static WarWolfWorks.Constants;
 
 namespace WarWolfWorks.NyuEntities.ProjectileSystem
 {
@@ -20,7 +20,7 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
         protected static NyuProjectileManager<T> Instance;
 
         /// <summary>
-        /// Returns true if <see cref="Initiate(int)"/> was previously called.
+        /// Returns true if <see cref="Init(int)"/> was previously called.
         /// </summary>
         public static bool Populated { get; private set; }
 
@@ -32,9 +32,9 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
         /// <summary>
         /// Initiates this ProjectileManager. Can be re-invoked to change the pool size; Destroys all previous projectiles in doing so.
         /// </summary>
-        public static void Initiate(int population)
+        public static void Init(int poolSize)
         {
-            if (population < 1)
+            if (poolSize < 1)
                 throw new NyuProjectileException(1);
 
             if (Instance == null)
@@ -50,14 +50,14 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
                 EnumeratorReset();
             }
 
-            Projectiles = new T[population];
-            InactiveProjectiles = new List<T>(population);
-            ActiveProjectiles = new List<T>(population);
+            Projectiles = new T[poolSize];
+            InactiveProjectiles = new List<T>(poolSize);
+            ActiveProjectiles = new List<T>(poolSize);
 
             lock (Projectiles)
             {
-                if (!Populated) ProjectileHolder = new GameObject(VARN_PROJECTILE_HOLDER).transform;
-                for (int i = 0; i < population; i++)
+                if (!Populated) ProjectileHolder = Instance.transform;// new GameObject(VARN_PROJECTILE_HOLDER).transform;
+                for (int i = 0; i < poolSize; i++)
                 {
                     GameObject g = new GameObject("Projectile_" + (i + 1).ToString());
                     g.SetActive(false);
@@ -76,7 +76,7 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
         }
         
         /// <summary>
-        /// Invoked when a projectile is added into the pool through <see cref="Initiate(int)"/>.
+        /// Invoked when a projectile is added into the pool through <see cref="Init(int)"/>.
         /// </summary>
         /// <param name="projectile"></param>
         protected abstract void OnProjectileCreated(T projectile);
@@ -108,12 +108,15 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
             projectile.ns_Behaviors = behaviors.ToArray();
 
             InactiveProjectiles.Remove(projectile);
+            projectile.gameObject.SetActive(true);
             ActiveProjectiles.Add(projectile);
 
             foreach(NyuProjectile.Behavior behavior in projectile.Behaviors)
             {
-                if (behavior is IAwake behaviorAwake)
-                    behaviorAwake.Awake();
+                behavior.Parent = projectile;
+
+                if (behavior is INyuAwake behaviorAwake)
+                    behaviorAwake.NyuAwake();
             }
         }
 
@@ -129,9 +132,10 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
 
             if (ActiveProjectiles.Remove(projectile))
             {
-                if (projectile is IOnDestroy projectileOnDestroy)
-                    projectileOnDestroy.OnDestroy();
+                if (projectile is INyuOnDestroy projectileOnDestroy)
+                    projectileOnDestroy.NyuOnDestroy();
 
+                projectile.gameObject.SetActive(false);
                 InactiveProjectiles.Add(projectile);
                 return true;
             }
@@ -149,8 +153,8 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
         {
             for(int i = 0; i < Projectiles.Length; i++)
             {
-                if (Projectiles[i] is IUpdate projectileUpdate)
-                    projectileUpdate.Update();
+                if (Projectiles[i] is INyuUpdate projectileUpdate)
+                    projectileUpdate.NyuUpdate();
             }
         }
 
@@ -162,8 +166,8 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
         {
             for (int i = 0; i < Projectiles.Length; i++)
             {
-                if (Projectiles[i] is IFixedUpdate projectileFixedUpdate)
-                    projectileFixedUpdate.FixedUpdate();
+                if (Projectiles[i] is INyuFixedUpdate projectileFixedUpdate)
+                    projectileFixedUpdate.NyuFixedUpdate();
             }
         }
 
@@ -175,8 +179,8 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
         {
             for (int i = 0; i < Projectiles.Length; i++)
             {
-                if (Projectiles[i] is ILateUpdate projectileLateUpdate)
-                    projectileLateUpdate.LateUpdate();
+                if (Projectiles[i] is INyuLateUpdate projectileLateUpdate)
+                    projectileLateUpdate.NyuLateUpdate();
             }
         }
         #endregion

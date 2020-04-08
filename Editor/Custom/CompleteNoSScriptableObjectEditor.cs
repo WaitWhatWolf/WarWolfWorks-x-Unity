@@ -24,10 +24,7 @@ namespace WarWolfWorks.EditorBase.Custom
             try { displaysNoS = target.GetType().GetCustomAttributes(typeof(CompleteNoS), true).Length > 0; }
             catch { displaysNoS = false; }
 
-            if (displaysNoS)
-            {
-                displaysNoS = EditorHooks.GetAllVisibleProperties(serializedObject, false, out Properties, out PropertyContents);
-            }
+            displaysNoS = EditorHooks.GetAllVisibleProperties(serializedObject, false, out Properties, out PropertyContents, displaysNoS);
         }
 
         /// <summary>

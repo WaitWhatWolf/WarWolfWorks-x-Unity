@@ -52,6 +52,12 @@ namespace WarWolfWorks.NyuEntities
             UpdateInvoker.StartCoroutine(IC_LateUpdate());
         }
 
+        private static void WarningDebugNRE(string interfaceName, string objectName, Exception exception)
+        {
+            AdvancedDebug.LogWarningFormat("Couldn't call {0} of {1} as there was an exception.\n{2}", AdvancedDebug.DEBUG_LAYER_WWW_INDEX
+                , interfaceName, objectName, exception);
+        }
+
         /// <summary>
         /// Invokes the update method of all entities.
         /// </summary>
@@ -66,13 +72,27 @@ namespace WarWolfWorks.NyuEntities
                     if (!AllEntities[i].enabled)
                         continue;
 
-                    if (AllEntities[i] is INyuUpdate entityUpdate)
-                        entityUpdate.NyuUpdate();
+                    try
+                    {
+                        if (AllEntities[i] is INyuUpdate entityUpdate)
+                            entityUpdate.NyuUpdate();
+                    }
+                    catch(Exception e)
+                    {
+                        WarningDebugNRE(nameof(INyuUpdate), AllEntities[i].GetType().Name, e);
+                    }
 
                     for (int j = 0; j < AllEntities[i].hs_Components.Count; j++)
                     {
-                        if (AllEntities[i].hs_Components[j] is INyuUpdate nyuUpdate)
-                            nyuUpdate.NyuUpdate();
+                        try
+                        {
+                            if (AllEntities[i].hs_Components[j] is INyuUpdate nyuUpdate)
+                                nyuUpdate.NyuUpdate();
+                        }
+                        catch (Exception e)
+                        {
+                            WarningDebugNRE(nameof(INyuUpdate), AllEntities[i].hs_Components[j].GetType().Name, e);
+                        }
                     }
                 }
             }
@@ -92,13 +112,27 @@ namespace WarWolfWorks.NyuEntities
                     if (!AllEntities[i].enabled)
                         continue;
 
-                    if (AllEntities[i] is INyuFixedUpdate entityFixed)
-                        entityFixed.NyuFixedUpdate();
+                    try
+                    { 
+                        if (AllEntities[i] is INyuFixedUpdate entityFixed)
+                            entityFixed.NyuFixedUpdate();
+                    }
+                    catch (Exception e)
+                    {
+                        WarningDebugNRE(nameof(INyuFixedUpdate), AllEntities[i].GetType().Name, e);
+                    }
 
                     for (int j = 0; j < AllEntities[i].hs_Components.Count; j++)
                     {
-                        if (AllEntities[i].hs_Components[j] is INyuFixedUpdate nyuFixed)
-                            nyuFixed.NyuFixedUpdate();
+                        try
+                        {
+                            if (AllEntities[i].hs_Components[j] is INyuFixedUpdate nyuFixed)
+                                nyuFixed.NyuFixedUpdate();
+                        }
+                        catch (Exception e)
+                        {
+                            WarningDebugNRE(nameof(INyuFixedUpdate), AllEntities[i].hs_Components[j].GetType().Name, e);
+                        }
                     }
                 }
             }
@@ -118,13 +152,27 @@ namespace WarWolfWorks.NyuEntities
                     if (!AllEntities[i].enabled)
                         continue;
 
-                    if (AllEntities[i] is INyuLateUpdate entityLate)
-                        entityLate.NyuLateUpdate();
+                    try
+                    {
+                        if (AllEntities[i] is INyuLateUpdate entityLate)
+                            entityLate.NyuLateUpdate();
+                    }
+                    catch (Exception e)
+                    {
+                        WarningDebugNRE(nameof(INyuLateUpdate), AllEntities[i].GetType().Name, e);
+                    }
 
                     for (int j = 0; j < AllEntities[i].hs_Components.Count; j++)
                     {
-                        if (AllEntities[i].hs_Components[j] is INyuLateUpdate nyuLate)
-                            nyuLate.NyuLateUpdate();
+                        try
+                        {
+                            if (AllEntities[i].hs_Components[j] is INyuLateUpdate nyuLate)
+                                nyuLate.NyuLateUpdate();
+                        }
+                        catch (Exception e)
+                        {
+                            WarningDebugNRE(nameof(INyuLateUpdate), AllEntities[i].hs_Components[j].GetType().Name, e);
+                        }
                     }
                 }
             }
@@ -463,15 +511,21 @@ namespace WarWolfWorks.NyuEntities
         /// <summary>
         /// Invoked when an entity is instantiated through any <see cref="NyuManager"/>.New method.
         /// </summary>
-        public static event Action<Nyu> OnEntityBegin;
+        public static event Action<Nyu> OnNyuBegin;
 
         /// <summary>
         /// Invoked when an entity is destroyed through <see cref="Destroy(Nyu)"/>. 
         /// (Does not get invoked when the entity is destroyed unofficially.)
         /// </summary>
-        public static event Action<Nyu> OnEntityEnd;
+        public static event Action<Nyu> OnNyuEnd;
+        /// <summary>
+        /// Invoked when an entity is destroyed unofficially.
+        /// </summary>
+        public static event Action<Nyu> OnNyuEndUnofficial;
 
-        internal static void CallEntityBegin(Nyu of) => OnEntityBegin?.Invoke(of);
+
+
+        internal static void CallEntityBegin(Nyu of) => OnNyuBegin?.Invoke(of);
 
         /// <summary>
         /// Official method to instantiate a new <see cref="Nyu"/>.
@@ -490,7 +544,7 @@ namespace WarWolfWorks.NyuEntities
             toReturn.CallInit();
             AllEntities.Add(toReturn);
 
-            OnEntityBegin?.Invoke(toReturn);
+            OnNyuBegin?.Invoke(toReturn);
 
             return toReturn;
         }
@@ -512,7 +566,7 @@ namespace WarWolfWorks.NyuEntities
             toReturn.CallInit();
             AllEntities.Add(toReturn);
 
-            OnEntityBegin?.Invoke(toReturn);
+            OnNyuBegin?.Invoke(toReturn);
 
             return toReturn;
         }
@@ -546,7 +600,6 @@ namespace WarWolfWorks.NyuEntities
                     queue.NyuOnDestroyQueued();
             }
 
-
             AllEntities.Remove(entity);
 
             for (int i = entity.hs_Components.Count - 1; i >= 0; i--)
@@ -560,7 +613,29 @@ namespace WarWolfWorks.NyuEntities
             if (entity is INyuOnDestroy entityDestroy)
                 entityDestroy.NyuOnDestroy();
             entity.ns_DestroyedCorrectly = true;
-            OnEntityEnd?.Invoke(entity);
+            OnNyuEnd?.Invoke(entity);
+            UnityEngine.Object.Destroy(entity.gameObject);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Destroys the given entity without triggering any of it's destroy methods, including it's components.
+        /// (Useful to despawn entities)
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static bool DestroyUnofficially(Nyu entity)
+        {
+            if (entity == null)
+                return false;
+
+            AllEntities.Remove(entity);
+
+            entity.hs_Components.Clear();
+
+            entity.ns_DestroyedCorrectly = true;
+            OnNyuEndUnofficial?.Invoke(entity);
             UnityEngine.Object.Destroy(entity.gameObject);
 
             return true;

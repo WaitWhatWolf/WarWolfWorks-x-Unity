@@ -88,7 +88,7 @@ namespace WarWolfWorks.EditorBase.PropertyDrawers
         /// <param name="label"></param>
         protected virtual void GUIDraw(ref Rect position, SerializedProperty property, GUIContent label)
         {
-            DrawValue(position, property.FindPropertyRelative("value"), position.x, $"{label.text} Value", out _);
+            DrawValue(position, property.FindPropertyRelative("s_Value"), position.x, $"{label.text} Value", out _);
 
             AsEnumStatAttribute enumAttribute = null;
 

@@ -17,7 +17,7 @@ namespace WarWolfWorks.NyuEntities.AttackSystem
     /// and <see cref="INyuOnDestroy"/>)
     /// </summary>
     [CompleteNoS]
-    public abstract class Attack : ScriptableObject, INyuReferencable, IParentable<NyuAttack>
+    public abstract class Attack : ScriptableObject, INyuReferencable, IParentable<NyuAttack>, INyuUpdate
     {
         /// <summary>
         /// The <see cref="Nyu"/> holder of this attack.
@@ -162,7 +162,7 @@ namespace WarWolfWorks.NyuEntities.AttackSystem
         /// <summary>
         /// When overriding, make sure you include "base.Update();" as it takes care of the attack speed.
         /// </summary>
-        public virtual void Update()
+        public virtual void NyuUpdate()
         {
             ns_AttackSpeedCounter += Time.deltaTime * TimeScale;
         }

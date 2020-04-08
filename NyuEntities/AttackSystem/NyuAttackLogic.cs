@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using WarWolfWorks.Interfaces.NyuEntities;
 using WarWolfWorks.Interfaces.UnityMethods;
+using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.NyuEntities.AttackSystem
 {
-    public sealed partial class NyuAttack : INyuUpdate, INyuFixedUpdate, INyuLateUpdate, INyuOnEnable, INyuOnDisable, INyuOnDestroy
+    public sealed partial class NyuAttack : INyuAwake, INyuUpdate, INyuFixedUpdate, INyuLateUpdate, INyuOnEnable, INyuOnDisable, INyuOnDestroy
     {
         [SerializeField]
         private List<SubAttackComponent> AllAttacks = new List<SubAttackComponent>();
@@ -359,7 +360,6 @@ namespace WarWolfWorks.NyuEntities.AttackSystem
 
         private void InstantiateAllAttacks()
         {
-
             for (int i = 0; i < AllAttacks.Count; i++)
             {
                 SubAttackComponent stored = AllAttacks[i];
@@ -382,14 +382,14 @@ namespace WarWolfWorks.NyuEntities.AttackSystem
         }
 
         /// <summary>
-        /// Unity's Update method called by EntityComponent.
+        /// Unity's Update method called by NyuComponent.
         /// </summary>
         void INyuUpdate.NyuUpdate()
         {
-            for(int i = 0; i < AllAttacks.Count; i++)
+            for (int i = 0; i < AllAttacks.Count; i++)
             {
                 AllAttacks[i].Attack.TimeScale = Locked ? 0 : 1;
-                AllAttacks[i].Attack.Update();
+                AllAttacks[i].Attack.NyuUpdate();
 
                 if (AllAttacks[i].Condition && AllAttacks[i].Condition.Met(AllAttacks[i].Attack) && AllAttacks[i].Active)
                 {
@@ -439,7 +439,16 @@ namespace WarWolfWorks.NyuEntities.AttackSystem
 
         void INyuOnDestroy.NyuOnDestroy()
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < AllAttacks.Count; i++)
+            {
+                if (AllAttacks[i] is INyuOnDestroy attackOnDestroy)
+                    attackOnDestroy.NyuOnDestroy();
+            }
+        }
+
+        void INyuAwake.NyuAwake()
+        {
+            InstantiateAllAttacks();
         }
     }
 }

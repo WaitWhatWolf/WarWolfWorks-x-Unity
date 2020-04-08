@@ -5057,7 +5057,7 @@
             Returns true if the interval between attack based on attack speed was met.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.AttackSystem.Attack.Update">
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystem.Attack.NyuUpdate">
             <summary>
             When overriding, make sure you include "base.Update();" as it takes care of the attack speed.
             </summary>
@@ -5438,7 +5438,7 @@
         </member>
         <member name="M:WarWolfWorks.NyuEntities.AttackSystem.NyuAttack.WarWolfWorks#Interfaces#NyuEntities#INyuUpdate#NyuUpdate">
             <summary>
-            Unity's Update method called by EntityComponent.
+            Unity's Update method called by NyuComponent.
             </summary>
         </member>
         <member name="T:WarWolfWorks.NyuEntities.HealthSystem.DefaultHealthDamage">
@@ -5950,7 +5950,7 @@
         <member name="P:WarWolfWorks.NyuEntities.NyuRotation.Position">
             <summary>
             The position of the parent.
-            </summary>p
+            </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.NyuRotation.Rotation">
             <summary>
@@ -5985,6 +5985,69 @@
         <member name="P:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement.Velocities">
             <summary>
             Every velocity stacked onto the entity's movement.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement.AddVelocity(WarWolfWorks.NyuEntities.MovementSystem.Velocity)">
+            <summary>
+            Adds a velocity to this <see cref="T:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement"/>.
+            </summary>
+            <param name="velocity"></param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement.AddVelocities(WarWolfWorks.NyuEntities.MovementSystem.Velocity[])">
+            <summary>
+            Adds a list of velocities to this <see cref="T:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement"/>.
+            </summary>
+            <param name="velocities"></param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement.RemoveVelocity(WarWolfWorks.NyuEntities.MovementSystem.Velocity)">
+            <summary>
+            Removes an existing velocity.
+            </summary>
+            <param name="velocity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement.RemoveVelocities(WarWolfWorks.NyuEntities.MovementSystem.Velocity[])">
+            <summary>
+            Removes a list of velocities.
+            </summary>
+            <param name="velocities"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement.RemoveVelocities(System.Collections.Generic.IEnumerable{WarWolfWorks.NyuEntities.MovementSystem.Velocity})">
+            <summary>
+            Removes a IEnumerable of velocities.
+            </summary>
+            <param name="velocities"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement.ContainsVelocity(WarWolfWorks.NyuEntities.MovementSystem.Velocity)">
+            <summary>
+            Returns true if the given velocity is contained within this <see cref="T:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement.FindVelocity(System.Predicate{WarWolfWorks.NyuEntities.MovementSystem.Velocity})">
+            <summary>
+            Finds a velocity.
+            </summary>
+            <param name="match"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement.FindAllVelocities(System.Predicate{WarWolfWorks.NyuEntities.MovementSystem.Velocity})">
+            <summary>
+            Finds all velocities that match the given condition.
+            </summary>
+            <param name="match"></param>
+            <returns></returns>
+        </member>
+        <member name="E:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement.OnVelocityAdded">
+            <summary>
+            Invoked when a velocity is added.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement.OnVelocityRemoved">
+            <summary>
+            Invoked when a velocity is removed.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement.UsedVelocity">
@@ -6516,15 +6579,20 @@
             <param name="includeNonParentableParent"></param>
             <returns></returns>
         </member>
-        <member name="E:WarWolfWorks.NyuEntities.NyuManager.OnEntityBegin">
+        <member name="E:WarWolfWorks.NyuEntities.NyuManager.OnNyuBegin">
             <summary>
             Invoked when an entity is instantiated through any <see cref="T:WarWolfWorks.NyuEntities.NyuManager"/>.New method.
             </summary>
         </member>
-        <member name="E:WarWolfWorks.NyuEntities.NyuManager.OnEntityEnd">
+        <member name="E:WarWolfWorks.NyuEntities.NyuManager.OnNyuEnd">
             <summary>
             Invoked when an entity is destroyed through <see cref="M:WarWolfWorks.NyuEntities.NyuManager.Destroy(WarWolfWorks.NyuEntities.Nyu)"/>. 
             (Does not get invoked when the entity is destroyed unofficially.)
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.NyuEntities.NyuManager.OnNyuEndUnofficial">
+            <summary>
+            Invoked when an entity is destroyed unofficially.
             </summary>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.NyuManager.New(WarWolfWorks.NyuEntities.Nyu,UnityEngine.Vector3,UnityEngine.Quaternion)">
@@ -6558,6 +6626,14 @@
             <param name="entity"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.NyuEntities.NyuManager.DestroyUnofficially(WarWolfWorks.NyuEntities.Nyu)">
+            <summary>
+            Destroys the given entity without triggering any of it's destroy methods, including it's components.
+            (Useful to despawn entities)
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
         <member name="T:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile">
             <summary>
             Class which handles projectile behaviors.
@@ -6569,11 +6645,11 @@
         <member name="T:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.Behavior">
             <summary>
             Class used to make a projectile behave in a specified way.
-            (Supported interfaces: <see cref="T:WarWolfWorks.Interfaces.UnityMethods.IAwake"/>,
-            <see cref="T:WarWolfWorks.Interfaces.UnityMethods.IUpdate"/>, <see cref="T:WarWolfWorks.Interfaces.UnityMethods.IFixedUpdate"/>, <see cref="T:WarWolfWorks.Interfaces.UnityMethods.ILateUpdate"/>,
-            <see cref="T:WarWolfWorks.Interfaces.UnityMethods.IOnTriggerEnter"/> (conditional), <see cref="T:WarWolfWorks.Interfaces.UnityMethods.IOnTriggerExit"/> (conditional),
-            <see cref="T:WarWolfWorks.Interfaces.UnityMethods.IOnTriggerExit2D"/> (conditional), <see cref="T:WarWolfWorks.Interfaces.UnityMethods.IOnTriggerExit2D"/> (conditional),
-            and <see cref="T:WarWolfWorks.Interfaces.UnityMethods.IOnDestroy"/>)
+            (Supported interfaces: <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuAwake"/>,
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuUpdate"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuFixedUpdate"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuLateUpdate"/>,
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnTriggerEnter"/> (conditional), <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnTriggerExit"/> (conditional),
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnTriggerExit2D"/> (conditional), <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnTriggerExit2D"/> (conditional),
+            and <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnDestroy"/>)
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.Behavior.Parent">
@@ -6761,7 +6837,7 @@
         </member>
         <member name="P:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Populated">
             <summary>
-            Returns true if <see cref="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Initiate(System.Int32)"/> was previously called.
+            Returns true if <see cref="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Init(System.Int32)"/> was previously called.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.ProjectileHolder">
@@ -6769,14 +6845,14 @@
             The transform which groups all projectiles together.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Initiate(System.Int32)">
+        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Init(System.Int32)">
             <summary>
             Initiates this ProjectileManager. Can be re-invoked to change the pool size; Destroys all previous projectiles in doing so.
             </summary>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.OnProjectileCreated(`0)">
             <summary>
-            Invoked when a projectile is added into the pool through <see cref="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Initiate(System.Int32)"/>.
+            Invoked when a projectile is added into the pool through <see cref="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Init(System.Int32)"/>.
             </summary>
             <param name="projectile"></param>
         </member>

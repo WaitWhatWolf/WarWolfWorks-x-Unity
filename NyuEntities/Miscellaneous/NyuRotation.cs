@@ -13,7 +13,7 @@ namespace WarWolfWorks.NyuEntities
     {
         /// <summary>
         /// The position of the parent.
-        /// </summary>p
+        /// </summary>
         public Vector3 Position { get => NyuMain.Position; set => NyuMain.Position = value; }
 
         /// <summary>
