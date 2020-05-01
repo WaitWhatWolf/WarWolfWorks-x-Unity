@@ -24,7 +24,7 @@ namespace WarWolfWorks.IO.CTS
         /// <summary>
         /// A regex expression to find if a line has a valid name pattern for saving a variable.
         /// </summary>
-        public static readonly Regex Expression_Variable_Name = new Regex(@"^\w\s");
+        public static readonly Regex Expression_Variable = new Regex(@"^.+\sIS\s.+$");
 
         internal static readonly string[] Splitter = new string[] { SV_VARIABLE_POINTER };
 
