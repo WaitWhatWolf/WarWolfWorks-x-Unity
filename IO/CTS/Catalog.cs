@@ -26,24 +26,24 @@ namespace WarWolfWorks.IO.CTS
         /// </summary>
         public static readonly Regex Expression_Variable_Name = new Regex(@"^\w\s");
 
-        internal static readonly string[] Splitter = new string[] { SVARV_VARIABLE_POINTER };
+        internal static readonly string[] Splitter = new string[] { SV_VARIABLE_POINTER };
 
         /// <summary>
         /// The "Equals", or the string value which "points" or "splits" the value from the name of the variable.
         /// </summary>
-        public const string SVARV_VARIABLE_POINTER = " IS ";
+        public const string SV_VARIABLE_POINTER = " IS ";
         /// <summary>
         /// Character which starts the wrapping of a category.
         /// </summary>
-        public const char SVARV_CATEGORY_WRAP_BEGIN = '[';
+        public const char SV_CATEGORY_WRAP_BEGIN = '[';
         /// <summary>
         /// Character which ends the wrapping of a category.
         /// </summary>
-        public const char SVARV_CATEGORY_WRAP_END = ']';
+        public const char SV_CATEGORY_WRAP_END = ']';
         /// <summary>
         /// Character which indicates the end of a category.
         /// </summary>
-        public const string SVARV_CATEGORY_END = "/";
+        public const string SV_CATEGORY_END = "/";
 
         /// <summary>
         /// The file path towards this catalog.
@@ -88,7 +88,7 @@ namespace WarWolfWorks.IO.CTS
         /// <returns></returns>
         public string GetCategoryStart()
         {
-            return SVARV_CATEGORY_WRAP_BEGIN + Category + SVARV_CATEGORY_WRAP_END;
+            return SV_CATEGORY_WRAP_BEGIN + Category + SV_CATEGORY_WRAP_END;
         }
         
         /// <summary>
@@ -97,7 +97,7 @@ namespace WarWolfWorks.IO.CTS
         /// <returns></returns>
         public string GetCategoryEnd()
         {
-            return SVARV_CATEGORY_WRAP_BEGIN + SVARV_CATEGORY_END + Category + SVARV_CATEGORY_WRAP_END;
+            return SV_CATEGORY_WRAP_BEGIN + SV_CATEGORY_END + Category + SV_CATEGORY_WRAP_END;
         }
 
         /// <summary>
