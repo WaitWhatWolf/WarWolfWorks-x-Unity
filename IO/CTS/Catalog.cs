@@ -16,11 +16,11 @@ namespace WarWolfWorks.IO.CTS
         /// <summary>
         /// A regex expression to find if a line is a category start.
         /// </summary>
-        public static readonly Regex Expression_Category_Start = new Regex(@"^\[(.)+\]$");
+        public static readonly Regex Expression_Category_Start = new Regex(@"^\[(?!\/).+\]$");
         /// <summary>
         /// A regex expression to find if a line is a category end.
         /// </summary>
-        public static readonly Regex Expression_Category_End = new Regex(@"^\[\/(.)+\]$");
+        public static readonly Regex Expression_Category_End = new Regex(@"^\[\/.+\]$");
         /// <summary>
         /// A regex expression to find if a line has a valid name pattern for saving a variable.
         /// </summary>
@@ -150,6 +150,7 @@ namespace WarWolfWorks.IO.CTS
             if(Overriden)
             {
                 Lines = PreviousLines;
+                PreviousLines = null;
                 Overriden = false;
             }
         }
@@ -262,6 +263,9 @@ namespace WarWolfWorks.IO.CTS
         {
             Path = path;
             Category = category;
+
+            if (!Expression_Category_Start.IsMatch(GetCategoryStart()))
+                throw new ArgumentException(@"Category given has an invalid format; Make sure it has no new lines.");
 
             if (File.Exists(path))
             {
