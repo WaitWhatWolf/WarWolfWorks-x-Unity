@@ -1,5 +1,5 @@
 ﻿using System;
-using WarWolfWorks.EntitiesSystem.Statistics;
+using WarWolfWorks.NyuEntities.Statistics;
 
 namespace WarWolfWorks.Attributes
 {

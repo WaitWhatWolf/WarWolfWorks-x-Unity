@@ -16,6 +16,9 @@ namespace WarWolfWorks.EditorBase.Services
         /// </summary>
         private int Selected = 0;
 
+        /// <summary>
+        /// All current service tabs.
+        /// </summary>
         private IService[] Tabs;
 
         private GUIStyle TabStyle;
@@ -52,6 +55,8 @@ namespace WarWolfWorks.EditorBase.Services
         {
             for (int i = 0; i < Tabs.Length; i++)
                 Tabs[i].OnDisable();
+
+            WarWolfWorks.Internal.Settings.Apply();
         }
 
         private void OnGUI()
@@ -59,7 +64,7 @@ namespace WarWolfWorks.EditorBase.Services
             Repaint();
 
             Rect TabsPosition = new Rect();
-            TabsPosition.height = SERVICES_TAB_HEIGHT;
+            TabsPosition.height = V_SERVICES_TAB_HEIGHT;
             TabsPosition.width = position.width / Settings_Tab_Menus.Length;
 
             EditorGUILayout.Space(TabsPosition.height);
@@ -76,13 +81,17 @@ namespace WarWolfWorks.EditorBase.Services
                 GUI.Label(TabsPosition, string.Format("{0}{1}{2}", Tab_RichStart, Settings_Tab_Menus[i].Name, Tab_RichEnd), TabStyle);
 
                 if (Event.current.rawType == EventType.MouseDown && EditorHooks.EventMouseInRect(TabsPosition))
+                {
+                    WarWolfWorks.Internal.Settings.Apply();
+                    Tabs[Selected].OnDisable();
                     Selected = i;
+                }
 
                 TabsPosition.x = TabsPosition.xMax;
                 if (i != Settings_Tab_Menus.Length - 1)
                 {
-                    EditorHooks.DrawColoredSquare(new Rect(TabsPosition.position, new Vector2(SERVICES_TAB_SEPARATOR_WIDTH, TabsPosition.height)), Color.black);
-                    TabsPosition.xMin += SERVICES_TAB_SEPARATOR_WIDTH;
+                    EditorHooks.DrawColoredSquare(new Rect(TabsPosition.position, new Vector2(V_SERVICES_TAB_SEPARATOR_WIDTH, TabsPosition.height)), Color.black);
+                    TabsPosition.xMin += V_SERVICES_TAB_SEPARATOR_WIDTH;
                 }
 
                 if(i == Selected)

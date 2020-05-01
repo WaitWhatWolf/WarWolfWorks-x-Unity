@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
-using static WarWolfWorks.Utility.Hooks.Streaming;
+using WarWolfWorks.IO.CTS;
 using static WarWolfWorks.Constants;
 
 [assembly: InternalsVisibleTo("WarWolfWorks.EditorBase")]
@@ -43,22 +42,15 @@ namespace WarWolfWorks.Utility
             /// <summary>
             /// Constructor based off of <see cref="Hooks.Streaming"/> save lines.
             /// </summary>
-            /// <param name="saveLine"></param>
-            internal WKey(string saveLine)
+            /// <param name="variable"></param>
+            internal WKey(Variable variable)
             {
-                string[] split = saveLine.Split(STREAM_VALUE_POINTER, StringSplitOptions.None);
-                Name = split[0];
-                Key = Hooks.Parse<KeyCode>(split[1]);
+                Name = variable.Name;
+                Key = Hooks.Parse<KeyCode>(variable.Value);
             }
         }
 
         private static Dictionary<string, KeyCode> OptimizedKeys = new Dictionary<string, KeyCode>();
-
-        internal static Catalog KeysSaver(string name, string value)
-            => Catalog.Saver(SVARNPTH_KEYS, SVARNCN_KEYS, name, value);
-
-        internal static Catalog KeysLoader(string name)
-            => Catalog.Loader(SVARNPTH_KEYS, SVARNCN_KEYS, name);
 
         /// <summary>
         /// Is the optimization mode currently on?
@@ -122,7 +114,7 @@ namespace WarWolfWorks.Utility
         /// <returns></returns>
         public static KeyCode GetDatabaseKey(string key)
         {
-            return IsOptimized ? OptimizedKeys[key] : Hooks.Parse<KeyCode>(Load(Catalog.Loader(SVARNPTH_KEYS, SVARNCN_KEYS, key)));
+            return IsOptimized ? OptimizedKeys[key] : Hooks.Parse<KeyCode>(CTS_DefaultKeys[key]);
         }
 
         /// <summary>
@@ -234,11 +226,9 @@ namespace WarWolfWorks.Utility
             }
             else
             {
-                string[] allVariablesFromCategory = LoadAll(Catalog.LoaderFull(SVARNPTH_KEYS, SVARNCN_KEYS), true).ToArray();
-                for (int j = 0; j < allVariablesFromCategory.Length; j++)
-                {
-                    list.Add(new WKey(allVariablesFromCategory[j]));
-                }
+                IReadOnlyList<Variable> variables = CTS_DefaultKeys.GetAllLines();
+                foreach (Variable variable in variables)
+                    list.Add(new WKey(variable));
             }
             return list;
         }
@@ -261,7 +251,7 @@ namespace WarWolfWorks.Utility
         {
             if (!IsOptimized)
             {
-                return !string.IsNullOrEmpty(Load(Catalog.Loader(SVARNPTH_KEYS, SVARNCN_KEYS, keyName)));
+                return !string.IsNullOrEmpty(CTS_DefaultKeys[keyName]);
             }
             return OptimizedKeys.ContainsKey(keyName);
         }
@@ -284,8 +274,9 @@ namespace WarWolfWorks.Utility
             {
                 try
                 {
-                    CreateFolder(SVARNPTH_KEYS);
-                    Save(Catalog.Saver(SVARNPTH_KEYS, SVARNCN_KEYS, name, value.ToString()));
+                    Hooks.Streaming.CreateFolder(SV_Path_DefaultKeys);
+                    CTS_DefaultKeys[name] = value.ToString();
+                    CTS_DefaultKeys.Apply();
                     Debug.Log($"{name} Key was successfully saved as {value}!");
                 }
                 catch (Exception ex)
@@ -326,24 +317,17 @@ namespace WarWolfWorks.Utility
         /// <summary>
         /// Changes a key's name.
         /// </summary>
-        /// <param name="of">Current name of the key.</param>
+        /// <param name="from">Current name of the key.</param>
         /// <param name="to">New name of the key.</param>
-        public static bool ChangeKeyName(string of, string to)
+        public static bool ChangeKeyName(string from, string to)
         {
-            if (of == to)
-                goto FalseReturn;
-
-            if (!IsOptimizedCheck())
+            if (!IsOptimizedCheck() && CTS_DefaultKeys.Rename(from, to))
             {
-                if (!ChangeVariableName(Catalog.Loader(SVARNPTH_KEYS, SVARNCN_KEYS, of), to))
-                    goto FalseReturn;
-
-                AdvancedDebug.Log($"{of}'s name was successfully changed to {to}", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
+                AdvancedDebug.Log($"{from}'s name was successfully changed to {to}", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
                 return true;
             }
 
-        FalseReturn:
-            AdvancedDebug.LogWarning($"{of}'s name couldn't be changed as it was not found! Make sure a key under the given name exists.", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
+            AdvancedDebug.LogWarning($"{from}'s name couldn't be changed! Make sure a key under the given name exists and the new key name is not the same.", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
             return false;
         }
 
@@ -351,12 +335,14 @@ namespace WarWolfWorks.Utility
         /// Removes a key from the database.
         /// </summary>
         /// <param name="key"></param>
-        public static void RemoveKey(string key)
+        public static bool RemoveKey(string key)
         {
             if (!IsOptimizedCheck())
             {
-                Remove(Catalog.Loader(SVARNPTH_KEYS, SVARNCN_KEYS, key));
+                return CTS_DefaultKeys.Remove(key);
             }
+
+            return false;
         }
 
         /// <summary>
@@ -375,6 +361,14 @@ namespace WarWolfWorks.Utility
             {
                 Optimize();
             }
+        }
+
+        /// <summary>
+        /// Applies all changes made to <see cref="DefaultKeys"/> to it's save file (CTS).
+        /// </summary>
+        public static void Apply()
+        {
+            CTS_DefaultKeys.Apply();
         }
     }
 }

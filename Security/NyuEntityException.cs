@@ -67,7 +67,7 @@ namespace WarWolfWorks.Security
                     ActMessage = "A Nyu.AddNyuComponent(Type) was attempted where the type given isn't implementing INyuComponent.";
                     break;
                 case 6:
-                    ActMessage = $"{VARN_NYUMANAGER} was destroyed.";
+                    ActMessage = $"{VN_NYUMANAGER} was destroyed.";
                     break;
             }
         }

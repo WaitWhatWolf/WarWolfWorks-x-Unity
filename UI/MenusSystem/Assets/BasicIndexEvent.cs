@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using WarWolfWorks.AudioSystem;
 using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.UI.MenusSystem.Assets
@@ -14,6 +13,7 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         /// <summary>
         /// Graphics assigned through the inspector.
         /// </summary>
+        [SerializeField]
         public List<MaskableGraphic> Graphics;
 
         /// <summary>
@@ -26,22 +26,26 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         /// </summary>
         [Range(0.1f, 10f)]
         public float SizeTransitionSpeed = 2;
+
+        [SerializeField]
+        private bool s_TColor, s_TAnchors;
+       
         /// <summary>
         /// Color used with <see cref="OnFocused"/>.
         /// </summary>
-        public Color FocusedColor = Color.yellow;
+        public Color FocusedColor = default;
         /// <summary>
         /// Color used with <see cref="OnUnfocused"/>.
         /// </summary>
-        public Color UnfocusedColor = Color.cyan * .75f;
+        public Color UnfocusedColor = default;
         /// <summary>
         /// The size used with <see cref="OnFocused"/>.
         /// </summary>
-        public Vector2 FocusedSize = Vector2.one * 1.1f;
+        public Vector4 FocusedAnchors = default;
         /// <summary>
         /// The size used with <see cref="OnUnfocused"/>
         /// </summary>
-        public Vector2 UnfocusedSize = Vector2.one;
+        public Vector4 UnfocusedAnchors = default;
         
         /// <summary>
         /// Returns true if the mouse is currently inside this <see cref="IndexEvent"/>'s graphic.
@@ -61,7 +65,16 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         /// <summary>
         /// The size towards which the graphs will go to.
         /// </summary>
-        public Vector2 DestinationSize { get; private set; }
+        public Vector4 DestinationAnchors { get; private set; }
+
+        /// <summary>
+        /// The color transition active state.
+        /// </summary>
+        public bool UsesColorTransition { get => s_TColor; set => s_TColor = value; }
+        /// <summary>
+        /// The anchors transition active state.
+        /// </summary>
+        public bool UsesAnchorsTransition { get => s_TAnchors; set => s_TAnchors = value; }
 
         /// <summary>
         /// Invokes this <see cref="IndexEvent"/>'s activation.
@@ -77,7 +90,7 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         protected virtual void Awake()
         {
             DestinationColor = UnfocusedColor;
-            DestinationSize = UnfocusedSize;
+            DestinationAnchors = UnfocusedAnchors;
         }
 
         /// <summary>
@@ -110,15 +123,21 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         }
 
         /// <summary>
-        /// When overriding, make sure to include "base.Update();" as it takes care of color lerping.
+        /// When overriding, make sure to include "base.Update();" as it takes care of color and size lerping.
         /// </summary>
         protected virtual void Update()
         {
             for (int i = 0; i < Graphics.Count; i++)
             {
-                Graphics[i].color = Hooks.Colors.MoveTowards(Graphics[i].color, DestinationColor, ColorTransitionSpeed * Time.deltaTime);
-                Graphics[i].rectTransform.localScale = Vector3.MoveTowards(Graphics[i].rectTransform.localScale, 
-                    new Vector3(DestinationSize.x, DestinationSize.y, Graphics[i].rectTransform.localScale.z), SizeTransitionSpeed * Time.deltaTime);
+                if (s_TColor)
+                {
+                    Graphics[i].color = Hooks.Colors.MoveTowards(Graphics[i].color, DestinationColor, ColorTransitionSpeed * Time.deltaTime);
+                }
+                if (s_TAnchors)
+                {
+                    Graphics[i].rectTransform.SetAnchoredUI(Vector4.MoveTowards(Graphics[i].rectTransform.GetAnchoredPosition(),
+        DestinationAnchors, SizeTransitionSpeed * Time.deltaTime));
+                }
             }
         }
 
@@ -128,7 +147,7 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         protected virtual void OnFocused()
         {
             DestinationColor = FocusedColor;
-            DestinationSize = FocusedSize;
+            DestinationAnchors = FocusedAnchors;
             Focused = true;
         }
 
@@ -138,7 +157,7 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         protected virtual void OnUnfocused()
         {
             DestinationColor = UnfocusedColor;
-            DestinationSize = UnfocusedSize;
+            DestinationAnchors = UnfocusedAnchors;
             Focused = false;
         }
     }

@@ -4,8 +4,6 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using WarWolfWorks.EntitiesSystem.Statistics;
-using WarWolfWorks.Interfaces;
 using WarWolfWorks.Utility;
 using static WarWolfWorks.Constants;
 using static WarWolfWorks.EditorBase.Constants;
@@ -21,6 +19,7 @@ namespace WarWolfWorks.EditorBase.Utility
         /// Returns all serialized properties inside a serialized object.
         /// </summary>
         /// <param name="serializedObject"></param>
+        /// <param name="enterChildren"></param>
         /// <returns></returns>
         public static List<SerializedProperty> GetAllSerializedProperties(SerializedObject serializedObject, bool enterChildren)
         {

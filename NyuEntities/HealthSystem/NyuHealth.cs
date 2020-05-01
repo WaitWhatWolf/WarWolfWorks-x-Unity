@@ -169,7 +169,7 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
         public IHealthDamage Calculator
         {
             get => s_Calculator;
-            set => s_Calculator = value is HealthDamage ? (HealthDamage)value : s_Calculator;
+            set => s_Calculator = value is HealthDamage healthDmg ? healthDmg : s_Calculator;
         }
 
         /// <summary>
@@ -280,7 +280,7 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
                 if (s_ImmunityEffect.Equals(value))
                     return;
 
-                s_ImmunityEffect = value is ImmunityEffect ? (ImmunityEffect)value : s_ImmunityEffect;
+                s_ImmunityEffect = value is ImmunityEffect immunityFX ? immunityFX : s_ImmunityEffect;
 
                 s_ImmunityEffect.internalParent = this;
                 s_ImmunityEffect.OnAdded();

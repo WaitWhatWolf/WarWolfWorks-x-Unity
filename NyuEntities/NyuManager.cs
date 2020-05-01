@@ -44,7 +44,7 @@ namespace WarWolfWorks.NyuEntities
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Init()
         {
-            GameObject gUpdateInvoker = new GameObject(VARN_NYUMANAGER);
+            GameObject gUpdateInvoker = new GameObject(VN_NYUMANAGER);
             UpdateInvoker = gUpdateInvoker.AddComponent<MonoUpdateSimulate>();
             UnityEngine.Object.DontDestroyOnLoad(UpdateInvoker);
             UpdateInvoker.StartCoroutine(IC_Update());

@@ -72,8 +72,8 @@ namespace WarWolfWorks.AudioSystem
         /// <param name="poolSize"></param>
         public void Init(int poolSize)
         {
-            if (poolSize < VARV_AUDIOMANAGER_MIN_POOLSIZE)
-                throw new System.Exception(string.Format("Cannot initiate a pool with a poolsize of less than {0}.", VARV_AUDIOMANAGER_MIN_POOLSIZE));
+            if (poolSize < V_AUDIOMANAGER_MIN_POOLSIZE)
+                throw new System.Exception(string.Format("Cannot initiate a pool with a poolsize of less than {0}.", V_AUDIOMANAGER_MIN_POOLSIZE));
 
             if (ns_AudioSources.Count == poolSize)
                 throw new System.Exception("Cannot re-initiate an audio manager with the same pool size.");

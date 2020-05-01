@@ -1,10 +1,13 @@
-﻿using static WarWolfWorks.Utility.Hooks.Streaming;
+﻿using System;
+using static WarWolfWorks.Utility.Hooks.Streaming;
+using static WarWolfWorks.Constants;
 
 namespace WarWolfWorks.Security
 {
     /// <summary>
     /// Code of a <see cref="StreamingException"/>.
     /// </summary>
+    [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
     public enum StreamingResult
     {
         /// <summary>

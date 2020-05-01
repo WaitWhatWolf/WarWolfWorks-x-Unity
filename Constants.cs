@@ -6,8 +6,10 @@ using UnityEngine;
 using WarWolfWorks.Internal;
 using WarWolfWorks.NyuEntities;
 using WarWolfWorks.NyuEntities.ProjectileSystem;
+using WarWolfWorks.IO.CTS;
 using WarWolfWorks.Utility;
 
+[assembly: InternalsVisibleTo("WarWolfWorks.EditorBase.Services")]
 [assembly: InternalsVisibleTo("WarWolfWorks.EditorBase")]
 namespace WarWolfWorks
 {
@@ -17,10 +19,12 @@ namespace WarWolfWorks
     public static class Constants
     {
         #region Streaming
+        internal const int STREAMING_FILE_ENCRYPTION_JUMPER = 85;
+
         /// <summary>
         /// Path to personal preferences of this library.
         /// </summary>
-        public static readonly string Path_Preferences =
+        public static readonly string SV_Path_Preferences =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 @"WarWolfWorks\",
                 Application.productName,
@@ -28,19 +32,19 @@ namespace WarWolfWorks
         /// <summary>
         /// Path to the WWWSettings.cts file.
         /// </summary>
-        public static readonly string Path_Settings = Hooks.Streaming.GetStreamingAssetsFilePath("WWWSettings.cts");
+        public static readonly string SV_Path_Settings = Hooks.Streaming.GetStreamingAssetsFilePath("WWWSettings.cts");
         /// <summary>
         /// Path to DefaultKeys.cts.
         /// </summary>
-        internal static readonly string SVARNPTH_KEYS = Path.Combine(Application.streamingAssetsPath.Replace("/", "\\"), "DefaultKeys.cts");
+        internal static readonly string SV_Path_DefaultKeys = Path.Combine(Application.streamingAssetsPath.Replace("/", "\\"), "DefaultKeys.cts");
         /// <summary>
         /// Category name for keys.
         /// </summary>
-        internal static readonly string SVARNCN_KEYS = "Keys";
+        internal const string SVCN_KEYS = "Keys";
         /// <summary>
         /// Default variable split character for saving.
         /// </summary>
-        public const char SVARS_DEFAULT_SPLIT = ';';
+        public const char SV_DEFAULT_SPLIT = ';';
         #endregion
 
         #region Regex Expressions
@@ -54,25 +58,25 @@ namespace WarWolfWorks
         /// <summary>
         /// Name of the category given to the <see cref="Settings.UtilityCanvas"/> Settings in WWWSettings.ini.
         /// </summary>
-        internal const string SVARCN_UTIL_CANVAS = "ユチリテイキャンバス";
-        internal const string VARN_DEFAULT_CANVAS = "WWWCanvas";
-        internal const string SVARNCN_OTHER = "その他";
-        internal const string SVARNCN_NYUENTITIES = "ニューエンチチズ";
-        internal const string SVARN_SETTINGS_LANGUAGE = "言語";
+        internal const string SVCN_CORECANVAS = "ユチリテイキャンバス";
+        internal const string VN_DEFAULT_CANVAS = "WWWCanvas";
+        internal const string SVCN_OTHER = "その他";
+        internal const string SVCN_NYUENTITIES = "ニューエンチチズ";
+        internal const string SVN_SETTINGS_LANGUAGE = "言語";
         /// <summary>
         /// Name of the category given to <see cref="AdvancedDebug"/> settings in WWWSettings.ini.
         /// </summary>
-        internal const string SVARCN_DEBUG = "デバッグ";
-        internal static readonly string[] SVARS_LAYER_STATE = new string[] { " With Active State " };
-        internal const string SVARN_AD_LAYER = "レイヤー";
-        internal const string SVARN_AD_STYLE = "STYLE";
-        internal const string SVARN_AD_COLOR_LOG = "COLOR_LOG";
-        internal const string SVARN_AD_COLOR_WARNING = "COLOR_WARNING";
-        internal const string SVARN_AD_COLOR_ERROR = "COLOR_ERROR";
+        internal const string SVCN_DEBUG = "デバッグ";
+        internal static readonly string[] SVS_Layers_State = new string[] { " With Active State " };
+        internal const string SVN_AD_LAYER = "レイヤー";
+        internal const string SVN_AD_STYLE = "STYLE";
+        internal const string SVN_AD_COLOR_LOG = "COLOR_LOG";
+        internal const string SVN_AD_COLOR_WARNING = "COLOR_WARNING";
+        internal const string SVN_AD_COLOR_ERROR = "COLOR_ERROR";
 
-        internal const string SVARN_UC_TYPE = "UTILITY_CANVAS_TYPE";
-        internal const string SVARN_UC_RESOURCES_PATH = "UTILITY_CANVAS_RESOURCES_PATH";
-        internal const string SVARN_UC_NAME_LOAD = "SVARN_UC_NAME_LOAD";
+        internal const string SVN_UC_TYPE = "UTILITY_CANVAS_TYPE";
+        internal const string SVN_UC_RESOURCES_PATH = "UTILITY_CANVAS_RESOURCES_PATH";
+        internal const string SVN_UC_NAME_LOAD = "SVARN_UC_NAME_LOAD";
         #endregion
 
         #region Language Strings
@@ -108,11 +112,16 @@ namespace WarWolfWorks
             "Confirm",
             ("Potwierdz", SystemLanguage.Polish),
             ("追認", SystemLanguage.Japanese));
+        internal static readonly LanguageString LS_Previous = new LanguageString("Previous", ("Poprzedni", SystemLanguage.Polish), ("前に", SystemLanguage.Japanese));
+        internal static readonly LanguageString LS_Next = new LanguageString("Next", ("Następny", SystemLanguage.Polish), ("次に", SystemLanguage.Japanese));
+        internal static readonly LanguageString LS_Type = new LanguageString("Type", ("Typ", SystemLanguage.Polish), ("タイプ", SystemLanguage.Japanese));
+        internal static readonly LanguageString LS_Check = new LanguageString("Check", ("Sprawdź", SystemLanguage.Polish), ("確認", SystemLanguage.Japanese));
+        internal static readonly LanguageString LS_Reset = new LanguageString("Reset", ("Resetuj", SystemLanguage.Polish), ("リセット", SystemLanguage.Japanese));
         #endregion
 
         #region Compile Time
-        internal const string VAR_ENTITESSYSTEM_OBSOLETE_MESSAGE = "The EntitiesSystem is replaced by NyuEntities and will be removed in the very near future; Please consider switching to NyuEntities.";
-        internal const bool VAR_ENTITIESSYSTEM_OBSOLETE_ISERROR = false;
+        internal const string V_SCATALOGSAVE_OBSOLETE_MESSAGE = "The Streaming.Catalog system is replaced by WarWolfWorks.Streaming.CTS and will be removed in the very near future; Consider switching to WarWolfWorks.Streaming.CTS.";
+        internal const bool V_SCATALOGSAVE_OBSOLETE_ISERROR = false;
         #endregion
 
         #region Unity Stuff
@@ -128,26 +137,36 @@ namespace WarWolfWorks
 
         #region Projectiles
         /// <summary>
-        /// Name of the <see cref="NyuProjectile.ProjectileHolder"/>.
+        /// Name of the <see cref="NyuProjectile"/> game object.
         /// </summary>
-        public const string VARN_PROJECTILE_HOLDER = "Projectiles";
+        public const string VN_PROJECTILE_HOLDER = "Projectiles";
 
         /// <summary>
         /// Name of projectile objects in the scene.
         /// </summary>
-        public const string VARN_PROJECTILE = "Projectile_";
+        public const string VN_PROJECTILE = "Projectile_";
         #endregion
 
         #region Nyu Entities
         /// <summary>
         /// Name of the <see cref="NyuManager"/>.
         /// </summary>
-        public const string VARN_NYUMANAGER = "NyuManager";
+        public const string VN_NYUMANAGER = "NyuManager";
         #endregion
 
         #region Misc
-        internal const int VARV_AUDIOMANAGER_MIN_POOLSIZE = 15;
-        internal const int VARV_TRANSITIONMANAGER_TRANSITIONS_SIZE = 32;
+        internal const int V_AUDIOMANAGER_MIN_POOLSIZE = 15;
+        internal const int V_TRANSITIONMANAGER_TRANSITIONS_SIZE = 32;
+        #endregion
+
+        #region CTS
+        internal static readonly Catalog CTS_Settings_CoreCanvas = new Catalog(SV_Path_Settings, SVCN_CORECANVAS);
+        internal static readonly Catalog CTS_Settings_AdvancedDebug = new Catalog(SV_Path_Settings, SVCN_DEBUG);
+        internal static readonly Catalog CTS_Settings_Misc = new Catalog(SV_Path_Settings, SVCN_OTHER);
+        internal static readonly Catalog CTS_Preferences_AdvancedDebug = new Catalog(SV_Path_Preferences, SVCN_DEBUG);
+        internal static readonly Catalog CTS_Preferences_Misc = new Catalog(SV_Path_Preferences, SVCN_DEBUG);
+
+        internal static readonly Catalog CTS_DefaultKeys = new Catalog(SV_Path_DefaultKeys, SVCN_KEYS);
         #endregion
     }
 }

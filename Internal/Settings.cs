@@ -2,13 +2,11 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using WarWolfWorks.Debugging;
-using WarWolfWorks.Security;
 using WarWolfWorks.Utility;
 using static WarWolfWorks.AdvancedDebug;
 using static WarWolfWorks.Utility.Hooks.Streaming;
 using static WarWolfWorks.Constants;
 using UnityEngine.UI;
-using WarWolfWorks.NyuEntities.ProjectileSystem;
 
 [assembly: InternalsVisibleTo("WarWolfWorks.EditorBase")]
 namespace WarWolfWorks.Internal
@@ -43,7 +41,7 @@ namespace WarWolfWorks.Internal
                             utilCanvas = GameObject.Find(GetUtilityCanvasNameLoad())?.GetComponent<Canvas>();
                             break;
                         case UtilityCanvasType.INSTANTIATE_NEW:
-                            utilCanvas = new GameObject(VARN_DEFAULT_CANVAS).AddComponent<Canvas>();
+                            utilCanvas = new GameObject(VN_DEFAULT_CANVAS).AddComponent<Canvas>();
                             utilCanvas.gameObject.AddComponent<CanvasScaler>();
                             utilCanvas.gameObject.AddComponent<GraphicRaycaster>();
                             break;
@@ -88,53 +86,45 @@ namespace WarWolfWorks.Internal
             MANUAL_SET = 4,
         }
 
-        
-
         /// <summary>
-        /// Gets the <see cref="UtilityCanvasType"/> read directly from the WWWSettings.ini file.
+        /// Gets the <see cref="UtilityCanvasType"/> from it's CTS save.
         /// </summary>
         public static UtilityCanvasType GetUtilityCanvasType()
-            => Hooks.Parse<UtilityCanvasType>(Load(Catalog.Loader(Path_Settings, SVARCN_UTIL_CANVAS, SVARN_UC_TYPE, UtilityCanvasType.FIRST_FOUND.ToString(), true)));
+            => Hooks.Parse<UtilityCanvasType>(CTS_Settings_CoreCanvas.GetSafe(SVN_UC_TYPE, UtilityCanvasType.FIRST_FOUND.ToString()));
         /// <summary>
         /// If the <see cref="GetUtilityCanvasType"/> is <see cref="UtilityCanvasType.PREFABBED"/>, it will return the path to the object it was set to.
         /// </summary>
         public static string GetUtilityCanvasResourcesPath()
-            => Load(Catalog.Loader(Path_Settings, SVARCN_UTIL_CANVAS, SVARN_UC_RESOURCES_PATH, default, true));
+            => CTS_Settings_CoreCanvas[SVN_UC_RESOURCES_PATH];
         /// <summary>
         /// If the <see cref="GetUtilityCanvasType"/> is <see cref="UtilityCanvasType.BY_NAME_IN_SCENE"/>, it will return the name of the object that will be searched for in the scene.
         /// </summary>
         /// <returns></returns>
         public static string GetUtilityCanvasNameLoad()
-            => Load(Catalog.Loader(Path_Settings, SVARCN_UTIL_CANVAS, SVARN_UC_NAME_LOAD, default, true));
+            => CTS_Settings_CoreCanvas[SVN_UC_NAME_LOAD];
 
         internal static void SaveUtilityCanvasType(UtilityCanvasType type)
-        {
-            Save(Catalog.Saver(Path_Settings, SVARCN_UTIL_CANVAS, SVARN_UC_TYPE, type.ToString()));
-        }
+            => CTS_Settings_CoreCanvas[SVN_UC_TYPE] = type.ToString();
 
         internal static void SaveUtilityCanvasResourcesPath(string path)
-        {
-            Save(Catalog.Saver(Path_Settings, SVARCN_UTIL_CANVAS, SVARN_UC_RESOURCES_PATH, path));
-        }
+            => CTS_Settings_CoreCanvas[SVN_UC_RESOURCES_PATH] = path;
 
         internal static void SaveUtilityCanvasNameLoad(string name)
-        {
-            Save(Catalog.Saver(Path_Settings, SVARCN_UTIL_CANVAS, SVARN_UC_NAME_LOAD, name));
-        }
+            => CTS_Settings_CoreCanvas[SVN_UC_NAME_LOAD] = name;
         #endregion
 
         #region Debug Settings
         /// <summary>
         /// Default layer used by <see cref="AdvancedDebug"/>.
         /// </summary>
-        internal static string LayerToSavableString(string layer, bool to = false) => $"{layer}{SVARS_LAYER_STATE[0]}{to}";
+        internal static string LayerToSavableString(string layer, bool to = false) => $"{layer}{SVS_Layers_State[0]}{to}";
         
         /// <summary>
         /// Gives the name of the variable to be used with <see cref="Hooks.Streaming"/>'s loading.
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        internal static string ToLayerStreamingName(int index) => $"{SVARN_AD_LAYER}{index}";
+        internal static string ToLayerStreamingName(int index) => $"{SVN_AD_LAYER}{index}";
         
         /// <summary>
         /// Determines how <see cref="AdvancedDebug"/> will behave.
@@ -163,7 +153,7 @@ namespace WarWolfWorks.Internal
         /// Gets the <see cref="DebugStyle"/> read directly from WWWSettings.ini.
         /// </summary>
         /// <returns></returns>
-        public static DebugStyle GetDebugStyle() => Hooks.Parse<DebugStyle>(Load(Catalog.Loader(Path_Preferences, SVARCN_DEBUG, SVARN_AD_STYLE, DebugStyle.EDITOR_GAME_DEBUG.ToString(), true)));
+        public static DebugStyle GetDebugStyle() => Hooks.Parse<DebugStyle>(CTS_Preferences_AdvancedDebug.GetSafe(SVN_AD_STYLE, DebugStyle.EDITOR_GAME_DEBUG.ToString()));
         
         /// <summary>
         /// Gets the debug layer read directly from WWWSettings.ini.
@@ -185,7 +175,7 @@ namespace WarWolfWorks.Internal
                         break;
                 }
 
-                string[] splits = Load(Catalog.Loader(Path_Preferences, SVARCN_DEBUG, ToLayerStreamingName(i), LayerToSavableString(baseName), true)).Split(SVARS_LAYER_STATE, StringSplitOptions.None);
+                string[] splits = CTS_Preferences_AdvancedDebug.GetSafe(ToLayerStreamingName(i), LayerToSavableString(baseName)).Split(SVS_Layers_State, StringSplitOptions.None);
                 toReturn[i] = new DebugLayer(splits[0], Convert.ToBoolean(splits[1]));
             }
 
@@ -205,18 +195,19 @@ namespace WarWolfWorks.Internal
                     case DEBUG_LAYER_EXCEPTIONS_INDEX: toUse = LayerToSavableString(DEBUG_LAYER_EXCEPTIONS_NAME, true); break;
                     case DEBUG_LAYER_WWW_INDEX: toUse = LayerToSavableString(DEBUG_LAYER_WWW_NAME, layers[i].Active); break;
                 }
-                Save(Catalog.Saver(Path_Preferences, SVARCN_DEBUG, ToLayerStreamingName(i), toUse));
+
+                CTS_Preferences_AdvancedDebug[ToLayerStreamingName(i)] = toUse;
             }
         }
 
         internal static string GetDebugColorSaveFormat(Color color)
         {
-            return string.Format("{1}{0}{2}{0}{3}", SVARS_DEFAULT_SPLIT, color.r, color.g, color.b);
+            return string.Format("{1}{0}{2}{0}{3}", SV_DEFAULT_SPLIT, color.r, color.g, color.b);
         }
 
         internal static void SaveDebugColor(MessageType @for, Color color)
         {
-            Save(Catalog.Saver(Path_Preferences, SVARCN_DEBUG, GetColorVarName(@for), GetDebugColorSaveFormat(color)));
+            CTS_Preferences_AdvancedDebug[GetColorVarName(@for)] = GetDebugColorSaveFormat(color);
         }
 
         internal static string GetColorVarName(MessageType @for)
@@ -224,11 +215,11 @@ namespace WarWolfWorks.Internal
             switch (@for)
             {
                 default:
-                    return SVARN_AD_COLOR_LOG;
+                    return SVN_AD_COLOR_LOG;
                 case MessageType.Warning:
-                    return SVARN_AD_COLOR_WARNING;
+                    return SVN_AD_COLOR_WARNING;
                 case MessageType.Error:
-                    return SVARN_AD_COLOR_ERROR;
+                    return SVN_AD_COLOR_ERROR;
             }
         }
 
@@ -237,7 +228,7 @@ namespace WarWolfWorks.Internal
             float r, g, b;
             string[] split;
 
-            split = Load(Catalog.Loader(Path_Preferences, SVARCN_DEBUG, GetColorVarName(@for), GetDebugColorSaveFormat(Color.white), true)).Split(SVARS_DEFAULT_SPLIT);
+            split = CTS_Preferences_AdvancedDebug.GetSafe(GetColorVarName(@for), GetDebugColorSaveFormat(Color.white)).Split(SV_DEFAULT_SPLIT);
 
             r = float.Parse(split[0]);
             g = float.Parse(split[1]);
@@ -305,7 +296,7 @@ namespace WarWolfWorks.Internal
             {
                 if(!i_DefaultStackingType)
                 {
-                    string typeName = Load(Catalog.Loader(Path_Settings, SVARNCN_OTHER, nameof(sub_DefaultStackingType).ToUpper()));
+                    string typeName = CTS_Settings_Misc[nameof(sub_DefaultStackingType).ToUpper()];
                     if(!string.IsNullOrEmpty(typeName))
                         sub_DefaultStackingType = Hooks.ParseType(typeName);
                     i_DefaultStackingType = true;
@@ -318,8 +309,8 @@ namespace WarWolfWorks.Internal
                 {
                     sub_DefaultStackingType = value;
                     if (sub_DefaultStackingType != null)
-                        Save(Catalog.Saver(Path_Settings, SVARNCN_OTHER, nameof(sub_DefaultStackingType).ToUpper(), value.ToString()));
-                    else Remove(Catalog.Loader(Path_Settings, SVARNCN_OTHER, nameof(sub_DefaultStackingType).ToUpper()));
+                        CTS_Settings_Misc[nameof(sub_DefaultStackingType).ToUpper()] = value.ToString();
+                    else CTS_Settings_Misc.Remove(nameof(sub_DefaultStackingType).ToUpper());
                 }
             }
         }
@@ -335,7 +326,7 @@ namespace WarWolfWorks.Internal
             {
                 if(!i_DefaultAffectionsType)
                 {
-                    string typeName = Load(Catalog.Loader(Path_Settings, SVARNCN_OTHER, nameof(sub_DefaultAffectionsType).ToUpper()));
+                    string typeName = CTS_Settings_Misc[nameof(sub_DefaultAffectionsType).ToUpper()];
                     if(!string.IsNullOrEmpty(typeName))
                         sub_DefaultAffectionsType = Hooks.ParseType(typeName);
                     i_DefaultAffectionsType = true;
@@ -348,8 +339,8 @@ namespace WarWolfWorks.Internal
                 {
                     sub_DefaultAffectionsType = value;
                     if (sub_DefaultAffectionsType != null)
-                        Save(Catalog.Saver(Path_Settings, SVARNCN_OTHER, nameof(sub_DefaultAffectionsType).ToUpper(), value.ToString()));
-                    else Remove(Catalog.Loader(Path_Settings, SVARNCN_OTHER, nameof(sub_DefaultAffectionsType).ToUpper()));
+                        CTS_Settings_Misc[nameof(sub_DefaultAffectionsType).ToUpper()] = value.ToString();
+                    else CTS_Settings_Misc.Remove(nameof(sub_DefaultAffectionsType).ToUpper());
                 }
             }
         }
@@ -366,7 +357,7 @@ namespace WarWolfWorks.Internal
             {
                 if (!languageInit)
                 {
-                    libraryLanguage = Hooks.Parse<SystemLanguage>(Load(Catalog.Loader(Path_Preferences, SVARNCN_OTHER, SVARN_SETTINGS_LANGUAGE, Application.systemLanguage.ToString(), true)));
+                    libraryLanguage = Hooks.Parse<SystemLanguage>(CTS_Preferences_Misc.GetSafe(SVN_SETTINGS_LANGUAGE, Application.systemLanguage.ToString()));
                     languageInit = true;
                 }
                 return libraryLanguage;
@@ -374,9 +365,21 @@ namespace WarWolfWorks.Internal
             set
             {
                 libraryLanguage = value;
-                Save(Catalog.Saver(Path_Preferences, SVARNCN_OTHER, SVARN_SETTINGS_LANGUAGE, value.ToString()));
+                CTS_Preferences_Misc[SVN_SETTINGS_LANGUAGE] = value.ToString();
             }
         }
         #endregion
+
+        /// <summary>
+        /// Applies all changes made to their respective files (CTS).
+        /// </summary>
+        public static void Apply()
+        {
+            CTS_Preferences_AdvancedDebug.Apply();
+            CTS_Preferences_Misc.Apply();
+            CTS_Settings_CoreCanvas.Apply();
+            CTS_Settings_AdvancedDebug.Apply();
+            CTS_Settings_Misc.Apply();
+        }
     }
 }

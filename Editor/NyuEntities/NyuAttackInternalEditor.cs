@@ -33,7 +33,7 @@ namespace WarWolfWorks.EditorBase.NyuEntities
             {
                 Rect rect = EditorGUILayout.GetControlRect();
                 Rect labelRect = new Rect(rect);
-                float padding = rect.width / EVARV_ENTITYATTACK_ATK_LABEL_WIDTH_DIV;
+                float padding = rect.width / EV_ENTITYATTACK_ATK_LABEL_WIDTH_DIV;
                 labelRect.xMin += padding;
                 labelRect.xMax -= padding;
                 Rect labelSeparatorRect = new Rect(rect);

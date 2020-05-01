@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using WarWolfWorks.EditorBase.Interfaces;
@@ -35,7 +36,8 @@ namespace WarWolfWorks.EditorBase.NyuEntities
             if (isExpanded)
             {
                 Color drawColor = new Color(1f, 0.5f, 0f, .5f);
-                for (int i = 0; i < ec_Movement.Velocities.Count; i++)
+                Velocity[] velocities = ec_Movement.Velocities.ToArray();
+                for (int i = 0; i < velocities.Length; i++)
                 {
                     Rect valueLabelRect = new Rect(EditorGUILayout.GetControlRect());
                     valueLabelRect.width /= 4;
@@ -60,15 +62,15 @@ namespace WarWolfWorks.EditorBase.NyuEntities
                     EditorGUI.LabelField(timerLabelRect, ELS_EntityMovement_Velocity_Time);
                     EditorGUI.LabelField(affectionsLabelRect, LS_Stat_Affections);
 
-                    EditorGUI.LabelField(valueRect, ec_Movement.Velocities[i].Value.ToString());
-                    EditorGUI.LabelField(timerRect, $"{ec_Movement.Velocities[i].Time}/{ec_Movement.Velocities[i].StartTime}");
+                    EditorGUI.LabelField(valueRect, velocities[i].Value.ToString());
+                    EditorGUI.LabelField(timerRect, $"{velocities[i].Time}/{velocities[i].StartTime}");
 
                     string affectionsText;
-                    if (ec_Movement.Velocities[i].Affections != null && ec_Movement.Velocities[i].Affections.Length > 0)
+                    if (velocities[i].Affections != null && velocities[i].Affections.Length > 0)
                     {
-                        affectionsText = ec_Movement.Velocities[i].Affections[0].ToString();
-                        for (int j = 1; j < ec_Movement.Velocities[i].Affections.Length; j++)
-                            affectionsText += $", {ec_Movement.Velocities[i].Affections[j]}";
+                        affectionsText = velocities[i].Affections[0].ToString();
+                        for (int j = 1; j < velocities[i].Affections.Length; j++)
+                            affectionsText += $", {velocities[i].Affections[j]}";
                     }
                     else affectionsText = "N/A";
                     EditorGUI.LabelField(affectionsRect, affectionsText);

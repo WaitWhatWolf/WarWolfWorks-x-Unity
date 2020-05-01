@@ -1,6 +1,4 @@
-﻿using WarWolfWorks.EntitiesSystem;
-
-namespace WarWolfWorks.Interfaces
+﻿namespace WarWolfWorks.Interfaces
 {
     /// <summary>
     /// Interface used to calcucate health for a Health system.

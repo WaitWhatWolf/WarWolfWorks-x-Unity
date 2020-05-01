@@ -1,10 +1,12 @@
 ﻿using System;
+using static WarWolfWorks.Constants;
 
 namespace WarWolfWorks.Security
 {
     /// <summary>
     /// Exception thrown in case of an error in <see cref="Utility.Hooks.Streaming"/>.
     /// </summary>
+    [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
     public sealed class StreamingException : Exception
     {
         private string ActMessage;

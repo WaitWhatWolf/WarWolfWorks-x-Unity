@@ -8,6 +8,7 @@ using WarWolfWorks.EditorBase.Interfaces;
 using WarWolfWorks.EditorBase.Utility;
 using WarWolfWorks.Utility;
 using static WarWolfWorks.EditorBase.Constants;
+using static WarWolfWorks.Constants;
 
 namespace WarWolfWorks.EditorBase.Services
 {
@@ -92,8 +93,7 @@ namespace WarWolfWorks.EditorBase.Services
                     try
                     {
                         List<DefaultKeys.WKey> tmpKeys = GetSortedList();
-                        Hooks.Streaming.Reorder(DefaultKeys.KeysLoader(string.Empty),
-                            t => tmpKeys.FindIndex(key => key.Name == t.Split(Hooks.Streaming.STREAM_VALUE_POINTER, StringSplitOptions.None)[0]));
+                        CTS_DefaultKeys.OrderBy(v => tmpKeys.FindIndex(key => key.Name == v.Name));
                     }
                     catch (Exception e)
                     {
@@ -139,7 +139,7 @@ namespace WarWolfWorks.EditorBase.Services
                 if (pops[4])
                 {
                     int count = 0;
-                    while (DefaultKeys.KeyExists(VARV_DEFKEYS_KEY_NEW + count.ToString()))
+                    while (DefaultKeys.KeyExists(EV_DEFKEYS_KEY_NEW + count.ToString()))
                         count++;
                     DefaultKeys.AddKey(new DefaultKeys.WKey("New Key" + count.ToString(), KeyCode.None));
                     UpdateKeys();
@@ -188,6 +188,9 @@ namespace WarWolfWorks.EditorBase.Services
             UpdateKeys();
         }
 
-        public void OnDisable() { }
+        public void OnDisable()
+        {
+            DefaultKeys.Apply();
+        }
     }
 }

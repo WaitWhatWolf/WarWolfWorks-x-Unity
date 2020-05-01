@@ -13,10 +13,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using WarWolfWorks.Interfaces;
-using WarWolfWorks.Internal;
 using WarWolfWorks.Security;
+using static WarWolfWorks.Constants;
 
 namespace WarWolfWorks.Utility
 {
@@ -119,6 +118,7 @@ namespace WarWolfWorks.Utility
         /// </summary>
         public static class Streaming
         {
+#pragma warning disable 0618
             internal const char STREAM_CATEGORY_WRAPPER_START = '[';
             internal const char STREAM_CATEGORY_WRAPPER_END = ']';
             internal const char STREAM_CATEGORY_END = '/';
@@ -126,13 +126,16 @@ namespace WarWolfWorks.Utility
             /// Value which separates the name from the value; Only has one entry at index 0.
             /// Example: ValueName IS value; In here, " IS " is the separator.
             /// </summary>
+            [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
             public static readonly string[] STREAM_VALUE_POINTER = new string[] { " IS " };
 
             private static string DefaultPassword = "MereoleonaBestGrill";
             private static string DefaultPath = string.Empty;
+
             /// <summary>
             /// A series of string values used to save/load from <see cref="Streaming"/>.
             /// </summary>
+            [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
             public struct Catalog
             {
                 internal enum CatalogType
@@ -145,29 +148,35 @@ namespace WarWolfWorks.Utility
                 /// <summary>
                 /// File path towards which this catalog will be saved.
                 /// </summary>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public string Path;
 
                 /// <summary>
                 /// Category in which this catalog will be stored.
                 /// </summary>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public string Category;
                 /// <summary>
                 /// Name of the variable saved by this catalog.
                 /// </summary>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public string Name;
                 /// <summary>
                 /// Value in string of the saved catalog.
                 /// </summary>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public string Value;
 
                 /// <summary>
                 /// If true, this catalog's value will be used as DefaultValue.
                 /// </summary>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public bool UsesDefaultValue;
 
                 /// <summary>
                 /// Password used for encryption. NOTE: VERY heavy, use only on high-end pc's or small save sections.
                 /// </summary>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public string Password;
 
                 internal CatalogType Type;
@@ -175,6 +184,7 @@ namespace WarWolfWorks.Utility
                 /// <summary>
                 /// Determines if this category is protected by a password.
                 /// </summary>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public bool Protected => !string.IsNullOrEmpty(Password);
 
                 /// <summary>
@@ -182,6 +192,7 @@ namespace WarWolfWorks.Utility
                 /// </summary>
                 /// <param name="input"></param>
                 /// <returns></returns>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public string Encrypt(string input)
                     => RijndaelEncryption.Encrypt(input, Password, CipherMode.CBC, PaddingMode.PKCS7);
 
@@ -190,6 +201,7 @@ namespace WarWolfWorks.Utility
                 /// </summary>
                 /// <param name="input"></param>
                 /// <returns></returns>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public string Decrypt(string input)
                     => RijndaelEncryption.Decrypt(input, Password, CipherMode.CBC, PaddingMode.PKCS7);
 
@@ -200,6 +212,7 @@ namespace WarWolfWorks.Utility
                 /// <param name="name"></param>
                 /// <param name="value"></param>
                 /// <returns></returns>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public static Catalog DefaultSaver(string category, string name, string value)
                 {
                     if (DefaultPath.Length == 0)
@@ -228,6 +241,7 @@ namespace WarWolfWorks.Utility
                 /// <param name="name"></param>
                 /// <param name="value"></param>
                 /// <returns></returns>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public static Catalog Saver(string path, string category, string name, string value)
                 {
                     if (path == null || category == null || name == null
@@ -255,6 +269,7 @@ namespace WarWolfWorks.Utility
                 /// <param name="value"></param>
                 /// <param name="password"></param>
                 /// <returns></returns>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public static Catalog Saver(string path, string category, string name, string value, string password)
                 {
                     if (path == null || category == null || name == null
@@ -281,6 +296,7 @@ namespace WarWolfWorks.Utility
                 /// <param name="names"></param>
                 /// <param name="values"></param>
                 /// <returns></returns>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public static Catalog[] Savers(string path, string category, string[] names, string[] values)
                 {
                     if (path == null || category == null || names == null || values == null)
@@ -317,6 +333,7 @@ namespace WarWolfWorks.Utility
                 /// <param name="values"></param>
                 /// <param name="password"></param>
                 /// <returns></returns>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public static Catalog[] Savers(string path, string category, string[] names, string[] values, string password)
                 {
                     if (path == null || category == null || names == null || values == null)
@@ -350,6 +367,7 @@ namespace WarWolfWorks.Utility
                 /// <param name="category"></param>
                 /// <param name="name"></param>
                 /// <returns></returns>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public static Catalog DefaultLoader(string category, string name)
                 {
                     if (DefaultPath.Length == 0)
@@ -376,6 +394,7 @@ namespace WarWolfWorks.Utility
                 /// <param name="path"></param>
                 /// <param name="category"></param>
                 /// <returns></returns>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public static Catalog LoaderFull(string path, string category)
                 {
                     if (path == null || category == null)
@@ -400,6 +419,7 @@ namespace WarWolfWorks.Utility
                 /// <param name="category"></param>
                 /// <param name="name"></param>
                 /// <returns></returns>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public static Catalog Loader(string path, string category, string name)
                 {
                     if (path == null || category == null || name == null)
@@ -426,6 +446,7 @@ namespace WarWolfWorks.Utility
                 /// <param name="defaultValue"></param>
                 /// <param name="useDefaultValue"></param>
                 /// <returns></returns>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public static Catalog Loader(string path, string category, string name, string defaultValue, bool useDefaultValue)
                 {
                     if (path == null || category == null || name == null)
@@ -453,6 +474,7 @@ namespace WarWolfWorks.Utility
                 /// <param name="useDefaultValue"></param>
                 /// <param name="password"></param>
                 /// <returns></returns>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public static Catalog Loader(string path, string category, string name, string defaultValue, bool useDefaultValue, string password)
                 {
                     if (path == null || category == null || name == null || password == null)
@@ -478,6 +500,7 @@ namespace WarWolfWorks.Utility
                 /// <param name="name"></param>
                 /// <param name="password"></param>
                 /// <returns></returns>
+                [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
                 public static Catalog Loader(string path, string category, string name, string password)
                 {
                     if (path == null || category == null || name == null || password == null)
@@ -500,6 +523,7 @@ namespace WarWolfWorks.Utility
             /// Sets the default password for use with <see cref="Catalog"/>.
             /// </summary>
             /// <param name="to"></param>
+            [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
             public static void SetDefaultPassword(string to)
             {
                 DefaultPassword = to;
@@ -509,12 +533,14 @@ namespace WarWolfWorks.Utility
             /// Gets the current Default password.
             /// </summary>
             /// <returns></returns>
+            [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
             public static string GetDefaultPassword() => DefaultPassword;
 
             /// <summary>
             /// Sets the default path for use with <see cref="Catalog"/>.
             /// </summary>
             /// <param name="to"></param>
+            [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
             public static void SetDefaultPath(string to)
             {
                 DefaultPath = to;
@@ -524,6 +550,7 @@ namespace WarWolfWorks.Utility
             /// Gets the current Default path.
             /// </summary>
             /// <returns></returns>
+            [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
             public static string GetDefaultPath() => DefaultPath;
 
             internal static string CategoryWrapper(Catalog catalog) 
@@ -606,11 +633,12 @@ namespace WarWolfWorks.Utility
 
                 File.WriteAllLines(catalog.Path, lines);
             }
-            
+
             /// <summary>
             /// Saves a value to a folder file under category.
             /// </summary>
             /// <param name="saver"></param>
+            [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
             public static void Save(Catalog saver)
             {
                 InternalSave(saver, false);
@@ -670,6 +698,7 @@ namespace WarWolfWorks.Utility
             /// Saves all given values under category file. All categories inside a catalog must be the same value.
             /// </summary>
             /// <param name="catalogs"></param>
+            [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
             public static void SaveAll(Catalog[] catalogs)
             {
                 InternalSaveAll(catalogs);
@@ -700,6 +729,7 @@ namespace WarWolfWorks.Utility
             /// </summary>
             /// <param name="catalog"></param>
             /// <param name="order"></param>
+            [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
             public static void Reorder(Catalog catalog, Func<string, int> order)
             {
                 if (!IsValidCatalog(catalog, Catalog.CatalogType.LOADER))
@@ -740,6 +770,7 @@ namespace WarWolfWorks.Utility
             /// </summary>
             /// <param name="catalog"></param>
             /// <param name="to"></param>
+            [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
             public static void ReorderSingle(Catalog catalog, int to)
             {
                 if (!IsValidCatalog(catalog, Catalog.CatalogType.LOADER))
@@ -778,6 +809,7 @@ namespace WarWolfWorks.Utility
             /// </summary>
             /// <param name="catalog"></param>
             /// <returns></returns>
+            [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
             public static bool Contains(Catalog catalog)
             {
                 if (!IsValidCatalog(catalog, Catalog.CatalogType.LOADER))
@@ -833,6 +865,7 @@ namespace WarWolfWorks.Utility
             /// </summary>
             /// <param name="catalog"></param>
             /// <returns></returns>
+            [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
             public static string Load(Catalog catalog)
             {
                 return LoadInternal(catalog);
@@ -867,6 +900,7 @@ namespace WarWolfWorks.Utility
             /// Loads all variables inside given catalog's file category. In case of an exception, returns null.
             /// </summary>
             /// <returns></returns>
+            [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
             public static IEnumerable<string> LoadAll(Catalog catalog, bool includeName)
             {
                 return InternalLoadAll(catalog, includeName);
@@ -878,6 +912,7 @@ namespace WarWolfWorks.Utility
             /// <param name="catalog"></param>
             /// <param name="to"></param>
             /// <returns></returns>
+            [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
             public static bool ChangeVariableName(Catalog catalog, string to)
             {
                 if (!IsValidCatalog(catalog, Catalog.CatalogType.LOADER))
@@ -934,10 +969,12 @@ namespace WarWolfWorks.Utility
             /// Removes a value under catergory file of the given catalog.
             /// </summary>
             /// <returns></returns>
+            [Obsolete(V_SCATALOGSAVE_OBSOLETE_MESSAGE, V_SCATALOGSAVE_OBSOLETE_ISERROR)]
             public static bool Remove(Catalog loader)
             {
                 return InternalRemove(loader);
             }
+#pragma warning restore 0618
 
             /// <summary>
             /// Attempts to create a folder. Returns true if the folder was successfully created.
@@ -982,8 +1019,6 @@ namespace WarWolfWorks.Utility
                 }
                 return list.ToArray();
             }
-
-            private const int STREAMING_FILE_ENCRYPTION_JUMPER = 85;
 
             private static bool InternalEncryptionFile(string path, string password, bool encrypt)
             {

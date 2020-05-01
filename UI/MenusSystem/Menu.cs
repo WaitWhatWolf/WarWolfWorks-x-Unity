@@ -42,7 +42,7 @@ namespace WarWolfWorks.UI.MenusSystem
         public RectTransform GetHolder() => Holder;
 
         /// <summary>
-        /// Returns a list of all menus inside the scene.
+        /// Returns an array of all menus inside the scene.
         /// </summary>
         /// <returns></returns>
         public static Menu[] GetAllMenus() => AllMenus.ToArray();

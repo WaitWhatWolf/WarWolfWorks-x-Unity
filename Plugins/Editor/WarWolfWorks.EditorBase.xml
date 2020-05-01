@@ -11,22 +11,27 @@
         </member>
         <member name="F:WarWolfWorks.EditorBase.Constants.EVN_STAT_STACKING">
             <summary>
-            Display name of a <see cref="T:WarWolfWorks.Interfaces.IStat"/>'s Stacking.
+            Display name of a <see cref="!:IStat"/>'s Stacking.
             </summary>
         </member>
         <member name="F:WarWolfWorks.EditorBase.Constants.EVN_STAT_AFFECTIONS">
             <summary>
-            Display name of a <see cref="T:WarWolfWorks.Interfaces.IStat"/>'s Affections.
+            Display name of a <see cref="!:IStat"/>'s Affections.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.EditorBase.Constants.EVARV_ITEM_NAME_WIDTH_DIV">
+        <member name="F:WarWolfWorks.EditorBase.Constants.EV_ITEM_NAME_WIDTH_DIV">
             <summary>
-            The amount by which the width gets divided for <see cref="T:WarWolfWorks.EditorBase.EntitiesSystem.Itemization.ItemEditor"/>'s name field.
+            The amount by which the width gets divided for <see cref="!:ItemEditor"/>'s name field.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.EditorBase.Constants.EVARV_ENTITYATTACK_ATK_LABEL_WIDTH_DIV">
+        <member name="F:WarWolfWorks.EditorBase.Constants.EV_ENTITYATTACK_ATK_LABEL_WIDTH_DIV">
             <summary>
             The divider of the with of the attack label.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.EditorBase.Constants.GUIS_DefaultTitle_0">
+            <summary>
+            A title <see cref="T:UnityEngine.GUIStyle"/> used to separate variables into different categories.
             </summary>
         </member>
         <member name="F:WarWolfWorks.EditorBase.Constants.EV_DEFKEYS_NAME">
@@ -44,7 +49,7 @@
             The padding between keys.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.EditorBase.Constants.VARV_DEFKEYS_KEY_NEW">
+        <member name="F:WarWolfWorks.EditorBase.Constants.EV_DEFKEYS_KEY_NEW">
             <summary>
             The default name of a new key.
             </summary>
@@ -97,47 +102,6 @@
         <member name="F:WarWolfWorks.EditorBase.Custom.EnumListDisplayer.EnumValuesLong">
             <summary>
             Currently displayed Enum values (Only used for long-type enums)
-            </summary>
-        </member>
-        <member name="T:WarWolfWorks.EditorBase.EntitiesSystem.Attacking.EntityAttackEditor">
-            <summary>
-            Custom editor for <see cref="T:WarWolfWorks.EntitiesSystem.Attacking.EntityAttack"/>.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.EditorBase.EntitiesSystem.Attacking.EntityAttackEditor.OnInspectorGUI">
-            <summary>
-            Draws the custom inspector.
-            </summary>
-        </member>
-        <member name="T:WarWolfWorks.EditorBase.EntitiesSystem.EntityEditor">
-            <summary>
-            Custom editor for <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/>. All fields with "s_" or "S_" will be removed if the
-            surface class is marked with <see cref="T:WarWolfWorks.Attributes.CompleteNoS"/>.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.EditorBase.EntitiesSystem.EntityEditor.OnInspectorGUI">
-            <summary>
-            Draws the <see cref="T:WarWolfWorks.EntitiesSystem.Entity"/>'s custom inspector.
-            </summary>
-        </member>
-        <member name="T:WarWolfWorks.EditorBase.EntitiesSystem.Itemization.ItemEditor">
-            <summary>
-            Custom editor for <see cref="T:WarWolfWorks.EditorBase.EntitiesSystem.Itemization.ItemEditor"/>; It is also what sets an <see cref="T:WarWolfWorks.EntitiesSystem.Itemization.Item"/>'s ID when not set.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.EditorBase.EntitiesSystem.Itemization.ItemEditor.OnInspectorGUI">
-            <summary>
-            Draws the custom inspector.
-            </summary>
-        </member>
-        <member name="T:WarWolfWorks.EditorBase.EntitiesSystem.Movement.EntityMovementEditor">
-            <summary>
-            Custom editor for <see cref="T:WarWolfWorks.EntitiesSystem.Movement.EntityMovement"/>.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.EditorBase.EntitiesSystem.Movement.EntityMovementEditor.OnInspectorGUI">
-            <summary>
-            Draws the custom inspector.
             </summary>
         </member>
         <member name="T:WarWolfWorks.EditorBase.Interfaces.INyuComponentInternalEditor">
@@ -203,7 +167,7 @@
         </member>
         <member name="M:WarWolfWorks.EditorBase.Interfaces.IService.OnDisable">
             <summary>
-            Invoked when <see cref="T:WarWolfWorks.EditorBase.Services.ServicesWindow"/> is disabled.
+            Invoked when <see cref="T:WarWolfWorks.EditorBase.Services.ServicesWindow"/> is disabled or another service has been focused.
             </summary>
         </member>
         <member name="M:WarWolfWorks.EditorBase.Interfaces.IService.Draw">
@@ -306,32 +270,6 @@
             <summary>
             Custom property drawer for <see cref="T:WarWolfWorks.NyuEntities.Statistics.CountdownStat"/>.
             </summary>
-        </member>
-        <member name="T:WarWolfWorks.EditorBase.PropertyDrawers.LevelFloatDrawer">
-            <summary>
-            Property drawer for <see cref="T:WarWolfWorks.Utility.LevelFloat"/>.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.EditorBase.PropertyDrawers.LevelFloatDrawer.FinalHeight">
-            <summary>
-            Height applied to the drawer using <see cref="M:WarWolfWorks.EditorBase.PropertyDrawers.LevelFloatDrawer.GetPropertyHeight(UnityEditor.SerializedProperty,UnityEngine.GUIContent)"/>.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.EditorBase.PropertyDrawers.LevelFloatDrawer.OnGUI(UnityEngine.Rect,UnityEditor.SerializedProperty,UnityEngine.GUIContent)">
-            <summary>
-            Draws the <see cref="T:WarWolfWorks.Utility.LevelFloat"/>.
-            </summary>
-            <param name="position"></param>
-            <param name="property"></param>
-            <param name="label"></param>
-        </member>
-        <member name="M:WarWolfWorks.EditorBase.PropertyDrawers.LevelFloatDrawer.GetPropertyHeight(UnityEditor.SerializedProperty,UnityEngine.GUIContent)">
-            <summary>
-            Sets the property height to the starting position minus the ending yMax position.
-            </summary>
-            <param name="property"></param>
-            <param name="label"></param>
-            <returns></returns>
         </member>
         <member name="T:WarWolfWorks.EditorBase.PropertyDrawers.LevelNyuStatDrawer">
             <summary>
@@ -506,6 +444,21 @@
             The menu currently selected.
             </summary>
         </member>
+        <member name="F:WarWolfWorks.EditorBase.Services.ServicesWindow.Tabs">
+            <summary>
+            All current service tabs.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.EditorBase.UI.MenusSystem.BasicIndexEventEditor">
+            <summary>
+            Custom editor for the <see cref="T:WarWolfWorks.UI.MenusSystem.Assets.BasicIndexEvent"/> class.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EditorBase.UI.MenusSystem.BasicIndexEventEditor.OnInspectorGUI">
+            <summary>
+            The <see cref="T:WarWolfWorks.UI.MenusSystem.Assets.BasicIndexEvent"/> inspector drawing.
+            </summary>
+        </member>
         <member name="T:WarWolfWorks.EditorBase.Utility.EditorHooks">
             <summary>
             Like <see cref="T:WarWolfWorks.Utility.Hooks"/>, but for the editor :Pog:.
@@ -516,6 +469,7 @@
             Returns all serialized properties inside a serialized object.
             </summary>
             <param name="serializedObject"></param>
+            <param name="enterChildren"></param>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.EditorBase.Utility.EditorHooks.GetAllVisibleProperties(UnityEditor.SerializedObject,System.Boolean)">
@@ -1005,14 +959,14 @@
         </member>
         <member name="M:WarWolfWorks.EditorBase.Utility.EditorHooks.Drawers.StatField``2(UnityEngine.Rect,UnityEditor.SerializedProperty)">
             <summary>
-            Draws a <see cref="T:WarWolfWorks.Interfaces.IStat"/> field.
+            Draws a <see cref="!:IStat"/> field.
             </summary>
             <param name="rect"></param>
             <param name="property"></param>
         </member>
         <member name="M:WarWolfWorks.EditorBase.Utility.EditorHooks.Drawers.StatField(UnityEngine.Rect,UnityEditor.SerializedProperty,System.Type,System.Type)">
             <summary>
-            Draws a <see cref="T:WarWolfWorks.Interfaces.IStat"/> field.
+            Draws a <see cref="!:IStat"/> field.
             </summary>
             <param name="rect"></param>
             <param name="property"></param>
@@ -1021,7 +975,7 @@
         </member>
         <member name="M:WarWolfWorks.EditorBase.Utility.EditorHooks.Drawers.LevelStatField``2(UnityEngine.Rect,UnityEditor.SerializedProperty)">
             <summary>
-            Draws a <see cref="T:WarWolfWorks.EntitiesSystem.Statistics.LevelStat"/> field.
+            Draws a <see cref="!:LevelStat"/> field.
             </summary>
             <typeparam name="TStacking"></typeparam>
             <typeparam name="TAffection"></typeparam>
@@ -1030,7 +984,7 @@
         </member>
         <member name="M:WarWolfWorks.EditorBase.Utility.EditorHooks.Drawers.LevelStatField(UnityEngine.Rect,UnityEditor.SerializedProperty,System.Type,System.Type)">
             <summary>
-            Draws a <see cref="T:WarWolfWorks.EntitiesSystem.Statistics.LevelStat"/> field.
+            Draws a <see cref="!:LevelStat"/> field.
             </summary>
             <param name="rect"></param>
             <param name="property"></param>
@@ -1039,7 +993,7 @@
         </member>
         <member name="M:WarWolfWorks.EditorBase.Utility.EditorHooks.Drawers.CountdownStatField``2(UnityEngine.Rect,UnityEditor.SerializedProperty)">
             <summary>
-            Draws a <see cref="T:WarWolfWorks.EntitiesSystem.Statistics.CountdownStat"/> field.
+            Draws a <see cref="!:CountdownStat"/> field.
             </summary>
             <typeparam name="TStacking"></typeparam>
             <typeparam name="TAffection"></typeparam>
@@ -1048,7 +1002,7 @@
         </member>
         <member name="M:WarWolfWorks.EditorBase.Utility.EditorHooks.Drawers.CountdownStatField(UnityEngine.Rect,UnityEditor.SerializedProperty,System.Type,System.Type)">
             <summary>
-            Draws a <see cref="T:WarWolfWorks.EntitiesSystem.Statistics.CountdownStat"/> field.
+            Draws a <see cref="!:CountdownStat"/> field.
             </summary>
             <param name="rect"></param>
             <param name="property"></param>

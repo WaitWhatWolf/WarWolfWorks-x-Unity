@@ -239,7 +239,7 @@ namespace WarWolfWorks.EditorBase.NyuEntities
                         SelectedIndex = -1;
 
                     EditorHooks.DrawColoredSquare(use, i == SelectedIndex ? NyuEntity_Component_Selected : NyuEntity_Component_Deselected);
-                    EditorGUI.LabelField(use, "<color=#f9f9f9>" + labelName + "</color>", EVARV_Nyu_Component_Foldout_Style);
+                    EditorGUI.LabelField(use, "<color=#f9f9f9>" + labelName + "</color>", GUIS_Nyu_Component_Foldout_Style);
 
                     if (NyuTarget.hs_SerializePlotArmor[i])
                     {

@@ -2,10 +2,10 @@
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using WarWolfWorks.Internal;
+using WarWolfWorks.IO.CTS;
 using WarWolfWorks.Utility;
-using static WarWolfWorks.Utility.Hooks.Streaming;
 using static WarWolfWorks.Constants;
+using static WarWolfWorks.EditorBase.Constants;
 
 namespace WarWolfWorks.EditorBase.Custom
 {
@@ -43,17 +43,12 @@ namespace WarWolfWorks.EditorBase.Custom
         /// </summary>
         public (string[] EnumName, long[] EnumVal) EnumValuesLong;
 
-        private LanguageString LS_Previous = new LanguageString("Previous", ("Poprzedni", SystemLanguage.Polish), ("前に", SystemLanguage.Japanese));
-        private LanguageString LS_Next = new LanguageString("Next", ("Następny", SystemLanguage.Polish), ("次に", SystemLanguage.Japanese));
         private LanguageString LS_Remove = new LanguageString("Remove Entry", ("Usuń wejście", SystemLanguage.Polish), ("エントリーを削除", SystemLanguage.Japanese));
 
-        private LanguageString LS_Type = new LanguageString("Type", ("Typ", SystemLanguage.Polish), ("タイプ", SystemLanguage.Japanese));
-        private LanguageString LS_Check = new LanguageString("Check", ("Sprawdź", SystemLanguage.Polish), ("確認", SystemLanguage.Japanese));
         private LanguageString LS_WarningDoesntExist = new LanguageString("Parsed type does not exist! Make sure you include the namespace of the type and the type is an Enum.",
             ("Podany typ nie istnieję! Upewnij się że podany typ zawiera namespace oraz jest on typem Enum.", SystemLanguage.Polish),
             ("タイプは存在しません！ネームスペースを含め、タイプがEnumであることを確認してください", SystemLanguage.Japanese));
         private LanguageString LS_CurrentDisplay = new LanguageString("Currently Displaying", ("Obecnie Wyświetlane", SystemLanguage.Polish), ("現在表示", SystemLanguage.Japanese));
-        private LanguageString LS_Reset = new LanguageString("Reset", ("Resetuj", SystemLanguage.Polish), ("リセット", SystemLanguage.Japanese));
 
         private Vector3 ScrollPosition;
 
@@ -64,10 +59,9 @@ namespace WarWolfWorks.EditorBase.Custom
             int64
         }
 
-        private string Category = "Enumリストエントリー";
         private IntType CurrentIntType;
 
-        private string[] PreviousEntries;
+        private Variable[] PreviousEntries;
         private int entryIndx = 0;
         private int EntryIndex
         {
@@ -80,7 +74,7 @@ namespace WarWolfWorks.EditorBase.Custom
                 else if (entryIndx < 0)
                     entryIndx = PreviousEntries.Length - 1;
 
-                ParsedType = PreviousEntries[entryIndx];
+                ParsedType = PreviousEntries[entryIndx].Value;
             }
         }
 
@@ -88,14 +82,24 @@ namespace WarWolfWorks.EditorBase.Custom
 
         private void SetEntries()
         {
-            try { PreviousEntries = LoadAll(Catalog.LoaderFull(Path_Settings, Category), false).ToArray(); }
+            try { PreviousEntries = CTS_Preferences_EnumEntries.GetAllLines().ToArray(); }
             catch { goto DefaultSetter; }
 
             if (PreviousEntries != null && PreviousEntries.Length > 0)
                 return;
 
         DefaultSetter:
-            PreviousEntries = new string[] { "WarWolfWorks.EntitiesSystem.Statistics.Stacking" };
+            PreviousEntries = new Variable[] { new Variable(GetSaveName(0), "WarWolfWorks.EntitiesSystem.Statistics.Stacking") };
+        }
+
+        private string GetSaveName(int index)
+        {
+            return $"Entry{index}";
+        }
+
+        private void OnDisable()
+        {
+            CTS_Preferences_EnumEntries.Apply();
         }
 
         private void OnGUI()
@@ -117,7 +121,10 @@ namespace WarWolfWorks.EditorBase.Custom
                             Type underlyingType = Enum.GetUnderlyingType(CurrentType);
                             CurrentIntType = underlyingType == typeof(int) ? IntType.int32 :
                                 underlyingType == typeof(short) ? IntType.int16 : IntType.int64;
-                            if(PreviousEntries == null || !PreviousEntries.Contains(ParsedType)) Save(Catalog.Saver(Path_Settings, Category, $"Entry{PreviousEntries.Length}", ParsedType));
+
+                            if(PreviousEntries == null || PreviousEntries.FindIndex(v => v.Value == ParsedType) == -1)
+                                CTS_Preferences_EnumEntries[GetSaveName(PreviousEntries.Length)] = ParsedType;
+
                             switch (CurrentIntType)
                             {
                                 default:
@@ -146,7 +153,7 @@ namespace WarWolfWorks.EditorBase.Custom
                     }
                     if (GUILayout.Button(LS_Remove))
                     {
-                        Remove(Catalog.Loader(Path_Settings, Category, PreviousEntries[EntryIndex]));
+                        CTS_Preferences_EnumEntries.Remove(PreviousEntries[EntryIndex]);
                         SetEntries();
                     }
                 }
@@ -183,6 +190,7 @@ namespace WarWolfWorks.EditorBase.Custom
 
                     if (GUILayout.Button(LS_Reset))
                     {
+                        CTS_Preferences_EnumEntries.Apply();
                         ActivatedWindow = false;
                         PreviousEntries = null;
                     }

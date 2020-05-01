@@ -17,7 +17,7 @@ namespace WarWolfWorks.EditorBase.Interfaces
         /// </summary>
         void OnEnable();
         /// <summary>
-        /// Invoked when <see cref="ServicesWindow"/> is disabled.
+        /// Invoked when <see cref="ServicesWindow"/> is disabled or another service has been focused.
         /// </summary>
         void OnDisable();
         /// <summary>

@@ -36,7 +36,7 @@ namespace WarWolfWorks.Utility.Transitioning
         private void C_INDEX_CHECK(int index)
         {
             if (index < 0 || index >= ns_Transitions.Length)
-                throw new Exception(string.Format("Cannot handle the transition under index {0} as the index given is less than 0 or higher than {1}", index, VARV_TRANSITIONMANAGER_TRANSITIONS_SIZE - 1));
+                throw new Exception(string.Format("Cannot handle the transition under index {0} as the index given is less than 0 or higher than {1}", index, V_TRANSITIONMANAGER_TRANSITIONS_SIZE - 1));
         }
 
         /// <summary>

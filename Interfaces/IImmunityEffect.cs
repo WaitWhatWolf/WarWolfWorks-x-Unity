@@ -1,9 +1,7 @@
-﻿using WarWolfWorks.EntitiesSystem;
-
-namespace WarWolfWorks.Interfaces
+﻿namespace WarWolfWorks.Interfaces
 {
     /// <summary>
-    /// Interface used for custom effect when an <see cref="Entity"/> enters immunity.
+    /// Interface used for custom effect when a <see cref="IAdvancedHealth"/> object enters immunity.
     /// </summary>
     public interface IImmunityEffect<T> : IParentable<T> where T : IAdvancedHealth
     {

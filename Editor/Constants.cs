@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
-using WarWolfWorks.EditorBase.EntitiesSystem.Itemization;
 using WarWolfWorks.EditorBase.Interfaces;
 using WarWolfWorks.EditorBase.Services;
-using WarWolfWorks.Interfaces;
+using WarWolfWorks.IO.CTS;
 using WarWolfWorks.Utility;
+using static WarWolfWorks.Constants;
 
 namespace WarWolfWorks.EditorBase
 {
@@ -12,6 +12,10 @@ namespace WarWolfWorks.EditorBase
     /// </summary>
     public static class Constants
     {
+        #region Streaming
+        internal const string SVCN_ENUMENTRIES = "Enumリストエントリー";
+        #endregion
+
         #region Service Menu
         internal static readonly IService[] Settings_Tab_Menus = new IService[]
         {
@@ -23,8 +27,8 @@ namespace WarWolfWorks.EditorBase
 
         internal static readonly Color Settings_Tab_Color_Selected = new Color(0.4f, 0.4f, 0.4f, 0.4f);
         internal static readonly Color Settings_Tab_Color_Default = new Color(0.25f, 0.25f, 0.25f, 0.5f);
-        internal const float SERVICES_TAB_SEPARATOR_WIDTH = 2;
-        internal const float SERVICES_TAB_HEIGHT = 30;
+        internal const float V_SERVICES_TAB_SEPARATOR_WIDTH = 2;
+        internal const float V_SERVICES_TAB_HEIGHT = 30;
         internal static readonly Vector2 Services_Window_Size_Min = new Vector2(525, 300);
         internal static readonly LanguageString ELS_DefaultKeys = new LanguageString("Default Keys", ("domyślne Przyciski", SystemLanguage.Polish), ("デフォルト・キーズ", SystemLanguage.Japanese));
         internal static readonly LanguageString ELS_AdvancedDebug = new LanguageString("Advanced Debug", ("Zaawansowane Debugowanie", SystemLanguage.Polish), ("アドバンスドデバッグ", SystemLanguage.Japanese));
@@ -56,12 +60,12 @@ namespace WarWolfWorks.EditorBase
         /// <summary>
         /// The amount by which the width gets divided for <see cref="ItemEditor"/>'s name field.
         /// </summary>
-        internal const float EVARV_ITEM_NAME_WIDTH_DIV = 1.2f;
+        internal const float EV_ITEM_NAME_WIDTH_DIV = 1.2f;
 
         /// <summary>
         /// The divider of the with of the attack label.
         /// </summary>
-        internal const float EVARV_ENTITYATTACK_ATK_LABEL_WIDTH_DIV = 3f;
+        internal const float EV_ENTITYATTACK_ATK_LABEL_WIDTH_DIV = 3f;
 
         internal static readonly GUIStyle GUIS_EntityAttack_Atk_Label = new GUIStyle()
         {
@@ -70,11 +74,22 @@ namespace WarWolfWorks.EditorBase
             fontSize = 12
         };
 
-        internal static readonly GUIStyle EVARV_Nyu_Component_Foldout_Style = new GUIStyle()
+        internal static readonly GUIStyle GUIS_Nyu_Component_Foldout_Style = new GUIStyle()
         {
             alignment = TextAnchor.MiddleCenter,
             richText = true,
             fontSize = 12
+        };
+
+        /// <summary>
+        /// A title <see cref="GUIStyle"/> used to separate variables into different categories.
+        /// </summary>
+        internal static readonly GUIStyle GUIS_DefaultTitle_0 = new GUIStyle()
+        {
+            alignment = TextAnchor.MiddleCenter,
+            richText = true,
+            fontSize = 20,
+            fontStyle = FontStyle.BoldAndItalic
         };
 
         internal static readonly Color NyuEntity_Component_Selected = new Color(0.8f, 0.8f, 0.8f, 0.6f);
@@ -158,6 +173,22 @@ namespace WarWolfWorks.EditorBase
             "Level",
             ("Poziom", SystemLanguage.Polish),
             ("レヴェル", SystemLanguage.Japanese));
+        internal static readonly LanguageString ELS_Transition_Color = new LanguageString(
+            "Color Transition Settings",
+            ("Opcje tranzycji koloru", SystemLanguage.Polish),
+            ("色の推移設定", SystemLanguage.Japanese));
+        internal static readonly LanguageString ELS_Transition_Anchors = new LanguageString(
+            "Anchor Transition Settings",
+            ("Opcje tranzycji kotwic", SystemLanguage.Polish),
+            ("アンカーの推移設定", SystemLanguage.Japanese));
+        internal static readonly LanguageString ELS_Transition_Color_Unfocused = new LanguageString(
+            "Color: Unfocused",
+            ("Kolor: Nieskupiony", SystemLanguage.Polish),
+            ("色: 中心ない", SystemLanguage.Japanese));
+        internal static readonly LanguageString ELS_Transition_Color_Focused = new LanguageString(
+            "Color: Focused",
+            ("Kolor: Skupiony", SystemLanguage.Polish),
+            ("色: 中心", SystemLanguage.Japanese));
         #endregion
 
         #region Default Keys Editor Window
@@ -177,7 +208,11 @@ namespace WarWolfWorks.EditorBase
         /// <summary>
         /// The default name of a new key.
         /// </summary>
-        public const string VARV_DEFKEYS_KEY_NEW = "New Key";
+        public const string EV_DEFKEYS_KEY_NEW = "New Key";
+        #endregion
+
+        #region CTS
+        internal static readonly Catalog CTS_Preferences_EnumEntries = new Catalog(SV_Path_Settings, SVCN_ENUMENTRIES);
         #endregion
     }
 }
