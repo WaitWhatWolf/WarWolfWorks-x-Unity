@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace WarWolfWorks.Utility
 {
@@ -60,37 +61,37 @@ namespace WarWolfWorks.Utility
             }
         }
 
-        [SerializeField]
-        private float defaultValue;
+        [SerializeField, FormerlySerializedAs("defaultValue")]
+        private float s_DefaultValue;
         /// <summary>
         /// Value which is used when the current level is 0.
         /// </summary>
         public float DefaultValue
         {
-            get => defaultValue;
-            set => defaultValue = value;
+            get => s_DefaultValue;
+            set => s_DefaultValue = value;
         }
 
-        [SerializeField]
-        private int level;
+        [SerializeField, FormerlySerializedAs("level")]
+        private int s_Level;
         /// <summary>
         /// This LevelFloat's current level.
         /// </summary>
         public int Level
         {
-            get => level;
-            set => level = value;
+            get => s_Level;
+            set => s_Level = value;
         }
 
-        [SerializeField]
-        private LevelValue[] levelValues;
+        [SerializeField, FormerlySerializedAs("levelValues")]
+        private LevelValue[] s_LevelValues;
         /// <summary>
         /// All values used to return the LevelFloat's value.
         /// </summary>
         public LevelValue[] Values
         {
-            get => levelValues;
-            set => levelValues = value;
+            get => s_LevelValues;
+            set => s_LevelValues = value;
         }
 
         /// <summary>
@@ -106,9 +107,9 @@ namespace WarWolfWorks.Utility
 
         private void HandleCloned(LevelFloat clone)
         {
-            for(int i = 0; i < levelValues.Length; i++)
+            for(int i = 0; i < s_LevelValues.Length; i++)
             {
-                clone.levelValues[i] = new LevelValue(levelValues[i].Value, levelValues[i].Level);
+                clone.s_LevelValues[i] = new LevelValue(s_LevelValues[i].Value, s_LevelValues[i].Level);
             }
         }
 
@@ -153,9 +154,9 @@ namespace WarWolfWorks.Utility
         /// <param name="_Values"></param>
         public LevelFloat(float _DefaultValue, int _Level, params LevelValue[] _Values)
         {
-            defaultValue = _DefaultValue;
-            level = _Level;
-            levelValues = _Values;
+            s_DefaultValue = _DefaultValue;
+            s_Level = _Level;
+            s_LevelValues = _Values;
         }
 
         /// <summary>
@@ -166,9 +167,9 @@ namespace WarWolfWorks.Utility
         {
             var hashCode = 1756548625;
             hashCode = hashCode * -1521134295 + Value.GetHashCode();
-            hashCode = hashCode * -1521134295 + defaultValue.GetHashCode();
-            hashCode = hashCode * -1521134295 + level.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<LevelValue[]>.Default.GetHashCode(levelValues);
+            hashCode = hashCode * -1521134295 + s_DefaultValue.GetHashCode();
+            hashCode = hashCode * -1521134295 + s_Level.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<LevelValue[]>.Default.GetHashCode(s_LevelValues);
             return hashCode;
         }
 

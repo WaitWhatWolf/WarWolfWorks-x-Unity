@@ -27,7 +27,7 @@ namespace WarWolfWorks.EditorBase.PropertyDrawers
 
         protected override void GUIDraw(ref Rect position, SerializedProperty property, GUIContent label)
         {
-            DrawLevelValue(position, property.FindPropertyRelative("value"), position.x, $"{label.text} Value", out _);
+            DrawLevelValue(position, property.FindPropertyRelative("s_Value"), position.x, $"{label.text} Value", out _);
 
             AsEnumStatAttribute enumAttribute = null;
 
@@ -42,7 +42,7 @@ namespace WarWolfWorks.EditorBase.PropertyDrawers
 
             if (stackingAttribute != null)
             {
-                DrawValueAsEnum(position, stackingAttribute, property.FindPropertyRelative("stacking"),
+                DrawValueAsEnum(position, stackingAttribute, property.FindPropertyRelative("s_Stacking"),
                     position.x + FinalWidth(position), "Stacking", out _);
             }
             else
@@ -52,12 +52,12 @@ namespace WarWolfWorks.EditorBase.PropertyDrawers
 
             if (affectionsAttribute != null)
             {
-                DrawAffectionsAsEnum(position, affectionsAttribute, property.FindPropertyRelative("affections"),
+                DrawAffectionsAsEnum(position, affectionsAttribute, property.FindPropertyRelative("s_Affections"),
                     position.x + FinalWidth(position) * 2);
             }
             else
             {
-                DrawAffections(position, property.FindPropertyRelative("affections"), position.x + FinalWidth(position) * 2);
+                DrawAffections(position, property.FindPropertyRelative("s_Affections"), position.x + FinalWidth(position) * 2);
             }
         }
 
@@ -71,9 +71,9 @@ namespace WarWolfWorks.EditorBase.PropertyDrawers
             EditorGUI.LabelField(levelRect, label);
             levelRect.y += BaseHeight;
 
-            EditorGUI.PropertyField(levelRect, property.FindPropertyRelative("defaultValue"), GUIContent.none);
+            EditorGUI.PropertyField(levelRect, property.FindPropertyRelative("s_DefaultValue"), GUIContent.none);
 
-            SerializedProperty values = property.FindPropertyRelative("levelValues");
+            SerializedProperty values = property.FindPropertyRelative("s_LevelValues");
 
             EditorGUI.PropertyField(levelRect, values, GUIContent.none);
 
