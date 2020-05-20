@@ -54,8 +54,9 @@ namespace WarWolfWorks.NyuEntities
 
         private static void WarningDebugNRE(string interfaceName, string objectName, Exception exception)
         {
-            AdvancedDebug.LogWarningFormat("Couldn't call {0} of {1} as there was an exception.\n{2}", AdvancedDebug.DEBUG_LAYER_WWW_INDEX
+            AdvancedDebug.LogWarningFormat("Couldn't call {0} of {1} as there was an exception; Aborting...", AdvancedDebug.DEBUG_LAYER_WWW_INDEX
                 , interfaceName, objectName, exception);
+            AdvancedDebug.LogException(exception);
         }
 
         /// <summary>
@@ -69,7 +70,7 @@ namespace WarWolfWorks.NyuEntities
 
                 for (int i = 0; i < AllEntities.Count; i++)
                 {
-                    if (!AllEntities[i].enabled)
+                    if (!AllEntities[i].enabled || AllEntities[i].ns_DestroyedCorrectly)
                         continue;
 
                     try
@@ -113,7 +114,7 @@ namespace WarWolfWorks.NyuEntities
                         continue;
 
                     try
-                    { 
+                    {
                         if (AllEntities[i] is INyuFixedUpdate entityFixed)
                             entityFixed.NyuFixedUpdate();
                     }
@@ -181,6 +182,26 @@ namespace WarWolfWorks.NyuEntities
 
         #region Utility Methods
         /// <summary>
+        /// Returns true if any <see cref="Nyu"/> of given T type exists in the scene.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static bool Exists<T>()
+        {
+            return AllEntities.FindIndex(c => c is T) != -1;
+        }
+
+        /// <summary>
+        /// Returns true if any <see cref="Nyu"/> of given type exists in the scene.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool Exists(Type type)
+        {
+            return AllEntities.FindIndex(c => c.GetType().IsAssignableFrom(type)) != -1;
+        }
+
+        /// <summary>
         /// Finds an entity by match.
         /// </summary>
         /// <param name="match"></param>
@@ -208,6 +229,12 @@ namespace WarWolfWorks.NyuEntities
 
             return toReturn;
         }
+
+        /// <summary>
+        /// Returns an array of all entities in game.
+        /// </summary>
+        /// <returns></returns>
+        public static Nyu[] GetAll() => AllEntities.ToArray();
 
         #region Get Visible
         /// <summary>
@@ -318,6 +345,119 @@ namespace WarWolfWorks.NyuEntities
 
             return toReturn;
         }
+
+        /// <summary>
+        /// Gets all visible <see cref="Nyu"/> entities of T type to a given camera within a specified max range.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="to"></param>
+        /// <param name="within"></param>
+        /// <returns></returns>
+        public static T GetClosestVisible<T>(Camera to, float within) where T : Nyu
+        {
+            T toReturn = null;
+            float previousDist = float.PositiveInfinity;
+
+            for (int i = 0; i < AllEntities.Count; i++)
+            {
+                if (AllEntities[i] is T tNyu)
+                {
+                    float curDist = Vector3.Distance(to.transform.position, tNyu.Position);
+                    if (curDist <= within && curDist < previousDist)
+                    {
+                        Renderer[] renderers = tNyu.GetComponentsInChildren<Renderer>();
+                        foreach (Renderer renderer in renderers)
+                        {
+                            if (Hooks.Rendering.IsVisibleFrom(renderer, to))
+                            {
+                                toReturn = tNyu;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return toReturn;
+        }
+
+        /// <summary>
+        /// Gets all visible <see cref="Nyu"/> entities of T type to a given camera within a specified max range.
+        /// </summary>
+        /// <param name="to"></param>
+        /// <param name="within"></param>
+        /// <param name="acceptedType"></param>
+        /// <returns></returns>
+        public static Nyu GetClosestVisible(Camera to, float within, Type acceptedType)
+        {
+            Nyu toReturn = null;
+            float previousDist = float.PositiveInfinity;
+
+            for (int i = 0; i < AllEntities.Count; i++)
+            {
+                if (AllEntities[i].GetType().IsAssignableFrom(acceptedType))
+                {
+                    float curDist = Vector3.Distance(to.transform.position, AllEntities[i].Position);
+                    if (curDist <= within && curDist < previousDist)
+                    {
+                        Renderer[] renderers = AllEntities[i].GetComponentsInChildren<Renderer>();
+                        foreach (Renderer renderer in renderers)
+                        {
+                            if (Hooks.Rendering.IsVisibleFrom(renderer, to))
+                            {
+                                toReturn = AllEntities[i];
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return toReturn;
+        }
+
+        /// <summary>
+        /// Gets all visible <see cref="Nyu"/> entities of T type to a given camera within a specified max range.
+        /// </summary>
+        /// <param name="to"></param>
+        /// <param name="within"></param>
+        /// <param name="acceptedTypes"></param>
+        /// <returns></returns>
+        public static Nyu GetClosestVisible(Camera to, float within, IEnumerable<Type> acceptedTypes)
+        {
+            Nyu toReturn = null;
+            float previousDist = float.PositiveInfinity;
+
+            for (int i = 0; i < AllEntities.Count; i++)
+            {
+                bool acceptType = false;
+                foreach(Type type in acceptedTypes)
+                    if(AllEntities[i].GetType().IsAssignableFrom(type))
+                    {
+                        acceptType = true;
+                        break;
+                    }
+
+                if (acceptType)
+                {
+                    float curDist = Vector3.Distance(to.transform.position, AllEntities[i].Position);
+                    if (curDist <= within && curDist < previousDist)
+                    {
+                        Renderer[] renderers = AllEntities[i].GetComponentsInChildren<Renderer>();
+                        foreach (Renderer renderer in renderers)
+                        {
+                            if (Hooks.Rendering.IsVisibleFrom(renderer, to))
+                            {
+                                toReturn = AllEntities[i];
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return toReturn;
+        }
         #endregion
 
         #region Non-Generic Get Closest Methods
@@ -408,6 +548,115 @@ namespace WarWolfWorks.NyuEntities
             }
 
             return index < 0 ? null : AllEntities[index];
+        }
+
+        /// <summary>
+        /// Gets the closest <see cref="Nyu"/> of given types to the given position within a specified max range.
+        /// (Note: <see cref="Nyu"/> entities assignable from the given types are also counted.)
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="within"></param>
+        /// <param name="compareTypes"></param>
+        /// <returns></returns>
+        public static Nyu GetClosest(Vector3 position, float within, IEnumerable<Type> compareTypes)
+        {
+            int index = -1;
+            float lastDist = within;
+            for (int i = 0; i < AllEntities.Count; i++)
+            {
+                foreach(Type type in compareTypes)
+                {
+                    if(AllEntities[i].GetType().IsAssignableFrom(type))
+                    {
+                        float curDist = Vector3.Distance(AllEntities[i].Position, position);
+                        if (curDist < lastDist)
+                            index = i;
+                    }
+
+                    break;
+                }
+            }
+
+            return index < 0 ? null : AllEntities[index];
+        }
+
+        /// <summary>
+        /// Returns all entities within the given distance. Only returns nyu entities of given type.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="within"></param>
+        /// <param name="compareType"></param>
+        /// <returns></returns>
+        public static List<Nyu> GetAllWithin(Vector3 position, float within, Type compareType)
+        {
+            List<Nyu> toReturn = new List<Nyu>();
+            for (int i = 0; i < AllEntities.Count; i++)
+            {
+                if (AllEntities[i].GetType().IsAssignableFrom(compareType))
+                {
+                    float curDist = Vector3.Distance(AllEntities[i].Position, position);
+                    if (curDist <= within)
+                        toReturn.Add(AllEntities[i]);
+                }
+            }
+
+            return toReturn;
+        }
+
+        /// <summary>
+        /// Returns all entities within the given distance. Only returns nyu entities of given type.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="within"></param>
+        /// <param name="compareTypes"></param>
+        /// <returns></returns>
+        public static List<Nyu> GetAllWithin(Vector3 position, float within, params Type[] compareTypes)
+        {
+            List<Nyu> toReturn = new List<Nyu>();
+            for (int i = 0; i < AllEntities.Count; i++)
+            {
+                foreach (Type type in compareTypes)
+                {
+                    if (AllEntities[i].GetType().IsAssignableFrom(type))
+                    {
+                        float curDist = Vector3.Distance(AllEntities[i].Position, position);
+                        if (curDist <= within)
+                            toReturn.Add(AllEntities[i]);
+
+                        break;
+                    }
+                }
+            }
+
+            return toReturn;
+        }
+
+        /// <summary>
+        /// Returns all entities within the given distance. Only returns nyu entities of given type.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="within"></param>
+        /// <param name="compareTypes"></param>
+        /// <returns></returns>
+        public static List<Nyu> GetAllWithin(Vector3 position, float within, IEnumerable<Type> compareTypes)
+        {
+            List<Nyu> toReturn = new List<Nyu>();
+            for (int i = 0; i < AllEntities.Count; i++)
+            {
+                foreach (Type type in compareTypes)
+                {
+                    if (AllEntities[i].GetType().IsAssignableFrom(type))
+                    {
+                        float curDist = Vector3.Distance(AllEntities[i].Position, position);
+                        if (curDist <= within)
+                            toReturn.Add(AllEntities[i]);
+
+                        break;
+                    }
+                }
+            }
+
+            return toReturn;
         }
         #endregion
 
@@ -523,8 +772,6 @@ namespace WarWolfWorks.NyuEntities
         /// </summary>
         public static event Action<Nyu> OnNyuEndUnofficial;
 
-
-
         internal static void CallEntityBegin(Nyu of) => OnNyuBegin?.Invoke(of);
 
         /// <summary>
@@ -536,6 +783,9 @@ namespace WarWolfWorks.NyuEntities
         /// <returns></returns>
         public static Nyu New(Nyu prefab, Vector3 position, Quaternion rotation)
         {
+            bool reenable = prefab.gameObject.activeSelf;
+            prefab.gameObject.SetActive(false);
+
             Nyu toReturn = UnityEngine.Object.Instantiate(prefab, position, rotation);
 
             toReturn.Stats = new Stats(toReturn);
@@ -543,6 +793,15 @@ namespace WarWolfWorks.NyuEntities
 
             toReturn.CallInit();
             AllEntities.Add(toReturn);
+
+            if (reenable)
+            {
+                prefab.gameObject.SetActive(true);
+                toReturn.gameObject.SetActive(true);
+            }
+
+            if (toReturn.gameObject.activeInHierarchy)
+                toReturn.CallAwake();
 
             OnNyuBegin?.Invoke(toReturn);
 
@@ -558,6 +817,9 @@ namespace WarWolfWorks.NyuEntities
         /// <returns></returns>
         public static T New<T>(T prefab, Vector3 position, Quaternion rotation) where T : Nyu
         {
+            bool reenable = prefab.gameObject.activeSelf;
+            prefab.gameObject.SetActive(false);
+
             T toReturn = UnityEngine.Object.Instantiate(prefab, position, rotation);
 
             toReturn.Stats = new Stats(toReturn);
@@ -565,6 +827,15 @@ namespace WarWolfWorks.NyuEntities
 
             toReturn.CallInit();
             AllEntities.Add(toReturn);
+
+            if (reenable)
+            {
+                prefab.gameObject.SetActive(true);
+                toReturn.gameObject.SetActive(true);
+            }
+
+            if(toReturn.gameObject.activeInHierarchy)
+                toReturn.CallAwake();
 
             OnNyuBegin?.Invoke(toReturn);
 
@@ -593,6 +864,7 @@ namespace WarWolfWorks.NyuEntities
 
             if (entity is INyuOnDestroyQueued entityDestroyQueued)
                 entityDestroyQueued.NyuOnDestroyQueued();
+
 
             for (int i = 0; i < entity.hs_Components.Count; i++)
             {

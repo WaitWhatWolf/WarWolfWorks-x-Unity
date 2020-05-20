@@ -11,7 +11,7 @@ namespace WarWolfWorks.NyuEntities.Itemization
     /// <summary>
     /// Advanced Fixed-Size Inventory for your Fixed-Size Inventory needs.
     /// </summary>
-    public abstract class NyuInventory<T> : NyuComponent, IInventory<T>, INyuAwake where T : NyuItem
+    public abstract class NyuInventory<T> : NyuComponent, IInventory<T>, INyuPreAwake where T : NyuItem
 	{
         [FormerlySerializedAs("inventorySize"), SerializeField]
         private int s_InventorySize;
@@ -101,10 +101,7 @@ namespace WarWolfWorks.NyuEntities.Itemization
 
         private bool InventoryInitiated { get; set; } = false;
 
-        /// <summary>
-        /// When overriding, make sure to include "base.NyuOnInit();" as it initiates the inventory inside this method.
-        /// </summary>
-        public virtual void NyuAwake()
+        void INyuPreAwake.NyuPreAwake()
         {
             if (!InventoryInitiated)
             {

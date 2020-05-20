@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.UI;
 using WarWolfWorks.Debugging;
 using WarWolfWorks.Utility;
 using static WarWolfWorks.AdvancedDebug;
-using static WarWolfWorks.Utility.Hooks.Streaming;
 using static WarWolfWorks.Constants;
-using UnityEngine.UI;
 
 [assembly: InternalsVisibleTo("WarWolfWorks.EditorBase")]
 namespace WarWolfWorks.Internal
@@ -175,8 +174,9 @@ namespace WarWolfWorks.Internal
                         break;
                 }
 
-                string[] splits = CTS_Preferences_AdvancedDebug.GetSafe(ToLayerStreamingName(i), LayerToSavableString(baseName)).Split(SVS_Layers_State, StringSplitOptions.None);
-                toReturn[i] = new DebugLayer(splits[0], Convert.ToBoolean(splits[1]));
+                string name = CTS_Settings_AdvancedDebug.GetSafe(ToLayerStreamingName(i), baseName);
+                bool value = Convert.ToBoolean(CTS_Preferences_AdvancedDebug.GetSafe(ToLayerStreamingName(i), false.ToString()));
+                toReturn[i] = new DebugLayer(name, value);
             }
 
             return toReturn;
@@ -189,14 +189,21 @@ namespace WarWolfWorks.Internal
             
             for(int i = 0; i < layers.Length; i++)
             {
-                string toUse = LayerToSavableString(layers[i].Name, layers[i].Active);
+                string name = layers[i].Name;
+                bool value = layers[i].Active;
                 switch (i)
                 {
-                    case DEBUG_LAYER_EXCEPTIONS_INDEX: toUse = LayerToSavableString(DEBUG_LAYER_EXCEPTIONS_NAME, true); break;
-                    case DEBUG_LAYER_WWW_INDEX: toUse = LayerToSavableString(DEBUG_LAYER_WWW_NAME, layers[i].Active); break;
+                    case DEBUG_LAYER_EXCEPTIONS_INDEX:
+                        name = DEBUG_LAYER_EXCEPTIONS_NAME;
+                        value = true;
+                        break;
+                    case DEBUG_LAYER_WWW_INDEX:
+                        name = DEBUG_LAYER_WWW_NAME;
+                        break;
                 }
 
-                CTS_Preferences_AdvancedDebug[ToLayerStreamingName(i)] = toUse;
+                CTS_Settings_AdvancedDebug[ToLayerStreamingName(i)] = name;
+                CTS_Preferences_AdvancedDebug[ToLayerStreamingName(i)] = value.ToString();
             }
         }
 

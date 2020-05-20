@@ -46,9 +46,22 @@ namespace WarWolfWorks.NyuEntities.MovementSystem
         public void AddVelocities(params Velocity[] velocities)
         {
             hs_Velocities.AddRange(velocities);
-            for(int i = 9; i < velocities.Length; i++)
+            for(int i = 0; i < velocities.Length; i++)
             {
                 OnVelocityAdded?.Invoke(velocities[i]);
+            }
+        }
+
+        /// <summary>
+        /// Adds an enumerable of velocities.
+        /// </summary>
+        /// <param name="velocities"></param>
+        public void AddVelocities(IEnumerable<Velocity> velocities)
+        {
+            hs_Velocities.AddRange(velocities);
+            foreach(Velocity velocity in velocities)
+            {
+                OnVelocityAdded?.Invoke(velocity);
             }
         }
 
@@ -129,8 +142,16 @@ namespace WarWolfWorks.NyuEntities.MovementSystem
         /// </summary>
         /// <param name="match"></param>
         /// <returns></returns>
-        public Velocity FindAllVelocities(Predicate<Velocity> match)
-            => hs_Velocities.Find(match);
+        public List<Velocity> FindAllVelocities(Predicate<Velocity> match)
+            => hs_Velocities.FindAll(match);
+
+        /// <summary>
+        /// Removes all velocities matching the given predicate.
+        /// </summary>
+        /// <param name="match"></param>
+        /// <returns></returns>
+        public int RemoveAllVelocities(Predicate<Velocity> match)
+            => hs_Velocities.RemoveAll(match);
 
         /// <summary>
         /// Invoked when a velocity is added.

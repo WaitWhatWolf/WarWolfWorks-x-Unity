@@ -125,6 +125,29 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
         /// </summary>
         /// <param name="projectile"></param>
         /// <returns></returns>
+        public static bool End(NyuProjectile projectile)
+        {
+            if (!Populated)
+                throw new NyuProjectileException(3);
+
+            if (projectile is T asT && ActiveProjectiles.Remove(asT))
+            {
+                if (projectile is INyuOnDestroy projectileOnDestroy)
+                    projectileOnDestroy.NyuOnDestroy();
+
+                projectile.gameObject.SetActive(false);
+                InactiveProjectiles.Add(asT);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Removes a given projectile from the pool of active projectiles.
+        /// </summary>
+        /// <param name="projectile"></param>
+        /// <returns></returns>
         public static bool End(T projectile)
         {
             if (!Populated)

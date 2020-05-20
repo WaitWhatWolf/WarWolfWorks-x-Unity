@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using WarWolfWorks.Attributes;
-using WarWolfWorks.Interfaces;
 using WarWolfWorks.Interfaces.NyuEntities;
 
 namespace WarWolfWorks.NyuEntities.MovementSystem
@@ -9,7 +8,7 @@ namespace WarWolfWorks.NyuEntities.MovementSystem
     /// Base class for an entity's 2D movement.
     /// </summary>
     [CompleteNoS]
-    public class NyuMovement2D : NyuMovement, INyuAwake, INyuUpdate
+    public class NyuMovement2D : NyuMovement, INyuPreAwake, INyuUpdate
     {
         private Rigidbody2D rb;
         /// <summary>
@@ -54,10 +53,7 @@ namespace WarWolfWorks.NyuEntities.MovementSystem
             else Rigidbody.MovePosition(position);
         }
 
-        /// <summary>
-        /// Make sure to include "base.NyuAwake()" when overriding. (<see cref="INyuAwake"/> implementation)
-        /// </summary>
-        public virtual void NyuAwake()
+        void INyuPreAwake.NyuPreAwake()
         {
             if (NyuMain is INyuEntityParentable nyuParent) nyuParent.OnNyuParentSet += Event_RefreshRigidbody;
 

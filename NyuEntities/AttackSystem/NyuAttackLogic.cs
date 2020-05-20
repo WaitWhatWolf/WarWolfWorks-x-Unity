@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using WarWolfWorks.Interfaces.NyuEntities;
 using WarWolfWorks.Interfaces.UnityMethods;
-using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.NyuEntities.AttackSystem
 {
-    public sealed partial class NyuAttack : INyuAwake, INyuUpdate, INyuFixedUpdate, INyuLateUpdate, INyuOnEnable, INyuOnDisable, INyuOnDestroy
+    public sealed partial class NyuAttack : INyuPreAwake, INyuUpdate, INyuFixedUpdate, INyuLateUpdate, INyuOnEnable, INyuOnDisable, INyuOnDestroy
     {
         [SerializeField]
         private List<SubAttackComponent> AllAttacks = new List<SubAttackComponent>();
@@ -365,7 +364,12 @@ namespace WarWolfWorks.NyuEntities.AttackSystem
                 SubAttackComponent stored = AllAttacks[i];
                 Attack use = stored.InstantiatesAttack && stored.Attack ?
                 Instantiate(stored.Attack) : stored.Attack;
-                use?.Initiate(NyuMain);
+                if (use)
+                {
+                    use.IsInitiated = false;
+                    use.Initiate(NyuMain);
+                }
+
                 AllAttacks[i] = new SubAttackComponent(
                 use,
 
@@ -446,7 +450,7 @@ namespace WarWolfWorks.NyuEntities.AttackSystem
             }
         }
 
-        void INyuAwake.NyuAwake()
+        void INyuPreAwake.NyuPreAwake()
         {
             InstantiateAllAttacks();
         }

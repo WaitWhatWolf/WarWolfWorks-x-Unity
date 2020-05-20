@@ -13,6 +13,7 @@ namespace WarWolfWorks.EditorBase.Custom
     /// Custom editor for all scriptable objects flagged with <see cref="CompleteNoS"/>.
     /// </summary>
     [CustomEditor(typeof(ScriptableObject), true)]
+    [CanEditMultipleObjects]
     public sealed class CompleteNoSScriptableObjectEditor : Editor
     {
         private bool displaysNoS;

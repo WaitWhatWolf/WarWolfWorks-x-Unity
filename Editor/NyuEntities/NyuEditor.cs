@@ -22,6 +22,21 @@ namespace WarWolfWorks.EditorBase.NyuEntities
     [CustomEditor(typeof(Nyu), true)]
     public class NyuEditor : Editor
     {
+        private struct SerializedGroup
+        {
+            public INyuComponent Parent;
+            public SerializedObject s_SerializedObject;
+            public List<SerializedProperty> Properties;
+            public List<GUIContent> GUIContents;
+
+            public SerializedGroup(INyuComponent component)
+            {
+                Parent = component;
+                s_SerializedObject = new SerializedObject(Parent as UnityEngine.Object);
+                EditorHooks.GetAllVisibleProperties(s_SerializedObject, false, out Properties, out GUIContents);
+            }
+        }
+
         private SerializedProperty sp_PlotArmor;
         /// <summary>
         /// Returns the target cast as <see cref="Nyu"/>.
@@ -29,6 +44,7 @@ namespace WarWolfWorks.EditorBase.NyuEntities
         protected Nyu NyuTarget => (Nyu)target;
 
         private INyuComponent[] TargetComponents;
+        private SerializedGroup[] SerializedGroupsDefault;
 
         private Type[] EditorTypes;
         private List<Type> NyuComponentTypes;
@@ -96,12 +112,17 @@ namespace WarWolfWorks.EditorBase.NyuEntities
 
             TargetComponents = NyuTarget.GetComponents<INyuComponent>();
             NyuEditors = new List<INyuComponentEditor>(TargetComponents.Length);
+            SerializedGroupsDefault = new SerializedGroup[TargetComponents.Length];
             for (int i = 0; i < TargetComponents.Length; i++)
             {
                 if (TargetComponents[i] is INyuComponentEditor editor)
                     NyuEditors.Add(editor);
-                else NyuEditors.Add(null);
+                else
+                {
+                    NyuEditors.Add(null);
 
+                    SerializedGroupsDefault[i] = new SerializedGroup(TargetComponents[i]);
+                }
                 for (int j = 0; j < PremadeEditors.Count; j++)
                 {
                     if (PremadeEditors[j].EditorType.IsAssignableFrom(TargetComponents[i].GetType()))
@@ -243,33 +264,52 @@ namespace WarWolfWorks.EditorBase.NyuEntities
 
                     if (NyuTarget.hs_SerializePlotArmor[i])
                     {
-                        bool cusEditMsg = true;
+                        bool drawDefaultEditor = true;
 
                         for (int j = 0; j < PremadeEditors.Count; j++)
                         {
                             if (PremadeEditors[j].EditorType.IsAssignableFrom(TargetComponents[i].GetType()))
                             {
                                 PremadeEditors[j].OnInspectorGUI();
-                                cusEditMsg = false;
+                                drawDefaultEditor = false;
                             }
                         }
 
                         int serializedEditorIndex = NyuSerializedEditors?.FindIndex(se => se.EditorOf == TargetComponents[i].GetType()) ?? -1;
-                        if(serializedEditorIndex != -1)
+                        if (serializedEditorIndex != -1)
                         {
                             NyuSerializedEditors[serializedEditorIndex].OnInspectorGUI();
-                            cusEditMsg = false;
+                            drawDefaultEditor = false;
                         }
                         else if (NyuEditors[i] != null)
                         {
                             NyuEditors[i].NyuOnInspectorGUI();
-                            cusEditMsg = false;
+                            drawDefaultEditor = false;
                         }
 
-                        if (cusEditMsg)
-                            EditorGUILayout.LabelField(
-                                string.Format(ELS_NyuEntity_NoEditor, labelName, typeof(INyuComponentEditor).Name, 
-                                typeof(INyuSerializedEditor).Name), GUILayout.Height(EditorGUIUtility.singleLineHeight * 3));
+                        if (drawDefaultEditor)
+                        {
+                            //EditorGUILayout.LabelField(
+                            //    string.Format(ELS_NyuEntity_NoEditor, labelName, typeof(INyuComponentEditor).Name,
+                            //    typeof(INyuSerializedEditor).Name), GUILayout.Height(EditorGUIUtility.singleLineHeight * 3));
+
+                            if (SerializedGroupsDefault[i].Properties.Count > 0)
+                            {
+                                SerializedGroupsDefault[i].s_SerializedObject.Update();
+
+                                for (int j = 0; j < SerializedGroupsDefault[i].Properties.Count; j++)
+                                {
+                                    EditorGUILayout.PropertyField(SerializedGroupsDefault[i].Properties[j],
+                                        SerializedGroupsDefault[i].GUIContents[j]);
+                                }
+
+                                SerializedGroupsDefault[i].s_SerializedObject.ApplyModifiedProperties();
+                            }
+                            else
+                            {
+                                EditorGUILayout.LabelField(ELS_NyuEntity_NoSerializedObj, GUILayout.Height(EditorGUIUtility.singleLineHeight));
+                            }
+                        }
                     }
                 }
 

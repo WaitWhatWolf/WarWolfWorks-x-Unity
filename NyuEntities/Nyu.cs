@@ -133,21 +133,36 @@ namespace WarWolfWorks.NyuEntities
 
             NyuManager.Exception3Check(this);
 
+            for (int i = 0; i < hs_Components.Count; i++)
+            {
+                if (hs_Components[i] is NyuComponent component)
+                {
+                    component.NyuMain = this;
+                }
+                else
+                {
+                    hs_Components[i].GetType().GetProperty("NyuMain").SetValue(hs_Components[i], this);
+                }
+            }
+
+            Initiated = true;
+        }
+
+        internal void CallAwake()
+        {
             if (this is INyuAwake thisInit)
                 thisInit.NyuAwake();
 
             for (int i = 0; i < hs_Components.Count; i++)
             {
-                if(hs_Components[i] is NyuComponent component)
-                    component.NyuMain = this;
+                if (hs_Components[i] is INyuPreAwake preAwake)
+                    preAwake.NyuPreAwake();
 
                 if (hs_Components[i] is INyuAwake init)
                 {
                     init.NyuAwake();
                 }
             }
-
-            Initiated = true;
         }
 
         private void Event_RemoveDestroyCheck()
@@ -688,5 +703,14 @@ namespace WarWolfWorks.NyuEntities
         /// <param name="e"></param>
         public static implicit operator Transform(Nyu e)
             => e.transform;
+
+        /// <summary>
+        /// Returns the class name of the current entity with it's tag between parantheses.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return string.Format("{0}({1})", GetType().Name, Tag); 
+        }
     }
 }

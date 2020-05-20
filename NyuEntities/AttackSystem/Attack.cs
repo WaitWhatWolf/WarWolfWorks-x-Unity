@@ -40,11 +40,10 @@ namespace WarWolfWorks.NyuEntities.AttackSystem
         /// </summary>
         public event Action<Attack> OnReload;
 
-        private bool isInitiated = false;
         /// <summary>
         /// Determines if the attack was assigned to an entity.
         /// </summary>
-        public bool IsInitiated { get => isInitiated; private set => isInitiated = value; }
+        public bool IsInitiated { get; internal set; }
 
         [SerializeField]
         private string s_Name;
@@ -149,8 +148,9 @@ namespace WarWolfWorks.NyuEntities.AttackSystem
             CancelReload(true);
 
             IsInitiated = true;
-            if (this is IAwake thisAwake)
-                thisAwake.Awake();
+
+            if (this is INyuAwake thisAwake)
+                thisAwake.NyuAwake();
         }
 
         private float ns_AttackSpeedCounter;

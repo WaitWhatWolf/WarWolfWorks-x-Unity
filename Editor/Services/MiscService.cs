@@ -75,6 +75,9 @@ namespace WarWolfWorks.EditorBase.Services
             }
         }
 
-        public void OnDisable() { }
+        public void OnDisable()
+        {
+
+        }
     }
 }

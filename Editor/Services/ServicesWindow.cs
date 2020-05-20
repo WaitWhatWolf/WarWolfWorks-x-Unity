@@ -82,8 +82,8 @@ namespace WarWolfWorks.EditorBase.Services
 
                 if (Event.current.rawType == EventType.MouseDown && EditorHooks.EventMouseInRect(TabsPosition))
                 {
-                    WarWolfWorks.Internal.Settings.Apply();
                     Tabs[Selected].OnDisable();
+                    WarWolfWorks.Internal.Settings.Apply();
                     Selected = i;
                 }
 

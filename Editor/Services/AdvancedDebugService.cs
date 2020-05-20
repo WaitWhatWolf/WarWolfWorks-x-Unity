@@ -1,15 +1,12 @@
-﻿using UnityEditor;
-using UnityEngine;
-using WarWolfWorks.Internal;
-using static WarWolfWorks.EditorBase.Constants;
-using static WarWolfWorks.AdvancedDebug;
-using WarWolfWorks.Utility;
+﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEditorInternal;
-using WarWolfWorks.EditorBase.Utility;
+using UnityEngine;
 using WarWolfWorks.EditorBase.Interfaces;
-using System.Collections.Generic;
-using System.Linq;
-using static WarWolfWorks.Utility.Hooks.Streaming;
+using WarWolfWorks.Internal;
+using WarWolfWorks.Utility;
+using static WarWolfWorks.AdvancedDebug;
+using static WarWolfWorks.EditorBase.Constants;
 
 namespace WarWolfWorks.EditorBase.Services
 {

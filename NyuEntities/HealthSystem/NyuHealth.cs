@@ -4,6 +4,7 @@ using UnityEngine;
 using WarWolfWorks.Interfaces;
 using WarWolfWorks.Interfaces.NyuEntities;
 using WarWolfWorks.NyuEntities.Statistics;
+using WarWolfWorks.Threading;
 using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.NyuEntities.HealthSystem
@@ -11,63 +12,22 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
     /// <summary>
     /// Core class of the health system. (sealed)
     /// </summary>
-    public sealed class NyuHealth : NyuComponent, IAdvancedHealth, INyuAwake
+    public sealed class NyuHealth : NyuComponent, IAdvancedHealth, INyuPreAwake
     {
-        private Action<IAdvancedHealth, object, IHealthDamage> OnDmgHandler;
         /// <summary>
-        /// What happends when <see cref="DamageHealth(object)"/> is successfully invoked.
+        /// Invoked when <see cref="DamageHealth(object)"/> is successfully invoked.
         /// </summary>
-        public event Action<IAdvancedHealth, object, IHealthDamage> OnDamaged
-        {
-            add
-            {
-                AdvancedDebug.LogFormat("{0} has been added to {1}({2})'s NyuHealth component!", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, value.Method.Name, NyuMain.Tag, NyuMain.GetType().Name);
-                OnDmgHandler += value;
-            }
+        public event Action<IAdvancedHealth, object, IHealthDamage> OnDamaged;
 
-            remove
-            {
-                AdvancedDebug.LogFormat("{0} has been removed from {1}({2})'s NyuHealth component.", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, value.Method.Name, NyuMain.Tag, NyuMain.GetType().Name);
-                OnDmgHandler -= value;
-            }
-        }
-
-        private Action<IHealth> OnDthHandler;
         /// <summary>
-        /// What happends when the <see cref="CurrentHealth"/> reaches 0.
+        /// Invoked when the <see cref="CurrentHealth"/> reaches 0.
         /// </summary>
-        public event Action<IHealth> OnDeath
-        {
-            add
-            {
-                AdvancedDebug.LogFormat("{0} will now trigger when {1}({2})'s health reaches 0.", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, value.Method.Name, NyuMain.Tag, NyuMain.GetType().Name);
-                OnDthHandler += value;
-            }
-            remove
-            {
-                AdvancedDebug.LogFormat("{0} will no longer trigger when {1}({2})'s health reaches 0.", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, value.Method.Name, NyuMain.Tag, NyuMain.GetType().Name);
-                OnDthHandler -= value;
-            }
-        }
+        public event Action<IHealth> OnDeath;
 
-        private event Action<IHealth, float> onHlthAdd;
         /// <summary>
         /// Ivoked when <see cref="AddHealth(float)"/> is called. Float value is the amount of health that was added.
         /// </summary>
-        public event Action<IHealth, float> OnHealthAdded
-        {
-            add
-            {
-
-                AdvancedDebug.LogFormat("{0} will now trigger when {1}({2})'s IHealth.AddHealth is called.", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, value.Method.Name, NyuMain.Tag, NyuMain.GetType().Name);
-                onHlthAdd += value;
-            }
-            remove
-            {
-                AdvancedDebug.LogFormat("{0} will no longer trigger when {1}({2})'s IHealth.AddHealth is called.", AdvancedDebug.DEBUG_LAYER_WWW_INDEX, value.Method.Name, NyuMain.Tag, NyuMain.GetType().Name);
-                onHlthAdd -= value;
-            }
-        }
+        public event Action<IHealth, float> OnHealthAdded;
 
         /// <summary>
         /// Invoked when any <see cref="NyuHealth"/> gets successfully damaged.
@@ -97,7 +57,7 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
         [SerializeField]
         private bool s_DamageParent = true;
         /// <summary>
-        /// If true and this component's <see cref="Nyu"/> is <see cref="IEntityParentable"/>,
+        /// If true and this component's <see cref="Nyu"/> is <see cref="INyuParentable"/>,
         /// it will damage the parent's Health instead.
         /// </summary>
         public bool DamageParent { get => s_DamageParent; set => s_DamageParent = value; }
@@ -112,7 +72,7 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
         /// <summary>
         /// Unity's Awake method called by <see cref="NyuComponent"/>.
         /// </summary>
-        void INyuAwake.NyuAwake()
+        void INyuPreAwake.NyuPreAwake()
         {
             CurrentHealth = MaxHealth;
             if (s_DestroyOnDeath)
@@ -190,7 +150,7 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
             if (added > 0)
             {
                 PreviousHeal = added;
-                onHlthAdd?.Invoke(this, added);
+                OnHealthAdded?.Invoke(this, added);
                 OnAnyHealed?.Invoke(this);
             }
         }
@@ -220,17 +180,18 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
                     if (triggerImmunity && UsesImmunity) TriggerImmunity(ImmunityDuration);
                     if (Damaged == (IAdvancedHealth)this)
                     {
-                        OnDmgHandler?.Invoke(Damaged, damage, Calculator);
+                        OnDamaged?.Invoke(Damaged, damage, Calculator);
                         OnAnyDamaged?.Invoke(Damaged as NyuHealth);
                     }
-                    if (CurrentHealth <= 0)
-                        OnDthHandler?.Invoke(this);
+                    if (CurrentHealth == 0)
+                        OnDeath?.Invoke(this);
                 }
             }
-            catch
+            catch(Exception e)
             {
-                AdvancedDebug.LogFormat("Couldn't damage {0}({1})'s as either the damage given was of incorrect type," +
-                    " an event generated an Exception or Caclucator was not set.", 0, NyuMain.GetType().Name, NyuMain.Tag);
+                AdvancedDebug.LogFormat("Couldn't damage {0} as either the damage given was of incorrect type," +
+                    " an event generated an Exception or Caclucator was not set; Aborting...", 0, NyuMain);
+                AdvancedDebug.LogException(e);
             }
         }
 
@@ -241,30 +202,53 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
         {
             if (UsesImmunity && !IsImmune)
             {
-                ImmunityTask = Task.Run(() =>
-                {
-                    IsImmune = true;
-                    if (!s_ImmunityEffect)
-                        return;
+                Action WithImmunity = () => NAT_ImmunityWith(@for);
+                Action WithoutImmunity = () => NAT_ImmunityWithout(@for);
 
-                    ImmunityEffect.OnTrigger();
-                    s_ImmunityEffect.ImmunityTime = s_ImmunityEffect.ImmunityCountdown = @for;
-                    float timer = @for;
-
-                    while (timer > 0)
-                    {
-                        timer -= Time.deltaTime;
-                        s_ImmunityEffect.ImmunityCountdown = timer;
-                        s_ImmunityEffect.WhileTrigger();
-                    }
-
-                    IsImmune = false;
-
-                    ImmunityEffect?.OnEnd();
-                });
+                ImmunityTask = Task.Run(ImmunityEffect != null ? WithImmunity : WithoutImmunity);
 
                 await ImmunityTask;
             }
+        }
+
+        private void NAT_ImmunityWith(float @for)
+        {
+            IsImmune = true;
+
+            ImmunityEffect.OnTrigger();
+            s_ImmunityEffect.ImmunityTime = s_ImmunityEffect.ImmunityCountdown = @for;
+            float timer = @for;
+
+            ThreadingUtilities.QueueOnMainThread(() =>
+            {
+                while (timer > 0)
+                {
+                    timer -= Time.deltaTime;
+                    s_ImmunityEffect.ImmunityCountdown = timer;
+                    s_ImmunityEffect.WhileTrigger();
+                }
+            });
+
+            IsImmune = false;
+
+            ImmunityEffect.OnEnd();
+        }
+
+        private void NAT_ImmunityWithout(float @for)
+        {
+            IsImmune = true;
+
+            float timer = @for;
+
+            ThreadingUtilities.QueueOnMainThread(() =>
+            {
+                while (timer > 0)
+                {
+                    timer -= Time.deltaTime;
+                }
+            });
+
+            IsImmune = false;
         }
 
         [SerializeField]

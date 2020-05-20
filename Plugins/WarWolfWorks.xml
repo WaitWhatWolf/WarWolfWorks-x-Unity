@@ -1602,6 +1602,11 @@
             Invoked on trigger exit.
             </summary>
         </member>
+        <member name="T:WarWolfWorks.Interfaces.NyuEntities.INyuPreAwake">
+            <summary>
+            Used for pre-made components to call a method before NyuAwake.
+            </summary>
+        </member>
         <member name="T:WarWolfWorks.Interfaces.NyuEntities.INyuReferencable">
             <summary>
             Indicates an object that uses a reference to an <see cref="T:WarWolfWorks.NyuEntities.Nyu"/>. (usually owner)
@@ -2467,12 +2472,12 @@
         </member>
         <member name="E:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.OnDamaged">
             <summary>
-            What happends when <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.DamageHealth(System.Object)"/> is successfully invoked.
+            Invoked when <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.DamageHealth(System.Object)"/> is successfully invoked.
             </summary>
         </member>
         <member name="E:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.OnDeath">
             <summary>
-            What happends when the <see cref="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.CurrentHealth"/> reaches 0.
+            Invoked when the <see cref="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.CurrentHealth"/> reaches 0.
             </summary>
         </member>
         <member name="E:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.OnHealthAdded">
@@ -2502,7 +2507,7 @@
         </member>
         <member name="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.DamageParent">
             <summary>
-            If true and this component's <see cref="T:WarWolfWorks.NyuEntities.Nyu"/> is <see cref="!:IEntityParentable"/>,
+            If true and this component's <see cref="T:WarWolfWorks.NyuEntities.Nyu"/> is <see cref="!:INyuParentable"/>,
             it will damage the parent's Health instead.
             </summary>
         </member>
@@ -2511,7 +2516,7 @@
             Damage previously passed in <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.DamageHealth(System.Object)"/>. (Only accepted)
             </summary>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.WarWolfWorks#Interfaces#NyuEntities#INyuAwake#NyuAwake">
+        <member name="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.WarWolfWorks#Interfaces#NyuEntities#INyuPreAwake#NyuPreAwake">
             <summary>
             Unity's Awake method called by <see cref="T:WarWolfWorks.NyuEntities.NyuComponent"/>.
             </summary>
@@ -2772,11 +2777,6 @@
             <exception cref="T:System.InvalidCastException"/>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.Itemization.NyuInventory`1.NyuAwake">
-            <summary>
-            When overriding, make sure to include "base.NyuOnInit();" as it initiates the inventory inside this method.
-            </summary>
-        </member>
         <member name="M:WarWolfWorks.NyuEntities.Itemization.NyuInventory`1.AddItem(`0)">
             <summary>
             Adds an Item to the first empty slot.
@@ -2926,6 +2926,12 @@
             </summary>
             <param name="velocities"></param>
         </member>
+        <member name="M:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement.AddVelocities(System.Collections.Generic.IEnumerable{WarWolfWorks.NyuEntities.MovementSystem.Velocity})">
+            <summary>
+            Adds an enumerable of velocities.
+            </summary>
+            <param name="velocities"></param>
+        </member>
         <member name="M:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement.RemoveVelocity(WarWolfWorks.NyuEntities.MovementSystem.Velocity)">
             <summary>
             Removes an existing velocity.
@@ -2963,6 +2969,13 @@
         <member name="M:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement.FindAllVelocities(System.Predicate{WarWolfWorks.NyuEntities.MovementSystem.Velocity})">
             <summary>
             Finds all velocities that match the given condition.
+            </summary>
+            <param name="match"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement.RemoveAllVelocities(System.Predicate{WarWolfWorks.NyuEntities.MovementSystem.Velocity})">
+            <summary>
+            Removes all velocities matching the given predicate.
             </summary>
             <param name="match"></param>
             <returns></returns>
@@ -3049,11 +3062,6 @@
             <param name="position">Position to which the entity will be moved.</param>
             <param name="respectPhysics">If true, the position moving will respect other colliders and will try not to go inside or past them, otherwise it will ignore that.</param>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement2D.NyuAwake">
-            <summary>
-            Make sure to include "base.NyuAwake()" when overriding. (<see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuAwake"/> implementation)
-            </summary>
-        </member>
         <member name="T:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement3D">
             <summary>
             Base class for an entity's 3D movement.
@@ -3086,11 +3094,6 @@
             </summary>
             <param name="position">Position to which the entity will be moved.</param>
             <param name="respectPhysics">If true, the position moving will respect other colliders and will try not to go inside or past them, otherwise it will ignore that.</param>
-        </member>
-        <member name="M:WarWolfWorks.NyuEntities.MovementSystem.NyuMovement3D.NyuAwake">
-            <summary>
-            Make sure to include "base.NyuAwake()" when overriding. (<see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuAwake"/> implementation)
-            </summary>
         </member>
         <member name="T:WarWolfWorks.NyuEntities.MovementSystem.Velocity">
             <summary>
@@ -3344,6 +3347,12 @@
             </summary>
             <param name="e"></param>
         </member>
+        <member name="M:WarWolfWorks.NyuEntities.Nyu.ToString">
+            <summary>
+            Returns the class name of the current entity with it's tag between parantheses.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:WarWolfWorks.NyuEntities.NyuComponent">
             <summary>
             Core class to be used with <see cref="T:WarWolfWorks.NyuEntities.Nyu"/> to simulate a component.
@@ -3391,6 +3400,20 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.NyuEntities.NyuManager.Exists``1">
+            <summary>
+            Returns true if any <see cref="T:WarWolfWorks.NyuEntities.Nyu"/> of given T type exists in the scene.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.NyuManager.Exists(System.Type)">
+            <summary>
+            Returns true if any <see cref="T:WarWolfWorks.NyuEntities.Nyu"/> of given type exists in the scene.
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.NyuEntities.NyuManager.Find(System.Predicate{WarWolfWorks.NyuEntities.Nyu})">
             <summary>
             Finds an entity by match.
@@ -3403,6 +3426,12 @@
             Finds all entities that match the given condition.
             </summary>
             <param name="match"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.NyuManager.GetAll">
+            <summary>
+            Returns an array of all entities in game.
+            </summary>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.NyuManager.GetAllVisible(UnityEngine.Camera)">
@@ -3437,6 +3466,33 @@
             <param name="within"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.NyuEntities.NyuManager.GetClosestVisible``1(UnityEngine.Camera,System.Single)">
+            <summary>
+            Gets all visible <see cref="T:WarWolfWorks.NyuEntities.Nyu"/> entities of T type to a given camera within a specified max range.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="to"></param>
+            <param name="within"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.NyuManager.GetClosestVisible(UnityEngine.Camera,System.Single,System.Type)">
+            <summary>
+            Gets all visible <see cref="T:WarWolfWorks.NyuEntities.Nyu"/> entities of T type to a given camera within a specified max range.
+            </summary>
+            <param name="to"></param>
+            <param name="within"></param>
+            <param name="acceptedType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.NyuManager.GetClosestVisible(UnityEngine.Camera,System.Single,System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Gets all visible <see cref="T:WarWolfWorks.NyuEntities.Nyu"/> entities of T type to a given camera within a specified max range.
+            </summary>
+            <param name="to"></param>
+            <param name="within"></param>
+            <param name="acceptedTypes"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.NyuEntities.NyuManager.GetClosest(UnityEngine.Vector3)">
             <summary>
             Returns the closest entity to a given position.
@@ -3466,6 +3522,43 @@
             <summary>
             Gets the closest <see cref="T:WarWolfWorks.NyuEntities.Nyu"/> of given types to the given position within a specified max range.
             (Note: <see cref="T:WarWolfWorks.NyuEntities.Nyu"/> entities assignable from the given types are also counted.)
+            </summary>
+            <param name="position"></param>
+            <param name="within"></param>
+            <param name="compareTypes"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.NyuManager.GetClosest(UnityEngine.Vector3,System.Single,System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Gets the closest <see cref="T:WarWolfWorks.NyuEntities.Nyu"/> of given types to the given position within a specified max range.
+            (Note: <see cref="T:WarWolfWorks.NyuEntities.Nyu"/> entities assignable from the given types are also counted.)
+            </summary>
+            <param name="position"></param>
+            <param name="within"></param>
+            <param name="compareTypes"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.NyuManager.GetAllWithin(UnityEngine.Vector3,System.Single,System.Type)">
+            <summary>
+            Returns all entities within the given distance. Only returns nyu entities of given type.
+            </summary>
+            <param name="position"></param>
+            <param name="within"></param>
+            <param name="compareType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.NyuManager.GetAllWithin(UnityEngine.Vector3,System.Single,System.Type[])">
+            <summary>
+            Returns all entities within the given distance. Only returns nyu entities of given type.
+            </summary>
+            <param name="position"></param>
+            <param name="within"></param>
+            <param name="compareTypes"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.NyuManager.GetAllWithin(UnityEngine.Vector3,System.Single,System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Returns all entities within the given distance. Only returns nyu entities of given type.
             </summary>
             <param name="position"></param>
             <param name="within"></param>
@@ -3792,6 +3885,13 @@
             <param name="position"></param>
             <param name="rotation"></param>
             <param name="behaviors"></param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.End(WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile)">
+            <summary>
+            Removes a given projectile from the pool of active projectiles.
+            </summary>
+            <param name="projectile"></param>
+            <returns></returns>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.End(`0)">
             <summary>

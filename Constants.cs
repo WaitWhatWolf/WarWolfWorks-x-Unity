@@ -164,7 +164,7 @@ namespace WarWolfWorks
         internal static readonly Catalog CTS_Settings_AdvancedDebug = new Catalog(SV_Path_Settings, SVCN_DEBUG);
         internal static readonly Catalog CTS_Settings_Misc = new Catalog(SV_Path_Settings, SVCN_OTHER);
         internal static readonly Catalog CTS_Preferences_AdvancedDebug = new Catalog(SV_Path_Preferences, SVCN_DEBUG);
-        internal static readonly Catalog CTS_Preferences_Misc = new Catalog(SV_Path_Preferences, SVCN_DEBUG);
+        internal static readonly Catalog CTS_Preferences_Misc = new Catalog(SV_Path_Preferences, SVCN_OTHER);
 
         internal static readonly Catalog CTS_DefaultKeys = new Catalog(SV_Path_DefaultKeys, SVCN_KEYS);
         #endregion

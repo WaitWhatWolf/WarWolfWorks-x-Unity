@@ -27,6 +27,7 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
             projectile.Rigidbody = projectile.gameObject.AddComponent<Rigidbody>();
             projectile.Rigidbody.useGravity = false;
             projectile.Collider = projectile.gameObject.AddComponent<BoxCollider>();
+            projectile.Collider.isTrigger = true;
         }
 
         /// <summary>

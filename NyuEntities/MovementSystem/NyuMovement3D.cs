@@ -9,7 +9,7 @@ namespace WarWolfWorks.NyuEntities.MovementSystem
     /// Base class for an entity's 3D movement.
     /// </summary>
     [CompleteNoS]
-    public class NyuMovement3D : NyuMovement, INyuAwake, INyuUpdate
+    public class NyuMovement3D : NyuMovement, INyuPreAwake, INyuUpdate
     {
         private bool rigidSaved;
         private Rigidbody rb;
@@ -71,10 +71,7 @@ namespace WarWolfWorks.NyuEntities.MovementSystem
             else Rigidbody.MovePosition(position);
         }
 
-        /// <summary>
-        /// Make sure to include "base.NyuAwake()" when overriding. (<see cref="INyuAwake"/> implementation)
-        /// </summary>
-        public virtual void NyuAwake()
+        void INyuPreAwake.NyuPreAwake()
         {
             if (NyuMain is INyuEntityParentable nyuParent) nyuParent.OnNyuParentSet += RefreshRigidbody;
         }

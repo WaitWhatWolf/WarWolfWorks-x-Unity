@@ -10,6 +10,7 @@ namespace WarWolfWorks.EditorBase.Custom
     /// Custom editor for all monobehaviours flagged with <see cref="CompleteNoS"/>.
     /// </summary>
     [CustomEditor(typeof(MonoBehaviour), true)]
+    [CanEditMultipleObjects]
     public sealed class CompleteNoSMonoBehaviourEditor : Editor
     {
         private bool displaysNoS;

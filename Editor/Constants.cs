@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using WarWolfWorks.EditorBase.Interfaces;
 using WarWolfWorks.EditorBase.Services;
 using WarWolfWorks.IO.CTS;
@@ -142,10 +143,15 @@ namespace WarWolfWorks.EditorBase
             "Components",
             ("Komponenty", SystemLanguage.Polish),
             ("コンポーネント", SystemLanguage.Japanese));
+        [Obsolete]
         internal static readonly LanguageString ELS_NyuEntity_NoEditor = new LanguageString(
             "If you wish to serialize values, make {0} implement \n{1} or create a class that implements \n{2}.",
             ("Jeżeli chcesz serializować waluty {0}, \nzaimplementój {1} do niego lub stwórz klasę \nktura implementuje {2}.", SystemLanguage.Polish),
             ("aaa {0}\n{1}\n{2}", SystemLanguage.Japanese));
+        internal static readonly LanguageString ELS_NyuEntity_NoSerializedObj = new LanguageString(
+            "This component has no serializable values.",
+            ("Ten skrypt nie zawiera żadnych serializowanych walut.", SystemLanguage.Polish),
+            ("このコンポーネントシリアライズバリュー含ありません。", SystemLanguage.Japanese));
         internal static readonly LanguageString ELS_NyuEntity_ListHeader = new LanguageString(
             "Available Components",
             ("Dostępne Komponenty", SystemLanguage.Polish));
