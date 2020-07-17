@@ -14,6 +14,7 @@ namespace WarWolfWorks.NyuEntities
     /// located inside the <see cref="WarWolfWorks.Interfaces.NyuEntities"/> namespace.
     /// Supported interfaces: <see cref="INyuAwake"/>, <see cref="INyuUpdate"/>, <see cref="INyuFixedUpdate"/>, <see cref="INyuLateUpdate"/>,
     /// <see cref="INyuOnDestroyQueued"/>, <see cref="INyuOnDestroy"/>, 
+    /// <see cref="INyuOnEnable"/>, <see cref="INyuOnDisable"/>,
     /// <see cref="INyuOnTriggerEnter"/>, <see cref="INyuOnTriggerEnter2D"/>,
     /// <see cref="INyuOnTriggerExit"/>, <see cref="INyuOnTriggerExit2D"/>,
     /// <see cref="INyuOnCollisionEnter"/>, <see cref="INyuOnCollisionEnter2D"/>,
@@ -184,32 +185,17 @@ namespace WarWolfWorks.NyuEntities
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public T AddNyuComponent<T>() where T : Component, INyuComponent
-        {
-            if (hs_Components.FindIndex(c => c is T) != -1)
-                throw new NyuEntityException(1);
-
-            T toReturn = gameObject.AddComponent<T>();
-            if(toReturn is NyuComponent component)
-                component.NyuMain = this;
-            else
-            {
-                toReturn.GetType().GetProperty("NyuMain").SetValue(toReturn, this);
-            }
-            hs_Components.Add(toReturn);
-            if (toReturn is INyuAwake init)
-            {
-                init.NyuAwake();
-            }
-
-            return toReturn;
-        }
+            => ANCInternal<T>();
 
         /// <summary>
         /// Equivalent to <see cref="AddNyuComponent{T}"/> with a shorter name.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T ANC<T>() where T : NyuComponent
+        public T ANC<T>() where T : Component, INyuComponent
+            => ANCInternal<T>();
+
+        private T ANCInternal<T>() where T : Component, INyuComponent
         {
             if (hs_Components.FindIndex(c => c is T) != -1)
                 throw new NyuEntityException(1);
@@ -236,28 +222,7 @@ namespace WarWolfWorks.NyuEntities
         /// <param name="type"></param>
         /// <returns></returns>
         public INyuComponent AddNyuComponent(Type type)
-        {
-            if (hs_Components.FindIndex(c => c.GetType() == type) != -1)
-                throw new NyuEntityException(1);
-
-            if (!type.IsAssignableFrom(typeof(INyuComponent)))
-                throw new NyuEntityException(5);
-
-            INyuComponent toReturn = gameObject.AddComponent(type) as INyuComponent;
-
-            if(toReturn is NyuComponent component)
-                component.NyuMain = this;
-            else
-                toReturn.GetType().GetProperty("NyuMain").SetValue(toReturn, this);
-
-            hs_Components.Add(toReturn);
-            if (toReturn is INyuAwake init)
-            {
-                init.NyuAwake();
-            }
-
-            return toReturn;
-        }
+            => ANCInternal(type);
 
         /// <summary>
         /// Equivalent to <see cref="AddNyuComponent(Type)"/> with a shorter name.
@@ -265,6 +230,9 @@ namespace WarWolfWorks.NyuEntities
         /// <param name="type"></param>
         /// <returns></returns>
         public INyuComponent ANC(Type type)
+            => ANCInternal(type);
+
+        private INyuComponent ANCInternal(Type type)
         {
             if (hs_Components.FindIndex(c => c.GetType() == type) != -1)
                 throw new NyuEntityException(1);
@@ -294,27 +262,7 @@ namespace WarWolfWorks.NyuEntities
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public bool RemoveNyuComponent<T>()
-        {
-            for(int i = 0; i < hs_Components.Count; i++)
-            {
-                if(hs_Components[i] is T)
-                {
-                    if (hs_Components[i] is INyuOnDestroyQueued nyuQueue)
-                        nyuQueue.NyuOnDestroyQueued();
-
-                    if (hs_Components[i] is INyuOnDestroy nyuDestroy)
-                        nyuDestroy.NyuOnDestroy();
-
-                    if (hs_Components.Remove(hs_Components[i]))
-                    {
-                        Destroy(hs_Components[i] as Component);
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
+        => RNCInternal<T>();
 
         /// <summary>
         /// Equivalent to <see cref="RemoveNyuComponent{T}"/> with a shorter name.
@@ -322,6 +270,9 @@ namespace WarWolfWorks.NyuEntities
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public bool RNC<T>()
+            => RNCInternal<T>();
+
+        private bool RNCInternal<T>()
         {
             for (int i = 0; i < hs_Components.Count; i++)
             {
@@ -350,27 +301,7 @@ namespace WarWolfWorks.NyuEntities
         /// <param name="type"></param>
         /// <returns></returns>
         public bool RemoveNyuComponent(Type type)
-        {
-            for (int i = 0; i < hs_Components.Count; i++)
-            {
-                if (hs_Components[i].GetType() == type)
-                {
-                    if (hs_Components[i] is INyuOnDestroyQueued nyuQueue)
-                        nyuQueue.NyuOnDestroyQueued();
-
-                    if (hs_Components[i] is INyuOnDestroy nyuDestroy)
-                        nyuDestroy.NyuOnDestroy();
-
-                    if (hs_Components.Remove(hs_Components[i]))
-                    {
-                        Destroy(hs_Components[i] as Component);
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
+         => RNCInternal(type);
 
         /// <summary>
         /// Equivalent to <see cref="RemoveNyuComponent(Type)"/> with a shorter name.
@@ -378,6 +309,9 @@ namespace WarWolfWorks.NyuEntities
         /// <param name="type"></param>
         /// <returns></returns>
         public bool RNC(Type type)
+            => RNCInternal(type);
+
+        private bool RNCInternal(Type type)
         {
             for (int i = 0; i < hs_Components.Count; i++)
             {
@@ -406,25 +340,7 @@ namespace WarWolfWorks.NyuEntities
         /// <param name="existing"></param>
         /// <returns></returns>
         public bool RemoveNyuComponent(INyuComponent existing)
-        {
-            int index = hs_Components.IndexOf(existing);
-            if (index != -1)
-            {
-                if (existing is INyuOnDestroyQueued nyuQueue)
-                    nyuQueue.NyuOnDestroyQueued();
-
-                if (existing is INyuOnDestroy nyuDestroy)
-                    nyuDestroy.NyuOnDestroy();
-
-                if (hs_Components.Remove(existing))
-                {
-                    Destroy(existing as Component);
-                    return true;
-                }
-            }
-
-            return false;
-        }
+        => RNCInternal(existing);
 
         /// <summary>
         /// Equivalent to <see cref="RemoveNyuComponent(INyuComponent)"/> with a shorter name.
@@ -432,6 +348,9 @@ namespace WarWolfWorks.NyuEntities
         /// <param name="existing"></param>
         /// <returns></returns>
         public bool RNC(INyuComponent existing)
+            => RNCInternal(existing);
+
+        private bool RNCInternal(INyuComponent existing)
         {
             int index = hs_Components.IndexOf(existing);
             if (index != -1)
@@ -458,15 +377,7 @@ namespace WarWolfWorks.NyuEntities
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public T GetNyuComponent<T>()
-        {
-            foreach(INyuComponent ec in hs_Components)
-            {
-                if (ec is T toReturn)
-                    return toReturn;
-            }
-
-            return default;
-        }
+         => GNCInternal<T>();
 
         /// <summary>
         /// Equivalent to <see cref="GetNyuComponent{T}"/> with a shorter name.
@@ -474,6 +385,9 @@ namespace WarWolfWorks.NyuEntities
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public T GNC<T>()
+            => GNCInternal<T>();
+
+        private T GNCInternal<T>()
         {
             foreach (INyuComponent ec in hs_Components)
             {
@@ -490,15 +404,7 @@ namespace WarWolfWorks.NyuEntities
         /// <param name="type"></param>
         /// <returns></returns>
         public INyuComponent GetNyuComponent(Type type)
-        {
-            foreach (INyuComponent ec in hs_Components)
-            {
-                if (ec.GetType().IsAssignableFrom(type))
-                    return ec;
-            }
-
-            return default;
-        }
+            => GNCInternal(type);
 
         /// <summary>
         /// Equivalent to <see cref="GetNyuComponent(Type)"/> with a shorter name.
@@ -506,6 +412,9 @@ namespace WarWolfWorks.NyuEntities
         /// <param name="type"></param>
         /// <returns></returns>
         public INyuComponent GNC(Type type)
+             => GNCInternal(type);
+
+        private INyuComponent GNCInternal(Type type)
         {
             foreach (INyuComponent ec in hs_Components)
             {
@@ -523,19 +432,7 @@ namespace WarWolfWorks.NyuEntities
         /// <param name="component"></param>
         /// <returns></returns>
         public bool TryGetNyuComponent<T>(out T component)
-        {
-            foreach(INyuComponent ec in hs_Components)
-            {
-                if(ec is T toReturn)
-                {
-                    component = toReturn;
-                    return true;
-                }
-            }
-
-            component = default;
-            return false;
-        }
+            => TGNCInternal(out component);
 
         /// <summary>
         /// Equivalent to <see cref="TryGetNyuComponent{T}(out T)"/> with a shorter name.
@@ -544,6 +441,9 @@ namespace WarWolfWorks.NyuEntities
         /// <param name="component"></param>
         /// <returns></returns>
         public bool TGNC<T>(out T component)
+            => TGNCInternal(out component);
+
+        private bool TGNCInternal<T>(out T component)
         {
             foreach (INyuComponent ec in hs_Components)
             {
@@ -557,6 +457,7 @@ namespace WarWolfWorks.NyuEntities
             component = default;
             return false;
         }
+        
 
         /// <summary>
         /// Returns a list of components of given T type. (Useful for interface searching)

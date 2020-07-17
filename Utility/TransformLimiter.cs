@@ -12,22 +12,34 @@ namespace WarWolfWorks.Utility
     {
         [SerializeField]
         private bool is2D;
+        /// <summary>
+        /// Does the limiter only work on 2D axis?
+        /// </summary>
         public bool Is2D
         {
             get => is2D;
             set => is2D = value;
         }
 
+        /// <summary>
+        /// How the <see cref="TransformLimiter"/> limits it's position.
+        /// </summary>
         public enum LimitationType
         {
             position,
             transform,
         }
 
-        public LimitationType LimitType;
+        /// <summary>
+        /// The currently applied limitation type.
+        /// </summary>
+        public LimitationType LimitType = LimitationType.transform;
 
         [SerializeField]
         private List<Transform> limiters = new List<Transform>();
+        /// <summary>
+        /// All limiters used when <see cref="LimitationType"/> is set to <see cref="LimitationType.transform"/>.
+        /// </summary>
         public List<Transform> Limiters
         {
             get => limiters;
@@ -36,6 +48,9 @@ namespace WarWolfWorks.Utility
 
         [SerializeField]
         private Vector3 boundsMin;
+        /// <summary>
+        /// The minimal position allowed for this object when <see cref="LimitationType"/> is set to <see cref="LimitationType.position"/>.
+        /// </summary>
         public Vector3 MinBounds
         {
             get => boundsMin;
@@ -43,11 +58,18 @@ namespace WarWolfWorks.Utility
         }
         [SerializeField]
         private Vector3 boundsMax;
+        /// <summary>
+        /// The maximal position allowed for this object when <see cref="LimitationType"/> is set to <see cref="LimitationType.position"/>.
+        /// </summary>
         public Vector3 MaxBounds
         {
             get => boundsMax;
             set => boundsMax = value;
         }
+
+        /// <summary>
+        /// Pointer to transform.position.
+        /// </summary>
         public Vector3 Position
         {
             get => transform.position;

@@ -109,6 +109,11 @@
             Used for WarWolfWorks pre-made <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuComponent"/> editors.
             </summary>
         </member>
+        <member name="P:WarWolfWorks.EditorBase.Interfaces.INyuComponentInternalEditor.DrawDefaultEditor">
+            <summary>
+            Does it still draw the default inspector/editor?
+            </summary>
+        </member>
         <member name="P:WarWolfWorks.EditorBase.Interfaces.INyuComponentInternalEditor.EditorType">
             <summary>
             Which component is it used for.
@@ -254,6 +259,16 @@
         <member name="M:WarWolfWorks.EditorBase.NyuEntities.NyuEditor.PostOnInspectorGUI">
             <summary>
             Override this method to create a custom inspector.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.EditorBase.NyuEntities.Itemization.ItemEditor">
+            <summary>
+            Custom editor for <see cref="T:WarWolfWorks.EditorBase.NyuEntities.Itemization.ItemEditor"/>; It is also what sets a <see cref="T:WarWolfWorks.NyuEntities.Itemization.NyuItem"/>'s ID when not set.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.EditorBase.NyuEntities.Itemization.ItemEditor.OnInspectorGUI">
+            <summary>
+            Draws the custom inspector.
             </summary>
         </member>
         <member name="M:WarWolfWorks.EditorBase.NyuEntities.NyuMovementInternalEditor.#ctor">

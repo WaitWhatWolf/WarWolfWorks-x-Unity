@@ -9,6 +9,7 @@ using WarWolfWorks.EditorBase.Utility;
 using WarWolfWorks.Utility;
 using static WarWolfWorks.EditorBase.Constants;
 using static WarWolfWorks.Constants;
+using WarWolfWorks.IO.CTS;
 
 namespace WarWolfWorks.EditorBase.Services
 {
@@ -171,10 +172,14 @@ namespace WarWolfWorks.EditorBase.Services
                     if (Keys != null)
                     {
                         List<DefaultKeys.WKey> keyz = GetSortedList();
+                        List<Variable> variables = new List<Variable>(Keys.Count);
                         for (int i = 0; i < Keys.Count; i++)
                         {
-                            DefaultKeys.AddKey(keyz[i]);
+                            variables.Add(new Variable(keyz[i].Name, keyz[i].Key.ToString()));
+                            DefaultKeys.DebugKeyAddition(keyz[i].Name, keyz[i].Key);
                         }
+                        CTS_DefaultKeys.Override(variables);
+                        CTS_DefaultKeys.Apply();
                     }
                 }
             }

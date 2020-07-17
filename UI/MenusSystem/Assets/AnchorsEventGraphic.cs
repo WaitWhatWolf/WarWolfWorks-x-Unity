@@ -26,12 +26,41 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
         /// Speed at which the anchors transition happens.
         /// </summary>
         [SerializeField, Range(0.01f, 10f)]
-        private float s_AnchorsTransitionSpeed;
+        private float s_AnchorsTransitionSpeed = 1f;
 
         /// <summary>
         /// The anchors towards which the affected graphic goes towards.
         /// </summary>
         public Vector4 DestinationAnchors { get; private set; }
+
+        /// <summary>
+        /// Gets the anchor values set.
+        /// </summary>
+        /// <param name="focused">If true, returns the value of the focused anchors, otherwise returns unfocused value.</param>
+        /// <returns></returns>
+        public Vector4 GetAnchors(bool focused)
+            => focused ? s_AnchorsFocused : s_AnchorsUnfocused;
+
+        /// <summary>
+        /// Sets the value of the anchors.
+        /// </summary>
+        /// <param name="focused">If true, sets the value of the focused anchors, otherwise sets the unfocused anchors.</param>
+        /// <param name="value"></param>
+        public void SetAnchors(bool focused, Vector4 value)
+        {
+            if (focused)
+                s_AnchorsFocused = value;
+            else s_AnchorsUnfocused = value;
+        }
+
+        /// <summary>
+        /// The transition speed of the event graphic between focused and unfocused anchors.
+        /// </summary>
+        public float TransitionSpeed
+        {
+            get => s_AnchorsTransitionSpeed;
+            set => s_AnchorsTransitionSpeed = value;
+        }
 
         void IAwake.Awake()
         {

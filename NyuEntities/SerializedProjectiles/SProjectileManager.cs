@@ -1,0 +1,282 @@
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
+using WarWolfWorks.Attributes;
+using WarWolfWorks.Interfaces;
+using WarWolfWorks.Interfaces.NyuEntities;
+using static WarWolfWorks.Constants;
+
+namespace WarWolfWorks.NyuEntities.SerializedProjectiles
+{
+    /// <summary>
+    /// Base class for managing <see cref="SProjectile"/> objects.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    [CompleteNoS]
+    public abstract class SProjectileManager<T> : MonoBehaviour, IInitiated where T : SProjectile
+    {
+        /// <summary>
+        /// Used by <see cref="Awake"/> for <see cref="Init(int)"/>.
+        /// </summary>
+        [SerializeField, Tooltip("The pool size of projectiles. If at less than 1, the pool will not be initiated.")]
+        protected int s_PoolSize;
+
+        private T[] AllProjectiles;
+        private List<T> InactiveProjectiles;
+        private List<T> ActiveProjectiles;
+
+        /// <summary>
+        /// The initiated state of this projectile manager.
+        /// </summary>
+        public bool Initiated { get; private set; }
+        
+        /// <summary>
+        /// Calls <see cref="Init(int)"/> when <see cref="s_PoolSize"/> is higher than 0.
+        /// </summary>
+        protected virtual void Awake()
+        {
+            if(s_PoolSize > 0)
+            {
+                Init(s_PoolSize);
+            }
+        }
+
+
+        /// <summary>
+        /// Initiates the projectile manager.
+        /// </summary>
+        /// <param name="poolSize"></param>
+        public void Init(int poolSize)
+        {
+            if(Initiated)
+            {
+                for(int i = 0; i < AllProjectiles.Length; i++)
+                {
+                    Destroy(AllProjectiles[i].gameObject);
+                }
+            }
+
+            AllProjectiles = new T[poolSize];
+            InactiveProjectiles = new List<T>(poolSize);
+            ActiveProjectiles = new List<T>(poolSize);
+
+            for(int i = 0; i < poolSize; i++)
+            {
+                GameObject p = new GameObject(VN_PROJECTILE);
+                p.transform.SetParent(transform);
+                p.SetActive(false);
+                AllProjectiles[i] = p.AddComponent<T>();
+                AllProjectiles[i].OnInit(this);
+                InactiveProjectiles.Add(AllProjectiles[i]);
+            }
+        }
+
+        /// <summary>
+        /// Call this at the beginning of your projectile instantiation method, and continue the initiation when it returns true.
+        /// </summary>
+        /// <param name="parent">The caster of this projectile.</param>
+        /// <param name="position">Starting position of the projectile.</param>
+        /// <param name="rotation">Starting rotation of the projectile.</param>
+        /// <param name="projectile">Returns the projectile used.</param>
+        /// <param name="behaviors">Behaviors set to the projectile. (All behaviors are instantiated before being used to avoid overriding resources.)</param>
+        /// <returns></returns>
+        protected bool New(Nyu parent, Vector3 position, Quaternion rotation, out T projectile, Behavior[] behaviors)
+        {
+            if(InactiveProjectiles.Count == 0)
+            {
+                projectile = null;
+                return false;
+            }
+
+            projectile = InactiveProjectiles[0];
+            projectile.transform.position = position;
+            projectile.transform.rotation = rotation;
+            projectile.NyuMain = parent;
+            projectile.Behaviors = behaviors;
+
+            InactiveProjectiles.RemoveAt(0);
+            projectile.gameObject.SetActive(true);
+            ActiveProjectiles.Add(projectile);
+
+            for(int i = 0; i < projectile.Behaviors.Length; i++)
+            {
+                if (projectile.Behaviors[i] is ICloneInstructable cloneInstructable)
+                {
+                    object[] instructions = cloneInstructable.GetInstructions();
+                    projectile.Behaviors[i] = Instantiate(projectile.Behaviors[i]);
+                    ((ICloneInstructable)projectile.Behaviors[i]).SetInstructions(instructions);
+                }
+                else projectile.Behaviors[i] = Instantiate(projectile.Behaviors[i]);
+
+                projectile.Behaviors[i].Parent = projectile;
+
+                if (projectile.Behaviors[i] is INyuAwake bAwake)
+                {
+                    bAwake.NyuAwake();
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Ends a projectile.
+        /// </summary>
+        /// <param name="projectile"></param>
+        public bool End(T projectile)
+        {
+            if(ActiveProjectiles.Contains(projectile))
+            {
+                foreach(Behavior behavior in projectile.Behaviors)
+                {
+                    if (behavior is INyuOnDestroy bDestroy)
+                        bDestroy.NyuOnDestroy();
+                }
+
+                projectile.gameObject.SetActive(false);
+                projectile.Behaviors = new Behavior[0];
+                InactiveProjectiles.Add(projectile);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Ends a projectile.
+        /// </summary>
+        /// <param name="projectile"></param>
+        /// <returns></returns>
+        public bool End(SProjectile projectile)
+        {
+            if (projectile is T tProj && ActiveProjectiles.Contains(tProj))
+            {
+                foreach (Behavior behavior in projectile.Behaviors)
+                {
+                    if (behavior is INyuOnDestroy bDestroy)
+                        bDestroy.NyuOnDestroy();
+                }
+
+                projectile.gameObject.SetActive(false);
+                projectile.Behaviors = new Behavior[0];
+                InactiveProjectiles.Add(tProj);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        #region Calling
+        /// <summary>
+        /// When overriding, make sure to include base.Update() as it calls all <see cref="INyuUpdate.NyuUpdate"/> methods
+        /// in applicable <see cref="Behavior"/> components.
+        /// </summary>
+        protected virtual void Update()
+        {
+            for (int i = 0; i < ActiveProjectiles.Count; i++)
+            {
+                if (ActiveProjectiles[i].Locked)
+                    continue;
+
+                foreach (Behavior behavior in ActiveProjectiles[i].Behaviors)
+                {
+                    if (behavior is INyuUpdate update)
+                        update.NyuUpdate();
+                }
+            }
+        }
+
+        /// <summary>
+        /// When overriding, make sure to include base.FixedUpdate() as it calls all <see cref="INyuFixedUpdate.NyuFixedUpdate"/> methods
+        /// in applicable <see cref="Behavior"/> components.
+        /// </summary>
+        protected virtual void FixedUpdate()
+        {
+            for (int i = 0; i < ActiveProjectiles.Count; i++)
+            {
+                if (ActiveProjectiles[i].Locked)
+                    continue;
+
+                foreach (Behavior behavior in ActiveProjectiles[i].Behaviors)
+                {
+                    if (behavior is INyuFixedUpdate fixedUpdate)
+                        fixedUpdate.NyuFixedUpdate();
+
+                }
+            }
+        }
+
+        /// <summary>
+        /// When overriding, make sure to include base.LateUpdate() as it calls all <see cref="INyuLateUpdate.NyuLateUpdate"/> methods
+        /// in applicable <see cref="Behavior"/> components.
+        /// </summary>
+        protected virtual void LateUpdate()
+        {
+            for (int i = 0; i < ActiveProjectiles.Count; i++)
+            {
+                if (ActiveProjectiles[i].Locked)
+                    continue;
+
+                foreach (Behavior behavior in ActiveProjectiles[i].Behaviors)
+                {
+                    if (behavior is INyuLateUpdate lateUpdate)
+                        lateUpdate.NyuLateUpdate();
+                }
+            }
+        }
+        #endregion
+
+        #region Utility
+        /// <summary>
+        /// Returns an array of all active projectiles.
+        /// </summary>
+        /// <returns></returns>
+        public T[] GetActiveProjectiles() => ActiveProjectiles.ToArray();
+        /// <summary>
+        /// Returns an array of all inactive projectiles.
+        /// </summary>
+        /// <returns></returns>
+        public T[] GetInactiveProjectiles() => InactiveProjectiles.ToArray();
+
+        /// <summary>
+        /// Finds all projectiles matching the given condition.
+        /// </summary>
+        /// <param name="match"></param>
+        /// <param name="searchIn"></param>
+        /// <returns></returns>
+        public T[] FindAll(Predicate<T> match, Search searchIn)
+        {
+            switch(searchIn)
+            {
+                default:
+                    return Array.FindAll(AllProjectiles, match);
+                case Search.ActiveProjectiles:
+                    return ActiveProjectiles.FindAll(match).ToArray();
+                case Search.InactiveProjectiles:
+                    return InactiveProjectiles.FindAll(match).ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Returns the first projectile matching the given condition.
+        /// </summary>
+        /// <param name="match"></param>
+        /// <param name="searchIn"></param>
+        /// <returns></returns>
+        public T Find(Predicate<T> match, Search searchIn)
+        {
+            switch (searchIn)
+            {
+                default:
+                    return Array.Find(AllProjectiles, match);
+                case Search.ActiveProjectiles:
+                    return ActiveProjectiles.Find(match);
+                case Search.InactiveProjectiles:
+                    return InactiveProjectiles.Find(match);
+            }
+        }
+        #endregion
+    }
+}

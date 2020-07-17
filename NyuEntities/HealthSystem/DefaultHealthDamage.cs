@@ -9,11 +9,29 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
     public class DefaultHealthDamage : HealthDamage
     {
         /// <summary>
+        /// Checks if the value given is a float or int value.
+        /// </summary>
+        /// <param name="heal"></param>
+        /// <returns></returns>
+        public override bool AcceptableHealValue(object heal) => heal is float || heal is int;
+
+        /// <summary>
         /// Checks if the value given is a float value.
         /// </summary>
         /// <param name="damage"></param>
         /// <returns></returns>
-        public override bool AcceptableValue(object damage) => damage is float;
+        public override bool AcceptableValue(object damage) => damage is float || damage is int;
+
+        /// <summary>
+        /// Returns the value given in float.
+        /// </summary>
+        /// <param name="heal"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public override float FinalHeal(object heal, IAdvancedHealth entity)
+        {
+            return (float)heal;
+        }
 
         /// <summary>
         /// Returns the value given in float.

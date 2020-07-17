@@ -6,6 +6,13 @@ namespace WarWolfWorks.NyuEntities
 {
     /// <summary>
     /// Core class to be used with <see cref="Nyu"/> to simulate a component.
+    /// Supported interfaces: <see cref="INyuAwake"/>, <see cref="INyuUpdate"/>, <see cref="INyuFixedUpdate"/>, <see cref="INyuLateUpdate"/>,
+    /// <see cref="INyuOnDestroyQueued"/>, <see cref="INyuOnDestroy"/>, 
+    /// <see cref="INyuOnEnable"/>, <see cref="INyuOnDisable"/>,
+    /// <see cref="INyuOnTriggerEnter"/>, <see cref="INyuOnTriggerEnter2D"/>,
+    /// <see cref="INyuOnTriggerExit"/>, <see cref="INyuOnTriggerExit2D"/>,
+    /// <see cref="INyuOnCollisionEnter"/>, <see cref="INyuOnCollisionEnter2D"/>,
+    /// <see cref="INyuOnCollisionExit"/> and <see cref="INyuOnCollisionExit2D"/>.
     /// </summary>
     public abstract class NyuComponent : MonoBehaviour, INyuComponent, INyuReferencable, IPosition, IRotation, IEulerAngles
     {

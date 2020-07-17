@@ -97,5 +97,19 @@ namespace WarWolfWorks.NyuEntities.MovementSystem
             UsesStat = true;
             Affections = affections;
         }
+
+        /// <summary>
+        /// Creates a duplicate of the given velocity.
+        /// </summary>
+        /// <param name="original"></param>
+        public Velocity(Velocity original)
+        {
+            Value = original.Value;
+            DeleteOnCount0 = original.DeleteOnCount0;
+            StartTime = original.StartTime;
+            Time = original.Time;
+            UsesStat = original.UsesStat;
+            Affections = original.Affections;
+        }
     }
 }

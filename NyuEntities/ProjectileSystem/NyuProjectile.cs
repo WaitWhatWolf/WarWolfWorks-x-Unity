@@ -58,11 +58,18 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
         /// </summary>
         public abstract Vector3 Velocity { get; set; }
 
-        internal Behavior[] ns_Behaviors;
+        internal Behavior[] ns_Behaviors = new Behavior[0];
         /// <summary>
         /// All behaviors affecting this projectile.
         /// </summary>
+        [System.Obsolete("Use GetBehaviors() instead.")]
         public Behavior[] Behaviors { get => ns_Behaviors; }
+
+        /// <summary>
+        /// Returns all behaviors currently affecting this projectile.
+        /// </summary>
+        /// <returns></returns>
+        public Behavior[] GetBehaviors() => ns_Behaviors;
 
         /// <summary>
         /// The parent of this <see cref="NyuProjectile"/>.

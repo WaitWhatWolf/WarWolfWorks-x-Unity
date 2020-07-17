@@ -7,7 +7,7 @@ namespace WarWolfWorks.NyuEntities.Itemization
     /// <summary>
     /// Advanced Non-Fixed-Size Inventory for your Non-Fixed-Size Inventory needs.
     /// </summary>
-    public abstract class FlexibleInventory<T> : NyuComponent, IInventory<T> where T : NyuItem
+    public abstract class NyuFlexibleInventory<T> : NyuComponent, IInventory<T> where T : NyuItem
     {
         private readonly List<T> ns_Items = new List<T>();
         /// <summary>
@@ -52,7 +52,7 @@ namespace WarWolfWorks.NyuEntities.Itemization
             {
                 ns_Items.Add(item);
                 OnItemAdded?.Invoke(item);
-                item.ManipulateFromInventory(this as IInventory<NyuItem>, true);
+                item.ManipulateFromInventory(this, true);
                 return true;
             }
             catch { return false; }
@@ -122,7 +122,7 @@ namespace WarWolfWorks.NyuEntities.Itemization
                 if(removed)
                 {
                     OnItemRemoved?.Invoke(item, index);
-                    item.ManipulateFromInventory(this as IInventory<NyuItem>, false);
+                    item.ManipulateFromInventory(this, false);
                     return true;
                 }
 
@@ -147,7 +147,7 @@ namespace WarWolfWorks.NyuEntities.Itemization
                     if (Removed)
                     {
                         OnItemRemoved?.Invoke(toRemove, index);
-                        toRemove.ManipulateFromInventory(this as IInventory<NyuItem>, false);
+                        toRemove.ManipulateFromInventory(this, false);
                         return true;
                     }
 
@@ -175,7 +175,7 @@ namespace WarWolfWorks.NyuEntities.Itemization
                     if (Removed)
                     {
                         OnItemRemoved?.Invoke(toRemove, index);
-                        toRemove.ManipulateFromInventory(this as IInventory<NyuItem>, false);
+                        toRemove.ManipulateFromInventory(this, false);
                         item = toRemove;
                         return true;
                     }

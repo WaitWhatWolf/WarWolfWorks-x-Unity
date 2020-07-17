@@ -13,6 +13,8 @@ namespace WarWolfWorks.EditorBase.NyuEntities
 
         private NyuInventory<NyuItem> nc_Inventory;
 
+        bool INyuComponentInternalEditor.DrawDefaultEditor => false;
+
         void INyuComponentInternalEditor.OnEnable(SerializedObject serializedObject)
         {
             nc_Inventory = serializedObject.targetObject as NyuInventory<NyuItem>;

@@ -19,6 +19,8 @@ namespace WarWolfWorks.EditorBase.NyuEntities
 
         Type INyuComponentInternalEditor.EditorType => typeof(NyuMovement);
 
+        bool INyuComponentInternalEditor.DrawDefaultEditor => true;
+
         private bool isExpanded;
 
         void INyuComponentInternalEditor.OnEnable(SerializedObject serializedObject)

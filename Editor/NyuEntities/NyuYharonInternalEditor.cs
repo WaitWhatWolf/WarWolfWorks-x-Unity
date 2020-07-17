@@ -13,6 +13,8 @@ namespace WarWolfWorks.EditorBase.NyuEntities
         private bool yharonsExpand;
         private bool resistancesExpand;
 
+        bool INyuComponentInternalEditor.DrawDefaultEditor => false;
+
         void INyuComponentInternalEditor.OnEnable(SerializedObject serializedObject)
         {
             nc_Yharon = serializedObject.targetObject as NyuYharon;

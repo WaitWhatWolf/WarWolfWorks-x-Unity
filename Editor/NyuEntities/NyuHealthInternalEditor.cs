@@ -22,6 +22,8 @@ namespace WarWolfWorks.EditorBase.NyuEntities
         private SerializedProperty sp_Calculator;
         private SerializedProperty sp_ImmunityEffect;
 
+        bool INyuComponentInternalEditor.DrawDefaultEditor => false;
+
         void INyuComponentInternalEditor.OnEnable(SerializedObject serializedObject)
         {
             this.serializedObject = serializedObject;

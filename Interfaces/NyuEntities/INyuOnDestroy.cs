@@ -9,7 +9,7 @@ namespace WarWolfWorks.Interfaces.NyuEntities
     public interface INyuOnDestroy
     {
         /// <summary>
-        /// Invoked right before this <see cref="NyuComponent"/> is about to be removed.
+        /// Invoked right before this INyuOnDestroy is about to be removed.
         /// </summary>
         void NyuOnDestroy();
     }

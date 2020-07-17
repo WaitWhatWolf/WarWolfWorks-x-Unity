@@ -10,6 +10,11 @@ namespace WarWolfWorks.EditorBase.Interfaces
     internal interface INyuComponentInternalEditor
     {
         /// <summary>
+        /// Does it still draw the default inspector/editor?
+        /// </summary>
+        bool DrawDefaultEditor { get; }
+
+        /// <summary>
         /// Which component is it used for.
         /// </summary>
         Type EditorType { get; }

@@ -271,7 +271,7 @@ namespace WarWolfWorks.EditorBase.NyuEntities
                             if (PremadeEditors[j].EditorType.IsAssignableFrom(TargetComponents[i].GetType()))
                             {
                                 PremadeEditors[j].OnInspectorGUI();
-                                drawDefaultEditor = false;
+                                drawDefaultEditor = PremadeEditors[j].DrawDefaultEditor;
                             }
                         }
 

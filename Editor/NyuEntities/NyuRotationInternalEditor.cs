@@ -13,6 +13,8 @@ namespace WarWolfWorks.EditorBase.NyuEntities
         Type INyuComponentInternalEditor.EditorType => typeof(NyuRotation);
         private NyuRotation nc_Rotation;
 
+        bool INyuComponentInternalEditor.DrawDefaultEditor => false;
+
         void INyuComponentInternalEditor.OnEnable(SerializedObject serializedObject)
         {
             nc_Rotation = serializedObject.targetObject as NyuRotation;

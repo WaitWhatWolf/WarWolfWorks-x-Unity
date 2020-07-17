@@ -39,7 +39,7 @@ namespace WarWolfWorks.NyuEntities.Itemization
         /// </summary>
         public int GetID() => s_ID;
 
-        internal void ManipulateFromInventory(IInventory<NyuItem> owner, bool add)
+        internal void ManipulateFromInventory(object owner, bool add)
         {
             if (add) OnAddedToInventory(owner);
             else OnRemovedFromInventory(owner);
@@ -49,7 +49,7 @@ namespace WarWolfWorks.NyuEntities.Itemization
         /// Invoked when this item is added to an Inventory.
         /// </summary>
         /// <param name="inventory"></param>
-        protected virtual void OnAddedToInventory(IInventory<NyuItem> inventory)
+        protected virtual void OnAddedToInventory(object inventory)
         {
 
         }
@@ -58,7 +58,7 @@ namespace WarWolfWorks.NyuEntities.Itemization
         /// Invoked when this item is removed from an Inventory.
         /// </summary>
         /// <param name="inventory"></param>
-        protected virtual void OnRemovedFromInventory(IInventory<NyuItem> inventory)
+        protected virtual void OnRemovedFromInventory(object inventory)
         {
 
         }
@@ -73,16 +73,21 @@ namespace WarWolfWorks.NyuEntities.Itemization
         /// <returns></returns>
         public static NyuItem Find(int ID)
         {
-            if (ResourceItems == null)
-                ResourceItems = Resources.LoadAll<NyuItem>("/");
+            InitResources();
 
-            foreach(NyuItem item in ResourceItems)
+            foreach (NyuItem item in ResourceItems)
             {
                 if (item.GetID() == ID)
                     return item;
             }
 
             return null;
+        }
+
+        private static void InitResources()
+        {
+            if (ResourceItems == null)
+                ResourceItems = Resources.LoadAll<NyuItem>("/");
         }
 	}
 }

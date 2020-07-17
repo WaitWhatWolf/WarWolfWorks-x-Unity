@@ -20,23 +20,42 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
         public event Action<IAdvancedHealth, object, IHealthDamage> OnDamaged;
 
         /// <summary>
-        /// Invoked when the <see cref="CurrentHealth"/> reaches 0.
+        /// Invoked when <see cref="HealHealth(object)"/> is successfully invoked.
+        /// </summary>
+        public event Action<IAdvancedHealth, object, IHealthDamage> OnHealed;
+
+        /// <summary>
+        /// Invoked when <see cref="CurrentHealth"/> reaches 0.
         /// </summary>
         public event Action<IHealth> OnDeath;
+
+
+        /// <summary>
+        /// Invoked when any <see cref="NyuHealth"/> invokes <see cref="DamageHealth(object)"/> successfully.
+        /// </summary>
+        public static event Action<NyuHealth> OnAnyDamaged;
+        /// <summary>
+        /// Invoked when any <see cref="NyuHealth"/> invokes <see cref="HealHealth(object)"/> successfully.
+        /// </summary>
+        public static event Action<NyuHealth> OnAnyHealed;
+
+        /// <summary>
+        /// Invoked when any <see cref="NyuHealth"/> invokes <see cref="AddHealth(float)"/> successfully.
+        /// </summary>
+        public static event Action<NyuHealth> OnAnyHealthAdded;
+        /// <summary>
+        /// Invoked when any <see cref="NyuHealth"/> invokes <see cref="RemoveHealth(float)"/> successfully.
+        /// </summary>
+        public static event Action<NyuHealth> OnAnyHealthRemoved;
 
         /// <summary>
         /// Ivoked when <see cref="AddHealth(float)"/> is called. Float value is the amount of health that was added.
         /// </summary>
         public event Action<IHealth, float> OnHealthAdded;
-
         /// <summary>
-        /// Invoked when any <see cref="NyuHealth"/> gets successfully damaged.
+        /// Invoked when <see cref="RemoveHealth(float)"/> is called. Float value is the amount of health that was added.
         /// </summary>
-        public static event Action<NyuHealth> OnAnyDamaged;
-        /// <summary>
-        /// Invoked when any <see cref="NyuHealth"/> invokes <see cref="AddHealth(float)"/> successfully.
-        /// </summary>
-        public static event Action<NyuHealth> OnAnyHealed;
+        public event Action<IHealth, float> OnHealthRemoved;
 
         /// <summary>
         /// The current health of the <see cref="NyuComponent.NyuMain"/>.
@@ -57,17 +76,12 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
         [SerializeField]
         private bool s_DamageParent = true;
         /// <summary>
-        /// If true and this component's <see cref="Nyu"/> is <see cref="INyuParentable"/>,
+        /// If true and this component's <see cref="Nyu"/> is <see cref="INyuEntityParentable"/>,
         /// it will damage the parent's Health instead.
         /// </summary>
         public bool DamageParent { get => s_DamageParent; set => s_DamageParent = value; }
 
-        private IAdvancedHealth Damaged { get; set; }
-
-        /// <summary>
-        /// Damage previously passed in <see cref="DamageHealth(object)"/>. (Only accepted)
-        /// </summary>
-        public object PreviousDamage { get; private set; }
+        private IAdvancedHealth Used { get; set; }
 
         /// <summary>
         /// Unity's Awake method called by <see cref="NyuComponent"/>.
@@ -90,8 +104,8 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
 
         private void Event_SetDamagedHealth(Nyu child, Nyu parent)
         {
-            if (DamageParent && parent != null) Damaged = parent.GNC<IAdvancedHealth>();
-            if (Damaged == null) Damaged = this;
+            if (DamageParent && parent != null) Used = parent.GNC<IAdvancedHealth>();
+            if (Used == null) Used = this;
         }
 
         private void Event_DeathDestroy(IHealth h)
@@ -133,9 +147,24 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
         }
 
         /// <summary>
-        /// The amount that was successfully healed using <see cref="AddHealth(float)"/> on it's most recent use.
+        /// Damage that was successfully passed in <see cref="DamageHealth(object)"/> on it's most recent use.
         /// </summary>
-        public float PreviousHeal { get; private set; }
+        public object PreviousDamage { get; private set; }
+
+        /// <summary>
+        /// The amount that was successfully removed using <see cref="RemoveHealth(float)"/> on it's most recent use.
+        /// </summary>
+        public float PreviousHealthRemoved { get; private set; }
+
+        /// <summary>
+        /// The amount that was successfully healed using <see cref="HealHealth(object)"/> on it's most recent use.
+        /// </summary>
+        public object PreviousHeal { get; private set; }
+
+        /// <summary>
+        /// The amount that was successfully added using <see cref="AddHealth(float)"/> on it's most recent use.
+        /// </summary>
+        public float PreviousHealthAdded { get; private set; }
 
         /// <summary>
         /// Adds the specified amount to <see cref="CurrentHealth"/>.
@@ -149,9 +178,38 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
             float added = CurrentHealth - prevHealth;
             if (added > 0)
             {
-                PreviousHeal = added;
+                PreviousHealthAdded = added;
                 OnHealthAdded?.Invoke(this, added);
-                OnAnyHealed?.Invoke(this);
+                OnAnyHealthAdded?.Invoke(this);
+            }
+        }
+
+        /// <summary>
+        /// To make this method work, you will need to assign a custom or premade <see cref="HealthDamage"/>.
+        /// </summary>
+        /// <param name="heal"></param>
+        public void HealHealth(object heal)
+        {
+            try
+            {
+                if (Calculator.AcceptableHealValue(heal))
+                {
+                    Used.AddHealth(Calculator.FinalHeal(heal, this));
+                    PreviousHeal = heal;
+
+                    if (Used == (IAdvancedHealth)this)
+                    {
+                        OnHealed?.Invoke(this, heal, Calculator);
+                    }
+
+                    OnAnyHealed?.Invoke(this);
+                }
+            }
+            catch (Exception e)
+            {
+                AdvancedDebug.LogFormat("Couldn't heal {0} as either the heal given was of incorrect type," +
+                    " an event generated an Exception or Caclucator was not set; Aborting...", 0, NyuMain);
+                AdvancedDebug.LogException(e);
             }
         }
 
@@ -161,8 +219,11 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
         /// <param name="amount"></param>
         public void RemoveHealth(float amount)
         {
-            CurrentHealth -= amount;
-            if (CurrentHealth < 0) CurrentHealth = 0;
+            float actAmount = amount > CurrentHealth ? CurrentHealth : amount;
+            CurrentHealth -= actAmount;
+            PreviousHealthRemoved = CurrentHealth;
+            OnHealthRemoved?.Invoke(this, actAmount);
+            OnAnyHealthRemoved?.Invoke(this);
         }
 
         /// <summary>
@@ -175,14 +236,17 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
             {
                 if (!IsImmune && Calculator.AcceptableValue(damage))
                 {
-                    Damaged.RemoveHealth(Calculator.FinalValue(damage, this, out bool triggerImmunity));
+                    Used.RemoveHealth(Calculator.FinalValue(damage, this, out bool triggerImmunity));
                     PreviousDamage = damage;
                     if (triggerImmunity && UsesImmunity) TriggerImmunity(ImmunityDuration);
-                    if (Damaged == (IAdvancedHealth)this)
+
+                    if (Used == (IAdvancedHealth)this)
                     {
-                        OnDamaged?.Invoke(Damaged, damage, Calculator);
-                        OnAnyDamaged?.Invoke(Damaged as NyuHealth);
+                        OnDamaged?.Invoke(Used, damage, Calculator);
                     }
+
+                    OnAnyDamaged?.Invoke(this);
+
                     if (CurrentHealth == 0)
                         OnDeath?.Invoke(this);
                 }

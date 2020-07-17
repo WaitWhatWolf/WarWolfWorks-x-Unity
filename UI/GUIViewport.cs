@@ -120,7 +120,7 @@ namespace WarWolfWorks.UI
         public bool Initiated { get; private set; }
 
         /// <summary>
-        /// The camera used to display markers on screen.
+        /// The camera used to display GUI elements on screen.
         /// </summary>
         public Camera Parent { get; private set; }
 
@@ -214,7 +214,7 @@ namespace WarWolfWorks.UI
         }
 
         /// <summary>
-        /// Sets the world position of a marker by name.
+        /// Returns a GUI element by ID.
         /// </summary>
         /// <param name="id"></param>
         public GUI GetGUI(int id)
@@ -227,12 +227,15 @@ namespace WarWolfWorks.UI
         }
 
         /// <summary>
-        /// Removes a marker.
+        /// Removes a GUI element.
         /// </summary>
         /// <param name="gui"></param>
         /// <returns></returns>
         public bool Remove(GUI gui)
         {
+            if (gui == null)
+                return false;
+
             int index = AllGUI.FindIndex(m => m.ID == gui.ID);
             if (index != -1)
             {

@@ -6,12 +6,12 @@ namespace WarWolfWorks.Utility
     /// <summary>
     /// Camera Manager for 2D use. Can be explicitly converted to FollowBehaviour, TransformLimiter and Camera.
     /// </summary>
-    [RequireComponent(typeof(FollowBehaviour), typeof(TransformLimiter), typeof(Camera))]
+    [RequireComponent(typeof(FollowBehavior), typeof(TransformLimiter), typeof(Camera))]
     public sealed class CameraManager2D : MonoBehaviour, IPosition, IEulerAngles, IRotation
     {
-        internal FollowBehaviour FollowBehaviour;
-        internal TransformLimiter TransformLimiter;
-        internal Camera Camera;
+        internal FollowBehavior h_FollowBehavior;
+        internal TransformLimiter h_TransformLimiter;
+        internal Camera h_Camera;
 
         /// <summary>
         /// Default size of the camera.
@@ -22,8 +22,8 @@ namespace WarWolfWorks.Utility
         /// </summary>
         public float CurrentSize
         {
-            get => Camera.orthographicSize;
-            private set => Camera.orthographicSize = value;
+            get => h_Camera.orthographicSize;
+            private set => h_Camera.orthographicSize = value;
         }
         /// <summary>
         /// Size towards which the camera is scaling.
@@ -47,14 +47,30 @@ namespace WarWolfWorks.Utility
         /// </summary>
         public Vector3 EulerAngles { get => transform.eulerAngles; set => transform.eulerAngles = value; }
 
+        /// <summary>
+        /// Returns the camera attached to this camera manager.
+        /// </summary>
+        /// <returns></returns>
+        public Camera GetCamera() => h_Camera;
+        /// <summary>
+        /// Returns the <see cref="FollowBehavior"/> attached to this camera manager.
+        /// </summary>
+        /// <returns></returns>
+        public FollowBehavior GetFollowBehavior() => h_FollowBehavior;
+        /// <summary>
+        /// Returns the <see cref="TransformLimiter"/> attached to this camera manager.
+        /// </summary>
+        /// <returns></returns>
+        public TransformLimiter GetLimiter() => h_TransformLimiter;
+
         private void Awake()
         {
-            FollowBehaviour = GetComponent<FollowBehaviour>();
-            TransformLimiter = GetComponent<TransformLimiter>();
-            TransformLimiter.Is2D = true;
-            Camera = GetComponent<Camera>();
-            Camera.orthographic = true;
-            DelayedSize = DefaultSize = Camera.orthographicSize;
+            h_FollowBehavior = GetComponent<FollowBehavior>();
+            h_TransformLimiter = GetComponent<TransformLimiter>();
+            h_TransformLimiter.Is2D = true;
+            h_Camera = GetComponent<Camera>();
+            h_Camera.orthographic = true;
+            DelayedSize = DefaultSize = h_Camera.orthographicSize;
         }
 
         /// <summary>
@@ -98,22 +114,22 @@ namespace WarWolfWorks.Utility
         }
 
         /// <summary>
-        /// Explicitly returns the <see cref="CameraManager2D"/>'s <see cref="FollowBehaviour"/>.
+        /// Explicitly returns the <see cref="CameraManager2D"/>'s <see cref="h_FollowBehavior"/>.
         /// </summary>
         /// <param name="cm2d"></param>
-        public static explicit operator FollowBehaviour(CameraManager2D cm2d)
-            => cm2d.FollowBehaviour;
+        public static explicit operator FollowBehavior(CameraManager2D cm2d)
+            => cm2d.h_FollowBehavior;
         /// <summary>
-        /// Explicitly returns the <see cref="CameraManager2D"/>'s <see cref="TransformLimiter"/>.
+        /// Explicitly returns the <see cref="CameraManager2D"/>'s <see cref="h_TransformLimiter"/>.
         /// </summary>
         /// <param name="cm2d"></param>
         public static explicit operator TransformLimiter(CameraManager2D cm2d)
-           => cm2d.TransformLimiter;
+           => cm2d.h_TransformLimiter;
         /// <summary>
         /// Implicitly returns the <see cref="CameraManager2D"/>'s Camera it is attached to.
         /// </summary>
         /// <param name="cm2d"></param>
         public static implicit operator Camera(CameraManager2D cm2d)
-            => cm2d.Camera;
+            => cm2d.h_Camera;
     }
 }

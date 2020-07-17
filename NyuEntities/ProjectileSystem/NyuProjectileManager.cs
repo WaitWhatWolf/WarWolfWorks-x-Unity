@@ -111,7 +111,7 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
             projectile.gameObject.SetActive(true);
             ActiveProjectiles.Add(projectile);
 
-            foreach(NyuProjectile.Behavior behavior in projectile.Behaviors)
+            foreach(NyuProjectile.Behavior behavior in projectile.GetBehaviors())
             {
                 behavior.Parent = projectile;
 
@@ -134,6 +134,8 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
             {
                 if (projectile is INyuOnDestroy projectileOnDestroy)
                     projectileOnDestroy.NyuOnDestroy();
+
+                projectile.ns_Behaviors = new NyuProjectile.Behavior[0];
 
                 projectile.gameObject.SetActive(false);
                 InactiveProjectiles.Add(asT);
@@ -158,6 +160,8 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
                 if (projectile is INyuOnDestroy projectileOnDestroy)
                     projectileOnDestroy.NyuOnDestroy();
 
+                projectile.ns_Behaviors = new NyuProjectile.Behavior[0];
+
                 projectile.gameObject.SetActive(false);
                 InactiveProjectiles.Add(projectile);
                 return true;
@@ -174,10 +178,13 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
         /// </summary>
         protected virtual void Update()
         {
-            for(int i = 0; i < Projectiles.Length; i++)
+            for (int i = 0; i < ActiveProjectiles.Count; i++)
             {
-                if (Projectiles[i] is INyuUpdate projectileUpdate)
-                    projectileUpdate.NyuUpdate();
+                foreach (NyuProjectile.Behavior behavior in ActiveProjectiles[i].GetBehaviors())
+                {
+                    if (behavior is INyuUpdate update)
+                        update.NyuUpdate();
+                }
             }
         }
 
@@ -187,10 +194,14 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
         /// </summary>
         protected virtual void FixedUpdate()
         {
-            for (int i = 0; i < Projectiles.Length; i++)
+            for (int i = 0; i < ActiveProjectiles.Count; i++)
             {
-                if (Projectiles[i] is INyuFixedUpdate projectileFixedUpdate)
-                    projectileFixedUpdate.NyuFixedUpdate();
+                foreach (NyuProjectile.Behavior behavior in ActiveProjectiles[i].GetBehaviors())
+                {
+                    if (behavior is INyuFixedUpdate fixedUpdate)
+                        fixedUpdate.NyuFixedUpdate();
+
+                }
             }
         }
 
@@ -200,10 +211,13 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
         /// </summary>
         protected virtual void LateUpdate()
         {
-            for (int i = 0; i < Projectiles.Length; i++)
+            for (int i = 0; i < ActiveProjectiles.Count; i++)
             {
-                if (Projectiles[i] is INyuLateUpdate projectileLateUpdate)
-                    projectileLateUpdate.NyuLateUpdate();
+                foreach (NyuProjectile.Behavior behavior in ActiveProjectiles[i].GetBehaviors())
+                {
+                    if (behavior is INyuLateUpdate lateUpdate)
+                        lateUpdate.NyuLateUpdate();
+                }
             }
         }
         #endregion

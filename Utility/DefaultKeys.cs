@@ -263,6 +263,9 @@ namespace WarWolfWorks.Utility
         public static void AddKey(WKey key)
             => AddKey(key.Name, key.Key);
 
+        internal static void DebugKeyAddition(string name, KeyCode value)
+            => Debug.Log($"{name} Key was successfully saved as {value}!");
+
         /// <summary>
         /// Adds a key to the database; If a key under the given name already exists, it will only change that key's value.
         /// </summary>
@@ -277,7 +280,7 @@ namespace WarWolfWorks.Utility
                     Hooks.Streaming.CreateFolder(SV_Path_DefaultKeys);
                     CTS_DefaultKeys[name] = value.ToString();
                     CTS_DefaultKeys.Apply();
-                    Debug.Log($"{name} Key was successfully saved as {value}!");
+                    DebugKeyAddition(name, value);
                 }
                 catch (Exception ex)
                 {

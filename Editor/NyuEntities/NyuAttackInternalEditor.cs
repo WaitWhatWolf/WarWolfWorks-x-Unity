@@ -16,6 +16,8 @@ namespace WarWolfWorks.EditorBase.NyuEntities
 
         Type INyuComponentInternalEditor.EditorType => typeof(NyuAttack);
 
+        bool INyuComponentInternalEditor.DrawDefaultEditor => false;
+
         void INyuComponentInternalEditor.OnEnable(SerializedObject serializedObject)
         {
             this.serializedObject = serializedObject;

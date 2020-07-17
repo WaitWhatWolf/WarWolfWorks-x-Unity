@@ -934,6 +934,11 @@
             Stops an immunity triggered with <see cref="M:WarWolfWorks.Interfaces.IAdvancedHealth.TriggerImmunity(System.Single)"/>.
             </summary>
         </member>
+        <member name="T:WarWolfWorks.Interfaces.ICloneInstructable">
+            <summary>
+            An item which has instructions when duplicated.
+            </summary>
+        </member>
         <member name="T:WarWolfWorks.Interfaces.IColorable">
             <summary>
             Interface used by <see cref="T:WarWolfWorks.Utility.Coloring.ColorManager"/> to manage colors.
@@ -1047,11 +1052,26 @@
             <param name="triggerImmunity"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.Interfaces.IHealthDamage.FinalHeal(System.Object,WarWolfWorks.Interfaces.IAdvancedHealth)">
+            <summary>
+            Value that will be used to add health.
+            </summary>
+            <param name="heal"></param>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.Interfaces.IHealthDamage.AcceptableValue(System.Object)">
             <summary>
-            Determines if the value type passed is correct.
+            Determines if the value passed is correct for damage.
             </summary>
             <param name="damage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Interfaces.IHealthDamage.AcceptableHealValue(System.Object)">
+            <summary>
+            Determines if the value passed is correct for a heal.
+            </summary>
+            <param name="heal"></param>
             <returns></returns>
         </member>
         <member name="T:WarWolfWorks.Interfaces.IImmunityEffect`1">
@@ -1077,6 +1097,16 @@
         <member name="M:WarWolfWorks.Interfaces.IImmunityEffect`1.OnEnd">
             <summary>
             This is invoked when immunity ends.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.Interfaces.IIndexable">
+            <summary>
+            Indicates a component that can be indexed.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Interfaces.IIndexable.Index">
+            <summary>
+            The index of this <see cref="T:WarWolfWorks.Interfaces.IIndexable"/> component.
             </summary>
         </member>
         <member name="T:WarWolfWorks.Interfaces.IIndexMenu">
@@ -1527,7 +1557,7 @@
         </member>
         <member name="M:WarWolfWorks.Interfaces.NyuEntities.INyuOnDestroy.NyuOnDestroy">
             <summary>
-            Invoked right before this <see cref="T:WarWolfWorks.NyuEntities.NyuComponent"/> is about to be removed.
+            Invoked right before this INyuOnDestroy is about to be removed.
             </summary>
         </member>
         <member name="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnDestroyQueued">
@@ -1863,6 +1893,319 @@
             <summary>
             Equivalent to <see cref="T:UnityEngine.MonoBehaviour"/>.Update().
             </summary>
+        </member>
+        <member name="T:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir">
+            <summary>
+            A <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.Freki"/> with a reload/magazine system.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir.OnReloadEnd">
+            <summary>
+            Invoked when a reload is successfully performed.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir.OnReloadStart">
+            <summary>
+            Invoked when a reload is started.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir.GetMagazine">
+            <summary>
+            The current amount of "bullets" inside this attack.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir.GetMagazineCapacity">
+            <summary>
+            Returns the maximum capacity of the magazine.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir.MagazineReloadProgress">
+            <summary>
+            The reload progress of the magazine.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir.IsReloading">
+            <summary>
+            Returns the reloading state of this <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir.GetReloadSpeed">
+            <summary>
+            The speed at which this <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir"/> reloads.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir.GetMagazineConsumption">
+            <summary>
+            The amount of ammo consumed when the attack is triggered.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir.SetMagazine(System.Int32)">
+            <summary>
+            Used by <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir"/> to set the magazine to full once reloading is finished.
+            Make sure to point to the same value <see cref="M:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir.GetMagazine"/> does unless you're absolutely sure of what you're doing.
+            </summary>
+            <param name="to"></param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir.CanAttack">
+            <summary>
+            Returns true if the APM allows it, the attack is not reloading and magazine is higher than 0.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir.ConsumeMagazine(System.Boolean)">
+            <summary>
+            Consumes the magazine based on <see cref="M:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir.GetMagazineConsumption"/>.
+            </summary>
+            <param name="reloadOnEmpty">If true and the magazine reaches 0, it will automatically start the reload.</param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir.Reload">
+            <summary>
+            Starts the reload of this <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir.NyuUpdate">
+            <summary>
+            When overriding, make sure to include "base.NyuUpdate();" as it handles the magazine's reload as well as <see cref="P:WarWolfWorks.NyuEntities.AttackSystemV2.Freki.APMCounter"/>'s countdown.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Fenrir.NyuAwake">
+            <summary>
+            Sets the magazine to it's max capacity.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.NyuEntities.AttackSystemV2.Freki">
+            <summary>
+            The base class to attack with.
+            Supported interfaces: 
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuAwake"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStart"/>, 
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuUpdate"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuFixedUpdate"/>,
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuLateUpdate"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnDestroy"/>.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.NyuEntities.AttackSystemV2.Freki.OnTriggerSuccess">
+            <summary>
+            Invoked when a successful (and properly activated) <see cref="M:WarWolfWorks.NyuEntities.AttackSystemV2.Freki.OnTrigger"/> was called.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Freki.GetAPM">
+            <summary>
+            The attacks per minute (APM) of this attack; The higher the value the faster the attack will be.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.AttackSystemV2.Freki.APMCounter">
+            <summary>
+            The counter which counts down the timer between attack of the RPM; It is considered as finished when it's value returns 0.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.AttackSystemV2.Freki.Index">
+            <summary>
+            The index of this attack in it's <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.AttackSystemV2.Freki.Parent">
+            <summary>
+            The parent which handles this attack.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.AttackSystemV2.Freki.NyuMain">
+            <summary>
+            Pointer to the parent's NyuMain.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.AttackSystemV2.Freki.Handler">
+            <summary>
+            The <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler"/> which manages this attack.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Freki.GetPoint">
+            <summary>
+            Returns the point at the same index as this <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.Freki"/> from it's parent.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Freki.RestartAPMCounter">
+            <summary>
+            Resets the <see cref="P:WarWolfWorks.NyuEntities.AttackSystemV2.Freki.APMCounter"/> to restart it's countdown (make it count down again).
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Freki.CanAttack">
+            <summary>
+            Returns true when all conditions for this attack are met.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Freki.OnTrigger">
+            <summary>
+            Invoked when CanAttack returns true and the condition attached to the same Odin group as this attack returns true.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.NyuEntities.AttackSystemV2.Geri">
+            <summary>
+            Used as a "bonus" condition for an attack group (<see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.Odin"/>). Usually used for Input detection or enemy AI-related checks.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.AttackSystemV2.Geri.Parent">
+            <summary>
+            The <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.Geri"/> to which this <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.Geri"/> belongs to.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.AttackSystemV2.Geri.NyuMain">
+            <summary>
+            Pointer to the parent's NyuMain.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.AttackSystemV2.Geri.Handler">
+            <summary>
+            The <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler"/> which manages this <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.Geri"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Geri.Met">
+            <summary>
+            Returns true when the condition of this <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.Geri"/> is met.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler">
+            <summary>
+            A class which handles <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.Odin"/> classes for attacking.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler.OnAttackTrigger">
+            <summary>
+            Invoked when a <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.Freki"/> successfully attacks.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler.GetOdins">
+            <summary>
+            Returns an array of all odins of this <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler.GetOdinsCount">
+            <summary>
+            Returns the amount of odins currently in the <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler.Points">
+            <summary>
+            The transform points used as firepoint on this <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler.GetPoint(System.Int32)">
+            <summary>
+            Returns the point at the given index.
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler.RefreshOdins">
+            <summary>
+            Refreshes the index values of all odins.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler.AddOdin(WarWolfWorks.NyuEntities.AttackSystemV2.Odin)">
+            <summary>
+            Adds an odin to be handled.
+            </summary>
+            <param name="odin"></param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler.RemoveOdin(System.Int32)">
+            <summary>
+            Removes an odin at the specified index.
+            </summary>
+            <param name="index"></param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler.GetOdinIndex(WarWolfWorks.NyuEntities.AttackSystemV2.Odin)">
+            <summary>
+            Returns the index of an odin currently residing in this <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler"/>.
+            </summary>
+            <param name="odin"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler.GetOdin(System.Int32)">
+            <summary>
+            Returns the <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.Odin"/> located at the given index.
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler.GetOdin(System.Predicate{WarWolfWorks.NyuEntities.AttackSystemV2.Odin})">
+            <summary>
+            Returns a <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.Odin"/> based on a match.
+            </summary>
+            <param name="match"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler.GetOdinIndex(System.Predicate{WarWolfWorks.NyuEntities.AttackSystemV2.Odin})">
+            <summary>
+            Attempts to find an odin's index based on a match.
+            </summary>
+            <param name="match"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler.SetOdin(System.Int32,WarWolfWorks.NyuEntities.AttackSystemV2.Odin)">
+            <summary>
+            Overrides an existing odin at the given index with another odin.
+            </summary>
+            <param name="index"></param>
+            <param name="to"></param>
+        </member>
+        <member name="T:WarWolfWorks.NyuEntities.AttackSystemV2.Odin">
+            <summary>
+            The core class which groups all necessary objects to make a functional attack. Handled by <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Odin.GetFreki">
+            <summary>
+            The attack of this attack group.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Odin.GetGeri">
+            <summary>
+            The attack condition of this attack group.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.AttackSystemV2.Odin.Index">
+            <summary>
+            The index of this odin in it's parent.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.AttackSystemV2.Odin.Parent">
+            <summary>
+            The parent of this <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.Odin"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Odin.New(WarWolfWorks.NyuEntities.AttackSystemV2.Freki,WarWolfWorks.NyuEntities.AttackSystemV2.Geri,System.Int32)">
+            <summary>
+            Returns a new instance of a <see cref="T:WarWolfWorks.NyuEntities.AttackSystemV2.Odin"/>.
+            </summary>
+            <param name="freki"></param>
+            <param name="geri"></param>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Odin.PostInstantiate">
+            <summary>
+            Call this after instantiating for a complete instantiation.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Odin.op_Implicit(WarWolfWorks.NyuEntities.AttackSystemV2.Odin)~WarWolfWorks.NyuEntities.AttackSystemV2.Freki">
+            <summary>
+            Allows to implicitly cast an odin as a freki.
+            </summary>
+            <param name="odin"></param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.Odin.op_Implicit(WarWolfWorks.NyuEntities.AttackSystemV2.Odin)~WarWolfWorks.NyuEntities.AttackSystemV2.Geri">
+            <summary>
+            Allows to implicitly cast an odin as a geri.
+            </summary>
+            <param name="odin"></param>
         </member>
         <member name="T:WarWolfWorks.NyuEntities.AttackSystem.Attack">
             <summary>
@@ -2379,11 +2722,26 @@
             Uses <see cref="T:System.Single"/> as it's base type.
             </summary>
         </member>
+        <member name="M:WarWolfWorks.NyuEntities.HealthSystem.DefaultHealthDamage.AcceptableHealValue(System.Object)">
+            <summary>
+            Checks if the value given is a float or int value.
+            </summary>
+            <param name="heal"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.NyuEntities.HealthSystem.DefaultHealthDamage.AcceptableValue(System.Object)">
             <summary>
             Checks if the value given is a float value.
             </summary>
             <param name="damage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.HealthSystem.DefaultHealthDamage.FinalHeal(System.Object,WarWolfWorks.Interfaces.IAdvancedHealth)">
+            <summary>
+            Returns the value given in float.
+            </summary>
+            <param name="heal"></param>
+            <param name="entity"></param>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.HealthSystem.DefaultHealthDamage.FinalValue(System.Object,WarWolfWorks.NyuEntities.HealthSystem.NyuHealth,System.Boolean@)">
@@ -2400,16 +2758,31 @@
             Base class to use with <see cref="T:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth"/>.
             </summary>
         </member>
+        <member name="M:WarWolfWorks.NyuEntities.HealthSystem.HealthDamage.AcceptableHealValue(System.Object)">
+            <summary>
+            Determines if the type of heal passed is correct.
+            </summary>
+            <param name="heal"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.NyuEntities.HealthSystem.HealthDamage.AcceptableValue(System.Object)">
             <summary>
-            Should determine if the type of object is correct.
+            Determines if the type of damage passed is correct.
             </summary>
             <param name="damage"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.NyuEntities.HealthSystem.HealthDamage.FinalHeal(System.Object,WarWolfWorks.Interfaces.IAdvancedHealth)">
+            <summary>
+            Returns the final calculated heal value.
+            </summary>
+            <param name="heal"></param>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.NyuEntities.HealthSystem.HealthDamage.FinalValue(System.Object,WarWolfWorks.NyuEntities.HealthSystem.NyuHealth,System.Boolean@)">
             <summary>
-            Returns the final calculated value.
+            Returns the final calculated damage value.
             </summary>
             <param name="damage"></param>
             <param name="entity"></param>
@@ -2475,9 +2848,34 @@
             Invoked when <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.DamageHealth(System.Object)"/> is successfully invoked.
             </summary>
         </member>
+        <member name="E:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.OnHealed">
+            <summary>
+            Invoked when <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.HealHealth(System.Object)"/> is successfully invoked.
+            </summary>
+        </member>
         <member name="E:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.OnDeath">
             <summary>
-            Invoked when the <see cref="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.CurrentHealth"/> reaches 0.
+            Invoked when <see cref="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.CurrentHealth"/> reaches 0.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.OnAnyDamaged">
+            <summary>
+            Invoked when any <see cref="T:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth"/> invokes <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.DamageHealth(System.Object)"/> successfully.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.OnAnyHealed">
+            <summary>
+            Invoked when any <see cref="T:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth"/> invokes <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.HealHealth(System.Object)"/> successfully.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.OnAnyHealthAdded">
+            <summary>
+            Invoked when any <see cref="T:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth"/> invokes <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.AddHealth(System.Single)"/> successfully.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.OnAnyHealthRemoved">
+            <summary>
+            Invoked when any <see cref="T:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth"/> invokes <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.RemoveHealth(System.Single)"/> successfully.
             </summary>
         </member>
         <member name="E:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.OnHealthAdded">
@@ -2485,14 +2883,9 @@
             Ivoked when <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.AddHealth(System.Single)"/> is called. Float value is the amount of health that was added.
             </summary>
         </member>
-        <member name="E:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.OnAnyDamaged">
+        <member name="E:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.OnHealthRemoved">
             <summary>
-            Invoked when any <see cref="T:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth"/> gets successfully damaged.
-            </summary>
-        </member>
-        <member name="E:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.OnAnyHealed">
-            <summary>
-            Invoked when any <see cref="T:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth"/> invokes <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.AddHealth(System.Single)"/> successfully.
+            Invoked when <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.RemoveHealth(System.Single)"/> is called. Float value is the amount of health that was added.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.CurrentHealth">
@@ -2507,13 +2900,8 @@
         </member>
         <member name="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.DamageParent">
             <summary>
-            If true and this component's <see cref="T:WarWolfWorks.NyuEntities.Nyu"/> is <see cref="!:INyuParentable"/>,
+            If true and this component's <see cref="T:WarWolfWorks.NyuEntities.Nyu"/> is <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuEntityParentable"/>,
             it will damage the parent's Health instead.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.PreviousDamage">
-            <summary>
-            Damage previously passed in <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.DamageHealth(System.Object)"/>. (Only accepted)
             </summary>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.WarWolfWorks#Interfaces#NyuEntities#INyuPreAwake#NyuPreAwake">
@@ -2541,9 +2929,24 @@
             The calculator used by this <see cref="T:WarWolfWorks.NyuEntities.Nyu"/>. If null on Awake, it will be set to <see cref="T:WarWolfWorks.NyuEntities.HealthSystem.DefaultHealthDamage"/> by default.
             </summary>
         </member>
+        <member name="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.PreviousDamage">
+            <summary>
+            Damage that was successfully passed in <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.DamageHealth(System.Object)"/> on it's most recent use.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.PreviousHealthRemoved">
+            <summary>
+            The amount that was successfully removed using <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.RemoveHealth(System.Single)"/> on it's most recent use.
+            </summary>
+        </member>
         <member name="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.PreviousHeal">
             <summary>
-            The amount that was successfully healed using <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.AddHealth(System.Single)"/> on it's most recent use.
+            The amount that was successfully healed using <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.HealHealth(System.Object)"/> on it's most recent use.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.PreviousHealthAdded">
+            <summary>
+            The amount that was successfully added using <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.AddHealth(System.Single)"/> on it's most recent use.
             </summary>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.AddHealth(System.Single)">
@@ -2551,6 +2954,12 @@
             Adds the specified amount to <see cref="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.CurrentHealth"/>.
             </summary>
             <param name="amount"></param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.HealHealth(System.Object)">
+            <summary>
+            To make this method work, you will need to assign a custom or premade <see cref="T:WarWolfWorks.NyuEntities.HealthSystem.HealthDamage"/>.
+            </summary>
+            <param name="heal"></param>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.RemoveHealth(System.Single)">
             <summary>
@@ -2589,90 +2998,90 @@
             Stops an immunity previously triggered with <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.TriggerImmunity(System.Single)"/>.
             </summary>
         </member>
-        <member name="T:WarWolfWorks.NyuEntities.Itemization.FlexibleInventory`1">
+        <member name="T:WarWolfWorks.NyuEntities.Itemization.NyuFlexibleInventory`1">
             <summary>
             Advanced Non-Fixed-Size Inventory for your Non-Fixed-Size Inventory needs.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.NyuEntities.Itemization.FlexibleInventory`1.Item(System.Int32)">
+        <member name="P:WarWolfWorks.NyuEntities.Itemization.NyuFlexibleInventory`1.Item(System.Int32)">
             <summary>
             Returns the item at the current index; In case of an exception, returns null.
             </summary>
             <param name="key"></param>
             <returns></returns>
         </member>
-        <member name="P:WarWolfWorks.NyuEntities.Itemization.FlexibleInventory`1.ItemsCount">
+        <member name="P:WarWolfWorks.NyuEntities.Itemization.NyuFlexibleInventory`1.ItemsCount">
             <summary>
             Returns the amount of items currently inside the inventory.
             </summary>
         </member>
-        <member name="E:WarWolfWorks.NyuEntities.Itemization.FlexibleInventory`1.OnItemAdded">
+        <member name="E:WarWolfWorks.NyuEntities.Itemization.NyuFlexibleInventory`1.OnItemAdded">
             <summary>
             Invoked when an item is successfully added to the inventory.
             </summary>
         </member>
-        <member name="E:WarWolfWorks.NyuEntities.Itemization.FlexibleInventory`1.OnItemRemoved">
+        <member name="E:WarWolfWorks.NyuEntities.Itemization.NyuFlexibleInventory`1.OnItemRemoved">
             <summary>
             Invoked when an item is successfully removed from the inventory.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.Itemization.FlexibleInventory`1.AddItem(`0)">
+        <member name="M:WarWolfWorks.NyuEntities.Itemization.NyuFlexibleInventory`1.AddItem(`0)">
             <summary>
             Adds an item to this inventory.
             </summary>
             <param name="item"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.Itemization.FlexibleInventory`1.GetAllItems(System.Boolean)">
+        <member name="M:WarWolfWorks.NyuEntities.Itemization.NyuFlexibleInventory`1.GetAllItems(System.Boolean)">
             <summary>
             Returns all items currently inside the inventory.
             </summary>
             <param name="clone"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.Itemization.FlexibleInventory`1.GetItem(System.String)">
+        <member name="M:WarWolfWorks.NyuEntities.Itemization.NyuFlexibleInventory`1.GetItem(System.String)">
             <summary>
             Returns the first item found under given name.
             </summary>
             <param name="itemName"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.Itemization.FlexibleInventory`1.GetItem(System.Int32)">
+        <member name="M:WarWolfWorks.NyuEntities.Itemization.NyuFlexibleInventory`1.GetItem(System.Int32)">
             <summary>
             Returns the first item under given ID.
             </summary>
             <param name="itemID"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.Itemization.FlexibleInventory`1.GetItem(System.Predicate{`0})">
+        <member name="M:WarWolfWorks.NyuEntities.Itemization.NyuFlexibleInventory`1.GetItem(System.Predicate{`0})">
             <summary>
             Returns an item based on given match.
             </summary>
             <param name="match"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.Itemization.FlexibleInventory`1.GetItemIndex(`0)">
+        <member name="M:WarWolfWorks.NyuEntities.Itemization.NyuFlexibleInventory`1.GetItemIndex(`0)">
             <summary>
             Returns the index of an item currently inside the inventory; If no item was found, it will return -1.
             </summary>
             <param name="item"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.Itemization.FlexibleInventory`1.RemoveItem(`0)">
+        <member name="M:WarWolfWorks.NyuEntities.Itemization.NyuFlexibleInventory`1.RemoveItem(`0)">
             <summary>
             Removes an item from this inventory.
             </summary>
             <param name="item"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.Itemization.FlexibleInventory`1.RemoveItem(System.Int32)">
+        <member name="M:WarWolfWorks.NyuEntities.Itemization.NyuFlexibleInventory`1.RemoveItem(System.Int32)">
             <summary>
             Removes an item from this inventory at the specified index.
             </summary>
             <param name="index"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.Itemization.FlexibleInventory`1.RemoveItem(System.Int32,`0@)">
+        <member name="M:WarWolfWorks.NyuEntities.Itemization.NyuFlexibleInventory`1.RemoveItem(System.Int32,`0@)">
             <summary>
             Removes an item from this inventory based on index and returns it in out.
             </summary>
@@ -2849,13 +3258,13 @@
             Unique ID of this item.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.Itemization.NyuItem.OnAddedToInventory(WarWolfWorks.Interfaces.IInventory{WarWolfWorks.NyuEntities.Itemization.NyuItem})">
+        <member name="M:WarWolfWorks.NyuEntities.Itemization.NyuItem.OnAddedToInventory(System.Object)">
             <summary>
             Invoked when this item is added to an Inventory.
             </summary>
             <param name="inventory"></param>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.Itemization.NyuItem.OnRemovedFromInventory(WarWolfWorks.Interfaces.IInventory{WarWolfWorks.NyuEntities.Itemization.NyuItem})">
+        <member name="M:WarWolfWorks.NyuEntities.Itemization.NyuItem.OnRemovedFromInventory(System.Object)">
             <summary>
             Invoked when this item is removed from an Inventory.
             </summary>
@@ -3160,6 +3569,12 @@
             <param name="deleteOn0"></param>
             <param name="affections"></param>
         </member>
+        <member name="M:WarWolfWorks.NyuEntities.MovementSystem.Velocity.#ctor(WarWolfWorks.NyuEntities.MovementSystem.Velocity)">
+            <summary>
+            Creates a duplicate of the given velocity.
+            </summary>
+            <param name="original"></param>
+        </member>
         <member name="T:WarWolfWorks.NyuEntities.Nyu">
             <summary>
             Core class of the <see cref="N:WarWolfWorks.NyuEntities"/> system.
@@ -3167,6 +3582,7 @@
             located inside the <see cref="N:WarWolfWorks.Interfaces.NyuEntities"/> namespace.
             Supported interfaces: <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuAwake"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuUpdate"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuFixedUpdate"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuLateUpdate"/>,
             <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnDestroyQueued"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnDestroy"/>, 
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnEnable"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnDisable"/>,
             <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnTriggerEnter"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnTriggerEnter2D"/>,
             <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnTriggerExit"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnTriggerExit2D"/>,
             <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnCollisionEnter"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnCollisionEnter2D"/>,
@@ -3356,6 +3772,13 @@
         <member name="T:WarWolfWorks.NyuEntities.NyuComponent">
             <summary>
             Core class to be used with <see cref="T:WarWolfWorks.NyuEntities.Nyu"/> to simulate a component.
+            Supported interfaces: <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuAwake"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuUpdate"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuFixedUpdate"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuLateUpdate"/>,
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnDestroyQueued"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnDestroy"/>, 
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnEnable"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnDisable"/>,
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnTriggerEnter"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnTriggerEnter2D"/>,
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnTriggerExit"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnTriggerExit2D"/>,
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnCollisionEnter"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnCollisionEnter2D"/>,
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnCollisionExit"/> and <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnCollisionExit2D"/>.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.NyuComponent.NyuMain">
@@ -3719,6 +4142,12 @@
             All behaviors affecting this projectile.
             </summary>
         </member>
+        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.GetBehaviors">
+            <summary>
+            Returns all behaviors currently affecting this projectile.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.NyuMain">
             <summary>
             The parent of this <see cref="T:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile"/>.
@@ -3969,6 +4398,203 @@
             <summary>
             Enumerator-like implementation to reset the itteration.
             </summary>
+        </member>
+        <member name="T:WarWolfWorks.NyuEntities.SerializedProjectiles.Behavior">
+            <summary>
+            The base class for projectile behaviors in <see cref="N:WarWolfWorks.NyuEntities.SerializedProjectiles"/>.
+            (Supported interfaces: <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuAwake"/>,
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuUpdate"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuFixedUpdate"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuLateUpdate"/>,
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnTriggerEnter"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnTriggerExit"/>,
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnTriggerEnter2D"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnTriggerExit2D"/>,
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnCollisionEnter"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnCollisionExit"/>,
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnCollisionEnter2D"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnCollisionExit2D"/>,
+            and <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnDestroy"/>)
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.SerializedProjectiles.Behavior.Parent">
+            <summary>
+            The projectile which uses this behavior.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.NyuEntities.SerializedProjectiles.Search">
+            <summary>
+            Which projectiles will utility methods 
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile">
+            <summary>
+            Base class for serializable projectiles.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.Tag">
+            <summary>
+            The current tag of this projectile.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.SetTag(System.String)">
+            <summary>
+            Sets the <see cref="P:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.Tag"/> to the given value.
+            </summary>
+            <param name="to"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.RemoveTag">
+            <summary>
+            Removes the <see cref="P:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.Tag"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.Behaviors">
+            <summary>
+            All behaviors this <see cref="T:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile"/> is currently using.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.OnInit``1(WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager{``0})">
+            <summary>
+            Invoked when <see cref="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Init(System.Int32)"/> is invoked.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.Position">
+            <summary>
+            Pointer to the <see cref="T:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile"/>'s transform.position.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.Euler">
+            <summary>
+            Pointer to the <see cref="T:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile"/>'s transform.eulerAngles.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.Rotation">
+            <summary>
+            Pointer to the <see cref="T:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile"/>'s transform.rotation.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.Velocity">
+            <summary>
+            The velocity of the projectile; Usually assigned to a rigidbody's velocity.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.OnLocked">
+            <summary>
+            <see cref="T:WarWolfWorks.Interfaces.ILockable"/> implementation; Invoked when <see cref="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.SetLock(System.Boolean)"/> is successfully set to true.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.OnUnlocked">
+            <summary>
+            <see cref="T:WarWolfWorks.Interfaces.ILockable"/> implementation; Invoked when <see cref="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.SetLock(System.Boolean)"/> is successfully set to false.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.Locked">
+            <summary>
+            The locked state of this <see cref="T:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile"/>. (<see cref="T:WarWolfWorks.Interfaces.ILockable"/> implementation)
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.NyuMain">
+            <summary>
+            The parent of this projectile.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.SetLock(System.Boolean)">
+            <summary>
+            Attempts to set the locked state of this <see cref="T:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile"/>. (<see cref="T:WarWolfWorks.Interfaces.ILockable"/> implementation)
+            </summary>
+            <param name="to"></param>
+        </member>
+        <member name="T:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1">
+            <summary>
+            Base class for managing <see cref="T:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile"/> objects.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="F:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.s_PoolSize">
+            <summary>
+            Used by <see cref="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Awake"/> for <see cref="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Init(System.Int32)"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Initiated">
+            <summary>
+            The initiated state of this projectile manager.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Awake">
+            <summary>
+            Calls <see cref="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Init(System.Int32)"/> when <see cref="F:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.s_PoolSize"/> is higher than 0.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Init(System.Int32)">
+            <summary>
+            Initiates the projectile manager.
+            </summary>
+            <param name="poolSize"></param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.New(WarWolfWorks.NyuEntities.Nyu,UnityEngine.Vector3,UnityEngine.Quaternion,`0@,WarWolfWorks.NyuEntities.SerializedProjectiles.Behavior[])">
+            <summary>
+            Call this at the beginning of your projectile instantiation method, and continue the initiation when it returns true.
+            </summary>
+            <param name="parent">The caster of this projectile.</param>
+            <param name="position">Starting position of the projectile.</param>
+            <param name="rotation">Starting rotation of the projectile.</param>
+            <param name="projectile">Returns the projectile used.</param>
+            <param name="behaviors">Behaviors set to the projectile. (All behaviors are instantiated before being used to avoid overriding resources.)</param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.End(`0)">
+            <summary>
+            Ends a projectile.
+            </summary>
+            <param name="projectile"></param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.End(WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile)">
+            <summary>
+            Ends a projectile.
+            </summary>
+            <param name="projectile"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Update">
+            <summary>
+            When overriding, make sure to include base.Update() as it calls all <see cref="M:WarWolfWorks.Interfaces.NyuEntities.INyuUpdate.NyuUpdate"/> methods
+            in applicable <see cref="T:WarWolfWorks.NyuEntities.SerializedProjectiles.Behavior"/> components.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.FixedUpdate">
+            <summary>
+            When overriding, make sure to include base.FixedUpdate() as it calls all <see cref="M:WarWolfWorks.Interfaces.NyuEntities.INyuFixedUpdate.NyuFixedUpdate"/> methods
+            in applicable <see cref="T:WarWolfWorks.NyuEntities.SerializedProjectiles.Behavior"/> components.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.LateUpdate">
+            <summary>
+            When overriding, make sure to include base.LateUpdate() as it calls all <see cref="M:WarWolfWorks.Interfaces.NyuEntities.INyuLateUpdate.NyuLateUpdate"/> methods
+            in applicable <see cref="T:WarWolfWorks.NyuEntities.SerializedProjectiles.Behavior"/> components.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.GetActiveProjectiles">
+            <summary>
+            Returns an array of all active projectiles.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.GetInactiveProjectiles">
+            <summary>
+            Returns an array of all inactive projectiles.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.FindAll(System.Predicate{`0},WarWolfWorks.NyuEntities.SerializedProjectiles.Search)">
+            <summary>
+            Finds all projectiles matching the given condition.
+            </summary>
+            <param name="match"></param>
+            <param name="searchIn"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Find(System.Predicate{`0},WarWolfWorks.NyuEntities.SerializedProjectiles.Search)">
+            <summary>
+            Returns the first projectile matching the given condition.
+            </summary>
+            <param name="match"></param>
+            <param name="searchIn"></param>
+            <returns></returns>
         </member>
         <member name="T:WarWolfWorks.NyuEntities.Statistics.CountdownStat">
             <summary>
@@ -5032,7 +5658,7 @@
         </member>
         <member name="P:WarWolfWorks.UI.GUIViewport.Parent">
             <summary>
-            The camera used to display markers on screen.
+            The camera used to display GUI elements on screen.
             </summary>
         </member>
         <member name="M:WarWolfWorks.UI.GUIViewport.New(WarWolfWorks.UI.GUIViewport.GUI,System.Int32@)">
@@ -5050,13 +5676,13 @@
         </member>
         <member name="M:WarWolfWorks.UI.GUIViewport.GetGUI(System.Int32)">
             <summary>
-            Sets the world position of a marker by name.
+            Returns a GUI element by ID.
             </summary>
             <param name="id"></param>
         </member>
         <member name="M:WarWolfWorks.UI.GUIViewport.Remove(WarWolfWorks.UI.GUIViewport.GUI)">
             <summary>
-            Removes a marker.
+            Removes a GUI element.
             </summary>
             <param name="gui"></param>
             <returns></returns>
@@ -5222,6 +5848,25 @@
         <member name="P:WarWolfWorks.UI.MenusSystem.Assets.AnchorsEventGraphic.DestinationAnchors">
             <summary>
             The anchors towards which the affected graphic goes towards.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.MenusSystem.Assets.AnchorsEventGraphic.GetAnchors(System.Boolean)">
+            <summary>
+            Gets the anchor values set.
+            </summary>
+            <param name="focused">If true, returns the value of the focused anchors, otherwise returns unfocused value.</param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.UI.MenusSystem.Assets.AnchorsEventGraphic.SetAnchors(System.Boolean,UnityEngine.Vector4)">
+            <summary>
+            Sets the value of the anchors.
+            </summary>
+            <param name="focused">If true, sets the value of the focused anchors, otherwise sets the unfocused anchors.</param>
+            <param name="value"></param>
+        </member>
+        <member name="P:WarWolfWorks.UI.MenusSystem.Assets.AnchorsEventGraphic.TransitionSpeed">
+            <summary>
+            The transition speed of the event graphic between focused and unfocused anchors.
             </summary>
         </member>
         <member name="T:WarWolfWorks.UI.MenusSystem.Assets.BasicIndexEvent">
@@ -6230,6 +6875,24 @@
             Pointer to transform.eulerAngles.
             </summary>
         </member>
+        <member name="M:WarWolfWorks.Utility.CameraManager2D.GetCamera">
+            <summary>
+            Returns the camera attached to this camera manager.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.CameraManager2D.GetFollowBehavior">
+            <summary>
+            Returns the <see cref="T:WarWolfWorks.Utility.FollowBehavior"/> attached to this camera manager.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.CameraManager2D.GetLimiter">
+            <summary>
+            Returns the <see cref="T:WarWolfWorks.Utility.TransformLimiter"/> attached to this camera manager.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.Utility.CameraManager2D.SetCameraSize(System.Single)">
             <summary>
             Sets camera size to the specified size.
@@ -6254,15 +6917,15 @@
             Sets the camera size to it's initial value.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Utility.CameraManager2D.op_Explicit(WarWolfWorks.Utility.CameraManager2D)~WarWolfWorks.Utility.FollowBehaviour">
+        <member name="M:WarWolfWorks.Utility.CameraManager2D.op_Explicit(WarWolfWorks.Utility.CameraManager2D)~WarWolfWorks.Utility.FollowBehavior">
             <summary>
-            Explicitly returns the <see cref="T:WarWolfWorks.Utility.CameraManager2D"/>'s <see cref="F:WarWolfWorks.Utility.CameraManager2D.FollowBehaviour"/>.
+            Explicitly returns the <see cref="T:WarWolfWorks.Utility.CameraManager2D"/>'s <see cref="F:WarWolfWorks.Utility.CameraManager2D.h_FollowBehavior"/>.
             </summary>
             <param name="cm2d"></param>
         </member>
         <member name="M:WarWolfWorks.Utility.CameraManager2D.op_Explicit(WarWolfWorks.Utility.CameraManager2D)~WarWolfWorks.Utility.TransformLimiter">
             <summary>
-            Explicitly returns the <see cref="T:WarWolfWorks.Utility.CameraManager2D"/>'s <see cref="F:WarWolfWorks.Utility.CameraManager2D.TransformLimiter"/>.
+            Explicitly returns the <see cref="T:WarWolfWorks.Utility.CameraManager2D"/>'s <see cref="F:WarWolfWorks.Utility.CameraManager2D.h_TransformLimiter"/>.
             </summary>
             <param name="cm2d"></param>
         </member>
@@ -6809,95 +7472,87 @@
             <param name="min"></param>
             <param name="max"></param>
         </member>
-        <member name="T:WarWolfWorks.Utility.FollowBehaviour">
+        <member name="T:WarWolfWorks.Utility.FollowBehavior">
             <summary>
             Behaviour used to make an object follow a list of transforms. Useful for cameras.
             (Explicitly convertible to <see cref="T:UnityEngine.Transform"/>)
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Utility.FollowBehaviour.RigidBody">
+        <member name="P:WarWolfWorks.Utility.FollowBehavior.RigidBody">
             <summary>
-            Follow behaviour's rigidbody; Only used if <see cref="F:WarWolfWorks.Utility.FollowBehaviour.UsesRigidbody"/> returns true.
+            Follow behaviour's rigidbody; Only used if <see cref="F:WarWolfWorks.Utility.FollowBehavior.UsesRigidbody"/> returns true.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.Utility.FollowBehaviour.UsesRigidbody">
+        <member name="F:WarWolfWorks.Utility.FollowBehavior.UsesRigidbody">
             <summary>
             If true, this class will use a rigidbody instead of it's transform.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.Utility.FollowBehaviour.AllowConsistentFollow">
-            <summary>
-            When active, it forces the follow behaviour to loop through it's position calculation again 
-            as long as it returns an exception, and tries to fix it at the same time. 
-            If you're using this, make sure all follow objects
-            cannot be null, that the list is not empty and that all followed objects aren't re-instantiated.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.Utility.FollowBehaviour.FollowedObjects">
+        <member name="P:WarWolfWorks.Utility.FollowBehavior.FollowedObjects">
             <summary>
             All objects followed by this FollowBehaviour.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Utility.FollowBehaviour.Speed">
+        <member name="P:WarWolfWorks.Utility.FollowBehavior.Speed">
             <summary>
-            Speed at which this script follows <see cref="P:WarWolfWorks.Utility.FollowBehaviour.FollowedObjects"/>.
+            Speed at which this script follows <see cref="P:WarWolfWorks.Utility.FollowBehavior.FollowedObjects"/>.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Utility.FollowBehaviour.Acceleration">
+        <member name="P:WarWolfWorks.Utility.FollowBehavior.Acceleration">
             <summary>
             Speed at which this behaviour accelerates based on distance.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Utility.FollowBehaviour.AccelerateWhenFar">
+        <member name="P:WarWolfWorks.Utility.FollowBehavior.AccelerateWhenFar">
             <summary>
             Decides if this behaviour accelerates when further away from the object.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Utility.FollowBehaviour.IsFollowing">
+        <member name="P:WarWolfWorks.Utility.FollowBehavior.IsFollowing">
             <summary>
             If false, this behaviour will stop following.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Utility.FollowBehaviour.PositionBlocker">
+        <member name="P:WarWolfWorks.Utility.FollowBehavior.PositionBlocker">
             <summary>
             Position at which this behaviour will be blocked in based on BlocksX, BlocksY and BlocksZ.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Utility.FollowBehaviour.BlocksX">
+        <member name="P:WarWolfWorks.Utility.FollowBehavior.BlocksX">
             <summary>
-            Does this <see cref="T:WarWolfWorks.Utility.FollowBehaviour"/> block the X axis?
+            Does this <see cref="T:WarWolfWorks.Utility.FollowBehavior"/> block the X axis?
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Utility.FollowBehaviour.BlocksY">
+        <member name="P:WarWolfWorks.Utility.FollowBehavior.BlocksY">
             <summary>
-            Does this <see cref="T:WarWolfWorks.Utility.FollowBehaviour"/> block the Y axis?
+            Does this <see cref="T:WarWolfWorks.Utility.FollowBehavior"/> block the Y axis?
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Utility.FollowBehaviour.BlocksZ">
+        <member name="P:WarWolfWorks.Utility.FollowBehavior.BlocksZ">
             <summary>
-            Does this <see cref="T:WarWolfWorks.Utility.FollowBehaviour"/> block the Z axis?
+            Does this <see cref="T:WarWolfWorks.Utility.FollowBehavior"/> block the Z axis?
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Utility.FollowBehaviour.AddFollower(UnityEngine.Transform)">
+        <member name="M:WarWolfWorks.Utility.FollowBehavior.AddFollower(UnityEngine.Transform)">
             <summary>
             Adds a Transform to the list of followed objects.
             </summary>
             <param name="t"></param>
         </member>
-        <member name="M:WarWolfWorks.Utility.FollowBehaviour.RemoveFollower(UnityEngine.Transform)">
+        <member name="M:WarWolfWorks.Utility.FollowBehavior.RemoveFollower(UnityEngine.Transform)">
             <summary>
             Removes an existing Transform from the list of followed objects.
             </summary>
             <param name="t"></param>
         </member>
-        <member name="M:WarWolfWorks.Utility.FollowBehaviour.ContainsFollower(UnityEngine.Transform)">
+        <member name="M:WarWolfWorks.Utility.FollowBehavior.ContainsFollower(UnityEngine.Transform)">
             <summary>
             Returns true if the given transform is inside of the followed objects list.
             </summary>
             <param name="t"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.FollowBehaviour.ChangeBlock(System.Int32,System.Boolean)">
+        <member name="M:WarWolfWorks.Utility.FollowBehavior.ChangeBlock(System.Int32,System.Boolean)">
             <summary>
             Changes an axis block to the given boolean value.
             0 = X axis, 1 = Y axis, 2 = Z axis.
@@ -6905,7 +7560,7 @@
             <param name="position"></param>
             <param name="block"></param>
         </member>
-        <member name="M:WarWolfWorks.Utility.FollowBehaviour.ChangeBlock(System.Int32,System.Single)">
+        <member name="M:WarWolfWorks.Utility.FollowBehavior.ChangeBlock(System.Int32,System.Single)">
             <summary>
             Sets the block position of an axis.
             0 = X axis, 1 = Y axis, 2 = Z axis.
@@ -6913,9 +7568,9 @@
             <param name="position"></param>
             <param name="value"></param>
         </member>
-        <member name="M:WarWolfWorks.Utility.FollowBehaviour.op_Explicit(WarWolfWorks.Utility.FollowBehaviour)~UnityEngine.Transform">
+        <member name="M:WarWolfWorks.Utility.FollowBehavior.op_Explicit(WarWolfWorks.Utility.FollowBehavior)~UnityEngine.Transform">
             <summary>
-            Explicitly returns <see cref="T:WarWolfWorks.Utility.FollowBehaviour"/>.transform.
+            Explicitly returns <see cref="T:WarWolfWorks.Utility.FollowBehavior"/>.transform.
             </summary>
             <param name="fb"></param>
         </member>
@@ -7566,14 +8221,14 @@
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.InstantiateList``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
-            Returns a <see cref="T:System.Collections.Generic.IEnumerable`1"/> of instantiated objects (unity copy).
+            Returns a <see cref="T:System.Collections.Generic.IEnumerable`1"/> of instantiated objects (unity copy). (Supports <see cref="T:WarWolfWorks.Interfaces.IInstantiatable"/> interface)
             </summary>
             <param name="objects"></param>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.InstantiateList``1(``0[])">
             <summary>
-            Returns an array of instantiated objects.
+            Returns an array of instantiated objects. (Supports <see cref="T:WarWolfWorks.Interfaces.IInstantiatable"/> interface)
             </summary>
             <param name="objects"></param>
             <returns></returns>
@@ -7957,6 +8612,33 @@
             <param name="maxDistance"></param>
             <param name="center"></param>
             <param name="collection"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Vectors.GetClosestToPoint``1(UnityEngine.Vector3,System.Single,System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Gets the closest element to the given point from a given collection.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="point"></param>
+            <param name="maxDistance"></param>
+            <param name="collection"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Vectors.GetClosestToPoint(UnityEngine.Vector3,System.Single)">
+            <summary>
+            Gets the closest gameobject to the given point within a maximum distance.
+            </summary>
+            <param name="point"></param>
+            <param name="maxDistance"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Vectors.GetClosestToPoint(UnityEngine.Vector3,System.Single,UnityEngine.GameObject[])">
+            <summary>
+            Gets the closest gameobject to the given point within a maximum distance.
+            </summary>
+            <param name="point"></param>
+            <param name="maxDistance"></param>
+            <param name="excluded">Any gameobject in this list will be skipped.</param>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Vectors.GetAllWithinDistance(UnityEngine.Vector3,System.Single,System.String)">
@@ -8563,6 +9245,16 @@
         <member name="T:WarWolfWorks.Utility.Hooks.Colors">
             <summary>
             Contains all Color utilities.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Colors.Tangelo">
+            <summary>
+            The best color.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Colors.Orange">
+            <summary>
+            The orange color.
             </summary>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Colors.MoveTowards(UnityEngine.Color,UnityEngine.Color,System.Single)">
@@ -9221,6 +9913,36 @@
             <param name="collider"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.GetAllChildren(UnityEngine.Transform,System.Collections.Generic.List{UnityEngine.Transform}@)">
+            <summary>
+            Populates a list with all children of a parent.
+            </summary>
+            <param name="parent"></param>
+            <param name="list"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.GetAllChildren(UnityEngine.Transform,System.Collections.Generic.List{UnityEngine.GameObject}@)">
+            <summary>
+            Populates a list with all children of a parent.
+            </summary>
+            <param name="parent"></param>
+            <param name="list"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.GetChildren(UnityEngine.Transform,System.Predicate{UnityEngine.Transform})">
+            <summary>
+            Gets all children of a parent who match a specified condition.
+            </summary>
+            <param name="parent"></param>
+            <param name="match"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.GetChildren(UnityEngine.Transform,System.Predicate{UnityEngine.GameObject})">
+            <summary>
+            Gets all children of a parent who match a specified condition.
+            </summary>
+            <param name="parent"></param>
+            <param name="match"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.Utility.Hooks.GetOldestParent(UnityEngine.Transform)">
             <summary>
             Gets the oldest parent inside the hierarchy.
@@ -9243,6 +9965,37 @@
             <param name="methodName"></param>
             <param name="args"></param>
             <param name="specificBind"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.SetWindowText(System.IntPtr,System.String)">
+            <summary>
+            Sets the text/title of an application widow. Argument hwnd is a window, 
+            which can be found using <see cref="M:WarWolfWorks.Utility.Hooks.FindWindow(System.String,System.String)"/> or
+            <see cref="M:WarWolfWorks.Utility.Hooks.GetActiveWindow"/>.
+            </summary>
+            <param name="hwnd"></param>
+            <param name="lp"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.FindWindow(System.String,System.String)">
+            <summary>
+            Returns all info on a window using <see cref="T:System.IntPtr"/>; See https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-findwindowa
+            for more info.
+            </summary>
+            <param name="className"></param>
+            <param name="windowName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.GetActiveWindow">
+            <summary>
+            Returns the currently active window.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.SetWindowText(System.String)">
+            <summary>
+            Sets the application's title to a given string.
+            </summary>
+            <param name="to"></param>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.ObjectParent(UnityEngine.GameObject)">
             <summary>
@@ -9660,6 +10413,41 @@
             <summary>
             Limits a transform's position to specified positions or transforms.
             (Explicitly convertible to Transform)
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.TransformLimiter.Is2D">
+            <summary>
+            Does the limiter only work on 2D axis?
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.Utility.TransformLimiter.LimitationType">
+            <summary>
+            How the <see cref="T:WarWolfWorks.Utility.TransformLimiter"/> limits it's position.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.TransformLimiter.LimitType">
+            <summary>
+            The currently applied limitation type.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.TransformLimiter.Limiters">
+            <summary>
+            All limiters used when <see cref="T:WarWolfWorks.Utility.TransformLimiter.LimitationType"/> is set to <see cref="F:WarWolfWorks.Utility.TransformLimiter.LimitationType.transform"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.TransformLimiter.MinBounds">
+            <summary>
+            The minimal position allowed for this object when <see cref="T:WarWolfWorks.Utility.TransformLimiter.LimitationType"/> is set to <see cref="F:WarWolfWorks.Utility.TransformLimiter.LimitationType.position"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.TransformLimiter.MaxBounds">
+            <summary>
+            The maximal position allowed for this object when <see cref="T:WarWolfWorks.Utility.TransformLimiter.LimitationType"/> is set to <see cref="F:WarWolfWorks.Utility.TransformLimiter.LimitationType.position"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Utility.TransformLimiter.Position">
+            <summary>
+            Pointer to transform.position.
             </summary>
         </member>
         <member name="T:WarWolfWorks.Utility.Transitioning.ColorTransition">

@@ -96,6 +96,7 @@ namespace WarWolfWorks.UI
         protected override void OnInit()
         {
             GameObject g = new GameObject("Subtitle_" + ID);
+            g.SetActive(false);
             TextMeshProUGUI ugui = g.AddComponent<TextMeshProUGUI>();
             ugui.text = s_Content;
             ugui.rectTransform.localScale = Vector3.one;
@@ -113,6 +114,10 @@ namespace WarWolfWorks.UI
         private bool IUpdateIsRunning;
         private IEnumerator IUpdate()
         {
+            yield return new WaitForEndOfFrame();
+
+            CoreGraphic.gameObject.SetActive(true);
+
             while (IUpdateIsRunning)
             {
                 CurrentCountdown -= Time.deltaTime;

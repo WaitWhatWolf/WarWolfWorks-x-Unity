@@ -126,7 +126,7 @@ namespace WarWolfWorks.NyuEntities.Itemization
 
             ns_Items[emptyIndex] = item;
             OnItemAdded?.Invoke(item);
-            item.ManipulateFromInventory(this as IInventory<NyuItem>, true);
+            item.ManipulateFromInventory(this, true);
 
             return true;
         }
@@ -144,7 +144,7 @@ namespace WarWolfWorks.NyuEntities.Itemization
 
             ns_Items[toIndex] = item;
             OnItemAdded?.Invoke(item);
-            item.ManipulateFromInventory(this as IInventory<NyuItem>, true);
+            item.ManipulateFromInventory(this, true);
 
             return true;
         }
@@ -164,10 +164,10 @@ namespace WarWolfWorks.NyuEntities.Itemization
                 return false;
             }
 
-            replacedItem = ns_Items[toIndex];
+            RemoveItem(toIndex, out replacedItem);
             ns_Items[toIndex] = item;
             OnItemAdded?.Invoke(item);
-            item.ManipulateFromInventory(this as IInventory<NyuItem>, true);
+            item.ManipulateFromInventory(this, true);
 
             return true;
         }
@@ -191,7 +191,7 @@ namespace WarWolfWorks.NyuEntities.Itemization
 
             ns_Items[index] = null;
             OnItemRemoved?.Invoke(toRemove, index);
-            toRemove.ManipulateFromInventory(this as IInventory<NyuItem>, false);
+            toRemove.ManipulateFromInventory(this, false);
 
             return toRemove;
         }
@@ -210,7 +210,7 @@ namespace WarWolfWorks.NyuEntities.Itemization
 
             ns_Items[index] = null;
             OnItemRemoved?.Invoke(toRemove, index);
-            toRemove.ManipulateFromInventory(this as IInventory<NyuItem>, false);
+            toRemove.ManipulateFromInventory(this, false);
 
             return toRemove;
         }
@@ -233,7 +233,7 @@ namespace WarWolfWorks.NyuEntities.Itemization
 
             ns_Items[index] = null;
             OnItemRemoved?.Invoke(toRemove, index);
-            toRemove.ManipulateFromInventory(this as IInventory<NyuItem>, false);
+            toRemove.ManipulateFromInventory(this, false);
             item = toRemove;
             return true;
         }

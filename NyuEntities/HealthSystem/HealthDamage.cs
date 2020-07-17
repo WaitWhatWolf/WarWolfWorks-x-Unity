@@ -10,13 +10,29 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
     public abstract class HealthDamage : ScriptableObject, IHealthDamage
     {
         /// <summary>
-        /// Should determine if the type of object is correct.
+        /// Determines if the type of heal passed is correct.
+        /// </summary>
+        /// <param name="heal"></param>
+        /// <returns></returns>
+        public abstract bool AcceptableHealValue(object heal);
+
+        /// <summary>
+        /// Determines if the type of damage passed is correct.
         /// </summary>
         /// <param name="damage"></param>
         /// <returns></returns>
         public abstract bool AcceptableValue(object damage);
+
         /// <summary>
-        /// Returns the final calculated value.
+        /// Returns the final calculated heal value.
+        /// </summary>
+        /// <param name="heal"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public abstract float FinalHeal(object heal, IAdvancedHealth entity);
+
+        /// <summary>
+        /// Returns the final calculated damage value.
         /// </summary>
         /// <param name="damage"></param>
         /// <param name="entity"></param>

@@ -1404,6 +1404,7 @@ namespace WarWolfWorks.Utility
                 return Quaternion.Euler(euler);
             }
 
+
             /// <summary>
             /// Gets the world position of the mouse.
             /// </summary>
@@ -1625,7 +1626,7 @@ namespace WarWolfWorks.Utility
             }
 
             /// <summary>
-            /// Returns a <see cref="IEnumerable{T}"/> of instantiated objects (unity copy).
+            /// Returns a <see cref="IEnumerable{T}"/> of instantiated objects (unity copy). (Supports <see cref="IInstantiatable"/> interface)
             /// </summary>
             /// <param name="objects"></param>
             /// <returns></returns>
@@ -1642,7 +1643,7 @@ namespace WarWolfWorks.Utility
             }
 
             /// <summary>
-            /// Returns an array of instantiated objects.
+            /// Returns an array of instantiated objects. (Supports <see cref="IInstantiatable"/> interface)
             /// </summary>
             /// <param name="objects"></param>
             /// <returns></returns>
@@ -2281,7 +2282,7 @@ namespace WarWolfWorks.Utility
             public static Vector3 Reformalize(Vector3 toReform)
             {
                 Vector3 vector = new Vector3(WWWMath.IsFormal(toReform.x) ? 0f : toReform.x, WWWMath.IsFormal(toReform.y) ? 0f : toReform.y, WWWMath.IsFormal(toReform.z) ? 0f : toReform.z);
-                return toReform;
+                return vector;
             }
 
             /// <summary>
@@ -2333,6 +2334,7 @@ namespace WarWolfWorks.Utility
             /// <param name="center"></param>
             /// <param name="collection"></param>
             /// <returns></returns>
+            [Obsolete("Use GetClosestToPoint<T>(Vector3,float,IEnumerable<T>) where T : Component instead.")]
             public static T GetClosestToDistance<T>(float maxDistance, Vector3 center, ICollection<T> collection) where T : Component
             {
                 T result = null;
@@ -2343,6 +2345,80 @@ namespace WarWolfWorks.Utility
                     if (!(num2 > maxDistance) && !(num2 > num))
                     {
                         result = item;
+                        num = num2;
+                    }
+                }
+                return result;
+            }
+
+            /// <summary>
+            /// Gets the closest element to the given point from a given collection.
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="point"></param>
+            /// <param name="maxDistance"></param>
+            /// <param name="collection"></param>
+            /// <returns></returns>
+            public static T GetClosestToPoint<T>(Vector3 point, float maxDistance, IEnumerable<T> collection) where T : Component
+            {
+                T result = null;
+                float num = float.PositiveInfinity;
+                foreach (T item in collection)
+                {
+                    float num2 = Vector3.Distance(item.transform.position, point);
+                    if (!(num2 > maxDistance) && !(num2 > num))
+                    {
+                        result = item;
+                        num = num2;
+                    }
+                }
+                return result;
+            }
+
+            /// <summary>
+            /// Gets the closest gameobject to the given point within a maximum distance.
+            /// </summary>
+            /// <param name="point"></param>
+            /// <param name="maxDistance"></param>
+            /// <returns></returns>
+            public static GameObject GetClosestToPoint(Vector3 point, float maxDistance)
+            {
+                GameObject result = null;
+                float num = float.PositiveInfinity;
+                GameObject[] gameObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+                foreach (GameObject gameObject in gameObjects)
+                {
+                    float num2 = Vector3.Distance(gameObject.transform.position, point);
+                    if (!(num2 > maxDistance) && !(num2 > num))
+                    {
+                        result = gameObject;
+                        num = num2;
+                    }
+                }
+                return result;
+            }
+
+            /// <summary>
+            /// Gets the closest gameobject to the given point within a maximum distance.
+            /// </summary>
+            /// <param name="point"></param>
+            /// <param name="maxDistance"></param>
+            /// <param name="excluded">Any gameobject in this list will be skipped.</param>
+            /// <returns></returns>
+            public static GameObject GetClosestToPoint(Vector3 point, float maxDistance, GameObject[] excluded)
+            {
+                GameObject result = null;
+                float num = float.PositiveInfinity;
+                GameObject[] gameObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+                foreach (GameObject gameObject in gameObjects)
+                {
+                    if (Array.IndexOf(excluded, gameObject) != -1)
+                        continue;
+
+                    float num2 = Vector3.Distance(gameObject.transform.position, point);
+                    if (!(num2 > maxDistance) && !(num2 > num))
+                    {
+                        result = gameObject;
                         num = num2;
                     }
                 }
@@ -3469,23 +3545,9 @@ namespace WarWolfWorks.Utility
             /// <returns></returns>
             public static string ToRainbow(string original, int frequency, Color[] colorsToUse)
             {
-                if (!original.Contains(RainbowTextStarter) || !original.Contains(RainbowTextEnder))
-                {
-                    AdvancedDebug.LogWarning("Message did not contain required Starter/Ender for text conversion. Make sure the text you want to modify is wrapped with (Color=Rainbow) (/Color=Rainbow)", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
-                    return original;
-                }
                 string text = "<color=#klrtgiv>";
                 string str = "</color>";
-                string[] separator = new string[1]
-                {
-                    RainbowTextStarter
-                };
-                string[] separator2 = new string[1]
-                {
-                    RainbowTextEnder
-                };
-                string text2 = original.Split(separator, StringSplitOptions.RemoveEmptyEntries)[1].Split(separator2, StringSplitOptions.RemoveEmptyEntries)[0];
-                char[] array = text2.ToCharArray();
+                char[] array = original.ToCharArray();
                 string[] array2 = new string[array.Length];
                 for (int i = 0; i < array.Length; i += frequency)
                 {
@@ -3497,10 +3559,7 @@ namespace WarWolfWorks.Utility
                 }
                 string empty = string.Empty;
                 empty = EnumerableConcat(empty, array2.ToList());
-                string[] array3 = original.Split(separator, StringSplitOptions.None);
-                string str2 = array3[0];
-                string str3 = array3[1].Split(separator2, StringSplitOptions.None)[1];
-                return str2 + empty + str3;
+                return empty;
             }
 
             /// <summary>
@@ -3604,6 +3663,16 @@ namespace WarWolfWorks.Utility
         /// </summary>
         public static class Colors
         {
+            /// <summary>
+            /// The best color.
+            /// </summary>
+            public static readonly Color Tangelo = new Color(0.976f, 0.302f, 0f);
+
+            /// <summary>
+            /// The orange color.
+            /// </summary>
+            public static readonly Color Orange = new Color(1f, .647f, 0f);
+
             /// <summary>
             /// Returns the Vector4.MoveTowards equivalent for colors.
             /// </summary>
@@ -4751,6 +4820,82 @@ namespace WarWolfWorks.Utility
         }
 
         /// <summary>
+        /// Populates a list with all children of a parent.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="list"></param>
+        public static void GetAllChildren(Transform parent, ref List<Transform> list)
+        {
+            foreach (Transform child in parent)
+            {
+                list.Add(child);
+                GetAllChildren(child, ref list);
+            }
+        }
+
+        /// <summary>
+        /// Populates a list with all children of a parent.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="list"></param>
+        public static void GetAllChildren(Transform parent, ref List<GameObject> list)
+        {
+            foreach (Transform child in parent)
+            {
+                list.Add(child.gameObject);
+                GetAllChildren(child, ref list);
+            }
+        }
+
+        /// <summary>
+        /// Gets all children of a parent who match a specified condition.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="match"></param>
+        /// <returns></returns>
+        public static List<Transform> GetChildren(Transform parent, Predicate<Transform> match)
+        {
+            List<Transform> toReturn = new List<Transform>();
+            List<Transform> used = new List<Transform>(parent.childCount);
+
+            GetAllChildren(parent, ref used);
+
+            foreach (Transform transform in used)
+            {
+                if (match(transform))
+                {
+                    toReturn.Add(transform);
+                }
+            }
+
+            return toReturn;
+        }
+
+        /// <summary>
+        /// Gets all children of a parent who match a specified condition.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="match"></param>
+        /// <returns></returns>
+        public static List<GameObject> GetChildren(Transform parent, Predicate<GameObject> match)
+        {
+            List<GameObject> toReturn = new List<GameObject>();
+            List<Transform> used = new List<Transform>(parent.childCount);
+
+            GetAllChildren(parent, ref used);
+
+            foreach (Transform transform in used)
+            {
+                if (match(transform.gameObject))
+                {
+                    toReturn.Add(transform.gameObject);
+                }
+            }
+
+            return toReturn;
+        }
+
+        /// <summary>
         /// Gets the oldest parent inside the hierarchy.
         /// </summary>
         /// <param name="child"></param>
@@ -5049,6 +5194,41 @@ namespace WarWolfWorks.Utility
             }
         }
 #pragma warning restore CS1591
+        /// <summary>
+        /// Sets the text/title of an application widow. Argument hwnd is a window, 
+        /// which can be found using <see cref="FindWindow(string, string)"/> or
+        /// <see cref="GetActiveWindow"/>.
+        /// </summary>
+        /// <param name="hwnd"></param>
+        /// <param name="lp"></param>
+        /// <returns></returns>
+        [DllImport("user32.dll", EntryPoint = "SetWindowText")]
+        public static extern bool SetWindowText(IntPtr hwnd, string lp);
+        /// <summary>
+        /// Returns all info on a window using <see cref="IntPtr"/>; See https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-findwindowa
+        /// for more info.
+        /// </summary>
+        /// <param name="className"></param>
+        /// <param name="windowName"></param>
+        /// <returns></returns>
+        [DllImport("user32.dll", EntryPoint = "FindWindow")]
+        public static extern IntPtr FindWindow(string className, string windowName);
+
+        /// <summary>
+        /// Returns the currently active window.
+        /// </summary>
+        /// <returns></returns>
+        [DllImport("user32.dll", EntryPoint = "GetActiveWindow")]
+        public static extern IntPtr GetActiveWindow();
+
+        /// <summary>
+        /// Sets the application's title to a given string.
+        /// </summary>
+        /// <param name="to"></param>
+        public static void SetWindowText(string to)
+        {
+            SetWindowText(GetActiveWindow(), to);
+        }
 
         /// <summary>
         /// Returns the parent gameobject of the given <see cref="GameObject"/>.
