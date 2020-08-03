@@ -48,9 +48,10 @@ namespace WarWolfWorks.NyuEntities.Statistics
             get => stackingUsed;
             set
             {
-                if (value is Stacking)
+                if (value is Stacking asStacking)
                 {
-                    stackingUsed = (Stacking)value;
+                    stackingUsed = asStacking;
+                    asStacking.SetParent(this);
                 }
             }
         }

@@ -78,9 +78,7 @@ namespace WarWolfWorks.NyuEntities.YharonSystem
 
                 if(resetCountdown)
                 {
-                    ns_Countdown = to;
-                    CountdownChanges++;
-                    OnCountdownSet?.Invoke(this);
+                    SetCountdown(to);
                 }
             }
         }

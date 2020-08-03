@@ -1435,10 +1435,220 @@ namespace WarWolfWorks.Utility
         }
 
         /// <summary>
+        /// Contains all Color utilities.
+        /// </summary>
+        public static class Colors
+        {
+            /// <summary>
+            /// The best color.
+            /// </summary>
+            public static readonly Color Tangelo = new Color(0.976f, 0.302f, 0f);
+
+            /// <summary>
+            /// The orange color.
+            /// </summary>
+            public static readonly Color Orange = new Color(1f, .647f, 0f);
+
+            /// <summary>
+            /// The pink color.
+            /// </summary>
+            public static readonly Color Pink = new Color(1f, .753f, .796f);
+
+            /// <summary>
+            /// The crimson color.
+            /// </summary>
+            public static readonly Color Crimson = new Color(.863f, .078f, .235f);
+
+            /// <summary>
+            /// The midnight blue color.
+            /// </summary>
+            public static readonly Color MidnightBlue = new Color(.098f, .098f, .439f);
+
+            /// <summary>
+            /// Returns the Vector4.MoveTowards equivalent for colors.
+            /// </summary>
+            /// <param name="point"></param>
+            /// <param name="destination"></param>
+            /// <param name="speed"></param>
+            /// <returns></returns>
+            public static Color MoveTowards(Color point, Color destination, float speed)
+            {
+                return Vector4.MoveTowards(point, destination, speed);
+            }
+
+            /// <summary>
+            /// Returns the original color with it's values being put into negatives. (If a value is negative, it will be put back to positive)
+            /// </summary>
+            /// <param name="original"></param>
+            /// <returns></returns>
+            public static Color ToNegative(Color original)
+                => new Color(-original.r, -original.g, -original.b, -original.a);
+
+            /// <summary>
+            /// Returns the original color with it's values being put into negatives. (If a value is negative, it will be kept as is)
+            /// </summary>
+            /// <param name="original"></param>
+            /// <returns></returns>
+            public static Color ToAbsoluteNegative(Color original)
+                => new Color(WWWMath.ToNegative(original.r), WWWMath.ToNegative(original.g), WWWMath.ToNegative(original.b), WWWMath.ToNegative(original.a));
+
+            /// <summary>
+            /// Short for <see cref="Color.white"/> - original.
+            /// </summary>
+            /// <param name="original"></param>
+            /// <returns></returns>
+            public static Color Reverse(Color original) => Color.white - original;
+
+            /// <summary>
+            /// Returns in order: Color.red, Color.yellow, Color.blue.
+            /// </summary>
+            public static readonly Color[] PrimaryColors = new Color[]
+            {
+                Color.red,
+                Color.yellow,
+                Color.blue
+            };
+
+            /// <summary>
+            /// Returns in order: Color.red, Color.yellow, Color.cyan, Color.blue, Color.magenta
+            /// </summary>
+            public static readonly Color[] MainColors = new Color[6]
+            {
+                Color.red,
+                Color.yellow,
+                Color.green,
+                Color.cyan,
+                Color.blue,
+                Color.magenta
+            };
+
+            /// <summary>
+            /// Returns all colors of the rainbow in descending order.
+            /// </summary>
+            public static readonly Color[] RainbowColors = new Color[7]
+            {
+                new Color(1f, 0f, 0f),
+                new Color(1f, 0.35f, 0f),
+                new Color(1f, 1f, 0f),
+                new Color(0f, 1f, 0f),
+                new Color(0f, 1f, 1f),
+                new Color(0f, 0.35f, 1f),
+                new Color(1f, 0f, 1f)
+            };
+
+            /// <summary>
+            /// Returns the hexcode value of a color. (Pointer of <see cref="ColorUtility.ToHtmlStringRGB(Color)"/>)
+            /// </summary>
+            /// <param name="color"></param>
+            /// <returns></returns>
+            public static string ColorToHex(Color color)
+            {
+                return ColorUtility.ToHtmlStringRGB(color);
+            }
+
+            /// <summary>
+            /// Returns the median of two given colors.
+            /// </summary>
+            /// <param name="a"></param>
+            /// <param name="b"></param>
+            /// <returns></returns>
+            public static Color MiddleMan(Color a, Color b)
+            {
+                float r = a.r + b.r / 2f;
+                float g = a.g + b.g / 2f;
+                float b2 = a.b + b.b / 2f;
+                float a2 = a.a + b.a / 2f;
+                return new Color(r, g, b2, a2);
+            }
+
+            /// <summary>
+            /// Returns the median of two given colors, where percentage 0 is a, 0.5 is the exact median, and 1 is b.
+            /// </summary>
+            /// <param name="a"></param>
+            /// <param name="b"></param>
+            /// <param name="percentage"></param>
+            /// <returns></returns>
+            public static Color MiddleMan(Color a, Color b, float percentage)
+            {
+                float num = 1f - percentage;
+                float num2 = a.r * num;
+                float num3 = a.g * num;
+                float num4 = a.b * num;
+                float num5 = a.a * num;
+                float num6 = b.r * percentage;
+                float num7 = b.g * percentage;
+                float num8 = b.b * percentage;
+                float num9 = b.a * percentage;
+                return new Color(num2 + num6, num3 + num7, num4 + num8, num5 + num9);
+            }
+
+            /// <summary>
+            /// Returns the average of all colors inside a collection.
+            /// </summary>
+            /// <param name="colors"></param>
+            /// <returns></returns>
+            public static Color MiddleMan(ICollection<Color> colors)
+            {
+                float num = 0f;
+                float num2 = 0f;
+                float num3 = 0f;
+                float num4 = 0f;
+                foreach (Color color in colors)
+                {
+                    num += color.r;
+                    num2 += color.g;
+                    num3 += color.b;
+                    num4 += color.a;
+                }
+                num /= (float)colors.Count;
+                num2 /= (float)colors.Count;
+                num3 /= (float)colors.Count;
+                num4 /= (float)colors.Count;
+                return new Color(num, num2, num3, num4);
+            }
+        }
+
+        /// <summary>
         /// Contains some utility methods concerting enumeration and generic collections.
         /// </summary>
         public static class Enumeration
         {
+            /// <summary>
+            /// Returns the amount of times an item is present in a collection.
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="collection"></param>
+            /// <param name="item"></param>
+            /// <returns></returns>
+            public static int GetItemCount<T>(IEnumerable<T> collection, T item)
+            {
+                int count = 0;
+                foreach(T colItem in collection)
+                {
+                    if (colItem.Equals(item))
+                        count++;
+                }
+                return count;
+            }
+
+            /// <summary>
+            /// Returns the amount of times a condition matched.
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="collection"></param>
+            /// <param name="match"></param>
+            /// <returns></returns>
+            public static int GetMatchCount<T>(IEnumerable<T> collection, Predicate<T> match)
+            {
+                int count = 0;
+                foreach (T colItem in collection)
+                {
+                    if (match(colItem))
+                        count++;
+                }
+                return count;
+            }
+
             /// <summary>
             /// Returns the first empty index of a list; Returns -1 if none were found.
             /// </summary>
@@ -1659,921 +1869,6 @@ namespace WarWolfWorks.Utility
             }
         }
 
-        /// <summary>
-        /// Contains all methods Position and Vector related.
-        /// </summary>
-        public static class Vectors
-        {
-            /// <summary>
-            /// Returns direction which would make Position look at Destination.
-            /// </summary>
-            /// <param name="Position"></param>
-            /// <param name="Destination"></param>
-            /// <returns></returns>
-            public static Vector3 DirectionTowards(Vector3 Position, Vector3 Destination)
-                => (Destination - Position).normalized;
-
-            /// <summary>
-            /// Returns the total of vectors divided by Length of array given.
-            /// </summary>
-            /// <param name="values"></param>
-            /// <returns></returns>
-            public static Vector3 Average(Vector3[] values)
-            {
-                Vector3 toReturn = Vector3.zero;
-
-                values.ForEach(v => toReturn += v);
-
-                toReturn /= values.Length;
-
-                return toReturn;
-            }
-
-            /// <summary>
-            /// Returns in order: Vector3.back, Vector3.down, Vector3.forward, Vector3.left, Vector3.one, Vector3.right, Vector3.up
-            /// </summary>
-            public static Vector3[] AllDirections => new Vector3[7]
-            {
-                Vector3.back,
-                Vector3.down,
-                Vector3.forward,
-                Vector3.left,
-                Vector3.one,
-                Vector3.right,
-                Vector3.up
-            };
-            /// <summary>
-            /// Returns in order: Vector2.right, Vector2.one, Vector2.up, new Vector2(-1f, 1f), Vector2.left, -Vector2.one, Vector2.down, new Vector2(1f, -1f)
-            /// </summary>
-            public static Vector2[] AllDirections2D => new Vector2[8]
-            {
-                Vector2.right,
-                Vector2.one,
-                Vector2.up,
-                new Vector2(-1f, 1f),
-                Vector2.left,
-                -Vector2.one,
-                Vector2.down,
-                new Vector2(1f, -1f)
-            };
-
-            /// <summary>
-            /// Returns in order: Vector2.one, new Vector2(-1f, 1f), -Vector2.one, new Vector2(1f, -1f)
-            /// </summary>
-            public static Vector2[] DiagonalDirections2D => new Vector2[4]
-            {
-                Vector2.one,
-                new Vector2(-1f, 1f),
-                -Vector2.one,
-                new Vector2(1f, -1f)
-            };
-
-            /// <summary>
-            /// Returns in order: Vector2.right, Vector2.up, Vector2.left, Vector2.down
-            /// </summary>
-            public static Vector2[] MainDirections2D => new Vector2[4]
-            {
-                Vector2.right,
-                Vector2.up,
-                Vector2.left,
-                Vector2.down
-            };
-
-            /// <summary>
-            /// Returns in order: Vector2.left, Vector2.right
-            /// </summary>
-            public static Vector2[] HorizontalSides2D => new Vector2[2]
-            {
-                Vector2.left,
-                Vector2.right
-            };
-
-            /// <summary>
-            /// Returns in order: Vector2.up, Vector2.down
-            /// </summary>
-            public static Vector2[] VerticalSides2D => new Vector2[2]
-            {
-                Vector2.up,
-                Vector2.down
-            };
-
-            /// <summary>
-            /// Returns the Anchored position of a RectTransform in Vector4,
-            /// where x = anchorMin.x, y = anchorMin.y, z = anchorMax.x, w = anchorMax.y.
-            /// </summary>
-            /// <param name="rt"></param>
-            /// <returns></returns>
-            public static Vector4 GetAnchoredPosition(RectTransform rt)
-            {
-                Vector2 anchorMin = rt.anchorMin;
-                Vector2 anchorMax = rt.anchorMax;
-                return new Vector4(anchorMin.x, anchorMin.y, anchorMax.x, anchorMax.y);
-            }
-
-            /// <summary>
-            /// Sets the anchored position of an RectTransform with it's offset set to 0.
-            /// Vector4 use: x = anchorMin.x, y = anchorMin.y, z = anchorMax.x, w = anchorMax.y.
-            /// </summary>
-            /// <param name="rt"></param>
-            /// <param name="Position"></param>
-            /// <returns></returns>
-            public static void SetAnchoredUI(RectTransform rt, Vector4 Position)
-            {
-                rt.anchorMin = new Vector2(Position.x, Position.y);
-                rt.anchorMax = new Vector2(Position.z, Position.w);
-                rt.offsetMin = rt.offsetMax = Vector2.zero;
-            }
-
-            /// <summary>
-            /// Sets the anchored position of an RectTransform with it's offset set to 0.
-            /// </summary>
-            /// <param name="rt"></param>
-            /// <param name="min"></param>
-            /// <param name="max"></param>
-            /// <returns></returns>
-            public static void SetAnchoredUI(RectTransform rt, Vector2 min, Vector2 max)
-            {
-                rt.anchorMin = min;
-                rt.anchorMax = max;
-                rt.offsetMin = rt.offsetMax = Vector2.zero;
-            }
-
-            /// <summary>
-            /// Sets the anchored position of an RectTransform with it's offset set to 0.
-            /// </summary>
-            /// <param name="rt"></param>
-            /// <param name="minX"></param>
-            /// <param name="minY"></param>
-            /// <param name="maxX"></param>
-            /// <param name="maxY"></param>
-            /// <returns></returns>
-            public static void SetAnchoredUI(RectTransform rt, float minX, float minY, float maxX, float maxY)
-            {
-                rt.anchorMin = new Vector2(minX, minY);
-                rt.anchorMax = new Vector2(maxX, maxY);
-                rt.offsetMin = rt.offsetMax = Vector2.zero;
-            }
-
-            /// <summary>
-            /// Fits all RectTransforms given inside a parent horizontally, where anchorMin.y = 0 and anchorMax.y = 1.
-            /// </summary>
-            /// <param name="rts"></param>
-            public static void SetAllAnchoredUIFitHorizontal(IEnumerable<RectTransform> rts)
-            {
-                RectTransform[] transforms = rts.ToArray();
-                int size = transforms.Length;
-                for (int i = 0; i < transforms.Length; i++)
-                {
-                    float か = (i + 1);
-                    transforms[i].SetAnchoredUI((1f / size) * i, 0, (1f / size) * か, 1);
-                }
-            }
-
-            /// <summary>
-            /// Fits all RectTransforms given inside a parent horizontally, where anchorMin.y = 0 and anchorMax.y = 1, with x values being limited from 0 to maxSize01.
-            /// </summary>
-            /// <param name="rts"></param>
-            /// <param name="maxSize01"></param>
-            public static void SetAllAnchoredUIFitHorizontal(IEnumerable<RectTransform> rts, float maxSize01)
-            {
-                RectTransform[] transforms = rts.ToArray();
-                float size = maxSize01;
-                int collectionSize = transforms.Length;
-                for (int i = 0; i < transforms.Length; i++)
-                {
-                    float か = (i + 1);
-                    transforms[i].SetAnchoredUI((size / collectionSize) * i, 0, (size / collectionSize) * か, 1);
-                }
-            }
-
-            /// <summary>
-            /// Fits all RectTransforms given inside a parent horizontally, where anchorMin.x = 0 and anchorMax.x = 1.
-            /// </summary>
-            /// <param name="rts"></param>
-            public static void SetAllAnchoredUIFitVertical(IEnumerable<RectTransform> rts)
-            {
-                RectTransform[] transforms = rts.ToArray();
-                int size = transforms.Length;
-                for (int i = 0; i < transforms.Length; i++)
-                {
-                    float か = (i + 1);
-                    transforms[i].SetAnchoredUI(0, (1f / size) * i, 1, (1f / size) * か);
-                }
-            }
-
-            /// <summary>
-            /// Fits all RectTransforms given inside a parent horizontally, where anchorMin.y = 0 and anchorMax.y = 1, with x values being limited from 0 to maxSize01.
-            /// </summary>
-            /// <param name="rts"></param>
-            /// <param name="maxSize01"></param>
-            public static void SetAllAnchoredUIFitVertical(IEnumerable<RectTransform> rts, float maxSize01)
-            {
-                RectTransform[] transforms = rts.ToArray();
-                float size = maxSize01;
-                int collectionSize = transforms.Length;
-                for (int i = 0; i < transforms.Length; i++)
-                {
-                    float か = (i + 1);
-                    transforms[i].SetAnchoredUI(0, (size / collectionSize) * i, 1, (size / collectionSize) * か);
-                }
-            }
-
-            /// <summary>
-            /// Gets the aspect ratio of the game in Vector2.
-            /// </summary>
-            /// <returns></returns>
-            public static Vector2 GetAspectRatio() => GetAspectRatio(Screen.currentResolution);
-
-            /// <summary>
-            /// Gets the aspect ratio of a given Resolution.
-            /// </summary>
-            /// <param name="resolution"></param>
-            /// <returns></returns>
-            public static Vector2 GetAspectRatio(Resolution resolution)
-            {
-                float f = resolution.width / resolution.height;
-                int i = 0;
-                while (true)
-                {
-                    i++;
-                    if (Math.Round(f * i, 2) == Mathf.RoundToInt(f * i))
-                        break;
-                }
-                return new Vector2((float)Math.Round(f * i, 2), i);
-            }
-
-            /// <summary>
-            /// Rotates point around pivot based on angle (Euler).
-            /// </summary>
-            /// <param name="point"></param>
-            /// <param name="pivot"></param>
-            /// <param name="angle"></param>
-            /// <returns></returns>
-            public static Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angle)
-            {
-                return Quaternion.Euler(angle) * (point - pivot) + pivot;
-            }
-
-            /// <summary>
-            /// Rotates point around pivot based on angle (Quaternion).
-            /// </summary>
-            /// <param name="point"></param>
-            /// <param name="pivot"></param>
-            /// <param name="angle"></param>
-            /// <returns></returns>
-            public static Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Quaternion angle)
-            {
-                return angle * (point - pivot) + pivot;
-            }
-
-            /// <summary>
-            /// Returns a Vector2 that has the highest axis value kept, and the lowest set to 0.
-            /// </summary>
-            /// <param name="evaluator"></param>
-            /// <returns></returns>
-            public static Vector2 HighestValue(Vector2 evaluator)
-            {
-                float num = evaluator.x;
-                float num2 = evaluator.y;
-                bool flag = false;
-                bool flag2 = false;
-                if (num < 0f)
-                {
-                    flag = true;
-                    num = 0f - num;
-                }
-                if (num2 < 0f)
-                {
-                    flag2 = true;
-                    num2 = 0f - num2;
-                }
-                if (num == 0f && flag2)
-                {
-                    flag = true;
-                }
-                if (num2 == 0f && flag)
-                {
-                    flag2 = true;
-                }
-                Vector2 result = new Vector2((num > num2) ? ((!flag) ? 1 : (-1)) : 0, (num2 > num) ? ((!flag2) ? 1 : (-1)) : 0);
-                return result;
-            }
-
-            /// <summary>
-            /// Converts a Vector3 to a Vector3Int.
-            /// </summary>
-            /// <param name="vector"></param>
-            /// <returns></returns>
-            public static Vector3Int ToInt(Vector3 vector)
-            {
-                return new Vector3Int(Mathf.RoundToInt(vector.x), Mathf.RoundToInt(vector.y), Mathf.RoundToInt(vector.z));
-            }
-
-            /// <summary>
-            /// Convert all values of a given Vector3 into Int32 values without turning it into a <see cref="Vector3Int"/>.
-            /// </summary>
-            /// <param name="vector"></param>
-            /// <returns></returns>
-            public static Vector3 ToIntNormal(Vector3 vector)
-            {
-                return new Vector3(Mathf.RoundToInt(vector.x), Mathf.RoundToInt(vector.y), Mathf.RoundToInt(vector.z));
-            }
-
-            /// <summary>
-            /// Convert all values of a given Vector3 into Int32 values without turning it into a <see cref="Vector3Int"/>, and ignores the corresponding values for conversion.
-            /// </summary>
-            /// <param name="vector"></param>
-            /// <param name="ignoreX"></param>
-            /// <param name="ignoreY"></param>
-            /// <param name="ignoreZ"></param>
-            /// <returns></returns>
-            public static Vector3 ToIntNormal(Vector3 vector, bool ignoreX, bool ignoreY, bool ignoreZ)
-            {
-                return new Vector3(ignoreX ? vector.x : ((float)Mathf.RoundToInt(vector.x)), ignoreY ? vector.y : ((float)Mathf.RoundToInt(vector.y)), ignoreZ ? vector.z : ((float)Mathf.RoundToInt(vector.z)));
-            }
-
-            /// <summary>
-            /// Snaps a vector to given factor. Useful to make grid-like behaviour.
-            /// </summary>
-            /// <param name="vector"></param>
-            /// <param name="factor"></param>
-            /// <returns></returns>
-            public static Vector3 Snap(Vector3 vector, float factor)
-            {
-                factor = factor.ToPositive();
-                float x = Mathf.Round(vector.x / factor) * factor;
-                float y = Mathf.Round(vector.y / factor) * factor;
-                float z = Mathf.Round(vector.z / factor) * factor;
-                return new Vector3(x, y, z);
-            }
-
-            /// <summary>
-            /// Snaps a vector to given factor, while ignoring all corresponding Ignore values.
-            /// </summary>
-            /// <param name="vector"></param>
-            /// <param name="factor"></param>
-            /// <param name="IgnoreX"></param>
-            /// <param name="IgnoreY"></param>
-            /// <param name="IgnoreZ"></param>
-            /// <returns></returns>
-            public static Vector3 Snap(Vector3 vector, float factor, bool IgnoreX, bool IgnoreY, bool IgnoreZ)
-            {
-                factor = factor.ToPositive();
-                float x = IgnoreX ? vector.x : (Mathf.Round(vector.x / factor) * factor);
-                float y = IgnoreY ? vector.y : (Mathf.Round(vector.y / factor) * factor);
-                float z = IgnoreZ ? vector.z : (Mathf.Round(vector.z / factor) * factor);
-                return new Vector3(x, y, z);
-            }
-
-            /// <summary>
-            /// Equivalent to <see cref="Quaternion.RotateTowards(Quaternion, Quaternion, float)"/>.
-            /// </summary>
-            /// <param name="from"></param>
-            /// <param name="to"></param>
-            /// <param name="speed"></param>
-            /// <returns></returns>
-            public static Vector3 EulerRotateTowards(Vector3 from, Vector3 to, float speed)
-            {
-                return Quaternion.RotateTowards(Quaternion.Euler(from), Quaternion.Euler(to), speed).eulerAngles;
-            }
-
-            /// <summary>
-            /// Returns a Vector2 that has the lowest axis value kept, and the highest set to 0.
-            /// </summary>
-            /// <param name="evaluator"></param>
-            /// <returns></returns>
-            public static Vector2 LowestValue(Vector2 evaluator)
-            {
-                float num = evaluator.x;
-                float num2 = evaluator.y;
-                bool flag = false;
-                bool flag2 = false;
-                if (num < 0f)
-                {
-                    flag = true;
-                    num = 0f - num;
-                }
-                if (num2 < 0f)
-                {
-                    flag2 = true;
-                    num2 = 0f - num2;
-                }
-                if (num == 0f && flag2)
-                {
-                    flag = true;
-                }
-                if (num2 == 0f && flag)
-                {
-                    flag2 = true;
-                }
-                Vector2 result = new Vector2((num < num2) ? ((!flag) ? 1 : (-1)) : 0, (num2 < num) ? ((!flag2) ? 1 : (-1)) : 0);
-                return result;
-            }
-
-            /// <summary>
-            /// Equivalent to <see cref="Vector3.Distance(Vector3, Vector3)"/>
-            /// </summary>
-            /// <param name="a"></param>
-            /// <param name="b"></param>
-            /// <returns></returns>
-            public static float DistanceBetween(GameObject a, GameObject b)
-            {
-                float result = 0f;
-                if (a && b)
-                {
-                    result = Vector3.Distance(a.transform.position, b.transform.position);
-                }
-                return result;
-            }
-
-            /// <summary>
-            /// Equivalent to <see cref="Vector2.Distance(Vector2, Vector2)"/>
-            /// </summary>
-            /// <param name="a"></param>
-            /// <param name="b"></param>
-            /// <returns></returns>
-            public static float DistanceBetween(Vector2 a, Vector2 b)
-            {
-                return Vector2.Distance(a, b);
-            }
-
-            /// <summary>
-            /// Returns the distance of an axis between two Vector2 values.
-            /// </summary>
-            /// <param name="a"></param>
-            /// <param name="b"></param>
-            /// <param name="axisChoice"></param>
-            /// <returns></returns>
-            public static float DistanceBetween(Vector2 a, Vector2 b, Axis axisChoice)
-            {
-                float num;
-                float num2;
-                if (axisChoice == Axis.X)
-                {
-                    num = a.x;
-                    num2 = b.x;
-                }
-                else
-                {
-                    num = a.y;
-                    num2 = b.y;
-                }
-                float num3 = num - num2;
-                if (num3 < 0f)
-                {
-                    num3 = 0f - num3;
-                }
-                return num3;
-            }
-
-            /// <summary>
-            /// Returns true if position is wihin bounds. (bounds are: x and y as min, z and w as max (z is max X and w is max Y))
-            /// </summary>
-            /// <param name="position"></param>
-            /// <param name="bounds"></param>
-            /// <returns></returns>
-            public static bool IsInsideBounds(Vector2 position, Vector4 bounds)
-            {
-                float x = position.x;
-                float y = position.y;
-                return x > bounds.x && x < bounds.z && y > bounds.y && y < bounds.w;
-            }
-
-            /// <summary>
-            /// Returns true if position is within size from center. 
-            /// </summary>
-            /// <param name="center"></param>
-            /// <param name="size"></param>
-            /// <param name="position"></param>
-            /// <returns></returns>
-            [Obsolete]
-            public static bool IsInsideBoundsOld(Vector3 position, Vector3 center, Vector3 size)
-            {
-                float minX = center.x - size.x, maxX = center.x + size.x;
-                float minY = center.y - size.y, maxY = center.y + size.y;
-                float minZ = center.z - size.z, maxZ = center.z + size.z;
-
-                return position.x > minX && position.x < maxX &&
-                    position.y > minY && position.y < maxY &&
-                    position.z > minZ && position.z < maxZ;
-            }
-
-            /// <summary>
-            /// Returns true if position is within size from center. 
-            /// </summary>
-            /// <param name="position"></param>
-            /// <param name="center"></param>
-            /// <param name="size"></param>
-            /// <returns></returns>
-            public static bool IsInsideBounds(Vector3 position, Vector3 center, Vector3 size)
-            {
-                Vector3 compared = position - center;
-
-                return compared.x > -size.x && compared.x < size.x
-                    && compared.y > -size.y && compared.y < size.y
-                    && compared.z > -size.z && compared.x < size.z;
-            }
-
-            /// <summary>
-            /// Returns true if the position is within the radius of center.
-            /// </summary>
-            /// <param name="position"></param>
-            /// <param name="center"></param>
-            /// <param name="radius"></param>
-            /// <returns></returns>
-            public static bool IsInsideBounds(Vector3 position, Vector3 center, float radius)
-                => Vector3.Distance(position, center) < radius;
-
-            /// <summary>
-            /// Returns true if position is wihin min and max.
-            /// </summary>
-            /// <param name="position"></param>
-            /// <param name="min"></param>
-            /// <param name="max"></param>
-            /// <returns></returns>
-            public static bool IsInsideBounds(Vector2 position, Vector2 min, Vector2 max)
-                => IsInsideBounds(position, new Vector4(min.x, min.y, max.x, max.y));
-
-            /// <summary>
-            /// Returns a Vector2 which has it's Y value set to the given Vector3 Z value.
-            /// </summary>
-            /// <param name="vector"></param>
-            /// <returns></returns>
-            public static Vector2 Vector3D(Vector3 vector)
-            {
-                return new Vector2(vector.x, vector.z);
-            }
-
-            /// <summary>
-            /// Returns a Vector3 which moves a towards b based on speed. Accelerates based on the distance between both positions.
-            /// </summary>
-            /// <param name="a"></param>
-            /// <param name="b"></param>
-            /// <param name="speed"></param>
-            /// <param name="acceleration"></param>
-            /// <returns></returns>
-            public static Vector3 MoveTowardsAccelerated(Vector3 a, Vector3 b, float speed, float acceleration)
-            {
-                float num = acceleration * Vector3.Distance(a, b);
-                float maxDistanceDelta = speed + num;
-                return Vector3.MoveTowards(a, b, maxDistanceDelta);
-            }
-
-            /// <summary>
-            /// Returns a Vector3 which moves a towards b based on speed. Accelerates based on the distance between both positions.
-            /// </summary>
-            /// <param name="a"></param>
-            /// <param name="b"></param>
-            /// <param name="speed"></param>
-            /// <param name="acceleration"></param>
-            /// <returns></returns>
-            public static Vector3 MoveTowardsAccelerated(Transform a, Transform b, float speed, float acceleration)
-            {
-                return MoveTowardsAccelerated(a.position, b.position, speed, acceleration);
-            }
-
-            /// <summary>
-            /// Equivalent to <see cref="Mathf.Clamp(float, float, float)"/> for Vector3s.
-            /// </summary>
-            /// <param name="toClamp"></param>
-            /// <param name="minX"></param>
-            /// <param name="maxX"></param>
-            /// <param name="minY"></param>
-            /// <param name="maxY"></param>
-            /// <returns></returns>
-            public static Vector2 Clamp(Vector2 toClamp, float minX, float maxX, float minY, float maxY)
-            {
-                return new Vector2(Mathf.Clamp(toClamp.x, minX, maxX), Mathf.Clamp(toClamp.y, minY, maxY));
-            }
-
-            /// <summary>
-            /// Equivalent to <see cref="Mathf.Clamp(float, float, float)"/> for Vector3s.
-            /// </summary>
-            /// <param name="toClamp"></param>
-            /// <param name="minX"></param>
-            /// <param name="maxX"></param>
-            /// <param name="minY"></param>
-            /// <param name="maxY"></param>
-            /// <param name="minZ"></param>
-            /// <param name="maxZ"></param>
-            /// <returns></returns>
-            public static Vector3 Clamp(Vector3 toClamp, float minX, float maxX, float minY, float maxY, float minZ, float maxZ)
-            {
-                return new Vector3(Mathf.Clamp(toClamp.x, minX, maxX), Mathf.Clamp(toClamp.y, minY, maxY), Mathf.Clamp(toClamp.z, minZ, maxZ));
-            }
-
-            /// <summary>
-            /// Equivalent to <see cref="Mathf.Clamp(float, float, float)"/> for Vector3s.
-            /// </summary>
-            /// <param name="toClamp"></param>
-            /// <param name="min"></param>
-            /// <param name="max"></param>
-            /// <returns></returns>
-            public static Vector3 Clamp(Vector3 toClamp, Vector3 min, Vector3 max)
-            {
-                return new Vector3(Mathf.Clamp(toClamp.x, min.x, max.x), Mathf.Clamp(toClamp.y, min.y, max.y), Mathf.Clamp(toClamp.z, min.z, max.z));
-            }
-
-            /// <summary>
-            /// Sets NaN, null or Infinite values of the given Vector to 0.
-            /// </summary>
-            /// <param name="toReform"></param>
-            /// <returns></returns>
-            public static Vector3 Reformalize(Vector3 toReform)
-            {
-                Vector3 vector = new Vector3(WWWMath.IsFormal(toReform.x) ? 0f : toReform.x, WWWMath.IsFormal(toReform.y) ? 0f : toReform.y, WWWMath.IsFormal(toReform.z) ? 0f : toReform.z);
-                return vector;
-            }
-
-            /// <summary>
-            /// Returns true if PositionToApproximate is within approximation of PositionToCompare.
-            /// </summary>
-            /// <param name="PositionToApproximate"></param>
-            /// <param name="PositionToCompare"></param>
-            /// <param name="approximation"></param>
-            /// <returns></returns>
-            public static bool IsApproximate(Vector3 PositionToApproximate, Vector3 PositionToCompare, Vector3 approximation)
-            {
-                bool flag = PositionToApproximate.x.IsApproximate(PositionToCompare.x, approximation.x);
-                bool flag2 = PositionToApproximate.y.IsApproximate(PositionToCompare.y, approximation.y);
-                bool flag3 = PositionToApproximate.z.IsApproximate(PositionToCompare.z, approximation.z);
-                return (flag && flag2) & flag3;
-            }
-
-            /// <summary>
-            /// Returns a position between a and b, based on percent (0-1).
-            /// </summary>
-            /// <param name="a"></param>
-            /// <param name="b"></param>
-            /// <param name="percent"></param>
-            /// <returns></returns>
-            public static Vector2 MiddleMan(Vector2 a, Vector2 b, float percent = 0.5f)
-            {
-                float num = Hooks.WWWMath.MiddleMan(a.x, b.x, percent);
-                float num2 = Hooks.WWWMath.MiddleMan(a.y, b.y, percent);
-                return new Vector2(a.x + num, a.y + num2);
-            }
-
-            /// <summary>
-            /// Converts Vector2 to Vector2Int,
-            /// </summary>
-            /// <param name="vectorToConvert"></param>
-            /// <returns></returns>
-            public static Vector2Int VectorIntConverter(Vector2 vectorToConvert)
-            {
-                int x = (int)vectorToConvert.x;
-                int y = (int)vectorToConvert.y;
-                return new Vector2Int(x, y);
-            }
-
-            /// <summary>
-            /// Gets closest element to center from collection.
-            /// </summary>
-            /// <typeparam name="T"></typeparam>
-            /// <param name="maxDistance"></param>
-            /// <param name="center"></param>
-            /// <param name="collection"></param>
-            /// <returns></returns>
-            [Obsolete("Use GetClosestToPoint<T>(Vector3,float,IEnumerable<T>) where T : Component instead.")]
-            public static T GetClosestToDistance<T>(float maxDistance, Vector3 center, ICollection<T> collection) where T : Component
-            {
-                T result = null;
-                float num = float.PositiveInfinity;
-                foreach (T item in collection)
-                {
-                    float num2 = Vector3.Distance(item.transform.position, center);
-                    if (!(num2 > maxDistance) && !(num2 > num))
-                    {
-                        result = item;
-                        num = num2;
-                    }
-                }
-                return result;
-            }
-
-            /// <summary>
-            /// Gets the closest element to the given point from a given collection.
-            /// </summary>
-            /// <typeparam name="T"></typeparam>
-            /// <param name="point"></param>
-            /// <param name="maxDistance"></param>
-            /// <param name="collection"></param>
-            /// <returns></returns>
-            public static T GetClosestToPoint<T>(Vector3 point, float maxDistance, IEnumerable<T> collection) where T : Component
-            {
-                T result = null;
-                float num = float.PositiveInfinity;
-                foreach (T item in collection)
-                {
-                    float num2 = Vector3.Distance(item.transform.position, point);
-                    if (!(num2 > maxDistance) && !(num2 > num))
-                    {
-                        result = item;
-                        num = num2;
-                    }
-                }
-                return result;
-            }
-
-            /// <summary>
-            /// Gets the closest gameobject to the given point within a maximum distance.
-            /// </summary>
-            /// <param name="point"></param>
-            /// <param name="maxDistance"></param>
-            /// <returns></returns>
-            public static GameObject GetClosestToPoint(Vector3 point, float maxDistance)
-            {
-                GameObject result = null;
-                float num = float.PositiveInfinity;
-                GameObject[] gameObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
-                foreach (GameObject gameObject in gameObjects)
-                {
-                    float num2 = Vector3.Distance(gameObject.transform.position, point);
-                    if (!(num2 > maxDistance) && !(num2 > num))
-                    {
-                        result = gameObject;
-                        num = num2;
-                    }
-                }
-                return result;
-            }
-
-            /// <summary>
-            /// Gets the closest gameobject to the given point within a maximum distance.
-            /// </summary>
-            /// <param name="point"></param>
-            /// <param name="maxDistance"></param>
-            /// <param name="excluded">Any gameobject in this list will be skipped.</param>
-            /// <returns></returns>
-            public static GameObject GetClosestToPoint(Vector3 point, float maxDistance, GameObject[] excluded)
-            {
-                GameObject result = null;
-                float num = float.PositiveInfinity;
-                GameObject[] gameObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
-                foreach (GameObject gameObject in gameObjects)
-                {
-                    if (Array.IndexOf(excluded, gameObject) != -1)
-                        continue;
-
-                    float num2 = Vector3.Distance(gameObject.transform.position, point);
-                    if (!(num2 > maxDistance) && !(num2 > num))
-                    {
-                        result = gameObject;
-                        num = num2;
-                    }
-                }
-                return result;
-            }
-
-            /// <summary>
-            /// Gets all GameObjects within radius based on their tags. (SLOW, uses GameObject.FindGameObjectsWithTag, avoid using in Update functions)
-            /// </summary>
-            /// <param name="center"></param>
-            /// <param name="radius"></param>
-            /// <param name="tagUse"></param>
-            /// <returns></returns>
-            public static GameObject[] GetAllWithinDistance(Vector3 center, float radius, string tagUse)
-            {
-                List<GameObject> list = new List<GameObject>(GameObject.FindGameObjectsWithTag(tagUse));
-                list.RemoveAll(g => Vector2.Distance(center, g.transform.position) < radius);
-
-                return list.ToArray();
-            }
-
-            /// <summary>
-            /// Gets all GameObjects within radius based on their tags. (SLOW, uses GameObject.FindGameObjectsWithTag, avoid using in Update functions)
-            /// </summary>
-            /// <param name="center"></param>
-            /// <param name="radius"></param>
-            /// <param name="tagsUse"></param>
-            /// <returns></returns>
-            public static GameObject[] GetAllWithinDistance(Vector3 center, float radius, string[] tagsUse)
-            {
-                List<GameObject> list = new List<GameObject>();
-                foreach (string tag in tagsUse)
-                {
-                    list.AddRange(GameObject.FindGameObjectsWithTag(tag));
-                }
-                list.RemoveAll(g => Vector2.Distance(center, g.transform.position) < radius);
-
-                return list.ToArray();
-            }
-
-            /// <summary>
-            /// Returns x + y + z / 3 if includeZValue is true, otherwise returns x + y / 2.
-            /// </summary>
-            /// <param name="vector3"></param>
-            /// <param name="includeZValue"></param>
-            /// <returns></returns>
-            public static float AverageValue(Vector3 vector3, bool includeZValue)
-            {
-                return (vector3.x + vector3.y + (includeZValue ? vector3.z : 0f)) / (float)(includeZValue ? 3 : 2);
-            }
-
-            /// <summary>
-            /// Gets all components who's .transform.position is the closest to center, based on amount requested.
-            /// </summary>
-            /// <typeparam name="T"></typeparam>
-            /// <param name="center"></param>
-            /// <param name="from"></param>
-            /// <param name="amount"></param>
-            /// <exception cref="WWWException"/>
-            /// <returns></returns>
-            public static T[] GetClosestToPosition<T>(Vector3 center, IEnumerable<T> from, int amount) where T : Component
-            {
-                int count = from.Count();
-                if (amount > count)
-                    throw new Exception("Cannot use GetClosestToPosition when collection given is lower in size than amount requested. Aborting");
-                else if (amount == count)
-                {
-                    AdvancedDebug.LogWarning("Using GetClosestToPosition with amount equal to the collection size is pointless. Returning original collection...", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
-                    return from.ToArray();
-                }
-
-                T[] toReturn = new T[amount];
-
-                foreach (T item in from)
-                {
-                    int index = toReturn.FindIndex(i => i == null || Vector3.Distance(center, i.transform.position) > Vector3.Distance(center, item.transform.position));
-                    if (index == -1)
-                        continue;
-
-                    toReturn[index] = item;
-                }
-                return toReturn;
-            }
-
-            /// <summary>
-            /// Return all components who's .transform.position is the furthest from center.
-            /// </summary>
-            /// <typeparam name="T"></typeparam>
-            /// <param name="center"></param>
-            /// <param name="from"></param>
-            /// <param name="amount"></param>
-            /// <returns></returns>
-            public static T[] GetFurthestFromPosition<T>(Vector3 center, IEnumerable<T> from, int amount) where T : Component
-            {
-                int count = from.Count();
-                if (amount > count)
-                    throw new Exception("Cannot use GetFurthestFromPosition when collection given is lower in size than amount requested. Aborting");
-                else if (amount == count)
-                {
-                    AdvancedDebug.LogWarning("Using GetFurthestFromPosition with amount equal to the collection size is pointless. Returning original collection...", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
-                    return from.ToArray();
-                }
-
-                T[] toReturn = new T[amount];
-
-                foreach (T item in from)
-                {
-                    int index = toReturn.FindIndex(i => i == null || Vector3.Distance(center, i.transform.position) < Vector3.Distance(center, item.transform.position));
-                    if (index == -1)
-                        continue;
-
-                    toReturn[index] = item;
-                }
-                return toReturn;
-            }
-
-            /// <summary>
-            /// Gets all components who's .transform.position is within center by radius.
-            /// </summary>
-            /// <typeparam name="T"></typeparam>
-            /// <param name="center"></param>
-            /// <param name="radius"></param>
-            /// <param name="used"></param>
-            /// <returns></returns>
-            public static T[] GetAllWithinDistance<T>(Vector3 center, float radius, IEnumerable<T> used) where T : Component
-            {
-                List<T> toReturn = new List<T>(used);
-                toReturn.RemoveAll(t => Vector3.Distance(center, t.transform.position) > radius);
-
-                return toReturn.ToArray();
-            }
-
-            /// <summary>
-            /// Gets all components who's .transform.position is within center by range.
-            /// </summary>
-            /// <typeparam name="T"></typeparam>
-            /// <param name="center"></param>
-            /// <param name="range"></param>
-            /// <param name="used"></param>
-            /// <returns></returns>
-            public static T[] GetAllWithinRange<T>(Vector3 center, FloatRange range, IEnumerable<T> used) where T : Component
-            {
-                List<T> toReturn = new List<T>(used);
-                toReturn.RemoveAll(
-                    t =>
-                    {
-                        float Distance = Vector3.Distance(center, t.transform.position);
-                        return Distance > range.Max || Distance < range.Min;
-                    }
-                    );
-
-                return toReturn.ToArray();
-            }
-
-        }
 
         /// <summary>
         /// Contains all methods Raycast and Physics related.
@@ -3520,20 +2815,22 @@ namespace WarWolfWorks.Utility
             /// A regex expression used to match a given string as an acceptable interface name. (Used for files, as .cs is also counted as true)
             /// </summary>
             public static readonly Regex Is_InterfaceFile_Name = new Regex("^I[A-Z].+$");
-            
+
             /// <summary>
-            /// A regex expression used to see if a given string is an acceptable interface name. (Used for full names only, .cs is counted as invalid)
+            /// A regex expression used to see if a given string is an acceptable interface name. (Used for full names only, .cs and other extensions is counted as invalid)
             /// </summary>
             public static readonly Regex Is_Interface_Name = new Regex("^I[A-Z][a-zA-Z]+$");
 
             /// <summary>
             /// Used to tag a string section to start a rainbow text.
             /// </summary>
+            [Obsolete("No longer in use. Kept for backwards compatibility.")]
             public const string RainbowTextStarter = "(Color=Rainbow)";
 
             /// <summary>
             /// Used to tag a string section to stop a rainbow text.
             /// </summary>
+            [Obsolete("No longer in use. Kept for backwards compatibility.")]
             public const string RainbowTextEnder = "(/Color=Rainbow)";
 
             /// <summary>
@@ -3555,6 +2852,33 @@ namespace WarWolfWorks.Utility
                     for (int j = i; j < num; j++)
                     {
                         array2[j] = text.Replace("klrtgiv", Colors.ColorToHex(colorsToUse[WWWMath.ClampRounded(i, 0, colorsToUse.Length - 1)])) + array[j].ToString() + str;
+                    }
+                }
+                string empty = string.Empty;
+                empty = EnumerableConcat(empty, array2.ToList());
+                return empty;
+            }
+
+            /// <summary>
+            /// Puts a string value into a rainbow color using Unity's Rich Text format.
+            /// </summary>
+            /// <param name="original"></param>
+            /// <param name="frequency"></param>
+            /// <param name="colorsToUse"></param>
+            /// <param name="offset"></param>
+            /// <returns></returns>
+            public static string ToRainbow(string original, int frequency, Color[] colorsToUse, int offset)
+            {
+                string text = "<color=#klrtgiv>";
+                string str = "</color>";
+                char[] array = original.ToCharArray();
+                string[] array2 = new string[array.Length];
+                for (int i = 0; i < array.Length; i += frequency)
+                {
+                    int num = Mathf.Clamp(i + frequency, 0, array.Length);
+                    for (int j = i; j < num; j++)
+                    {
+                        array2[j] = text.Replace("klrtgiv", Colors.ColorToHex(colorsToUse[WWWMath.ClampRounded(i + offset, 0, colorsToUse.Length - 1)])) + array[j].ToString() + str;
                     }
                 }
                 string empty = string.Empty;
@@ -3610,6 +2934,7 @@ namespace WarWolfWorks.Utility
             private static readonly Regex kanjiRegex = new Regex(@"\p{IsCJKUnifiedIdeographs}");
             private static readonly Regex hiraganaRegex = new Regex(@"\p{IsHiragana}");
             private static readonly Regex katakanaRegex = new Regex(@"\p{IsKatakana}");
+
             /// <summary>
             /// Returns true if the given string contains a Kanji character.
             /// </summary>
@@ -3659,162 +2984,919 @@ namespace WarWolfWorks.Utility
         }
 
         /// <summary>
-        /// Contains all Color utilities.
+        /// Contains all methods Position and Vector related.
         /// </summary>
-        public static class Colors
+        public static class Vectors
         {
             /// <summary>
-            /// The best color.
+            /// Returns direction which would make Position look at Destination.
             /// </summary>
-            public static readonly Color Tangelo = new Color(0.976f, 0.302f, 0f);
+            /// <param name="Position"></param>
+            /// <param name="Destination"></param>
+            /// <returns></returns>
+            public static Vector3 DirectionTowards(Vector3 Position, Vector3 Destination)
+                => (Destination - Position).normalized;
 
             /// <summary>
-            /// The orange color.
+            /// Returns the total of vectors divided by Length of array given.
             /// </summary>
-            public static readonly Color Orange = new Color(1f, .647f, 0f);
+            /// <param name="values"></param>
+            /// <returns></returns>
+            public static Vector3 Average(Vector3[] values)
+            {
+                Vector3 toReturn = Vector3.zero;
+
+                values.ForEach(v => toReturn += v);
+
+                toReturn /= values.Length;
+
+                return toReturn;
+            }
 
             /// <summary>
-            /// Returns the Vector4.MoveTowards equivalent for colors.
+            /// Returns in order: Vector3.back, Vector3.down, Vector3.forward, Vector3.left, Vector3.one, Vector3.right, Vector3.up
+            /// </summary>
+            public static Vector3[] AllDirections => new Vector3[7]
+            {
+                Vector3.back,
+                Vector3.down,
+                Vector3.forward,
+                Vector3.left,
+                Vector3.one,
+                Vector3.right,
+                Vector3.up
+            };
+            /// <summary>
+            /// Returns in order: Vector2.right, Vector2.one, Vector2.up, new Vector2(-1f, 1f), Vector2.left, -Vector2.one, Vector2.down, new Vector2(1f, -1f)
+            /// </summary>
+            public static Vector2[] AllDirections2D => new Vector2[8]
+            {
+                Vector2.right,
+                Vector2.one,
+                Vector2.up,
+                new Vector2(-1f, 1f),
+                Vector2.left,
+                -Vector2.one,
+                Vector2.down,
+                new Vector2(1f, -1f)
+            };
+
+            /// <summary>
+            /// Returns in order: Vector2.one, new Vector2(-1f, 1f), -Vector2.one, new Vector2(1f, -1f)
+            /// </summary>
+            public static Vector2[] DiagonalDirections2D => new Vector2[4]
+            {
+                Vector2.one,
+                new Vector2(-1f, 1f),
+                -Vector2.one,
+                new Vector2(1f, -1f)
+            };
+
+            /// <summary>
+            /// Returns in order: Vector2.right, Vector2.up, Vector2.left, Vector2.down
+            /// </summary>
+            public static Vector2[] MainDirections2D => new Vector2[4]
+            {
+                Vector2.right,
+                Vector2.up,
+                Vector2.left,
+                Vector2.down
+            };
+
+            /// <summary>
+            /// Returns in order: Vector2.left, Vector2.right
+            /// </summary>
+            public static Vector2[] HorizontalSides2D => new Vector2[2]
+            {
+                Vector2.left,
+                Vector2.right
+            };
+
+            /// <summary>
+            /// Returns in order: Vector2.up, Vector2.down
+            /// </summary>
+            public static Vector2[] VerticalSides2D => new Vector2[2]
+            {
+                Vector2.up,
+                Vector2.down
+            };
+
+            /// <summary>
+            /// Returns the Anchored position of a RectTransform in Vector4,
+            /// where x = anchorMin.x, y = anchorMin.y, z = anchorMax.x, w = anchorMax.y.
+            /// </summary>
+            /// <param name="rt"></param>
+            /// <returns></returns>
+            public static Vector4 GetAnchoredPosition(RectTransform rt)
+            {
+                Vector2 anchorMin = rt.anchorMin;
+                Vector2 anchorMax = rt.anchorMax;
+                return new Vector4(anchorMin.x, anchorMin.y, anchorMax.x, anchorMax.y);
+            }
+
+            /// <summary>
+            /// Sets the anchored position of an RectTransform with it's offset set to 0.
+            /// Vector4 use: x = anchorMin.x, y = anchorMin.y, z = anchorMax.x, w = anchorMax.y.
+            /// </summary>
+            /// <param name="rt"></param>
+            /// <param name="Position"></param>
+            /// <returns></returns>
+            public static void SetAnchoredUI(RectTransform rt, Vector4 Position)
+            {
+                rt.anchorMin = new Vector2(Position.x, Position.y);
+                rt.anchorMax = new Vector2(Position.z, Position.w);
+                rt.offsetMin = rt.offsetMax = Vector2.zero;
+            }
+
+            /// <summary>
+            /// Sets the anchored position of an RectTransform with it's offset set to 0.
+            /// </summary>
+            /// <param name="rt"></param>
+            /// <param name="min"></param>
+            /// <param name="max"></param>
+            /// <returns></returns>
+            public static void SetAnchoredUI(RectTransform rt, Vector2 min, Vector2 max)
+            {
+                rt.anchorMin = min;
+                rt.anchorMax = max;
+                rt.offsetMin = rt.offsetMax = Vector2.zero;
+            }
+
+            /// <summary>
+            /// Sets the anchored position of an RectTransform with it's offset set to 0.
+            /// </summary>
+            /// <param name="rt"></param>
+            /// <param name="minX"></param>
+            /// <param name="minY"></param>
+            /// <param name="maxX"></param>
+            /// <param name="maxY"></param>
+            /// <returns></returns>
+            public static void SetAnchoredUI(RectTransform rt, float minX, float minY, float maxX, float maxY)
+            {
+                rt.anchorMin = new Vector2(minX, minY);
+                rt.anchorMax = new Vector2(maxX, maxY);
+                rt.offsetMin = rt.offsetMax = Vector2.zero;
+            }
+
+            /// <summary>
+            /// Fits all RectTransforms given inside a parent horizontally, where anchorMin.y = 0 and anchorMax.y = 1.
+            /// </summary>
+            /// <param name="rts"></param>
+            public static void SetAllAnchoredUIFitHorizontal(IEnumerable<RectTransform> rts)
+            {
+                RectTransform[] transforms = rts.ToArray();
+                int size = transforms.Length;
+                for (int i = 0; i < transforms.Length; i++)
+                {
+                    float か = (i + 1);
+                    transforms[i].SetAnchoredUI((1f / size) * i, 0, (1f / size) * か, 1);
+                }
+            }
+
+            /// <summary>
+            /// Fits all RectTransforms given inside a parent horizontally, where anchorMin.y = 0 and anchorMax.y = 1, with x values being limited from 0 to maxSize01.
+            /// </summary>
+            /// <param name="rts"></param>
+            /// <param name="maxSize01"></param>
+            public static void SetAllAnchoredUIFitHorizontal(IEnumerable<RectTransform> rts, float maxSize01)
+            {
+                RectTransform[] transforms = rts.ToArray();
+                float size = maxSize01;
+                int collectionSize = transforms.Length;
+                for (int i = 0; i < transforms.Length; i++)
+                {
+                    float か = (i + 1);
+                    transforms[i].SetAnchoredUI((size / collectionSize) * i, 0, (size / collectionSize) * か, 1);
+                }
+            }
+
+            /// <summary>
+            /// Fits all RectTransforms given inside a parent horizontally, where anchorMin.x = 0 and anchorMax.x = 1.
+            /// </summary>
+            /// <param name="rts"></param>
+            public static void SetAllAnchoredUIFitVertical(IEnumerable<RectTransform> rts)
+            {
+                RectTransform[] transforms = rts.ToArray();
+                int size = transforms.Length;
+                for (int i = 0; i < transforms.Length; i++)
+                {
+                    float か = (i + 1);
+                    transforms[i].SetAnchoredUI(0, (1f / size) * i, 1, (1f / size) * か);
+                }
+            }
+
+            /// <summary>
+            /// Fits all RectTransforms given inside a parent horizontally, where anchorMin.y = 0 and anchorMax.y = 1, with x values being limited from 0 to maxSize01.
+            /// </summary>
+            /// <param name="rts"></param>
+            /// <param name="maxSize01"></param>
+            public static void SetAllAnchoredUIFitVertical(IEnumerable<RectTransform> rts, float maxSize01)
+            {
+                RectTransform[] transforms = rts.ToArray();
+                float size = maxSize01;
+                int collectionSize = transforms.Length;
+                for (int i = 0; i < transforms.Length; i++)
+                {
+                    float か = (i + 1);
+                    transforms[i].SetAnchoredUI(0, (size / collectionSize) * i, 1, (size / collectionSize) * か);
+                }
+            }
+
+            /// <summary>
+            /// Gets the aspect ratio of the game in Vector2.
+            /// </summary>
+            /// <returns></returns>
+            public static Vector2 GetAspectRatio() => GetAspectRatio(Screen.currentResolution);
+
+            /// <summary>
+            /// Gets the aspect ratio of a given Resolution.
+            /// </summary>
+            /// <param name="resolution"></param>
+            /// <returns></returns>
+            public static Vector2 GetAspectRatio(Resolution resolution)
+            {
+                float f = resolution.width / resolution.height;
+                int i = 0;
+                while (true)
+                {
+                    i++;
+                    if (Math.Round(f * i, 2) == Mathf.RoundToInt(f * i))
+                        break;
+                }
+                return new Vector2((float)Math.Round(f * i, 2), i);
+            }
+
+            /// <summary>
+            /// Rotates point around pivot based on angle (Euler).
             /// </summary>
             /// <param name="point"></param>
-            /// <param name="destination"></param>
+            /// <param name="pivot"></param>
+            /// <param name="angle"></param>
+            /// <returns></returns>
+            public static Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angle)
+            {
+                return Quaternion.Euler(angle) * (point - pivot) + pivot;
+            }
+
+            /// <summary>
+            /// Rotates point around pivot based on angle (Quaternion).
+            /// </summary>
+            /// <param name="point"></param>
+            /// <param name="pivot"></param>
+            /// <param name="angle"></param>
+            /// <returns></returns>
+            public static Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Quaternion angle)
+            {
+                return angle * (point - pivot) + pivot;
+            }
+
+            /// <summary>
+            /// Returns a Vector2 that has the highest axis value kept, and the lowest set to 0.
+            /// </summary>
+            /// <param name="evaluator"></param>
+            /// <returns></returns>
+            public static Vector2 HighestValue(Vector2 evaluator)
+            {
+                float num = evaluator.x;
+                float num2 = evaluator.y;
+                bool flag = false;
+                bool flag2 = false;
+                if (num < 0f)
+                {
+                    flag = true;
+                    num = 0f - num;
+                }
+                if (num2 < 0f)
+                {
+                    flag2 = true;
+                    num2 = 0f - num2;
+                }
+                if (num == 0f && flag2)
+                {
+                    flag = true;
+                }
+                if (num2 == 0f && flag)
+                {
+                    flag2 = true;
+                }
+                Vector2 result = new Vector2((num > num2) ? ((!flag) ? 1 : (-1)) : 0, (num2 > num) ? ((!flag2) ? 1 : (-1)) : 0);
+                return result;
+            }
+
+            /// <summary>
+            /// Converts a Vector3 to a Vector3Int.
+            /// </summary>
+            /// <param name="vector"></param>
+            /// <returns></returns>
+            public static Vector3Int ToInt(Vector3 vector)
+            {
+                return new Vector3Int(Mathf.RoundToInt(vector.x), Mathf.RoundToInt(vector.y), Mathf.RoundToInt(vector.z));
+            }
+
+            /// <summary>
+            /// Convert all values of a given Vector3 into Int32 values without turning it into a <see cref="Vector3Int"/>.
+            /// </summary>
+            /// <param name="vector"></param>
+            /// <returns></returns>
+            public static Vector3 ToIntNormal(Vector3 vector)
+            {
+                return new Vector3(Mathf.RoundToInt(vector.x), Mathf.RoundToInt(vector.y), Mathf.RoundToInt(vector.z));
+            }
+
+            /// <summary>
+            /// Convert all values of a given Vector3 into Int32 values without turning it into a <see cref="Vector3Int"/>, and ignores the corresponding values for conversion.
+            /// </summary>
+            /// <param name="vector"></param>
+            /// <param name="ignoreX"></param>
+            /// <param name="ignoreY"></param>
+            /// <param name="ignoreZ"></param>
+            /// <returns></returns>
+            public static Vector3 ToIntNormal(Vector3 vector, bool ignoreX, bool ignoreY, bool ignoreZ)
+            {
+                return new Vector3(ignoreX ? vector.x : ((float)Mathf.RoundToInt(vector.x)), ignoreY ? vector.y : ((float)Mathf.RoundToInt(vector.y)), ignoreZ ? vector.z : ((float)Mathf.RoundToInt(vector.z)));
+            }
+
+            /// <summary>
+            /// Snaps a vector to given factor. Useful to make grid-like behaviour.
+            /// </summary>
+            /// <param name="vector"></param>
+            /// <param name="factor"></param>
+            /// <returns></returns>
+            public static Vector3 Snap(Vector3 vector, float factor)
+            {
+                factor = factor.ToPositive();
+                float x = Mathf.Round(vector.x / factor) * factor;
+                float y = Mathf.Round(vector.y / factor) * factor;
+                float z = Mathf.Round(vector.z / factor) * factor;
+                return new Vector3(x, y, z);
+            }
+
+            /// <summary>
+            /// Snaps a vector to given factor, while ignoring all corresponding Ignore values.
+            /// </summary>
+            /// <param name="vector"></param>
+            /// <param name="factor"></param>
+            /// <param name="IgnoreX"></param>
+            /// <param name="IgnoreY"></param>
+            /// <param name="IgnoreZ"></param>
+            /// <returns></returns>
+            public static Vector3 Snap(Vector3 vector, float factor, bool IgnoreX, bool IgnoreY, bool IgnoreZ)
+            {
+                factor = factor.ToPositive();
+                float x = IgnoreX ? vector.x : (Mathf.Round(vector.x / factor) * factor);
+                float y = IgnoreY ? vector.y : (Mathf.Round(vector.y / factor) * factor);
+                float z = IgnoreZ ? vector.z : (Mathf.Round(vector.z / factor) * factor);
+                return new Vector3(x, y, z);
+            }
+
+            /// <summary>
+            /// Equivalent to <see cref="Quaternion.RotateTowards(Quaternion, Quaternion, float)"/>.
+            /// </summary>
+            /// <param name="from"></param>
+            /// <param name="to"></param>
             /// <param name="speed"></param>
             /// <returns></returns>
-            public static Color MoveTowards(Color point, Color destination, float speed)
+            public static Vector3 EulerRotateTowards(Vector3 from, Vector3 to, float speed)
             {
-                return Vector4.MoveTowards(point, destination, speed);
+                return Quaternion.RotateTowards(Quaternion.Euler(from), Quaternion.Euler(to), speed).eulerAngles;
             }
 
             /// <summary>
-            /// Returns the original color with it's values being put into negatives. (If a value is negative, it will be put back to positive)
+            /// Returns a Vector2 that has the lowest axis value kept, and the highest set to 0.
             /// </summary>
-            /// <param name="original"></param>
+            /// <param name="evaluator"></param>
             /// <returns></returns>
-            public static Color ToNegative(Color original)
-                => new Color(-original.r, -original.g, -original.b, -original.a);
-
-            /// <summary>
-            /// Returns the original color with it's values being put into negatives. (If a value is negative, it will be kept as is)
-            /// </summary>
-            /// <param name="original"></param>
-            /// <returns></returns>
-            public static Color ToAbsoluteNegative(Color original)
-                => new Color(WWWMath.ToNegative(original.r), WWWMath.ToNegative(original.g), WWWMath.ToNegative(original.b), WWWMath.ToNegative(original.a));
-
-            /// <summary>
-            /// Short for <see cref="Color.white"/> - original.
-            /// </summary>
-            /// <param name="original"></param>
-            /// <returns></returns>
-            public static Color Reverse(Color original) => Color.white - original;
-
-            /// <summary>
-            /// Returns in order: Color.red, Color.yellow, Color.blue.
-            /// </summary>
-            public static readonly Color[] PrimaryColors = new Color[]
+            public static Vector2 LowestValue(Vector2 evaluator)
             {
-                Color.red,
-                Color.yellow,
-                Color.blue
-            };
-
-            /// <summary>
-            /// Returns in order: Color.red, Color.yellow, Color.cyan, Color.blue, Color.magenta
-            /// </summary>
-            public static readonly Color[] MainColors = new Color[6]
-            {
-                Color.red,
-                Color.yellow,
-                Color.green,
-                Color.cyan,
-                Color.blue,
-                Color.magenta
-            };
-
-            /// <summary>
-            /// Returns all colors of the rainbow in descending order.
-            /// </summary>
-            public static readonly Color[] RainbowColors = new Color[7]
-            {
-                new Color(1f, 0f, 0f),
-                new Color(1f, 0.35f, 0f),
-                new Color(1f, 1f, 0f),
-                new Color(0f, 1f, 0f),
-                new Color(0f, 1f, 1f),
-                new Color(0f, 0.35f, 1f),
-                new Color(1f, 0f, 1f)
-            };
-
-            /// <summary>
-            /// Returns the hexcode value of a color. (Pointer of <see cref="ColorUtility.ToHtmlStringRGB(Color)"/>)
-            /// </summary>
-            /// <param name="color"></param>
-            /// <returns></returns>
-            public static string ColorToHex(Color color)
-            {
-                return ColorUtility.ToHtmlStringRGB(color);
-            }
-
-            /// <summary>
-            /// Returns the median of two given colors.
-            /// </summary>
-            /// <param name="a"></param>
-            /// <param name="b"></param>
-            /// <returns></returns>
-            public static Color MiddleMan(Color a, Color b)
-            {
-                float r = a.r + b.r / 2f;
-                float g = a.g + b.g / 2f;
-                float b2 = a.b + b.b / 2f;
-                float a2 = a.a + b.a / 2f;
-                return new Color(r, g, b2, a2);
-            }
-
-            /// <summary>
-            /// Returns the median of two given colors, where percentage 0 is a, 0.5 is the exact median, and 1 is b.
-            /// </summary>
-            /// <param name="a"></param>
-            /// <param name="b"></param>
-            /// <param name="percentage"></param>
-            /// <returns></returns>
-            public static Color MiddleMan(Color a, Color b, float percentage)
-            {
-                float num = 1f - percentage;
-                float num2 = a.r * num;
-                float num3 = a.g * num;
-                float num4 = a.b * num;
-                float num5 = a.a * num;
-                float num6 = b.r * percentage;
-                float num7 = b.g * percentage;
-                float num8 = b.b * percentage;
-                float num9 = b.a * percentage;
-                return new Color(num2 + num6, num3 + num7, num4 + num8, num5 + num9);
-            }
-
-            /// <summary>
-            /// Returns the average of all colors inside a collection.
-            /// </summary>
-            /// <param name="colors"></param>
-            /// <returns></returns>
-            public static Color MiddleMan(ICollection<Color> colors)
-            {
-                float num = 0f;
-                float num2 = 0f;
-                float num3 = 0f;
-                float num4 = 0f;
-                foreach (Color color in colors)
+                float num = evaluator.x;
+                float num2 = evaluator.y;
+                bool flag = false;
+                bool flag2 = false;
+                if (num < 0f)
                 {
-                    num += color.r;
-                    num2 += color.g;
-                    num3 += color.b;
-                    num4 += color.a;
+                    flag = true;
+                    num = 0f - num;
                 }
-                num /= (float)colors.Count;
-                num2 /= (float)colors.Count;
-                num3 /= (float)colors.Count;
-                num4 /= (float)colors.Count;
-                return new Color(num, num2, num3, num4);
+                if (num2 < 0f)
+                {
+                    flag2 = true;
+                    num2 = 0f - num2;
+                }
+                if (num == 0f && flag2)
+                {
+                    flag = true;
+                }
+                if (num2 == 0f && flag)
+                {
+                    flag2 = true;
+                }
+                Vector2 result = new Vector2((num < num2) ? ((!flag) ? 1 : (-1)) : 0, (num2 < num) ? ((!flag2) ? 1 : (-1)) : 0);
+                return result;
             }
+
+            /// <summary>
+            /// Equivalent to <see cref="Vector3.Distance(Vector3, Vector3)"/>
+            /// </summary>
+            /// <param name="a"></param>
+            /// <param name="b"></param>
+            /// <returns></returns>
+            public static float DistanceBetween(GameObject a, GameObject b)
+            {
+                float result = 0f;
+                if (a && b)
+                {
+                    result = Vector3.Distance(a.transform.position, b.transform.position);
+                }
+                return result;
+            }
+
+            /// <summary>
+            /// Equivalent to <see cref="Vector2.Distance(Vector2, Vector2)"/>
+            /// </summary>
+            /// <param name="a"></param>
+            /// <param name="b"></param>
+            /// <returns></returns>
+            public static float DistanceBetween(Vector2 a, Vector2 b)
+            {
+                return Vector2.Distance(a, b);
+            }
+
+            /// <summary>
+            /// Returns the distance of an axis between two Vector2 values.
+            /// </summary>
+            /// <param name="a"></param>
+            /// <param name="b"></param>
+            /// <param name="axisChoice"></param>
+            /// <returns></returns>
+            public static float DistanceBetween(Vector2 a, Vector2 b, Axis axisChoice)
+            {
+                float num;
+                float num2;
+                if (axisChoice == Axis.X)
+                {
+                    num = a.x;
+                    num2 = b.x;
+                }
+                else
+                {
+                    num = a.y;
+                    num2 = b.y;
+                }
+                float num3 = num - num2;
+                if (num3 < 0f)
+                {
+                    num3 = 0f - num3;
+                }
+                return num3;
+            }
+
+            /// <summary>
+            /// Returns true if position is wihin bounds. (bounds are: x and y as min, z and w as max (z is max X and w is max Y))
+            /// </summary>
+            /// <param name="position"></param>
+            /// <param name="bounds"></param>
+            /// <returns></returns>
+            public static bool IsInsideBounds(Vector2 position, Vector4 bounds)
+            {
+                float x = position.x;
+                float y = position.y;
+                return x > bounds.x && x < bounds.z && y > bounds.y && y < bounds.w;
+            }
+
+            /// <summary>
+            /// Returns true if position is within size from center. 
+            /// </summary>
+            /// <param name="center"></param>
+            /// <param name="size"></param>
+            /// <param name="position"></param>
+            /// <returns></returns>
+            [Obsolete]
+            public static bool IsInsideBoundsOld(Vector3 position, Vector3 center, Vector3 size)
+            {
+                float minX = center.x - size.x, maxX = center.x + size.x;
+                float minY = center.y - size.y, maxY = center.y + size.y;
+                float minZ = center.z - size.z, maxZ = center.z + size.z;
+
+                return position.x > minX && position.x < maxX &&
+                    position.y > minY && position.y < maxY &&
+                    position.z > minZ && position.z < maxZ;
+            }
+
+            /// <summary>
+            /// Returns true if position is within size from center. 
+            /// </summary>
+            /// <param name="position"></param>
+            /// <param name="center"></param>
+            /// <param name="size"></param>
+            /// <returns></returns>
+            public static bool IsInsideBounds(Vector3 position, Vector3 center, Vector3 size)
+            {
+                Vector3 compared = position - center;
+
+                return compared.x > -size.x && compared.x < size.x
+                    && compared.y > -size.y && compared.y < size.y
+                    && compared.z > -size.z && compared.x < size.z;
+            }
+
+            /// <summary>
+            /// Returns true if the position is within the radius of center.
+            /// </summary>
+            /// <param name="position"></param>
+            /// <param name="center"></param>
+            /// <param name="radius"></param>
+            /// <returns></returns>
+            public static bool IsInsideBounds(Vector3 position, Vector3 center, float radius)
+                => Vector3.Distance(position, center) < radius;
+
+            /// <summary>
+            /// Returns true if position is wihin min and max.
+            /// </summary>
+            /// <param name="position"></param>
+            /// <param name="min"></param>
+            /// <param name="max"></param>
+            /// <returns></returns>
+            public static bool IsInsideBounds(Vector2 position, Vector2 min, Vector2 max)
+                => IsInsideBounds(position, new Vector4(min.x, min.y, max.x, max.y));
+
+            /// <summary>
+            /// Returns a Vector2 which has it's Y value set to the given Vector3 Z value.
+            /// </summary>
+            /// <param name="vector"></param>
+            /// <returns></returns>
+            public static Vector2 Vector3D(Vector3 vector)
+            {
+                return new Vector2(vector.x, vector.z);
+            }
+
+            /// <summary>
+            /// Returns a Vector3 which moves a towards b based on speed. Accelerates based on the distance between both positions.
+            /// </summary>
+            /// <param name="a"></param>
+            /// <param name="b"></param>
+            /// <param name="speed"></param>
+            /// <param name="acceleration"></param>
+            /// <returns></returns>
+            public static Vector3 MoveTowardsAccelerated(Vector3 a, Vector3 b, float speed, float acceleration)
+            {
+                float num = acceleration * Vector3.Distance(a, b);
+                float maxDistanceDelta = speed + num;
+                return Vector3.MoveTowards(a, b, maxDistanceDelta);
+            }
+
+            /// <summary>
+            /// Returns a Vector3 which moves a towards b based on speed. Accelerates based on the distance between both positions.
+            /// </summary>
+            /// <param name="a"></param>
+            /// <param name="b"></param>
+            /// <param name="speed"></param>
+            /// <param name="acceleration"></param>
+            /// <returns></returns>
+            public static Vector3 MoveTowardsAccelerated(Transform a, Transform b, float speed, float acceleration)
+            {
+                return MoveTowardsAccelerated(a.position, b.position, speed, acceleration);
+            }
+
+            /// <summary>
+            /// Equivalent to <see cref="Mathf.Clamp(float, float, float)"/> for Vector3s.
+            /// </summary>
+            /// <param name="toClamp"></param>
+            /// <param name="minX"></param>
+            /// <param name="maxX"></param>
+            /// <param name="minY"></param>
+            /// <param name="maxY"></param>
+            /// <returns></returns>
+            public static Vector2 Clamp(Vector2 toClamp, float minX, float maxX, float minY, float maxY)
+            {
+                return new Vector2(Mathf.Clamp(toClamp.x, minX, maxX), Mathf.Clamp(toClamp.y, minY, maxY));
+            }
+
+            /// <summary>
+            /// Equivalent to <see cref="Mathf.Clamp(float, float, float)"/> for Vector3s.
+            /// </summary>
+            /// <param name="toClamp"></param>
+            /// <param name="minX"></param>
+            /// <param name="maxX"></param>
+            /// <param name="minY"></param>
+            /// <param name="maxY"></param>
+            /// <param name="minZ"></param>
+            /// <param name="maxZ"></param>
+            /// <returns></returns>
+            public static Vector3 Clamp(Vector3 toClamp, float minX, float maxX, float minY, float maxY, float minZ, float maxZ)
+            {
+                return new Vector3(Mathf.Clamp(toClamp.x, minX, maxX), Mathf.Clamp(toClamp.y, minY, maxY), Mathf.Clamp(toClamp.z, minZ, maxZ));
+            }
+
+            /// <summary>
+            /// Equivalent to <see cref="Mathf.Clamp(float, float, float)"/> for Vector3s.
+            /// </summary>
+            /// <param name="toClamp"></param>
+            /// <param name="min"></param>
+            /// <param name="max"></param>
+            /// <returns></returns>
+            public static Vector3 Clamp(Vector3 toClamp, Vector3 min, Vector3 max)
+            {
+                return new Vector3(Mathf.Clamp(toClamp.x, min.x, max.x), Mathf.Clamp(toClamp.y, min.y, max.y), Mathf.Clamp(toClamp.z, min.z, max.z));
+            }
+
+            /// <summary>
+            /// Sets NaN, null or Infinite values of the given Vector to 0.
+            /// </summary>
+            /// <param name="toReform"></param>
+            /// <returns></returns>
+            public static Vector3 Reformalize(Vector3 toReform)
+            {
+                Vector3 vector = new Vector3(WWWMath.IsFormal(toReform.x) ? 0f : toReform.x, WWWMath.IsFormal(toReform.y) ? 0f : toReform.y, WWWMath.IsFormal(toReform.z) ? 0f : toReform.z);
+                return vector;
+            }
+
+            /// <summary>
+            /// Returns true if PositionToApproximate is within approximation of PositionToCompare.
+            /// </summary>
+            /// <param name="PositionToApproximate"></param>
+            /// <param name="PositionToCompare"></param>
+            /// <param name="approximation"></param>
+            /// <returns></returns>
+            public static bool IsApproximate(Vector3 PositionToApproximate, Vector3 PositionToCompare, Vector3 approximation)
+            {
+                bool flag = PositionToApproximate.x.IsApproximate(PositionToCompare.x, approximation.x);
+                bool flag2 = PositionToApproximate.y.IsApproximate(PositionToCompare.y, approximation.y);
+                bool flag3 = PositionToApproximate.z.IsApproximate(PositionToCompare.z, approximation.z);
+                return (flag && flag2) & flag3;
+            }
+
+            /// <summary>
+            /// Returns a position between a and b, based on percent (0-1).
+            /// </summary>
+            /// <param name="a"></param>
+            /// <param name="b"></param>
+            /// <param name="percent"></param>
+            /// <returns></returns>
+            public static Vector2 MiddleMan(Vector2 a, Vector2 b, float percent = 0.5f)
+            {
+                float num = Hooks.WWWMath.MiddleMan(a.x, b.x, percent);
+                float num2 = Hooks.WWWMath.MiddleMan(a.y, b.y, percent);
+                return new Vector2(a.x + num, a.y + num2);
+            }
+
+            /// <summary>
+            /// Converts Vector2 to Vector2Int,
+            /// </summary>
+            /// <param name="vectorToConvert"></param>
+            /// <returns></returns>
+            public static Vector2Int VectorIntConverter(Vector2 vectorToConvert)
+            {
+                int x = (int)vectorToConvert.x;
+                int y = (int)vectorToConvert.y;
+                return new Vector2Int(x, y);
+            }
+
+            /// <summary>
+            /// Gets closest element to center from collection.
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="maxDistance"></param>
+            /// <param name="center"></param>
+            /// <param name="collection"></param>
+            /// <returns></returns>
+            [Obsolete("Use GetClosestToPoint<T>(Vector3,float,IEnumerable<T>) where T : Component instead.")]
+            public static T GetClosestToDistance<T>(float maxDistance, Vector3 center, ICollection<T> collection) where T : Component
+            {
+                T result = null;
+                float num = float.PositiveInfinity;
+                foreach (T item in collection)
+                {
+                    float num2 = Vector3.Distance(item.transform.position, center);
+                    if (!(num2 > maxDistance) && !(num2 > num))
+                    {
+                        result = item;
+                        num = num2;
+                    }
+                }
+                return result;
+            }
+
+            /// <summary>
+            /// Gets the closest element to the given point from a given collection.
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="point"></param>
+            /// <param name="maxDistance"></param>
+            /// <param name="collection"></param>
+            /// <returns></returns>
+            public static T GetClosestToPoint<T>(Vector3 point, float maxDistance, IEnumerable<T> collection) where T : Component
+            {
+                T result = null;
+                float num = float.PositiveInfinity;
+                foreach (T item in collection)
+                {
+                    float num2 = Vector3.Distance(item.transform.position, point);
+                    if (!(num2 > maxDistance) && !(num2 > num))
+                    {
+                        result = item;
+                        num = num2;
+                    }
+                }
+                return result;
+            }
+
+            /// <summary>
+            /// Gets the closest gameobject to the given point within a maximum distance.
+            /// </summary>
+            /// <param name="point"></param>
+            /// <param name="maxDistance"></param>
+            /// <returns></returns>
+            public static GameObject GetClosestToPoint(Vector3 point, float maxDistance)
+            {
+                GameObject result = null;
+                float num = float.PositiveInfinity;
+                GameObject[] gameObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+                foreach (GameObject gameObject in gameObjects)
+                {
+                    float num2 = Vector3.Distance(gameObject.transform.position, point);
+                    if (!(num2 > maxDistance) && !(num2 > num))
+                    {
+                        result = gameObject;
+                        num = num2;
+                    }
+                }
+                return result;
+            }
+
+            /// <summary>
+            /// Gets the closest gameobject to the given point within a maximum distance.
+            /// </summary>
+            /// <param name="point"></param>
+            /// <param name="maxDistance"></param>
+            /// <param name="excluded">Any gameobject in this list will be skipped.</param>
+            /// <returns></returns>
+            public static GameObject GetClosestToPoint(Vector3 point, float maxDistance, GameObject[] excluded)
+            {
+                GameObject result = null;
+                float num = float.PositiveInfinity;
+                GameObject[] gameObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+                foreach (GameObject gameObject in gameObjects)
+                {
+                    if (Array.IndexOf(excluded, gameObject) != -1)
+                        continue;
+
+                    float num2 = Vector3.Distance(gameObject.transform.position, point);
+                    if (!(num2 > maxDistance) && !(num2 > num))
+                    {
+                        result = gameObject;
+                        num = num2;
+                    }
+                }
+                return result;
+            }
+
+            /// <summary>
+            /// Gets all GameObjects within radius based on their tags. (SLOW, uses GameObject.FindGameObjectsWithTag, avoid using in Update functions)
+            /// </summary>
+            /// <param name="center"></param>
+            /// <param name="radius"></param>
+            /// <param name="tagUse"></param>
+            /// <returns></returns>
+            public static GameObject[] GetAllWithinDistance(Vector3 center, float radius, string tagUse)
+            {
+                List<GameObject> list = new List<GameObject>(GameObject.FindGameObjectsWithTag(tagUse));
+                list.RemoveAll(g => Vector2.Distance(center, g.transform.position) < radius);
+
+                return list.ToArray();
+            }
+
+            /// <summary>
+            /// Gets all GameObjects within radius based on their tags. (SLOW, uses GameObject.FindGameObjectsWithTag, avoid using in Update functions)
+            /// </summary>
+            /// <param name="center"></param>
+            /// <param name="radius"></param>
+            /// <param name="tagsUse"></param>
+            /// <returns></returns>
+            public static GameObject[] GetAllWithinDistance(Vector3 center, float radius, string[] tagsUse)
+            {
+                List<GameObject> list = new List<GameObject>();
+                foreach (string tag in tagsUse)
+                {
+                    list.AddRange(GameObject.FindGameObjectsWithTag(tag));
+                }
+                list.RemoveAll(g => Vector2.Distance(center, g.transform.position) < radius);
+
+                return list.ToArray();
+            }
+
+            /// <summary>
+            /// Returns x + y + z / 3 if includeZValue is true, otherwise returns x + y / 2.
+            /// </summary>
+            /// <param name="vector3"></param>
+            /// <param name="includeZValue"></param>
+            /// <returns></returns>
+            public static float AverageValue(Vector3 vector3, bool includeZValue)
+            {
+                return (vector3.x + vector3.y + (includeZValue ? vector3.z : 0f)) / (float)(includeZValue ? 3 : 2);
+            }
+
+            /// <summary>
+            /// Gets all components who's .transform.position is the closest to center, based on amount requested.
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="center"></param>
+            /// <param name="from"></param>
+            /// <param name="amount"></param>
+            /// <exception cref="WWWException"/>
+            /// <returns></returns>
+            public static T[] GetClosestToPosition<T>(Vector3 center, IEnumerable<T> from, int amount) where T : Component
+            {
+                int count = from.Count();
+                if (amount > count)
+                    throw new Exception("Cannot use GetClosestToPosition when collection given is lower in size than amount requested. Aborting");
+                else if (amount == count)
+                {
+                    AdvancedDebug.LogWarning("Using GetClosestToPosition with amount equal to the collection size is pointless. Returning original collection...", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
+                    return from.ToArray();
+                }
+
+                T[] toReturn = new T[amount];
+
+                foreach (T item in from)
+                {
+                    int index = toReturn.FindIndex(i => i == null || Vector3.Distance(center, i.transform.position) > Vector3.Distance(center, item.transform.position));
+                    if (index == -1)
+                        continue;
+
+                    toReturn[index] = item;
+                }
+                return toReturn;
+            }
+
+            /// <summary>
+            /// Return all components who's .transform.position is the furthest from center.
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="center"></param>
+            /// <param name="from"></param>
+            /// <param name="amount"></param>
+            /// <returns></returns>
+            public static T[] GetFurthestFromPosition<T>(Vector3 center, IEnumerable<T> from, int amount) where T : Component
+            {
+                int count = from.Count();
+                if (amount > count)
+                    throw new Exception("Cannot use GetFurthestFromPosition when collection given is lower in size than amount requested. Aborting");
+                else if (amount == count)
+                {
+                    AdvancedDebug.LogWarning("Using GetFurthestFromPosition with amount equal to the collection size is pointless. Returning original collection...", AdvancedDebug.DEBUG_LAYER_WWW_INDEX);
+                    return from.ToArray();
+                }
+
+                T[] toReturn = new T[amount];
+
+                foreach (T item in from)
+                {
+                    int index = toReturn.FindIndex(i => i == null || Vector3.Distance(center, i.transform.position) < Vector3.Distance(center, item.transform.position));
+                    if (index == -1)
+                        continue;
+
+                    toReturn[index] = item;
+                }
+                return toReturn;
+            }
+
+            /// <summary>
+            /// Gets all components who's .transform.position is within center by radius.
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="center"></param>
+            /// <param name="radius"></param>
+            /// <param name="used"></param>
+            /// <returns></returns>
+            public static T[] GetAllWithinDistance<T>(Vector3 center, float radius, IEnumerable<T> used) where T : Component
+            {
+                List<T> toReturn = new List<T>(used);
+                toReturn.RemoveAll(t => Vector3.Distance(center, t.transform.position) > radius);
+
+                return toReturn.ToArray();
+            }
+
+            /// <summary>
+            /// Gets all components who's .transform.position is within center by range.
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="center"></param>
+            /// <param name="range"></param>
+            /// <param name="used"></param>
+            /// <returns></returns>
+            public static T[] GetAllWithinRange<T>(Vector3 center, FloatRange range, IEnumerable<T> used) where T : Component
+            {
+                List<T> toReturn = new List<T>(used);
+                toReturn.RemoveAll(
+                    t =>
+                    {
+                        float Distance = Vector3.Distance(center, t.transform.position);
+                        return Distance > range.Max || Distance < range.Min;
+                    }
+                    );
+
+                return toReturn.ToArray();
+            }
+
         }
 
 #region Extension Methods

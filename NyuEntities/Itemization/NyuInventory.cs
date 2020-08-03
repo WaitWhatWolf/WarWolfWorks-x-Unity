@@ -125,8 +125,8 @@ namespace WarWolfWorks.NyuEntities.Itemization
                 return false;
 
             ns_Items[emptyIndex] = item;
-            OnItemAdded?.Invoke(item);
             item.ManipulateFromInventory(this, true);
+            OnItemAdded?.Invoke(item);
 
             return true;
         }
@@ -143,8 +143,8 @@ namespace WarWolfWorks.NyuEntities.Itemization
                 return false;
 
             ns_Items[toIndex] = item;
-            OnItemAdded?.Invoke(item);
             item.ManipulateFromInventory(this, true);
+            OnItemAdded?.Invoke(item);
 
             return true;
         }
@@ -166,8 +166,8 @@ namespace WarWolfWorks.NyuEntities.Itemization
 
             RemoveItem(toIndex, out replacedItem);
             ns_Items[toIndex] = item;
-            OnItemAdded?.Invoke(item);
             item.ManipulateFromInventory(this, true);
+            OnItemAdded?.Invoke(item);
 
             return true;
         }
@@ -190,8 +190,8 @@ namespace WarWolfWorks.NyuEntities.Itemization
                 return false;
 
             ns_Items[index] = null;
-            OnItemRemoved?.Invoke(toRemove, index);
             toRemove.ManipulateFromInventory(this, false);
+            OnItemRemoved?.Invoke(toRemove, index);
 
             return toRemove;
         }
@@ -209,8 +209,8 @@ namespace WarWolfWorks.NyuEntities.Itemization
                 return false;
 
             ns_Items[index] = null;
-            OnItemRemoved?.Invoke(toRemove, index);
             toRemove.ManipulateFromInventory(this, false);
+            OnItemRemoved?.Invoke(toRemove, index);
 
             return toRemove;
         }
@@ -232,8 +232,8 @@ namespace WarWolfWorks.NyuEntities.Itemization
             }
 
             ns_Items[index] = null;
-            OnItemRemoved?.Invoke(toRemove, index);
             toRemove.ManipulateFromInventory(this, false);
+            OnItemRemoved?.Invoke(toRemove, index);
             item = toRemove;
             return true;
         }

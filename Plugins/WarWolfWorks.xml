@@ -3625,6 +3625,14 @@
             Invoked when the entity is enabled.
             </summary>
         </member>
+        <member name="M:WarWolfWorks.NyuEntities.Nyu.InternalManageNyuComponent(WarWolfWorks.Interfaces.NyuEntities.INyuComponent,System.Boolean,System.Boolean)">
+            <summary>
+            Adds a component to all of it's fitting lists.
+            </summary>
+            <param name="nyuComponent"></param>
+            <param name="addToNormalList">If false, it will only add this component to it's update methods, not the actual component list.</param>
+            <param name="addToEnableDisable">If false, it will ignore the <see cref="F:WarWolfWorks.NyuEntities.Nyu.ns_ComponentsEnable"/> and <see cref="F:WarWolfWorks.NyuEntities.Nyu.ns_ComponentsDisable"/> additions.</param>
+        </member>
         <member name="M:WarWolfWorks.NyuEntities.Nyu.AddNyuComponent``1">
             <summary>
             Adds a new entity component.
@@ -5212,6 +5220,24 @@
             <param name="yharon"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.NyuEntities.YharonSystem.NyuYharon.GetYharonCount">
+            <summary>
+            Amount of yharons currently active in this <see cref="T:WarWolfWorks.NyuEntities.YharonSystem.NyuYharon"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.YharonSystem.NyuYharon.GetTaCx1Count">
+            <summary>
+            Amount of TaCx1 currently active in this <see cref="T:WarWolfWorks.NyuEntities.YharonSystem.NyuYharon"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.YharonSystem.NyuYharon.GetYharons">
+            <summary>
+            Returns an array of all yharons currently active in this <see cref="T:WarWolfWorks.NyuEntities.YharonSystem.NyuYharon"/>.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.NyuEntities.YharonSystem.NyuYharon.AddYharon(WarWolfWorks.NyuEntities.YharonSystem.Yharon)">
             <summary>
             Adds a <see cref="T:WarWolfWorks.NyuEntities.YharonSystem.Yharon"/> to the list of affecting Yharons.
@@ -5219,11 +5245,23 @@
             </summary>
             <param name="yharon"></param>
         </member>
+        <member name="M:WarWolfWorks.NyuEntities.YharonSystem.NyuYharon.AddYharons(WarWolfWorks.NyuEntities.YharonSystem.Yharon[])">
+            <summary>
+            Adds a list of yharons.
+            </summary>
+            <param name="yharons"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.NyuEntities.YharonSystem.NyuYharon.RemoveYharon(WarWolfWorks.NyuEntities.YharonSystem.Yharon)">
             <summary>
             Removes a given yharon.
             </summary>
             <param name="yharon"></param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.YharonSystem.NyuYharon.RemoveYharons(WarWolfWorks.NyuEntities.YharonSystem.Yharon[])">
+            <summary>
+            Removes a list of yharons.
+            </summary>
         </member>
         <member name="T:WarWolfWorks.NyuEntities.YharonSystem.TaCx1">
             <summary>
@@ -8106,10 +8144,134 @@
             <param name="convertToViewPort"></param>
             <returns></returns>
         </member>
+        <member name="T:WarWolfWorks.Utility.Hooks.Colors">
+            <summary>
+            Contains all Color utilities.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Colors.Tangelo">
+            <summary>
+            The best color.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Colors.Orange">
+            <summary>
+            The orange color.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Colors.Pink">
+            <summary>
+            The pink color.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Colors.Crimson">
+            <summary>
+            The crimson color.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Colors.MidnightBlue">
+            <summary>
+            The midnight blue color.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Colors.MoveTowards(UnityEngine.Color,UnityEngine.Color,System.Single)">
+            <summary>
+            Returns the Vector4.MoveTowards equivalent for colors.
+            </summary>
+            <param name="point"></param>
+            <param name="destination"></param>
+            <param name="speed"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Colors.ToNegative(UnityEngine.Color)">
+            <summary>
+            Returns the original color with it's values being put into negatives. (If a value is negative, it will be put back to positive)
+            </summary>
+            <param name="original"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Colors.ToAbsoluteNegative(UnityEngine.Color)">
+            <summary>
+            Returns the original color with it's values being put into negatives. (If a value is negative, it will be kept as is)
+            </summary>
+            <param name="original"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Colors.Reverse(UnityEngine.Color)">
+            <summary>
+            Short for <see cref="P:UnityEngine.Color.white"/> - original.
+            </summary>
+            <param name="original"></param>
+            <returns></returns>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Colors.PrimaryColors">
+            <summary>
+            Returns in order: Color.red, Color.yellow, Color.blue.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Colors.MainColors">
+            <summary>
+            Returns in order: Color.red, Color.yellow, Color.cyan, Color.blue, Color.magenta
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Colors.RainbowColors">
+            <summary>
+            Returns all colors of the rainbow in descending order.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Colors.ColorToHex(UnityEngine.Color)">
+            <summary>
+            Returns the hexcode value of a color. (Pointer of <see cref="M:UnityEngine.ColorUtility.ToHtmlStringRGB(UnityEngine.Color)"/>)
+            </summary>
+            <param name="color"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Colors.MiddleMan(UnityEngine.Color,UnityEngine.Color)">
+            <summary>
+            Returns the median of two given colors.
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Colors.MiddleMan(UnityEngine.Color,UnityEngine.Color,System.Single)">
+            <summary>
+            Returns the median of two given colors, where percentage 0 is a, 0.5 is the exact median, and 1 is b.
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <param name="percentage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Colors.MiddleMan(System.Collections.Generic.ICollection{UnityEngine.Color})">
+            <summary>
+            Returns the average of all colors inside a collection.
+            </summary>
+            <param name="colors"></param>
+            <returns></returns>
+        </member>
         <member name="T:WarWolfWorks.Utility.Hooks.Enumeration">
             <summary>
             Contains some utility methods concerting enumeration and generic collections.
             </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.GetItemCount``1(System.Collections.Generic.IEnumerable{``0},``0)">
+            <summary>
+            Returns the amount of times an item is present in a collection.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="collection"></param>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.GetMatchCount``1(System.Collections.Generic.IEnumerable{``0},System.Predicate{``0})">
+            <summary>
+            Returns the amount of times a condition matched.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="collection"></param>
+            <param name="match"></param>
+            <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Enumeration.GetEmptyIndex``1(System.Collections.Generic.IList{``0})">
             <summary>
@@ -8231,6 +8393,550 @@
             Returns an array of instantiated objects. (Supports <see cref="T:WarWolfWorks.Interfaces.IInstantiatable"/> interface)
             </summary>
             <param name="objects"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WarWolfWorks.Utility.Hooks.RPhysics">
+            <summary>
+            Contains all methods Raycast and Physics related.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSingle(UnityEngine.Vector2,UnityEngine.Vector2,System.Single,System.String[])">
+            <summary>
+            Casts a single 2D raycast.
+            </summary>
+            <param name="startingPos"></param>
+            <param name="direction"></param>
+            <param name="distance"></param>
+            <param name="layerMasks"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSingle(UnityEngine.Vector3,UnityEngine.Vector3,System.Single,System.String[])">
+            <summary>
+            Casts a single raycast.
+            </summary>
+            <param name="startingPos"></param>
+            <param name="direction"></param>
+            <param name="distance"></param>
+            <param name="layerMasks"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSides(UnityEngine.Vector2,UnityEngine.Vector2[],System.Single,System.String[])">
+            <summary>
+            Casts multiple 2D raycasts.
+            </summary>
+            <param name="startingPos"></param>
+            <param name="directions"></param>
+            <param name="distance"></param>
+            <param name="layerMasks"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSides(UnityEngine.Vector3,UnityEngine.Vector3[],System.Single,System.String[])">
+            <summary>
+            Casts multiple raycasts.
+            </summary>
+            <param name="startingPos"></param>
+            <param name="directions"></param>
+            <param name="distance"></param>
+            <param name="layerMasks"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSides(UnityEngine.Vector2,UnityEngine.Vector2[],System.Single,System.String[],System.Int32@)">
+            <summary>
+            Casts multiple 2D raycasts; If multiple raycasts hit, closestIndex will return the index of the closest hit to the startingPos.
+            </summary>
+            <param name="startingPos"></param>
+            <param name="directions"></param>
+            <param name="distance"></param>
+            <param name="layerMasks"></param>
+            <param name="closestIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSides(UnityEngine.Transform,UnityEngine.Vector2[],System.Single,System.String[],System.Boolean)">
+            <summary>
+            Casts multiple 2D raycasts where a transform's position is the center.
+            </summary>
+            <param name="startingPos"></param>
+            <param name="directions"></param>
+            <param name="distance"></param>
+            <param name="layerMasks"></param>
+            <param name="local"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSides(UnityEngine.Transform,UnityEngine.Vector2[],System.Single,System.String[],System.Boolean,System.Int32@)">
+            <summary>
+            Casts multiple 2D raycasts where a transform's position is the center; If multiple raycasts hit, closestIndex will return the index of the closest hit to the startingPos.
+            </summary>
+            <param name="startingPos"></param>
+            <param name="directions"></param>
+            <param name="distance"></param>
+            <param name="layerMasks"></param>
+            <param name="local"></param>
+            <param name="closestIndex"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WarWolfWorks.Utility.Hooks.WWWMath">
+            <summary>
+            Contains all methods Math related.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.DeminishingReturnHalfCurve(System.Single,System.Single)">
+            <summary>
+            Returns: value / maxValue * (maxValue - value)
+            </summary>
+            <param name="value"></param>
+            <param name="maxValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampAngle(System.Single,System.Single,System.Single)">
+            <summary>
+            Attempts to clamp a euler rotation value.
+            </summary>
+            <param name="angle"></param>
+            <param name="from"></param>
+            <param name="to"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampAngle(System.Single,WarWolfWorks.Utility.FloatRange)">
+            <summary>
+            Attempts to clamp a euler rotation value.
+            </summary>
+            <param name="angle"></param>
+            <param name="range"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.Truncate(System.Single,System.Int32)">
+            <summary>
+            Cuts a float to digits length.
+            </summary>
+            <param name="value"></param>
+            <param name="digits"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.RoundValue(System.Single,System.Boolean)">
+            <summary>
+            Rounds a float value.
+            </summary>
+            <param name="value"></param>
+            <param name="favorLower"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ToPositive(System.Int32)">
+            <summary>
+            If value given is negative, it will be turned into it's positive value.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ToNegative(System.Int32)">
+            <summary>
+            If value given is positive, it will be turned into it's negative value.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ToPositive(System.Single)">
+            <summary>
+            If value given is negative, it will be turned into it's positive value.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ToNegative(System.Single)">
+            <summary>
+            If value given is positive, it will be turned into it's negative value.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ToPositive(System.Int64)">
+            <summary>
+            If value given is negative, it will be turned into it's positive value.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ToNegative(System.Int64)">
+            <summary>
+            If value given is positive, it will be turned into it's negative value.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.Clamp(System.Single,WarWolfWorks.Utility.FloatRange)">
+            <summary>
+            Clamps the given value between range.Min and range.Max.
+            </summary>
+            <param name="value"></param>
+            <param name="range"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.Clamp(System.Int32,WarWolfWorks.Utility.IntRange)">
+            <summary>
+            Clamps the given value between range.Min and range.Max.
+            </summary>
+            <param name="value"></param>
+            <param name="range"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampRounded(System.Single,System.Single,System.Single)">
+            <summary>
+            Clamps a value between min and max, and if the value goes outside the boundries, it goes back to it's opposite boundry and starts counting from it.
+            </summary>
+            <param name="value"></param>
+            <param name="min"></param>
+            <param name="max"></param>
+            <exception cref="T:WarWolfWorks.Security.WWWException"/>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampRounded(System.Single,WarWolfWorks.Utility.FloatRange)">
+            <summary>
+            Clamps a value between min and max, and if the value goes outside the boundries, it goes back to it's opposite boundry and starts counting from it.
+            </summary>
+            <param name="value"></param>
+            <param name="range"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampRounded(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Clamps a value between min and max, and if the value goes outside the boundries, it goes back to it's opposite boundry and starts counting from it.
+            </summary>
+            <param name="value"></param>
+            <param name="min"></param>
+            <param name="max"></param>
+            <exception cref="T:WarWolfWorks.Security.WWWException"/>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampRounded(System.Int32,WarWolfWorks.Utility.IntRange)">
+            <summary>
+            Clamps a value between min and max, and if the value goes outside the boundries, it goes back to it's opposite boundry and starts counting from it.
+            </summary>
+            <param name="value"></param>
+            <param name="range"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampPingPong(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Clamps a value between min and max; When a value reaches min or max, it will start counting towards the opposite direction in a "ping-pong" style.
+            </summary>
+            <param name="value"></param>
+            <param name="min"></param>
+            <param name="max"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampPingPong(System.Int32,WarWolfWorks.Utility.IntRange)">
+            <summary>
+            Clamps a value between min and max; When a value reaches min or max, it will start counting towards the opposite direction in a "ping-pong" style.
+            </summary>
+            <param name="value"></param>
+            <param name="range"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampPingPong(System.Single,System.Single,System.Single)">
+            <summary>
+            Clamps a value between min and max; When a value reaches min or max, it will start counting towards the opposite direction in a "ping-pong" style.
+            </summary>
+            <param name="value"></param>
+            <param name="min"></param>
+            <param name="max"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampPingPong(System.Single,WarWolfWorks.Utility.FloatRange)">
+            <summary>
+            Clamps a value between min and max; When a value reaches min or max, it will start counting towards the opposite direction in a "ping-pong" style.
+            </summary>
+            <param name="value"></param>
+            <param name="range"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.MoveTowards(System.Single,System.Single,System.Single)">
+            <summary>
+            Moves a towards b by speed.
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <param name="speed"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.IsFormal(System.Single)">
+            <summary>
+            Returns true if a float is NaN, Infinity or Negative Infinity.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.IsApproximate(System.Single,System.Single,System.Single)">
+            <summary>
+            Returns true if numberToApproximate is not lower than or higer than numberToCompare using approximation as range.
+            </summary>
+            <param name="NumberToApproximate"></param>
+            <param name="NumberToCompare"></param>
+            <param name="approximation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.MiddleMan(System.Single,System.Single,System.Single)">
+            <summary>
+            
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <param name="percent"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.IsWithinRange(System.Single,WarWolfWorks.Utility.FloatRange)">
+            <summary>
+            Returns true if the value given is not higher than range.Max nor lower than range.Min.
+            </summary>
+            <param name="value"></param>
+            <param name="range"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.IsWithinRange(System.Int32,WarWolfWorks.Utility.IntRange)">
+            <summary>
+            Returns true if the value given is not higher than range.Max nor lower than range.Min.
+            </summary>
+            <param name="value"></param>
+            <param name="range"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WarWolfWorks.Utility.Hooks.Disappointment">
+            <summary>
+            Don't.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Disappointment.MeterToBaldEaglePerObeseChild(System.Single)">
+            <summary>
+            Returns a metric value into Bald eagle per obese child.
+            </summary>
+            <param name="meters"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Disappointment.Freeze">
+            <summary>
+            Freezes the program using this library.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Disappointment.CauseStackOverflow(System.Boolean)">
+            <summary>
+            Causes a stack overflow.
+            </summary>
+            <param name="cause">Only causes a stack overflow if true.</param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Disappointment.UnityGameStressTest(System.Single,UnityEngine.MonoBehaviour)">
+            <summary>
+            Overloads the first active Unity scene with random objects, 
+            changes the position of original ones, might delete their components, or them.
+            If extremity is over 50, it additionally causes a stack overflow per GameObject created...
+            Because science!
+            </summary>
+            <param name="extremity">How "Intense" should the stress test be. 0 is nothing, 100 is massacre.</param>
+            <param name="handler"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Disappointment.GetRandomComponent">
+            <summary>
+            Gets a random Unity component type.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:WarWolfWorks.Utility.Hooks.Rendering">
+            <summary>
+            Contains all methods related to rendering.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.MaskGetter(System.Int32[])">
+            <summary>
+            Returns LayerMask int value of all layers. Useful for Raycasting.
+            </summary>
+            <param name="layers"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.LayerNameToIndex(System.String)">
+            <summary>
+            Converts given maskname into it's layer number.
+            </summary>
+            <param name="layer"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.MaskToLayer(System.Int32)">
+            <summary> 
+            Converts given bitmask to it's layer number. 
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.IsVisibleFrom(UnityEngine.Renderer,UnityEngine.Camera)">
+            <summary>
+            Returns true if a renderer is visible from a Camera's view.
+            </summary>
+            <param name="renderer"></param>
+            <param name="camera"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.GetVisibleCorners(UnityEngine.RectTransform)">
+            <summary>
+            Returns how many anchored positions are between 0 and 1.
+            </summary>
+            <returns></returns>
+            <param name="rect"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.IsFullyVisible(UnityEngine.RectTransform)">
+            <summary>
+            Returns true if the given <see cref="T:UnityEngine.RectTransform"/> is fully visible in anchored position bounds.
+            </summary>
+            <returns></returns>
+            <param name="rectTransform"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.IsVisible(UnityEngine.RectTransform)">
+            <summary>
+            Determines if this <see cref="T:UnityEngine.RectTransform"/> is visible to the camera.
+            </summary>
+            <returns></returns>
+            <param name="rectTransform"></param>
+            <param name="camera"></param>
+        </member>
+        <member name="T:WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType">
+            <summary>
+            Determines the shaking type of <see cref="M:WarWolfWorks.Utility.Hooks.Rendering.Shake(UnityEngine.MonoBehaviour,UnityEngine.Vector3,UnityEngine.Vector3,System.Single,System.Single,System.Single,WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType)"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType.None">
+            <summary>
+            Doesn't shake.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType.zAxis">
+            <summary>
+            Shakes the Z rotation of a camera. (2D)
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType.FullRandom">
+            <summary>
+            Shakes every axis. (3D)
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.Shake(UnityEngine.MonoBehaviour,UnityEngine.Vector3,UnityEngine.Vector3,System.Single,System.Single,System.Single,WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType)">
+            <summary>
+            Shakes a given Vector and Quaternion value. Make sure to pass a property for both values or this method will not work.
+            </summary>
+            <param name="host"></param>
+            <param name="shake"></param>
+            <param name="eulerRotation"></param>
+            <param name="intensity"></param>
+            <param name="duration"></param>
+            <param name="speed"></param>
+            <param name="rotationShake"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.LayerIdsToNames(System.Int32[])">
+            <summary>
+            Retuns an array of layer names based on ids given.
+            </summary>
+            <param name="ids"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WarWolfWorks.Utility.Hooks.Text">
+            <summary>
+            Contains all Regex, string and StringBuilder utilities.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Text.Is_InterfaceFile_Name">
+            <summary>
+            A regex expression used to match a given string as an acceptable interface name. (Used for files, as .cs is also counted as true)
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Text.Is_Interface_Name">
+            <summary>
+            A regex expression used to see if a given string is an acceptable interface name. (Used for full names only, .cs and other extensions is counted as invalid)
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Text.RainbowTextStarter">
+            <summary>
+            Used to tag a string section to start a rainbow text.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.Hooks.Text.RainbowTextEnder">
+            <summary>
+            Used to tag a string section to stop a rainbow text.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Text.ToRainbow(System.String,System.Int32,UnityEngine.Color[])">
+            <summary>
+            Puts a string value into a rainbow color using Unity's Rich Text format.
+            </summary>
+            <param name="original"></param>
+            <param name="frequency"></param>
+            <param name="colorsToUse"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Text.ToRainbow(System.String,System.Int32,UnityEngine.Color[],System.Int32)">
+            <summary>
+            Puts a string value into a rainbow color using Unity's Rich Text format.
+            </summary>
+            <param name="original"></param>
+            <param name="frequency"></param>
+            <param name="colorsToUse"></param>
+            <param name="offset"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Text.StringWrapper(System.String,System.ValueTuple{System.Char,System.Char})">
+            <summary>
+            Wraps original between wrappers.Item1 and wrappers.Item2
+            </summary>
+            <param name="original"></param>
+            <param name="wrappers"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Text.StringWrapper(System.String,System.Char,System.Char)">
+            <summary>
+            Wraps original between startWrapper and endWrapper.
+            </summary>
+            <param name="original"></param>
+            <param name="startWrapper"></param>
+            <param name="endWrapper"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Text.Cutout(System.String,System.String,System.String)">
+            <summary>
+            Cuts out a string between from and to.
+            </summary>
+            <param name="original"></param>
+            <param name="from"></param>
+            <param name="to"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Text.IsKanji(System.String)">
+            <summary>
+            Returns true if the given string contains a Kanji character.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Text.IsHiragana(System.String)">
+            <summary>
+            Returns true if the given string contains a Hiragana character.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Text.IsKatakana(System.String)">
+            <summary>
+            Returns true if the given string contains a Katakana character.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Text.IsJapanese(System.String)">
+            <summary>
+            Returns true if the given string contains either a Kanji, Hiragana or Katakana character.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Text.Cutout(System.String,System.Char,System.Char)">
+            <summary>
+            Cuts out a string between from and to in char values.
+            </summary>
+            <param name="original"></param>
+            <param name="from"></param>
+            <param name="to"></param>
             <returns></returns>
         </member>
         <member name="T:WarWolfWorks.Utility.Hooks.Vectors">
@@ -8706,631 +9412,6 @@
             <param name="center"></param>
             <param name="range"></param>
             <param name="used"></param>
-            <returns></returns>
-        </member>
-        <member name="T:WarWolfWorks.Utility.Hooks.RPhysics">
-            <summary>
-            Contains all methods Raycast and Physics related.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSingle(UnityEngine.Vector2,UnityEngine.Vector2,System.Single,System.String[])">
-            <summary>
-            Casts a single 2D raycast.
-            </summary>
-            <param name="startingPos"></param>
-            <param name="direction"></param>
-            <param name="distance"></param>
-            <param name="layerMasks"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSingle(UnityEngine.Vector3,UnityEngine.Vector3,System.Single,System.String[])">
-            <summary>
-            Casts a single raycast.
-            </summary>
-            <param name="startingPos"></param>
-            <param name="direction"></param>
-            <param name="distance"></param>
-            <param name="layerMasks"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSides(UnityEngine.Vector2,UnityEngine.Vector2[],System.Single,System.String[])">
-            <summary>
-            Casts multiple 2D raycasts.
-            </summary>
-            <param name="startingPos"></param>
-            <param name="directions"></param>
-            <param name="distance"></param>
-            <param name="layerMasks"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSides(UnityEngine.Vector3,UnityEngine.Vector3[],System.Single,System.String[])">
-            <summary>
-            Casts multiple raycasts.
-            </summary>
-            <param name="startingPos"></param>
-            <param name="directions"></param>
-            <param name="distance"></param>
-            <param name="layerMasks"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSides(UnityEngine.Vector2,UnityEngine.Vector2[],System.Single,System.String[],System.Int32@)">
-            <summary>
-            Casts multiple 2D raycasts; If multiple raycasts hit, closestIndex will return the index of the closest hit to the startingPos.
-            </summary>
-            <param name="startingPos"></param>
-            <param name="directions"></param>
-            <param name="distance"></param>
-            <param name="layerMasks"></param>
-            <param name="closestIndex"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSides(UnityEngine.Transform,UnityEngine.Vector2[],System.Single,System.String[],System.Boolean)">
-            <summary>
-            Casts multiple 2D raycasts where a transform's position is the center.
-            </summary>
-            <param name="startingPos"></param>
-            <param name="directions"></param>
-            <param name="distance"></param>
-            <param name="layerMasks"></param>
-            <param name="local"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.RPhysics.RayCastSides(UnityEngine.Transform,UnityEngine.Vector2[],System.Single,System.String[],System.Boolean,System.Int32@)">
-            <summary>
-            Casts multiple 2D raycasts where a transform's position is the center; If multiple raycasts hit, closestIndex will return the index of the closest hit to the startingPos.
-            </summary>
-            <param name="startingPos"></param>
-            <param name="directions"></param>
-            <param name="distance"></param>
-            <param name="layerMasks"></param>
-            <param name="local"></param>
-            <param name="closestIndex"></param>
-            <returns></returns>
-        </member>
-        <member name="T:WarWolfWorks.Utility.Hooks.WWWMath">
-            <summary>
-            Contains all methods Math related.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.DeminishingReturnHalfCurve(System.Single,System.Single)">
-            <summary>
-            Returns: value / maxValue * (maxValue - value)
-            </summary>
-            <param name="value"></param>
-            <param name="maxValue"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampAngle(System.Single,System.Single,System.Single)">
-            <summary>
-            Attempts to clamp a euler rotation value.
-            </summary>
-            <param name="angle"></param>
-            <param name="from"></param>
-            <param name="to"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampAngle(System.Single,WarWolfWorks.Utility.FloatRange)">
-            <summary>
-            Attempts to clamp a euler rotation value.
-            </summary>
-            <param name="angle"></param>
-            <param name="range"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.Truncate(System.Single,System.Int32)">
-            <summary>
-            Cuts a float to digits length.
-            </summary>
-            <param name="value"></param>
-            <param name="digits"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.RoundValue(System.Single,System.Boolean)">
-            <summary>
-            Rounds a float value.
-            </summary>
-            <param name="value"></param>
-            <param name="favorLower"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ToPositive(System.Int32)">
-            <summary>
-            If value given is negative, it will be turned into it's positive value.
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ToNegative(System.Int32)">
-            <summary>
-            If value given is positive, it will be turned into it's negative value.
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ToPositive(System.Single)">
-            <summary>
-            If value given is negative, it will be turned into it's positive value.
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ToNegative(System.Single)">
-            <summary>
-            If value given is positive, it will be turned into it's negative value.
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ToPositive(System.Int64)">
-            <summary>
-            If value given is negative, it will be turned into it's positive value.
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ToNegative(System.Int64)">
-            <summary>
-            If value given is positive, it will be turned into it's negative value.
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.Clamp(System.Single,WarWolfWorks.Utility.FloatRange)">
-            <summary>
-            Clamps the given value between range.Min and range.Max.
-            </summary>
-            <param name="value"></param>
-            <param name="range"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.Clamp(System.Int32,WarWolfWorks.Utility.IntRange)">
-            <summary>
-            Clamps the given value between range.Min and range.Max.
-            </summary>
-            <param name="value"></param>
-            <param name="range"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampRounded(System.Single,System.Single,System.Single)">
-            <summary>
-            Clamps a value between min and max, and if the value goes outside the boundries, it goes back to it's opposite boundry and starts counting from it.
-            </summary>
-            <param name="value"></param>
-            <param name="min"></param>
-            <param name="max"></param>
-            <exception cref="T:WarWolfWorks.Security.WWWException"/>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampRounded(System.Single,WarWolfWorks.Utility.FloatRange)">
-            <summary>
-            Clamps a value between min and max, and if the value goes outside the boundries, it goes back to it's opposite boundry and starts counting from it.
-            </summary>
-            <param name="value"></param>
-            <param name="range"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampRounded(System.Int32,System.Int32,System.Int32)">
-            <summary>
-            Clamps a value between min and max, and if the value goes outside the boundries, it goes back to it's opposite boundry and starts counting from it.
-            </summary>
-            <param name="value"></param>
-            <param name="min"></param>
-            <param name="max"></param>
-            <exception cref="T:WarWolfWorks.Security.WWWException"/>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampRounded(System.Int32,WarWolfWorks.Utility.IntRange)">
-            <summary>
-            Clamps a value between min and max, and if the value goes outside the boundries, it goes back to it's opposite boundry and starts counting from it.
-            </summary>
-            <param name="value"></param>
-            <param name="range"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampPingPong(System.Int32,System.Int32,System.Int32)">
-            <summary>
-            Clamps a value between min and max; When a value reaches min or max, it will start counting towards the opposite direction in a "ping-pong" style.
-            </summary>
-            <param name="value"></param>
-            <param name="min"></param>
-            <param name="max"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampPingPong(System.Int32,WarWolfWorks.Utility.IntRange)">
-            <summary>
-            Clamps a value between min and max; When a value reaches min or max, it will start counting towards the opposite direction in a "ping-pong" style.
-            </summary>
-            <param name="value"></param>
-            <param name="range"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampPingPong(System.Single,System.Single,System.Single)">
-            <summary>
-            Clamps a value between min and max; When a value reaches min or max, it will start counting towards the opposite direction in a "ping-pong" style.
-            </summary>
-            <param name="value"></param>
-            <param name="min"></param>
-            <param name="max"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.ClampPingPong(System.Single,WarWolfWorks.Utility.FloatRange)">
-            <summary>
-            Clamps a value between min and max; When a value reaches min or max, it will start counting towards the opposite direction in a "ping-pong" style.
-            </summary>
-            <param name="value"></param>
-            <param name="range"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.MoveTowards(System.Single,System.Single,System.Single)">
-            <summary>
-            Moves a towards b by speed.
-            </summary>
-            <param name="a"></param>
-            <param name="b"></param>
-            <param name="speed"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.IsFormal(System.Single)">
-            <summary>
-            Returns true if a float is NaN, Infinity or Negative Infinity.
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.IsApproximate(System.Single,System.Single,System.Single)">
-            <summary>
-            Returns true if numberToApproximate is not lower than or higer than numberToCompare using approximation as range.
-            </summary>
-            <param name="NumberToApproximate"></param>
-            <param name="NumberToCompare"></param>
-            <param name="approximation"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.MiddleMan(System.Single,System.Single,System.Single)">
-            <summary>
-            
-            </summary>
-            <param name="a"></param>
-            <param name="b"></param>
-            <param name="percent"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.IsWithinRange(System.Single,WarWolfWorks.Utility.FloatRange)">
-            <summary>
-            Returns true if the value given is not higher than range.Max nor lower than range.Min.
-            </summary>
-            <param name="value"></param>
-            <param name="range"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.WWWMath.IsWithinRange(System.Int32,WarWolfWorks.Utility.IntRange)">
-            <summary>
-            Returns true if the value given is not higher than range.Max nor lower than range.Min.
-            </summary>
-            <param name="value"></param>
-            <param name="range"></param>
-            <returns></returns>
-        </member>
-        <member name="T:WarWolfWorks.Utility.Hooks.Disappointment">
-            <summary>
-            Don't.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Disappointment.MeterToBaldEaglePerObeseChild(System.Single)">
-            <summary>
-            Returns a metric value into Bald eagle per obese child.
-            </summary>
-            <param name="meters"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Disappointment.Freeze">
-            <summary>
-            Freezes the program using this library.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Disappointment.CauseStackOverflow(System.Boolean)">
-            <summary>
-            Causes a stack overflow.
-            </summary>
-            <param name="cause">Only causes a stack overflow if true.</param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Disappointment.UnityGameStressTest(System.Single,UnityEngine.MonoBehaviour)">
-            <summary>
-            Overloads the first active Unity scene with random objects, 
-            changes the position of original ones, might delete their components, or them.
-            If extremity is over 50, it additionally causes a stack overflow per GameObject created...
-            Because science!
-            </summary>
-            <param name="extremity">How "Intense" should the stress test be. 0 is nothing, 100 is massacre.</param>
-            <param name="handler"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Disappointment.GetRandomComponent">
-            <summary>
-            Gets a random Unity component type.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:WarWolfWorks.Utility.Hooks.Rendering">
-            <summary>
-            Contains all methods related to rendering.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.MaskGetter(System.Int32[])">
-            <summary>
-            Returns LayerMask int value of all layers. Useful for Raycasting.
-            </summary>
-            <param name="layers"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.LayerNameToIndex(System.String)">
-            <summary>
-            Converts given maskname into it's layer number.
-            </summary>
-            <param name="layer"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.MaskToLayer(System.Int32)">
-            <summary> 
-            Converts given bitmask to it's layer number. 
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.IsVisibleFrom(UnityEngine.Renderer,UnityEngine.Camera)">
-            <summary>
-            Returns true if a renderer is visible from a Camera's view.
-            </summary>
-            <param name="renderer"></param>
-            <param name="camera"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.GetVisibleCorners(UnityEngine.RectTransform)">
-            <summary>
-            Returns how many anchored positions are between 0 and 1.
-            </summary>
-            <returns></returns>
-            <param name="rect"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.IsFullyVisible(UnityEngine.RectTransform)">
-            <summary>
-            Returns true if the given <see cref="T:UnityEngine.RectTransform"/> is fully visible in anchored position bounds.
-            </summary>
-            <returns></returns>
-            <param name="rectTransform"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.IsVisible(UnityEngine.RectTransform)">
-            <summary>
-            Determines if this <see cref="T:UnityEngine.RectTransform"/> is visible to the camera.
-            </summary>
-            <returns></returns>
-            <param name="rectTransform"></param>
-            <param name="camera"></param>
-        </member>
-        <member name="T:WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType">
-            <summary>
-            Determines the shaking type of <see cref="M:WarWolfWorks.Utility.Hooks.Rendering.Shake(UnityEngine.MonoBehaviour,UnityEngine.Vector3,UnityEngine.Vector3,System.Single,System.Single,System.Single,WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType)"/>.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType.None">
-            <summary>
-            Doesn't shake.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType.zAxis">
-            <summary>
-            Shakes the Z rotation of a camera. (2D)
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType.FullRandom">
-            <summary>
-            Shakes every axis. (3D)
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.Shake(UnityEngine.MonoBehaviour,UnityEngine.Vector3,UnityEngine.Vector3,System.Single,System.Single,System.Single,WarWolfWorks.Utility.Hooks.Rendering.RotationShakeType)">
-            <summary>
-            Shakes a given Vector and Quaternion value. Make sure to pass a property for both values or this method will not work.
-            </summary>
-            <param name="host"></param>
-            <param name="shake"></param>
-            <param name="eulerRotation"></param>
-            <param name="intensity"></param>
-            <param name="duration"></param>
-            <param name="speed"></param>
-            <param name="rotationShake"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Rendering.LayerIdsToNames(System.Int32[])">
-            <summary>
-            Retuns an array of layer names based on ids given.
-            </summary>
-            <param name="ids"></param>
-            <returns></returns>
-        </member>
-        <member name="T:WarWolfWorks.Utility.Hooks.Text">
-            <summary>
-            Contains all Regex, string and StringBuilder utilities.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.Text.Is_InterfaceFile_Name">
-            <summary>
-            A regex expression used to match a given string as an acceptable interface name. (Used for files, as .cs is also counted as true)
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.Text.Is_Interface_Name">
-            <summary>
-            A regex expression used to see if a given string is an acceptable interface name. (Used for full names only, .cs is counted as invalid)
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.Text.RainbowTextStarter">
-            <summary>
-            Used to tag a string section to start a rainbow text.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.Text.RainbowTextEnder">
-            <summary>
-            Used to tag a string section to stop a rainbow text.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Text.ToRainbow(System.String,System.Int32,UnityEngine.Color[])">
-            <summary>
-            Puts a string value into a rainbow color using Unity's Rich Text format.
-            </summary>
-            <param name="original"></param>
-            <param name="frequency"></param>
-            <param name="colorsToUse"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Text.StringWrapper(System.String,System.ValueTuple{System.Char,System.Char})">
-            <summary>
-            Wraps original between wrappers.Item1 and wrappers.Item2
-            </summary>
-            <param name="original"></param>
-            <param name="wrappers"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Text.StringWrapper(System.String,System.Char,System.Char)">
-            <summary>
-            Wraps original between startWrapper and endWrapper.
-            </summary>
-            <param name="original"></param>
-            <param name="startWrapper"></param>
-            <param name="endWrapper"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Text.Cutout(System.String,System.String,System.String)">
-            <summary>
-            Cuts out a string between from and to.
-            </summary>
-            <param name="original"></param>
-            <param name="from"></param>
-            <param name="to"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Text.IsKanji(System.String)">
-            <summary>
-            Returns true if the given string contains a Kanji character.
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Text.IsHiragana(System.String)">
-            <summary>
-            Returns true if the given string contains a Hiragana character.
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Text.IsKatakana(System.String)">
-            <summary>
-            Returns true if the given string contains a Katakana character.
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Text.IsJapanese(System.String)">
-            <summary>
-            Returns true if the given string contains either a Kanji, Hiragana or Katakana character.
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Text.Cutout(System.String,System.Char,System.Char)">
-            <summary>
-            Cuts out a string between from and to in char values.
-            </summary>
-            <param name="original"></param>
-            <param name="from"></param>
-            <param name="to"></param>
-            <returns></returns>
-        </member>
-        <member name="T:WarWolfWorks.Utility.Hooks.Colors">
-            <summary>
-            Contains all Color utilities.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.Colors.Tangelo">
-            <summary>
-            The best color.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.Colors.Orange">
-            <summary>
-            The orange color.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Colors.MoveTowards(UnityEngine.Color,UnityEngine.Color,System.Single)">
-            <summary>
-            Returns the Vector4.MoveTowards equivalent for colors.
-            </summary>
-            <param name="point"></param>
-            <param name="destination"></param>
-            <param name="speed"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Colors.ToNegative(UnityEngine.Color)">
-            <summary>
-            Returns the original color with it's values being put into negatives. (If a value is negative, it will be put back to positive)
-            </summary>
-            <param name="original"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Colors.ToAbsoluteNegative(UnityEngine.Color)">
-            <summary>
-            Returns the original color with it's values being put into negatives. (If a value is negative, it will be kept as is)
-            </summary>
-            <param name="original"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Colors.Reverse(UnityEngine.Color)">
-            <summary>
-            Short for <see cref="P:UnityEngine.Color.white"/> - original.
-            </summary>
-            <param name="original"></param>
-            <returns></returns>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.Colors.PrimaryColors">
-            <summary>
-            Returns in order: Color.red, Color.yellow, Color.blue.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.Colors.MainColors">
-            <summary>
-            Returns in order: Color.red, Color.yellow, Color.cyan, Color.blue, Color.magenta
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Utility.Hooks.Colors.RainbowColors">
-            <summary>
-            Returns all colors of the rainbow in descending order.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Colors.ColorToHex(UnityEngine.Color)">
-            <summary>
-            Returns the hexcode value of a color. (Pointer of <see cref="M:UnityEngine.ColorUtility.ToHtmlStringRGB(UnityEngine.Color)"/>)
-            </summary>
-            <param name="color"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Colors.MiddleMan(UnityEngine.Color,UnityEngine.Color)">
-            <summary>
-            Returns the median of two given colors.
-            </summary>
-            <param name="a"></param>
-            <param name="b"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Colors.MiddleMan(UnityEngine.Color,UnityEngine.Color,System.Single)">
-            <summary>
-            Returns the median of two given colors, where percentage 0 is a, 0.5 is the exact median, and 1 is b.
-            </summary>
-            <param name="a"></param>
-            <param name="b"></param>
-            <param name="percentage"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.Colors.MiddleMan(System.Collections.Generic.ICollection{UnityEngine.Color})">
-            <summary>
-            Returns the average of all colors inside a collection.
-            </summary>
-            <param name="colors"></param>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.ToRainbow(System.String,System.Int32,UnityEngine.Color[])">

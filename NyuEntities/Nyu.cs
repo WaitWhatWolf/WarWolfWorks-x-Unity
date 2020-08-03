@@ -81,22 +81,22 @@ namespace WarWolfWorks.NyuEntities
 #pragma warning disable
         private void OnEnable()
         {
-            OnEnabled?.Invoke();
-            for(int i = 0; i < hs_Components.Count; i++)
+            for(int i = 0; i < ns_ComponentsEnable.Count; i++)
             {
-                if (hs_Components[i] is INyuOnEnable nyuEnable)
-                    nyuEnable.NyuOnEnable();
+                ns_ComponentsEnable[i].Item2.NyuOnEnable();
+                InternalManageNyuComponent(ns_ComponentsEnable[i].Item1, false, false);
             }
+            OnEnabled?.Invoke();
         }
 
         private void OnDisable()
         {
-            OnDisabled?.Invoke();
-            for (int i = 0; i < hs_Components.Count; i++)
+            for (int i = 0; i < ns_ComponentsDisable.Count; i++)
             {
-                if (hs_Components[i] is INyuOnDisable nyuEnable)
-                    nyuEnable.NyuOnDisable();
+                ns_ComponentsDisable[i].Item2.NyuOnDisable();
+                InternalManageNyuComponentRemoval(ns_ComponentsDisable[i].Item1, false, false);
             }
+            OnDisabled?.Invoke();
         }
 #pragma warning restore
         #endregion
@@ -114,6 +114,7 @@ namespace WarWolfWorks.NyuEntities
                 hs_Components = new List<INyuComponent>(GetComponents<INyuComponent>());
                 NyuManager.AllEntities.Add(this);
                 CallInit();
+                CallAwake();
                 NyuManager.CallEntityBegin(this);
             }
 
@@ -149,6 +150,51 @@ namespace WarWolfWorks.NyuEntities
             Initiated = true;
         }
 
+        /// <summary>
+        /// Adds a component to all of it's fitting lists.
+        /// </summary>
+        /// <param name="nyuComponent"></param>
+        /// <param name="addToNormalList">If false, it will only add this component to it's update methods, not the actual component list.</param>
+        /// <param name="addToEnableDisable">If false, it will ignore the <see cref="ns_ComponentsEnable"/> and <see cref="ns_ComponentsDisable"/> additions.</param>
+        internal void InternalManageNyuComponent(INyuComponent nyuComponent, bool addToNormalList = true, bool addToEnableDisable = true)
+        {
+            if (addToNormalList)
+                hs_Components.Add(nyuComponent);
+            if (nyuComponent is INyuUpdate compUpdate)
+                NyuManager.ComponentsUpdate.Add(compUpdate);
+            if (nyuComponent is INyuFixedUpdate compFixUpdate)
+                NyuManager.ComponentsFixedUpdate.Add(compFixUpdate);
+            if (nyuComponent is INyuLateUpdate compLateUpdate)
+                NyuManager.ComponentsLateUpdate.Add(compLateUpdate);
+            if (addToEnableDisable)
+            {
+                if (nyuComponent is INyuOnEnable compEnable)
+                    ns_ComponentsEnable.Add((nyuComponent, compEnable));
+                if (nyuComponent is INyuOnDisable compDisable)
+                    ns_ComponentsDisable.Add((nyuComponent, compDisable));
+            }
+        }
+
+        internal bool InternalManageNyuComponentRemoval(INyuComponent nyuComponent, bool removeFromNormalList = true, bool removeEnableDisable = true)
+        {
+            bool toReturn = removeFromNormalList ? hs_Components.Remove(nyuComponent) : false;
+            if (nyuComponent is INyuUpdate compUpdate)
+                NyuManager.ComponentsUpdate.Remove(compUpdate);
+            if (nyuComponent is INyuFixedUpdate compFixUpdate)
+                NyuManager.ComponentsFixedUpdate.Remove(compFixUpdate);
+            if (nyuComponent is INyuLateUpdate compLateUpdate)
+                NyuManager.ComponentsLateUpdate.Remove(compLateUpdate);
+            if (removeEnableDisable)
+            {
+                if (nyuComponent is INyuOnEnable compEnable)
+                    ns_ComponentsEnable.Remove((nyuComponent, compEnable));
+                if (nyuComponent is INyuOnDisable compDisable)
+                    ns_ComponentsDisable.Remove((nyuComponent, compDisable));
+            }
+
+            return toReturn;
+        }
+
         internal void CallAwake()
         {
             if (this is INyuAwake thisInit)
@@ -156,6 +202,8 @@ namespace WarWolfWorks.NyuEntities
 
             for (int i = 0; i < hs_Components.Count; i++)
             {
+                InternalManageNyuComponent(hs_Components[i], false);
+
                 if (hs_Components[i] is INyuPreAwake preAwake)
                     preAwake.NyuPreAwake();
 
@@ -175,6 +223,8 @@ namespace WarWolfWorks.NyuEntities
         #region Components
         [SerializeField, HideInInspector]
         internal List<INyuComponent> hs_Components = new List<INyuComponent>();
+        internal List<(INyuComponent, INyuOnEnable)> ns_ComponentsEnable = new List<(INyuComponent, INyuOnEnable)>();
+        internal List<(INyuComponent, INyuOnDisable)> ns_ComponentsDisable = new List<(INyuComponent, INyuOnDisable)>();
 
         [SerializeField, HideInInspector]
         internal bool[] hs_SerializePlotArmor = new bool[256];
@@ -207,7 +257,8 @@ namespace WarWolfWorks.NyuEntities
             else
                 toReturn.GetType().GetProperty("NyuMain").SetValue(toReturn, this);
 
-            hs_Components.Add(toReturn);
+            InternalManageNyuComponent(toReturn);
+
             if (toReturn is INyuAwake init)
             {
                 init.NyuAwake();
@@ -247,11 +298,13 @@ namespace WarWolfWorks.NyuEntities
             else
                 toReturn.GetType().GetProperty("NyuMain").SetValue(toReturn, this);
 
-            hs_Components.Add(toReturn);
+            InternalManageNyuComponent(toReturn);
+
             if (toReturn is INyuAwake init)
             {
                 init.NyuAwake();
             }
+
 
             return toReturn;
         }
@@ -284,7 +337,7 @@ namespace WarWolfWorks.NyuEntities
                     if (hs_Components[i] is INyuOnDestroy nyuDestroy)
                         nyuDestroy.NyuOnDestroy();
 
-                    if (hs_Components.Remove(hs_Components[i]))
+                    if (InternalManageNyuComponentRemoval(hs_Components[i]))
                     {
                         Destroy(hs_Components[i] as Component);
                         return true;
@@ -323,7 +376,7 @@ namespace WarWolfWorks.NyuEntities
                     if (hs_Components[i] is INyuOnDestroy nyuDestroy)
                         nyuDestroy.NyuOnDestroy();
 
-                    if (hs_Components.Remove(hs_Components[i]))
+                    if (InternalManageNyuComponentRemoval(hs_Components[i]))
                     {
                         Destroy(hs_Components[i] as Component);
                         return true;
@@ -361,7 +414,7 @@ namespace WarWolfWorks.NyuEntities
                 if (existing is INyuOnDestroy nyuDestroy)
                     nyuDestroy.NyuOnDestroy();
 
-                if (hs_Components.Remove(existing))
+                if (InternalManageNyuComponentRemoval(existing))
                 {
                     Destroy(existing as Component);
                     return true;

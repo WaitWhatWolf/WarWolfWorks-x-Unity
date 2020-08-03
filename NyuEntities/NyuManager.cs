@@ -68,32 +68,30 @@ namespace WarWolfWorks.NyuEntities
             {
                 yield return null;
 
-                for (int i = 0; i < AllEntities.Count; i++)
+                for (int i = 0; i < AllUpdates.Count; i++)
                 {
-                    if (!AllEntities[i].enabled || AllEntities[i].ns_DestroyedCorrectly)
+                    if (!AllUpdates[i].Item1.enabled || AllUpdates[i].Item1.ns_DestroyedCorrectly)
                         continue;
 
                     try
                     {
-                        if (AllEntities[i] is INyuUpdate entityUpdate)
-                            entityUpdate.NyuUpdate();
+                        AllUpdates[i].Item2.NyuUpdate();
                     }
                     catch(Exception e)
                     {
                         WarningDebugNRE(nameof(INyuUpdate), AllEntities[i].GetType().Name, e);
                     }
+                }
 
-                    for (int j = 0; j < AllEntities[i].hs_Components.Count; j++)
+                for (int j = 0; j < ComponentsUpdate.Count; j++)
+                {
+                    try
                     {
-                        try
-                        {
-                            if (AllEntities[i].hs_Components[j] is INyuUpdate nyuUpdate)
-                                nyuUpdate.NyuUpdate();
-                        }
-                        catch (Exception e)
-                        {
-                            WarningDebugNRE(nameof(INyuUpdate), AllEntities[i].hs_Components[j].GetType().Name, e);
-                        }
+                        ComponentsUpdate[j].NyuUpdate();
+                    }
+                    catch (Exception e)
+                    {
+                        WarningDebugNRE(nameof(INyuUpdate), ComponentsUpdate[j].GetType().Name, e);
                     }
                 }
             }
@@ -108,32 +106,30 @@ namespace WarWolfWorks.NyuEntities
             {
                 yield return FixedUpdateWaiter;
 
-                for (int i = 0; i < AllEntities.Count; i++)
+                for (int i = 0; i < AllFixedUpdates.Count; i++)
                 {
-                    if (!AllEntities[i].enabled)
+                    if (!AllFixedUpdates[i].Item1.enabled)
                         continue;
 
                     try
                     {
-                        if (AllEntities[i] is INyuFixedUpdate entityFixed)
-                            entityFixed.NyuFixedUpdate();
+                        AllFixedUpdates[i].Item2.NyuFixedUpdate();
                     }
                     catch (Exception e)
                     {
                         WarningDebugNRE(nameof(INyuFixedUpdate), AllEntities[i].GetType().Name, e);
                     }
+                }
 
-                    for (int j = 0; j < AllEntities[i].hs_Components.Count; j++)
+                for (int j = 0; j < ComponentsFixedUpdate.Count; j++)
+                {
+                    try
                     {
-                        try
-                        {
-                            if (AllEntities[i].hs_Components[j] is INyuFixedUpdate nyuFixed)
-                                nyuFixed.NyuFixedUpdate();
-                        }
-                        catch (Exception e)
-                        {
-                            WarningDebugNRE(nameof(INyuFixedUpdate), AllEntities[i].hs_Components[j].GetType().Name, e);
-                        }
+                        ComponentsFixedUpdate[j].NyuFixedUpdate();
+                    }
+                    catch (Exception e)
+                    {
+                        WarningDebugNRE(nameof(INyuFixedUpdate), ComponentsFixedUpdate[j].GetType().Name, e);
                     }
                 }
             }
@@ -148,32 +144,30 @@ namespace WarWolfWorks.NyuEntities
             {
                 yield return LateUpdateWaiter;
 
-                for (int i = 0; i < AllEntities.Count; i++)
+                for (int i = 0; i < AllLateUpdates.Count; i++)
                 {
-                    if (!AllEntities[i].enabled)
+                    if (!AllLateUpdates[i].Item1.enabled)
                         continue;
 
                     try
                     {
-                        if (AllEntities[i] is INyuLateUpdate entityLate)
-                            entityLate.NyuLateUpdate();
+                        AllLateUpdates[i].Item2.NyuLateUpdate();
                     }
                     catch (Exception e)
                     {
                         WarningDebugNRE(nameof(INyuLateUpdate), AllEntities[i].GetType().Name, e);
                     }
+                }
 
-                    for (int j = 0; j < AllEntities[i].hs_Components.Count; j++)
+                for (int j = 0; j < ComponentsLateUpdate.Count; j++)
+                {
+                    try
                     {
-                        try
-                        {
-                            if (AllEntities[i].hs_Components[j] is INyuLateUpdate nyuLate)
-                                nyuLate.NyuLateUpdate();
-                        }
-                        catch (Exception e)
-                        {
-                            WarningDebugNRE(nameof(INyuLateUpdate), AllEntities[i].hs_Components[j].GetType().Name, e);
-                        }
+                        ComponentsLateUpdate[j].NyuLateUpdate();
+                    }
+                    catch (Exception e)
+                    {
+                        WarningDebugNRE(nameof(INyuLateUpdate), ComponentsLateUpdate[j].GetType().Name, e);
                     }
                 }
             }
@@ -514,7 +508,7 @@ namespace WarWolfWorks.NyuEntities
             float lastDist = within;
             for (int i = 0; i < AllEntities.Count; i++)
             {
-                if (AllEntities[i].GetType().IsAssignableFrom(compareType))
+                if (compareType.IsAssignableFrom(AllEntities[i].GetType()))
                 {
                     float curDist = Vector3.Distance(AllEntities[i].Position, position);
                     if (curDist < lastDist)
@@ -539,7 +533,7 @@ namespace WarWolfWorks.NyuEntities
             float lastDist = within;
             for (int i = 0; i < AllEntities.Count; i++)
             {
-                if (Array.Exists(compareTypes, t => AllEntities[i].GetType().IsAssignableFrom(t)))
+                if (Array.Exists(compareTypes, t => t.IsAssignableFrom(AllEntities[i].GetType())))
                 {
                     float curDist = Vector3.Distance(AllEntities[i].Position, position);
                     if (curDist < lastDist)
@@ -566,7 +560,7 @@ namespace WarWolfWorks.NyuEntities
             {
                 foreach(Type type in compareTypes)
                 {
-                    if(AllEntities[i].GetType().IsAssignableFrom(type))
+                    if(type.IsAssignableFrom(AllEntities[i].GetType()))
                     {
                         float curDist = Vector3.Distance(AllEntities[i].Position, position);
                         if (curDist < lastDist)
@@ -592,7 +586,7 @@ namespace WarWolfWorks.NyuEntities
             List<Nyu> toReturn = new List<Nyu>();
             for (int i = 0; i < AllEntities.Count; i++)
             {
-                if (AllEntities[i].GetType().IsAssignableFrom(compareType))
+                if (compareType.IsAssignableFrom(AllEntities[i].GetType()))
                 {
                     float curDist = Vector3.Distance(AllEntities[i].Position, position);
                     if (curDist <= within)
@@ -617,7 +611,7 @@ namespace WarWolfWorks.NyuEntities
             {
                 foreach (Type type in compareTypes)
                 {
-                    if (AllEntities[i].GetType().IsAssignableFrom(type))
+                    if (type.IsAssignableFrom(AllEntities[i].GetType()))
                     {
                         float curDist = Vector3.Distance(AllEntities[i].Position, position);
                         if (curDist <= within)
@@ -645,7 +639,7 @@ namespace WarWolfWorks.NyuEntities
             {
                 foreach (Type type in compareTypes)
                 {
-                    if (AllEntities[i].GetType().IsAssignableFrom(type))
+                    if (type.IsAssignableFrom(AllEntities[i].GetType()))
                     {
                         float curDist = Vector3.Distance(AllEntities[i].Position, position);
                         if (curDist <= within)
@@ -756,6 +750,27 @@ namespace WarWolfWorks.NyuEntities
 
         #region Instantiating / Destroying
         internal static List<Nyu> AllEntities = new List<Nyu>();
+        internal static List<(Nyu, INyuUpdate)> AllUpdates = new List<(Nyu, INyuUpdate)>();
+        internal static List<(Nyu, INyuFixedUpdate)> AllFixedUpdates = new List<(Nyu, INyuFixedUpdate)>();
+        internal static List<(Nyu, INyuLateUpdate)> AllLateUpdates = new List<(Nyu, INyuLateUpdate)>();
+
+        internal static List<INyuUpdate> ComponentsUpdate = new List<INyuUpdate>();
+        internal static List<INyuFixedUpdate> ComponentsFixedUpdate = new List<INyuFixedUpdate>();
+        internal static List<INyuLateUpdate> ComponentsLateUpdate = new List<INyuLateUpdate>();
+        
+        internal static void AddNyuEntityInternal(Nyu nyu)
+        {
+            AllEntities.Add(nyu);
+            if (nyu is INyuUpdate update)
+                AllUpdates.Add((nyu, update));
+
+            if (nyu is INyuFixedUpdate fixedUpdate)
+                AllFixedUpdates.Add((nyu, fixedUpdate));
+
+            if (nyu is INyuLateUpdate lateUpdate)
+                AllLateUpdates.Add((nyu, lateUpdate));
+            
+        }
 
         /// <summary>
         /// Invoked when an entity is instantiated through any <see cref="NyuManager"/>.New method.
@@ -879,11 +894,12 @@ namespace WarWolfWorks.NyuEntities
                 if (entity.hs_Components[i] is INyuOnDestroy destroy)
                     destroy.NyuOnDestroy();
 
-                entity.hs_Components.RemoveAt(i);
+                entity.InternalManageNyuComponentRemoval(entity.hs_Components[i]);
             }
 
             if (entity is INyuOnDestroy entityDestroy)
                 entityDestroy.NyuOnDestroy();
+
             entity.ns_DestroyedCorrectly = true;
             OnNyuEnd?.Invoke(entity);
             UnityEngine.Object.Destroy(entity.gameObject);

@@ -161,6 +161,22 @@ namespace WarWolfWorks.NyuEntities.YharonSystem
         /// <param name="yharon"></param>
         /// <returns></returns>
         public bool Contains(Yharon yharon) => ns_Yharons.Contains(yharon);
+
+        /// <summary>
+        /// Amount of yharons currently active in this <see cref="NyuYharon"/>.
+        /// </summary>
+        /// <returns></returns>
+        public int GetYharonCount() => ns_Yharons.Count;
+        /// <summary>
+        /// Amount of TaCx1 currently active in this <see cref="NyuYharon"/>.
+        /// </summary>
+        /// <returns></returns>
+        public int GetTaCx1Count() => ns_TaCx1s.Count;
+        /// <summary>
+        /// Returns an array of all yharons currently active in this <see cref="NyuYharon"/>.
+        /// </summary>
+        /// <returns></returns>
+        public Yharon[] GetYharons() => ns_Yharons.ToArray();
         #endregion
 
         #region Adding / Removing
@@ -177,7 +193,7 @@ namespace WarWolfWorks.NyuEntities.YharonSystem
             if(Contains(yharon.YharonType, out Yharon found))
             {
                 if (yharon.Application.HasFlag(YharonApplication.Override))
-                    InternalCallYharonOverride(found);
+                    InternalCallYharonOverride(found, yharon);
 
                 if (yharon.Application.HasFlag(YharonApplication.Remove))
                     RemoveYharon(found);
@@ -194,6 +210,23 @@ namespace WarWolfWorks.NyuEntities.YharonSystem
         }
 
         /// <summary>
+        /// Adds a list of yharons.
+        /// </summary>
+        /// <param name="yharons"></param>
+        /// <returns></returns>
+        public int AddYharons(params Yharon[] yharons)
+        {
+            int toReturn = 0;
+            for(int i = 0; i < yharons.Length; i++)
+            {
+                if (AddYharon(yharons[i]))
+                    toReturn++;
+            }
+
+            return toReturn;
+        }
+
+        /// <summary>
         /// Removes a given yharon.
         /// </summary>
         /// <param name="yharon"></param>
@@ -201,8 +234,8 @@ namespace WarWolfWorks.NyuEntities.YharonSystem
         {
             if(ns_Yharons.Contains(yharon))
             {
-                if (yharon is IOnDestroy yharonDestroy)
-                    yharonDestroy.OnDestroy();
+                if (yharon is INyuOnDestroy yharonDestroy)
+                    yharonDestroy.NyuOnDestroy();
 
                 ns_Yharons.Remove(yharon);
                 OnYharonRemoved?.Invoke(yharon);
@@ -210,6 +243,21 @@ namespace WarWolfWorks.NyuEntities.YharonSystem
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Removes a list of yharons.
+        /// </summary>
+        public int RemoveYharons(params Yharon[] yharons)
+        {
+            int toReturn = 0;
+            for (int i = 0; i < yharons.Length; i++)
+            {
+                if (RemoveYharon(yharons[i]))
+                    toReturn++;
+            }
+
+            return toReturn;
         }
         #endregion
 
@@ -219,15 +267,15 @@ namespace WarWolfWorks.NyuEntities.YharonSystem
             ns_Yharons.Add(yharon);
             yharon.Parent = this;
 
-            if (yharon is IAwake yharonAwake)
-                yharonAwake.Awake();
+            if (yharon is INyuAwake yharonAwake)
+                yharonAwake.NyuAwake();
 
             OnYharonAdded?.Invoke(yharon);
         }
 
-        private void InternalCallYharonOverride(Yharon yharon)
+        private void InternalCallYharonOverride(Yharon yharon, Yharon used)
         {
-            yharon.CallOnOverride(yharon);
+            yharon.CallOnOverride(used);
             OnYharonOverriden?.Invoke(yharon);
         }
 
@@ -235,8 +283,8 @@ namespace WarWolfWorks.NyuEntities.YharonSystem
         {
             foreach(Yharon yharon in ns_Yharons)
             {
-                if (yharon is IOnDisable yharonOnDisable)
-                    yharonOnDisable.OnDisable();
+                if (yharon is INyuOnDisable yharonOnDisable)
+                    yharonOnDisable.NyuOnDisable();
             }
         }
 
@@ -244,37 +292,37 @@ namespace WarWolfWorks.NyuEntities.YharonSystem
         {
             foreach (Yharon yharon in ns_Yharons)
             {
-                if (yharon is IOnEnable yharonOnEnable)
-                    yharonOnEnable.OnEnable();
+                if (yharon is INyuOnEnable yharonOnEnable)
+                    yharonOnEnable.NyuOnEnable();
             }
         }
 
         void INyuLateUpdate.NyuLateUpdate()
         {
             for (int i = 0; i < ns_Yharons.Count; i++)
-                if (ns_Yharons[i] is ILateUpdate yharonLateUpdate)
-                    yharonLateUpdate.LateUpdate();
+                if (ns_Yharons[i] is INyuLateUpdate yharonLateUpdate)
+                    yharonLateUpdate.NyuLateUpdate();
         }
 
         void INyuFixedUpdate.NyuFixedUpdate()
         {
             for (int i = 0; i < ns_Yharons.Count; i++)
-                if (ns_Yharons[i] is IFixedUpdate yharonFixedUpdate)
-                    yharonFixedUpdate.FixedUpdate();
+                if (ns_Yharons[i] is INyuFixedUpdate yharonFixedUpdate)
+                    yharonFixedUpdate.NyuFixedUpdate();
         }
 
         void INyuUpdate.NyuUpdate()
         {
             for (int i = 0; i < ns_Yharons.Count; i++)
-                if (ns_Yharons[i] is IUpdate yharonUpdate)
-                    yharonUpdate.Update();
+                if (ns_Yharons[i] is INyuUpdate yharonUpdate)
+                    yharonUpdate.NyuUpdate();
         }
 
         void INyuOnDestroyQueued.NyuOnDestroyQueued()
         {
             for (int i = 0; i < ns_Yharons.Count; i++)
-                if (ns_Yharons[i] is IOnDestroy yharonDestroy)
-                    yharonDestroy.OnDestroy();
+                if (ns_Yharons[i] is INyuOnDestroy yharonDestroy)
+                    yharonDestroy.NyuOnDestroy();
         }
         #endregion
     }
