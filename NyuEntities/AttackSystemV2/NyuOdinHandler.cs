@@ -20,6 +20,7 @@ namespace WarWolfWorks.NyuEntities.AttackSystemV2
 
         [SerializeField]
         private List<Odin> s_Odins;
+
         /// <summary>
         /// Returns an array of all odins of this <see cref="NyuOdinHandler"/>.
         /// </summary>
@@ -72,6 +73,8 @@ namespace WarWolfWorks.NyuEntities.AttackSystemV2
 
             if (odin.GetFreki() is INyuAwake awake)
                 awake.NyuAwake();
+
+            odin.SetUpdates();
         }
         
         /// <summary>
@@ -107,6 +110,7 @@ namespace WarWolfWorks.NyuEntities.AttackSystemV2
         {
             if (s_Odins[index].GetFreki() is INyuOnDestroy destroy)
                 destroy.NyuOnDestroy();
+
             s_Odins.RemoveAt(index);
             RefreshOdins();
         }
@@ -163,8 +167,8 @@ namespace WarWolfWorks.NyuEntities.AttackSystemV2
                 Freki freki = s_Odins[i].GetFreki();
                 Geri geri = s_Odins[i].GetGeri();
 
-                if (freki is INyuUpdate update)
-                    update.NyuUpdate();
+                if (s_Odins[i].IsUpdate[0])
+                    s_Odins[i].Freki_Update.NyuUpdate();
 
                 if (freki.CanAttack() && (geri == null || (geri != null && geri.Met())))
                 {
@@ -178,8 +182,8 @@ namespace WarWolfWorks.NyuEntities.AttackSystemV2
         {
             for (int i = 0; i < s_Odins.Count; i++)
             {
-                if (s_Odins[i].GetFreki() is INyuFixedUpdate fixedUpdate)
-                    fixedUpdate.NyuFixedUpdate();
+                if (s_Odins[i].IsUpdate[1])
+                    s_Odins[i].Freki_FixedUpdate.NyuFixedUpdate();
             }
         }
 
@@ -187,8 +191,8 @@ namespace WarWolfWorks.NyuEntities.AttackSystemV2
         {
             for (int i = 0; i < s_Odins.Count; i++)
             {
-                if (s_Odins[i].GetFreki() is INyuLateUpdate lateUpdate)
-                    lateUpdate.NyuLateUpdate();
+                if (s_Odins[i].IsUpdate[2])
+                    s_Odins[i].Freki_LateUpdate.NyuLateUpdate();
             }
         }
     }

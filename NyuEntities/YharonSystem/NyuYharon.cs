@@ -12,6 +12,9 @@ namespace WarWolfWorks.NyuEntities.YharonSystem
         INyuUpdate, INyuFixedUpdate, INyuLateUpdate, INyuOnEnable, INyuOnDisable, INyuOnDestroyQueued
     {
         internal List<Yharon> ns_Yharons = new List<Yharon>();
+        internal List<INyuUpdate> ns_Yharon_Updates = new List<INyuUpdate>();
+        internal List<INyuFixedUpdate> ns_Yharon_FixedUpdates = new List<INyuFixedUpdate>();
+        internal List<INyuLateUpdate> ns_Yharon_LateUpdates = new List<INyuLateUpdate>();
 
         #region TaCx1 stuff
         internal List<TaCx1> ns_TaCx1s = new List<TaCx1>();
@@ -234,6 +237,13 @@ namespace WarWolfWorks.NyuEntities.YharonSystem
         {
             if(ns_Yharons.Contains(yharon))
             {
+                if (yharon is INyuUpdate nyuUpdate)
+                    ns_Yharon_Updates.Remove(nyuUpdate);
+                if (yharon is INyuFixedUpdate nyuFixedUpdate)
+                    ns_Yharon_FixedUpdates.Remove(nyuFixedUpdate);
+                if (yharon is INyuLateUpdate nyuLateUpdate)
+                    ns_Yharon_LateUpdates.Remove(nyuLateUpdate);
+
                 if (yharon is INyuOnDestroy yharonDestroy)
                     yharonDestroy.NyuOnDestroy();
 
@@ -270,6 +280,13 @@ namespace WarWolfWorks.NyuEntities.YharonSystem
             if (yharon is INyuAwake yharonAwake)
                 yharonAwake.NyuAwake();
 
+            if (yharon is INyuUpdate nyuUpdate)
+                ns_Yharon_Updates.Add(nyuUpdate);
+            if (yharon is INyuFixedUpdate nyuFixedUpdate)
+                ns_Yharon_FixedUpdates.Add(nyuFixedUpdate);
+            if (yharon is INyuLateUpdate nyuLateUpdate)
+                ns_Yharon_LateUpdates.Add(nyuLateUpdate);
+
             OnYharonAdded?.Invoke(yharon);
         }
 
@@ -299,30 +316,26 @@ namespace WarWolfWorks.NyuEntities.YharonSystem
 
         void INyuLateUpdate.NyuLateUpdate()
         {
-            for (int i = 0; i < ns_Yharons.Count; i++)
-                if (ns_Yharons[i] is INyuLateUpdate yharonLateUpdate)
-                    yharonLateUpdate.NyuLateUpdate();
+            for (int i = 0; i < ns_Yharon_LateUpdates.Count; i++)
+                ns_Yharon_LateUpdates[i].NyuLateUpdate();
         }
 
         void INyuFixedUpdate.NyuFixedUpdate()
         {
-            for (int i = 0; i < ns_Yharons.Count; i++)
-                if (ns_Yharons[i] is INyuFixedUpdate yharonFixedUpdate)
-                    yharonFixedUpdate.NyuFixedUpdate();
+            for (int i = 0; i < ns_Yharon_FixedUpdates.Count; i++)
+                ns_Yharon_FixedUpdates[i].NyuFixedUpdate();
         }
 
         void INyuUpdate.NyuUpdate()
         {
-            for (int i = 0; i < ns_Yharons.Count; i++)
-                if (ns_Yharons[i] is INyuUpdate yharonUpdate)
-                    yharonUpdate.NyuUpdate();
+            for (int i = 0; i < ns_Yharon_Updates.Count; i++)
+                ns_Yharon_Updates[i].NyuUpdate();
         }
 
         void INyuOnDestroyQueued.NyuOnDestroyQueued()
         {
-            for (int i = 0; i < ns_Yharons.Count; i++)
-                if (ns_Yharons[i] is INyuOnDestroy yharonDestroy)
-                    yharonDestroy.NyuOnDestroy();
+            for(int i = ns_Yharons.Count - 1; i >= 0; i--)
+                RemoveYharon(ns_Yharons[i]);
         }
         #endregion
     }

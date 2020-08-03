@@ -758,18 +758,23 @@ namespace WarWolfWorks.NyuEntities
         internal static List<INyuFixedUpdate> ComponentsFixedUpdate = new List<INyuFixedUpdate>();
         internal static List<INyuLateUpdate> ComponentsLateUpdate = new List<INyuLateUpdate>();
         
-        internal static void AddNyuEntityInternal(Nyu nyu)
+        internal static void ManageNyuEntityUpdatesInternal(Nyu nyu, bool add)
         {
-            AllEntities.Add(nyu);
             if (nyu is INyuUpdate update)
-                AllUpdates.Add((nyu, update));
-
+            {
+                if (add) AllUpdates.Add((nyu, update));
+                else AllUpdates.Remove((nyu, update));
+            }
             if (nyu is INyuFixedUpdate fixedUpdate)
-                AllFixedUpdates.Add((nyu, fixedUpdate));
-
+            {
+                if(add) AllFixedUpdates.Add((nyu, fixedUpdate));
+                else AllFixedUpdates.Remove((nyu, fixedUpdate));
+            }
             if (nyu is INyuLateUpdate lateUpdate)
-                AllLateUpdates.Add((nyu, lateUpdate));
-            
+            {
+                if(add) AllLateUpdates.Add((nyu, lateUpdate));
+                else AllLateUpdates.Remove((nyu, lateUpdate));
+            }
         }
 
         /// <summary>
@@ -818,6 +823,8 @@ namespace WarWolfWorks.NyuEntities
             if (toReturn.gameObject.activeInHierarchy)
                 toReturn.CallAwake();
 
+            ManageNyuEntityUpdatesInternal(toReturn, true);
+
             OnNyuBegin?.Invoke(toReturn);
 
             return toReturn;
@@ -851,6 +858,8 @@ namespace WarWolfWorks.NyuEntities
 
             if(toReturn.gameObject.activeInHierarchy)
                 toReturn.CallAwake();
+
+            ManageNyuEntityUpdatesInternal(toReturn, true);
 
             OnNyuBegin?.Invoke(toReturn);
 
@@ -887,6 +896,7 @@ namespace WarWolfWorks.NyuEntities
                     queue.NyuOnDestroyQueued();
             }
 
+            ManageNyuEntityUpdatesInternal(entity, false);
             AllEntities.Remove(entity);
 
             for (int i = entity.hs_Components.Count - 1; i >= 0; i--)
@@ -918,6 +928,7 @@ namespace WarWolfWorks.NyuEntities
             if (entity == null)
                 return false;
 
+            ManageNyuEntityUpdatesInternal(entity, false);
             AllEntities.Remove(entity);
 
             entity.hs_Components.Clear();

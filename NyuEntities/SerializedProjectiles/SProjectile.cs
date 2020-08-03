@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using WarWolfWorks.Interfaces;
 using WarWolfWorks.Interfaces.NyuEntities;
@@ -41,8 +42,35 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
 
         /// <summary>
         /// All behaviors this <see cref="SProjectile"/> is currently using.
+        /// When setting this array or any of it's elements to a new object, make sure to call <see cref="RefreshUpdateLists"/>
+        /// to update all update lists, otherwise any <see cref="Behavior"/> implementations of <see cref="INyuUpdate"/>,
+        /// <see cref="INyuFixedUpdate"/> or <see cref="INyuLateUpdate"/> will not work.
         /// </summary>
         public Behavior[] Behaviors = new Behavior[0];
+
+        internal List<INyuUpdate> Behaviors_Updates = new List<INyuUpdate>();
+        internal List<INyuFixedUpdate> Behaviors_FixedUpdates = new List<INyuFixedUpdate>();
+        internal List<INyuLateUpdate> Behaviors_LateUpdates = new List<INyuLateUpdate>();
+
+        /// <summary>
+        /// Refreshes all behavior update lists.
+        /// </summary>
+        public void RefreshUpdateLists()
+        {
+            Behaviors_Updates.Clear();
+            Behaviors_FixedUpdates.Clear();
+            Behaviors_LateUpdates.Clear();
+
+            for (int i = 0; i < Behaviors.Length; i++)
+            {
+                if (Behaviors[i] is INyuUpdate nyuUpdate)
+                    Behaviors_Updates.Add(nyuUpdate);
+                if (Behaviors[i] is INyuFixedUpdate nyuFixedUpdate)
+                    Behaviors_FixedUpdates.Add(nyuFixedUpdate);
+                if (Behaviors[i] is INyuLateUpdate nyuLateUpdate)
+                    Behaviors_LateUpdates.Add(nyuLateUpdate);
+            }
+        }
 
         /// <summary>
         /// Invoked when <see cref="SProjectileManager{T}.Init(int)"/> is invoked.

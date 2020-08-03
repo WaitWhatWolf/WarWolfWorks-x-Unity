@@ -114,6 +114,8 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
                 {
                     bAwake.NyuAwake();
                 }
+
+                projectile.RefreshUpdateLists();
             }
 
             return true;
@@ -180,11 +182,8 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
                 if (ActiveProjectiles[i].Locked)
                     continue;
 
-                foreach (Behavior behavior in ActiveProjectiles[i].Behaviors)
-                {
-                    if (behavior is INyuUpdate update)
-                        update.NyuUpdate();
-                }
+                for (int j = 0; j < ActiveProjectiles[i].Behaviors_Updates.Count; j++)
+                    ActiveProjectiles[i].Behaviors_Updates[j].NyuUpdate();
             }
         }
 
@@ -199,12 +198,8 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
                 if (ActiveProjectiles[i].Locked)
                     continue;
 
-                foreach (Behavior behavior in ActiveProjectiles[i].Behaviors)
-                {
-                    if (behavior is INyuFixedUpdate fixedUpdate)
-                        fixedUpdate.NyuFixedUpdate();
-
-                }
+                for (int j = 0; j < ActiveProjectiles[i].Behaviors_FixedUpdates.Count; j++)
+                    ActiveProjectiles[i].Behaviors_FixedUpdates[j].NyuFixedUpdate();
             }
         }
 
@@ -219,11 +214,8 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
                 if (ActiveProjectiles[i].Locked)
                     continue;
 
-                foreach (Behavior behavior in ActiveProjectiles[i].Behaviors)
-                {
-                    if (behavior is INyuLateUpdate lateUpdate)
-                        lateUpdate.NyuLateUpdate();
-                }
+                for (int j = 0; j < ActiveProjectiles[i].Behaviors_LateUpdates.Count; j++)
+                    ActiveProjectiles[i].Behaviors_LateUpdates[j].NyuLateUpdate();
             }
         }
         #endregion

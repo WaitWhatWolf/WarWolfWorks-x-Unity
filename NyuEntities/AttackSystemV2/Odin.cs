@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using WarWolfWorks.Attributes;
 using WarWolfWorks.Interfaces;
+using WarWolfWorks.Interfaces.NyuEntities;
 
 namespace WarWolfWorks.NyuEntities.AttackSystemV2
 {
@@ -11,6 +13,11 @@ namespace WarWolfWorks.NyuEntities.AttackSystemV2
     [CreateAssetMenu(fileName = "Odin_", menuName = "WarWolfWorks/Attack System V2/Odin")]
     public sealed class Odin : ScriptableObject, IParentable<NyuOdinHandler>, IInstantiatable, IIndexable
     {
+        internal INyuUpdate Freki_Update;
+        internal INyuFixedUpdate Freki_FixedUpdate;
+        internal INyuLateUpdate Freki_LateUpdate;
+        internal bool[] IsUpdate = new bool[3];
+
         [SerializeField]
         private Freki s_Freki;
         /// <summary>
@@ -49,6 +56,25 @@ namespace WarWolfWorks.NyuEntities.AttackSystemV2
             toReturn.Index = index;
 
             return toReturn;
+        }
+
+        internal void SetUpdates()
+        {
+            if(s_Freki is INyuUpdate update)
+            {
+                IsUpdate[0] = true;
+                Freki_Update = update;
+            }
+            if (s_Freki is INyuFixedUpdate fixedUpdate)
+            {
+                IsUpdate[1] = true;
+                Freki_FixedUpdate = fixedUpdate;
+            }
+            if (s_Freki is INyuLateUpdate lateUpdate)
+            {
+                IsUpdate[2] = true;
+                Freki_LateUpdate = lateUpdate;
+            }
         }
 
         internal void SetRespectiveParents()
