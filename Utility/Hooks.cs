@@ -3899,7 +3899,7 @@ namespace WarWolfWorks.Utility
 
         }
 
-#region Extension Methods
+        #region Extension Methods
         /// <summary>
         /// Puts a string value into a rainbow text using Unity's Rich Text format.
         /// </summary>

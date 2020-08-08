@@ -129,14 +129,17 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
         {
             if(ActiveProjectiles.Contains(projectile))
             {
-                foreach(Behavior behavior in projectile.Behaviors)
+                for(int j = 0; j < projectile.Behaviors.Length; j++)
                 {
-                    if (behavior is INyuOnDestroy bDestroy)
+                    if(projectile.Behaviors[j] is INyuOnDestroy bDestroy)
                         bDestroy.NyuOnDestroy();
+
+                    Destroy(projectile.Behaviors[j]);
                 }
 
                 projectile.gameObject.SetActive(false);
                 projectile.Behaviors = new Behavior[0];
+                ActiveProjectiles.Remove(projectile);
                 InactiveProjectiles.Add(projectile);
 
                 return true;
@@ -154,14 +157,17 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
         {
             if (projectile is T tProj && ActiveProjectiles.Contains(tProj))
             {
-                foreach (Behavior behavior in projectile.Behaviors)
+                for (int j = 0; j < projectile.Behaviors.Length; j++)
                 {
-                    if (behavior is INyuOnDestroy bDestroy)
+                    if (projectile.Behaviors[j] is INyuOnDestroy bDestroy)
                         bDestroy.NyuOnDestroy();
+
+                    Destroy(projectile.Behaviors[j]);
                 }
 
                 projectile.gameObject.SetActive(false);
                 projectile.Behaviors = new Behavior[0];
+                ActiveProjectiles.Remove(tProj);
                 InactiveProjectiles.Add(tProj);
 
                 return true;

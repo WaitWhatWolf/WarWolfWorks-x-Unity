@@ -84,13 +84,22 @@ namespace WarWolfWorks.NyuEntities.YharonSystem
         }
 
         /// <summary>
+        /// Invoked when countdown reaches 0; The yharon will not remove itself as long as this method returns false.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual bool OnCountdownEnd()
+        {
+            return true;
+        }
+
+        /// <summary>
         /// When overriding, make sure to include base.Update() as it is what handles the countdown.
         /// </summary>
         public virtual void NyuUpdate()
         {
             ns_Countdown -= Time.deltaTime;
 
-            if(ns_Countdown <= 0)
+            if(ns_Countdown <= 0 && OnCountdownEnd())
             {
                 Parent.RemoveYharon(this);
             }

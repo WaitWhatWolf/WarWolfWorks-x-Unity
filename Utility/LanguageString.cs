@@ -76,6 +76,16 @@ namespace WarWolfWorks.Utility
         }
 
         /// <summary>
+        /// Returns text based on language given. This is simply a pointer to <see cref="LanguageString"/>'s indexer.
+        /// </summary>
+        /// <param name="language"></param>
+        /// <returns></returns>
+        public string ToString(SystemLanguage language)
+        {
+            return this[language];
+        }
+
+        /// <summary>
         /// Pointer to <see cref="LanguageString"/>[<see cref="Settings.LibraryLanguage"/>].
         /// </summary>
         /// <param name="languageString"></param>
