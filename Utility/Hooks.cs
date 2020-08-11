@@ -1935,7 +1935,7 @@ namespace WarWolfWorks.Utility
                 for (int i = 0; i < objects.Length; i++)
                 {
                     objects[i] = UnityEngine.Object.Instantiate(objects[i]);
-                    if (objects[i] is IInstantiatable) ((IInstantiatable)objects[i]).PostInstantiate();
+                    if (objects[i] is IInstantiatable instantiatable) instantiatable.PostInstantiate();
                 }
 
                 return objects;
