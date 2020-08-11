@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using WarWolfWorks.Attributes;
 using WarWolfWorks.Interfaces;
 using WarWolfWorks.Interfaces.NyuEntities;
+using WarWolfWorks.Utility;
 using static WarWolfWorks.Constants;
 
 namespace WarWolfWorks.NyuEntities.SerializedProjectiles
@@ -80,7 +82,7 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
         /// <param name="projectile">Returns the projectile used.</param>
         /// <param name="behaviors">Behaviors set to the projectile. (All behaviors are instantiated before being used to avoid overriding resources.)</param>
         /// <returns></returns>
-        protected bool New(Nyu parent, Vector3 position, Quaternion rotation, out T projectile, Behavior[] behaviors)
+        protected bool New(Nyu parent, Vector3 position, Quaternion rotation, out T projectile, IEnumerable<Behavior> behaviors)
         {
             if(InactiveProjectiles.Count == 0)
             {
@@ -92,7 +94,7 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
             projectile.transform.position = position;
             projectile.transform.rotation = rotation;
             projectile.NyuMain = parent;
-            projectile.Behaviors = behaviors;
+            projectile.Behaviors = behaviors.RemoveNull().ToArray();
 
             InactiveProjectiles.RemoveAt(0);
             projectile.gameObject.SetActive(true);

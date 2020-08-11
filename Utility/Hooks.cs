@@ -111,6 +111,18 @@ namespace WarWolfWorks.Utility
             {
                 return new Vector2(UnityEngine.Random.Range(min.x, max.x), UnityEngine.Random.Range(min.y, max.y));
             }
+
+            /// <summary>
+            /// Returns a random string with characters between a-z, A-Z and 0-9.
+            /// </summary>
+            /// <param name="length"></param>
+            /// <returns></returns>
+            public static string GetRandomString(int length)
+            {
+                const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                return new string(Enumerable.Repeat(chars, length)
+                  .Select(s => s[UnityEngine.Random.Range(0, s.Length)]).ToArray());
+            }
         }
 
         /// <summary>
@@ -1440,29 +1452,90 @@ namespace WarWolfWorks.Utility
         public static class Colors
         {
             /// <summary>
-            /// The best color.
+            /// The best color. (Orange color with a red-ish hue)
             /// </summary>
             public static readonly Color Tangelo = new Color(0.976f, 0.302f, 0f);
-
             /// <summary>
-            /// The orange color.
+            /// The Orange color.
             /// </summary>
             public static readonly Color Orange = new Color(1f, .647f, 0f);
-
             /// <summary>
-            /// The pink color.
+            /// The Pink color.
             /// </summary>
             public static readonly Color Pink = new Color(1f, .753f, .796f);
-
             /// <summary>
-            /// The crimson color.
+            /// The Crimson color. (light red)
             /// </summary>
             public static readonly Color Crimson = new Color(.863f, .078f, .235f);
-
             /// <summary>
-            /// The midnight blue color.
+            /// The Crimson Red color. (dark red, not to be confused with <see cref="Crimson"/>)
+            /// </summary>
+            public static readonly Color CrimsonRed = new Color(.6f, 0f, 0f);
+            /// <summary>
+            /// The Midnight Blue color. (dark blue)
             /// </summary>
             public static readonly Color MidnightBlue = new Color(.098f, .098f, .439f);
+
+            /// <summary>
+            /// The Wisteria color. (dark purple)
+            /// </summary>
+            public static readonly Color Wisteria = new Color(.79f, .63f, .86f);
+            /// <summary>
+            /// The Cotton Candy color. (dark, high contrast pink)
+            /// </summary>
+            public static readonly Color CottonCandy = new Color(1f, .74f, .85f);
+            /// <summary>
+            /// The Daffodil color. (slightly darker yellow)
+            /// </summary>
+            public static readonly Color Daffodil = new Color(1f, 1f, .19f);
+            /// <summary>
+            /// The Azure color. (very light blue)
+            /// </summary>
+            public static readonly Color Azure = new Color(.94f, 1f, 1f);
+            /// <summary>
+            /// The Ao/Office Green color. (dark green)
+            /// </summary>
+            public static readonly Color Ao = new Color(0f, .5f, 0f);
+            /// <summary>
+            /// The Electric Ultramarine color. (high contrast purple)
+            /// </summary>
+            public static readonly Color ElectricUltramarine = new Color(.25f, 0f, 1f);
+            /// <summary>
+            /// The Ferrari Red color. (slightly orange red)
+            /// </summary>
+            public static readonly Color FerrariRed = new Color(1f, .16f, 0f);
+            /// <summary>
+            /// The Gold color. (high contrast yellow)
+            /// </summary>
+            public static readonly Color Gold = new Color(1f, .84f, 0f);
+            /// <summary>
+            /// The Lapis Lazuli color. (pale blue)
+            /// </summary>
+            public static readonly Color LapisLazuli = new Color(.15f, .38f, .61f);
+            /// <summary>
+            /// The Lawn Green color. (VERY high contract green)
+            /// </summary>
+            public static readonly Color LawnGreen = new Color(.49f, .99f, 0f);
+            /// <summary>
+            /// The Oxford Blue color. (very dark blue)
+            /// </summary>
+            public static readonly Color OxfordBlue = new Color(0f, .13f, .28f);
+            /// <summary>
+            /// The Psychedelic Purple/Phlox color. (slightly lighter <see cref="Color.magenta"/>)
+            /// </summary>
+            public static readonly Color PsychedelicPurple = new Color(.87f, 0f, 1f);
+            /// <summary>
+            /// The Royal Blue color. (slightly pale blue)
+            /// </summary>
+            public static readonly Color RoyalBlue = new Color(.25f, .41f, .88f);
+            /// <summary>
+            /// The Timberwolf color. (gray with a brown tint)
+            /// </summary>
+            public static readonly Color Timberwolf = new Color(.86f, .84f, .82f);
+            /// <summary>
+            /// The Zinnwaldite Brown color. (very dark brown)
+            /// </summary>
+            public static readonly Color ZinnwalditeBrown = new Color(.17f, .09f, .04f);
 
             /// <summary>
             /// Returns the Vector4.MoveTowards equivalent for colors.
@@ -2035,6 +2108,56 @@ namespace WarWolfWorks.Utility
             }
 
             /// <summary>
+            /// Returns a value that scales hyperbolically.
+            /// </summary>
+            /// <param name="max">The max amount reachable.</param>
+            /// <param name="amount">This can be used for scaling stats, say max is 100, and a stat increases by 20 for each stack;
+            /// the value passed in amount would be: 20 * stacks.</param>
+            /// <returns></returns>
+            public static float Hyperbolic(float max, float amount)
+            {
+                return max - max / (max + amount);
+            }
+
+            /// <summary>
+            /// Returns a value that scales hyperbolically.
+            /// </summary>
+            /// <param name="max">The max amount reachable.</param>
+            /// <param name="amount">This can be used for scaling stats, say max is 100, and a stat increases by 20 for each stack;
+            /// the value passed in amount would be: 20 * stacks.</param>
+            /// <returns></returns>
+            public static double Hyperbolic(double max, double amount)
+            {
+                return max - max / (max + amount);
+            }
+
+            /// <summary>
+            /// Returns a value that scales hyperbolically, to the power of P.
+            /// </summary>
+            /// <param name="max">The max amount reachable.</param>
+            /// <param name="amount">This can be used for scaling stats, say max is 100, and a stat increases by 20 for each stack;
+            /// the value passed in amount would be: 20 * stacks.</param>
+            /// <param name="P"></param>
+            /// <returns></returns>
+            public static float HyperbolicP(float max, float amount, float P)
+            {
+                return Mathf.Pow(max - max / (max + amount), P);
+            }
+
+            /// <summary>
+            /// Returns a value that scales hyperbolically, to the power of P.
+            /// </summary>
+            /// <param name="max">The max amount reachable.</param>
+            /// <param name="amount">This can be used for scaling stats, say max is 100, and a stat increases by 20 for each stack;
+            /// the value passed in amount would be: 20 * stacks.</param>
+            /// <param name="P"></param>
+            /// <returns></returns>
+            public static double HyperbolicP(double max, double amount, double P)
+            {
+                return Math.Pow(max - max / (max + amount), P);
+            }
+
+            /// <summary>
             /// Attempts to clamp a euler rotation value.
             /// </summary>
             /// <param name="angle"></param>
@@ -2108,13 +2231,7 @@ namespace WarWolfWorks.Utility
             /// <param name="value"></param>
             /// <returns></returns>
             public static int ToPositive(int value)
-            {
-                if (value < 0)
-                {
-                    value = -value;
-                }
-                return value;
-            }
+                => Math.Abs(value);
 
             /// <summary>
             /// If value given is positive, it will be turned into it's negative value.
@@ -2122,13 +2239,7 @@ namespace WarWolfWorks.Utility
             /// <param name="value"></param>
             /// <returns></returns>
             public static int ToNegative(int value)
-            {
-                if (value > 0)
-                {
-                    value = -value;
-                }
-                return value;
-            }
+            => -Math.Abs(value);
 
             /// <summary>
             /// If value given is negative, it will be turned into it's positive value.
@@ -2136,13 +2247,7 @@ namespace WarWolfWorks.Utility
             /// <param name="value"></param>
             /// <returns></returns>
             public static float ToPositive(float value)
-            {
-                if (value < 0f)
-                {
-                    value = -value;
-                }
-                return value;
-            }
+            => Math.Abs(value);
 
             /// <summary>
             /// If value given is positive, it will be turned into it's negative value.
@@ -2150,13 +2255,7 @@ namespace WarWolfWorks.Utility
             /// <param name="value"></param>
             /// <returns></returns>
             public static float ToNegative(float value)
-            {
-                if (value > 0)
-                {
-                    value = -value;
-                }
-                return value;
-            }
+            => -Math.Abs(value);
 
             /// <summary>
             /// If value given is negative, it will be turned into it's positive value.
@@ -2164,13 +2263,7 @@ namespace WarWolfWorks.Utility
             /// <param name="value"></param>
             /// <returns></returns>
             public static long ToPositive(long value)
-            {
-                if (value < 0f)
-                {
-                    value = -value;
-                }
-                return value;
-            }
+            => Math.Abs(value);
 
             /// <summary>
             /// If value given is positive, it will be turned into it's negative value.
@@ -2178,13 +2271,7 @@ namespace WarWolfWorks.Utility
             /// <param name="value"></param>
             /// <returns></returns>
             public static long ToNegative(long value)
-            {
-                if (value > 0)
-                {
-                    value = -value;
-                }
-                return value;
-            }
+            => -Math.Abs(value);
 
             /// <summary>
             /// Clamps the given value between range.Min and range.Max.
@@ -2455,10 +2542,7 @@ namespace WarWolfWorks.Utility
             /// <returns></returns>
             public static float MoveTowards(float a, float b, float speed)
             {
-                Vector2 current = new Vector2(a, 0f);
-                Vector2 target = new Vector2(b, 0f);
-                Vector2 vector = Vector2.MoveTowards(current, target, speed);
-                return vector.x;
+                return (b - a) * speed;
             }
 
             /// <summary>
@@ -2490,7 +2574,7 @@ namespace WarWolfWorks.Utility
             }
 
             /// <summary>
-            /// 
+            /// Returns a mid-point between two values.
             /// </summary>
             /// <param name="a"></param>
             /// <param name="b"></param>
@@ -2498,9 +2582,7 @@ namespace WarWolfWorks.Utility
             /// <returns></returns>
             public static float MiddleMan(float a, float b, float percent = 0.5f)
             {
-                float num = b - a;
-                percent = Mathf.Clamp(percent, 0f, 1f);
-                return num * percent;
+                return (b + a) * Mathf.Clamp01(percent);
             }
 
             /// <summary>
@@ -2568,6 +2650,29 @@ namespace WarWolfWorks.Utility
                 {
                     AdvancedDebug.LogError("Cannot use Freeze() when not on main thread!", AdvancedDebug.DEBUG_LAYER_EXCEPTIONS_INDEX);
                 }
+            }
+
+            /// <summary>
+            /// Encrypts a local string value with a completely random encryption key.
+            /// </summary>
+            /// <param name="original"></param>
+            public static void EncryptWithRandomKey(ref string original)
+            {
+                int size = 60;
+                char[] chars =
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
+            byte[] data = new byte[size * 4];
+                using (RNGCryptoServiceProvider crypto = new RNGCryptoServiceProvider())
+                { crypto.GetBytes(data); }
+                StringBuilder key = new StringBuilder(size);
+                for(int i = 0; i < size; i++)
+                {
+                    uint rand = BitConverter.ToUInt32(data, i * 4);
+                    long index = rand % chars.Length;
+
+                    key.Append(chars[index]);
+                }
+                original = RijndaelEncryption.Encrypt(original, key.ToString());
             }
 
             /// <summary>
