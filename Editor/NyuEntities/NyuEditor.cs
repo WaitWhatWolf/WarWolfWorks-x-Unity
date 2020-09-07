@@ -226,7 +226,7 @@ namespace WarWolfWorks.EditorBase.NyuEntities
         /// <param name="isFocused"></param>
         private void Event_DrawList(Rect rect, int index, bool isActive, bool isFocused)
         {
-            EditorGUI.LabelField(rect, NyuComponentTypes[index].Name);
+            EditorGUI.LabelField(rect, NyuComponentTypes[index].FullName);
         }
 
         /// <summary>

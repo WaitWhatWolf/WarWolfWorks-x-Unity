@@ -15,6 +15,7 @@ namespace WarWolfWorks.EditorBase
     {
         #region Streaming
         internal const string SVCN_ENUMENTRIES = "Enumリストエントリー";
+        internal const string VN_SCRIPTKEYWORDPROCESSOR_FULLNAMESPACE_SCRIPTFOLDER = "Scripts/";
         #endregion
 
         #region Service Menu

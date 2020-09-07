@@ -3,6 +3,7 @@ using UnityEditor;
 using System.IO;
 using WarWolfWorks.Utility;
 using System.Text.RegularExpressions;
+using static WarWolfWorks.EditorBase.Constants;
 
 namespace WarWolfWorks.EditorBase.Internal
 {
@@ -38,6 +39,13 @@ namespace WarWolfWorks.EditorBase.Internal
             fileContent = fileContent.Replace("using static #NAMESPACE#", "using static " + @namespace);
             string NAMESPACEReplace = isInterface ? @namespace + ".Interfaces" : @namespace;
             fileContent = fileContent.Replace("#NAMESPACE#", NAMESPACEReplace);
+
+            int fullNSCutoutIndexStart = originalPath.LastIndexOf(VN_SCRIPTKEYWORDPROCESSOR_FULLNAMESPACE_SCRIPTFOLDER)
+                + VN_SCRIPTKEYWORDPROCESSOR_FULLNAMESPACE_SCRIPTFOLDER.Length;
+            int fullNSCutoutIndexLength = originalPath.LastIndexOf('/');
+            string fullNSPath = originalPath.Substring(fullNSCutoutIndexStart, fullNSCutoutIndexLength - fullNSCutoutIndexStart);
+            string fullNSReplacer = @namespace + '.' + fullNSPath.Replace('/', '.');
+            fileContent = fileContent.Replace("#FULLNAMESPACE#", fullNSReplacer);
 
             if (isInterface)
                 fileContent = fileContent.Replace(" : MonoBehaviour", string.Empty);
