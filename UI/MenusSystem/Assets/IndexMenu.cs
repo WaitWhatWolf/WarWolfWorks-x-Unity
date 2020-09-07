@@ -161,6 +161,8 @@ namespace WarWolfWorks.UI.MenusSystem.Assets
 
             for (int i = 0; i < s_Events.Count; i++)
                 s_Events[i].Initiate(this, i);
+
+            MenuIndex = 0;
         }
 
         /// <summary>

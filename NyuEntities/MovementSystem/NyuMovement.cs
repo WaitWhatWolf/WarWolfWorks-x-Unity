@@ -222,7 +222,7 @@ namespace WarWolfWorks.NyuEntities.MovementSystem
         public abstract void MovePosition(Vector3 position, bool respectPhysics);
 
         /// <summary>
-        /// When overriding this class, make sure to call base.OnFixed() inside it as it is what 
+        /// When overriding this class, make sure to call "base.NyuFixedUpdate();" inside it as it is what 
         /// calculates the time left in Velocities through <see cref="Velocity.Time"/>. (<see cref="INyuFixedUpdate"/> implementation)
         /// </summary>
         public virtual void NyuFixedUpdate()

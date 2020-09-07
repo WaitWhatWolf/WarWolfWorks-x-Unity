@@ -1,7 +1,7 @@
 ﻿namespace WarWolfWorks.Interfaces
 {
     /// <summary>
-    /// Used for basic initiation of an object.
+    /// Used for basic initiation of a child object.
     /// </summary>
     public interface IParentInitiatable<T> : IInitiated, IParentable<T>
     {

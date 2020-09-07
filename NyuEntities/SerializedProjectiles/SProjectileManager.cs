@@ -68,6 +68,7 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
                 p.transform.SetParent(transform);
                 p.SetActive(false);
                 AllProjectiles[i] = p.AddComponent<T>();
+                AllProjectiles[i].SetSProjectileUpdates();
                 AllProjectiles[i].OnInit(this);
                 InactiveProjectiles.Add(AllProjectiles[i]);
             }
@@ -100,6 +101,9 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
             projectile.gameObject.SetActive(true);
             ActiveProjectiles.Add(projectile);
 
+            if (projectile is INyuAwake awake)
+                awake.NyuAwake();
+
             for(int i = 0; i < projectile.Behaviors.Length; i++)
             {
                 if (projectile.Behaviors[i] is ICloneInstructable cloneInstructable)
@@ -116,9 +120,12 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
                 {
                     bAwake.NyuAwake();
                 }
-
+                    
                 projectile.RefreshUpdateLists();
             }
+
+            if (projectile is INyuStart start)
+                start.NyuStart();
 
             return true;
         }
@@ -131,6 +138,9 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
         {
             if(ActiveProjectiles.Contains(projectile))
             {
+                if (projectile is INyuOnDestroyQueued destroyQueued)
+                    destroyQueued.NyuOnDestroyQueued();
+
                 for(int j = 0; j < projectile.Behaviors.Length; j++)
                 {
                     if(projectile.Behaviors[j] is INyuOnDestroy bDestroy)
@@ -138,6 +148,9 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
 
                     Destroy(projectile.Behaviors[j]);
                 }
+                
+                if (projectile is INyuOnDestroy onDestroy)
+                    onDestroy.NyuOnDestroy();   
 
                 projectile.gameObject.SetActive(false);
                 projectile.Behaviors = new Behavior[0];
@@ -190,6 +203,9 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
                 if (ActiveProjectiles[i].Locked)
                     continue;
 
+                if (ActiveProjectiles[i].IsUpdate)
+                    ActiveProjectiles[i].AsUpdate.NyuUpdate();
+
                 for (int j = 0; j < ActiveProjectiles[i].Behaviors_Updates.Count; j++)
                     ActiveProjectiles[i].Behaviors_Updates[j].NyuUpdate();
             }
@@ -206,6 +222,9 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
                 if (ActiveProjectiles[i].Locked)
                     continue;
 
+                if (ActiveProjectiles[i].IsFixedUpdate)
+                    ActiveProjectiles[i].AsFixedUpdate.NyuFixedUpdate();
+
                 for (int j = 0; j < ActiveProjectiles[i].Behaviors_FixedUpdates.Count; j++)
                     ActiveProjectiles[i].Behaviors_FixedUpdates[j].NyuFixedUpdate();
             }
@@ -221,6 +240,9 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
             {
                 if (ActiveProjectiles[i].Locked)
                     continue;
+
+                if (ActiveProjectiles[i].IsLateUpdate)
+                    ActiveProjectiles[i].AsLateUpdate.NyuLateUpdate();
 
                 for (int j = 0; j < ActiveProjectiles[i].Behaviors_LateUpdates.Count; j++)
                     ActiveProjectiles[i].Behaviors_LateUpdates[j].NyuLateUpdate();

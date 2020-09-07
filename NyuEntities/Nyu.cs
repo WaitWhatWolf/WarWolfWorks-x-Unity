@@ -58,15 +58,15 @@ namespace WarWolfWorks.NyuEntities
         /// <summary>
         /// Pointer to transform.position.
         /// </summary>
-        public Vector3 Position { get => transform.position; set => transform.position = value; }
+        public virtual Vector3 Position { get => transform.position; set => transform.position = value; }
         /// <summary>
         /// Pointer to transform.rotation.
         /// </summary>
-        public Quaternion Rotation { get => transform.rotation; set => transform.rotation = value; }
+        public virtual Quaternion Rotation { get => transform.rotation; set => transform.rotation = value; }
         /// <summary>
         /// Pointer to transform.eulerAngles.
         /// </summary>
-        public Vector3 EulerAngles { get => transform.eulerAngles; set => transform.eulerAngles = value; }
+        public virtual Vector3 EulerAngles { get => transform.eulerAngles; set => transform.eulerAngles = value; }
         #endregion
 
         #region Enabling and Disabling

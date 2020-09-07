@@ -7,7 +7,9 @@ using WarWolfWorks.Interfaces.NyuEntities;
 namespace WarWolfWorks.NyuEntities.SerializedProjectiles
 {
     /// <summary>
-    /// Base class for serializable projectiles.
+    /// Base class for serializable projectiles. Supported interfaces:
+    /// <see cref="INyuAwake"/>, <see cref="INyuStart"/>, <see cref="INyuUpdate"/>, <see cref="INyuFixedUpdate"/>, <see cref="INyuLateUpdate"/>,
+    /// <see cref="INyuOnDestroyQueued"/>, <see cref="INyuOnDestroy"/>.
     /// </summary>
     public abstract class SProjectile : MonoBehaviour, ILockable, INyuReferencable
     {
@@ -48,9 +50,39 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
         /// </summary>
         public Behavior[] Behaviors = new Behavior[0];
 
+
+        #region Internal
         internal List<INyuUpdate> Behaviors_Updates = new List<INyuUpdate>();
         internal List<INyuFixedUpdate> Behaviors_FixedUpdates = new List<INyuFixedUpdate>();
         internal List<INyuLateUpdate> Behaviors_LateUpdates = new List<INyuLateUpdate>();
+
+        internal bool IsUpdate;
+        internal bool IsFixedUpdate;
+        internal bool IsLateUpdate;
+
+        internal INyuUpdate AsUpdate;
+        internal INyuFixedUpdate AsFixedUpdate;
+        internal INyuLateUpdate AsLateUpdate;
+
+        internal void SetSProjectileUpdates()
+        {
+            if(this is INyuUpdate update)
+            {
+                AsUpdate = update;
+                IsUpdate = true;
+            }
+            if (this is INyuFixedUpdate fixedUpdate)
+            {
+                AsFixedUpdate = fixedUpdate;
+                IsFixedUpdate = true;
+            }
+            if (this is INyuLateUpdate lateUpdate)
+            {
+                AsLateUpdate = lateUpdate;
+                IsLateUpdate = true;
+            }
+        }
+        #endregion
 
         /// <summary>
         /// Refreshes all behavior update lists.

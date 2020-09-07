@@ -81,6 +81,7 @@ namespace WarWolfWorks.NyuEntities.AttackSystemV2
         {
             s_Freki.Parent = s_Geri.Parent = this;
             s_Freki.Handler = s_Geri.Handler = Parent;
+            s_Freki.Index = s_Geri.Index = Index;
         }
 
         /// <summary>

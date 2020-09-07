@@ -230,6 +230,30 @@ namespace WarWolfWorks.NyuEntities
         /// <returns></returns>
         public static Nyu[] GetAll() => AllEntities.ToArray();
 
+        /// <summary>
+        /// Returns true if an entity is of a given non-generic type.
+        /// </summary>
+        /// <param name="nyu"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsType(Nyu nyu, Type type)
+            => type.IsAssignableFrom(nyu.GetType());
+
+        /// <summary>
+        /// Returns true if the entity is of any given non-generic types.
+        /// </summary>
+        /// <param name="nyu"></param>
+        /// <param name="types"></param>
+        /// <returns></returns>
+        public static bool IsTypeAny(Nyu nyu, IEnumerable<Type> types)
+        {
+            foreach (Type type in types)
+                if (type.IsAssignableFrom(nyu.GetType()))
+                    return true;
+
+            return false;
+        }
+
         #region Get Visible
         /// <summary>
         /// Gets all visible <see cref="Nyu"/> entities to a given camera.
@@ -389,7 +413,7 @@ namespace WarWolfWorks.NyuEntities
 
             for (int i = 0; i < AllEntities.Count; i++)
             {
-                if (AllEntities[i].GetType().IsAssignableFrom(acceptedType))
+                if(IsType(AllEntities[i], acceptedType))
                 {
                     float curDist = Vector3.Distance(to.transform.position, AllEntities[i].Position);
                     if (curDist <= within && curDist < previousDist)
@@ -424,15 +448,7 @@ namespace WarWolfWorks.NyuEntities
 
             for (int i = 0; i < AllEntities.Count; i++)
             {
-                bool acceptType = false;
-                foreach(Type type in acceptedTypes)
-                    if(AllEntities[i].GetType().IsAssignableFrom(type))
-                    {
-                        acceptType = true;
-                        break;
-                    }
-
-                if (acceptType)
+                if (IsTypeAny(AllEntities[i], acceptedTypes))
                 {
                     float curDist = Vector3.Distance(to.transform.position, AllEntities[i].Position);
                     if (curDist <= within && curDist < previousDist)
@@ -508,7 +524,7 @@ namespace WarWolfWorks.NyuEntities
             float lastDist = within;
             for (int i = 0; i < AllEntities.Count; i++)
             {
-                if (compareType.IsAssignableFrom(AllEntities[i].GetType()))
+                if(IsType(AllEntities[i], compareType))
                 {
                     float curDist = Vector3.Distance(AllEntities[i].Position, position);
                     if (curDist < lastDist)
@@ -533,7 +549,7 @@ namespace WarWolfWorks.NyuEntities
             float lastDist = within;
             for (int i = 0; i < AllEntities.Count; i++)
             {
-                if (Array.Exists(compareTypes, t => t.IsAssignableFrom(AllEntities[i].GetType())))
+                if (IsTypeAny(AllEntities[i], compareTypes))
                 {
                     float curDist = Vector3.Distance(AllEntities[i].Position, position);
                     if (curDist < lastDist)
@@ -558,16 +574,11 @@ namespace WarWolfWorks.NyuEntities
             float lastDist = within;
             for (int i = 0; i < AllEntities.Count; i++)
             {
-                foreach(Type type in compareTypes)
+                if (IsTypeAny(AllEntities[i], compareTypes))
                 {
-                    if(type.IsAssignableFrom(AllEntities[i].GetType()))
-                    {
-                        float curDist = Vector3.Distance(AllEntities[i].Position, position);
-                        if (curDist < lastDist)
-                            index = i;
-                    }
-
-                    break;
+                    float curDist = Vector3.Distance(AllEntities[i].Position, position);
+                    if (curDist < lastDist)
+                        index = i;
                 }
             }
 
@@ -586,7 +597,7 @@ namespace WarWolfWorks.NyuEntities
             List<Nyu> toReturn = new List<Nyu>();
             for (int i = 0; i < AllEntities.Count; i++)
             {
-                if (compareType.IsAssignableFrom(AllEntities[i].GetType()))
+                if (IsType(AllEntities[i], compareType))
                 {
                     float curDist = Vector3.Distance(AllEntities[i].Position, position);
                     if (curDist <= within)
@@ -609,16 +620,11 @@ namespace WarWolfWorks.NyuEntities
             List<Nyu> toReturn = new List<Nyu>();
             for (int i = 0; i < AllEntities.Count; i++)
             {
-                foreach (Type type in compareTypes)
+                if (IsTypeAny(AllEntities[i], compareTypes))
                 {
-                    if (type.IsAssignableFrom(AllEntities[i].GetType()))
-                    {
-                        float curDist = Vector3.Distance(AllEntities[i].Position, position);
-                        if (curDist <= within)
-                            toReturn.Add(AllEntities[i]);
-
-                        break;
-                    }
+                    float curDist = Vector3.Distance(AllEntities[i].Position, position);
+                    if (curDist <= within)
+                        toReturn.Add(AllEntities[i]);
                 }
             }
 
@@ -637,16 +643,11 @@ namespace WarWolfWorks.NyuEntities
             List<Nyu> toReturn = new List<Nyu>();
             for (int i = 0; i < AllEntities.Count; i++)
             {
-                foreach (Type type in compareTypes)
+                if (IsTypeAny(AllEntities[i], compareTypes))
                 {
-                    if (type.IsAssignableFrom(AllEntities[i].GetType()))
-                    {
                         float curDist = Vector3.Distance(AllEntities[i].Position, position);
                         if (curDist <= within)
                             toReturn.Add(AllEntities[i]);
-
-                        break;
-                    }
                 }
             }
 

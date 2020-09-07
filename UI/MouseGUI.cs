@@ -116,6 +116,18 @@ namespace WarWolfWorks.UI
         /// </summary>
         public static MouseGraphic CurrentlyQueued { get; private set; }
 
+        /// <summary>
+        /// Returns the image component used for mouse graphics.
+        /// </summary>
+        /// <returns></returns>
+        public static Image GetMouseImage() => MouseImage;
+
+        /// <summary>
+        /// Returns the text mesh pro component used for mouse graphics.
+        /// </summary>
+        /// <returns></returns>
+        public static TextMeshProUGUI GetMouseTMP() => MouseText;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
 #pragma warning disable IDE0051
         private static void InitializeThread()

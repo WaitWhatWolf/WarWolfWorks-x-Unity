@@ -7,7 +7,7 @@ namespace WarWolfWorks.NyuEntities.AttackSystemV2
     /// <summary>
     /// Used as a "bonus" condition for an attack group (<see cref="Odin"/>). Usually used for Input detection or enemy AI-related checks.
     /// </summary>
-    public abstract class Geri : ScriptableObject, IParentable<Odin>, INyuReferencable
+    public abstract class Geri : ScriptableObject, IParentable<Odin>, INyuReferencable, IIndexable
     {
         /// <summary>
         /// The <see cref="Geri"/> to which this <see cref="Geri"/> belongs to.
@@ -23,6 +23,11 @@ namespace WarWolfWorks.NyuEntities.AttackSystemV2
         /// The <see cref="NyuOdinHandler"/> which manages this <see cref="Geri"/>.
         /// </summary>
         public NyuOdinHandler Handler { get; internal set; }
+
+        /// <summary>
+        /// The index of this geri in it's parent.
+        /// </summary>
+        public int Index { get; internal set; }
 
         /// <summary>
         /// Returns true when the condition of this <see cref="Geri"/> is met.
