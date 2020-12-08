@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <AssemblyName>WarWolfWorks.IO.CTS</AssemblyName>
+    <RootNamespace>WarWolfWorks.IO.CTS</RootNamespace>
+    <PackageLicenseFile>..\LICENSE</PackageLicenseFile>
+    <OutputType>Library</OutputType>
+    <Version>1</Version>
+    <Product>WarWolfWorks-x-Unity</Product>
+    <Company>WarWolfWorks</Company>
+    <Authors>WaitWhatWolf</Authors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>WarWolfWorks.IO.CTS.xml</DocumentationFile>
+  </PropertyGroup>
+</Project>

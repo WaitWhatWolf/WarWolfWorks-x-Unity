@@ -1,0 +1,255 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WarWolfWorks.IO.CTS</name>
+    </assembly>
+    <members>
+        <member name="T:WarWolfWorks.IO.CTS.Catalog">
+            <summary>
+            Core class for catalog saving.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.IO.CTS.Catalog.Expression_Category_Start">
+            <summary>
+            A regex expression to find if a line is a category start.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.IO.CTS.Catalog.Expression_Category_End">
+            <summary>
+            A regex expression to find if a line is a category end.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.IO.CTS.Catalog.Expression_Variable_Name">
+            <summary>
+            A regex expression to find if a line has a valid name pattern for saving a variable.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.IO.CTS.Catalog.SVARV_VARIABLE_POINTER">
+            <summary>
+            The "Equals", or the string value which "points" or "splits" the value from the name of the variable.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.IO.CTS.Catalog.SVARV_CATEGORY_WRAP_BEGIN">
+            <summary>
+            Character which starts the wrapping of a category.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.IO.CTS.Catalog.SVARV_CATEGORY_WRAP_END">
+            <summary>
+            Character which ends the wrapping of a category.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.IO.CTS.Catalog.SVARV_CATEGORY_END">
+            <summary>
+            Character which indicates the end of a category.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.IO.CTS.Catalog.Path">
+            <summary>
+            The file path towards this catalog.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.IO.CTS.Catalog.Category">
+            <summary>
+            The specific "Category" under which this <see cref="T:WarWolfWorks.IO.CTS.Catalog"/> operates.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.IO.CTS.Catalog.Overriden">
+            <summary>
+            Returns true when <see cref="M:WarWolfWorks.IO.CTS.Catalog.Override(System.Collections.Generic.List{WarWolfWorks.IO.CTS.Variable})"/> has been successfully called.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.IO.CTS.Catalog.Lines">
+            <summary>
+            All lines of the given category.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.IO.CTS.Catalog.PreviousLines">
+            <summary>
+            Pre-Override lines.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.IO.CTS.Catalog.StartLines">
+            <summary>
+            The starting lines when this catalog was loaded.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.GetCategoryStart">
+            <summary>
+            Returns a line that start the category.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.GetCategoryEnd">
+            <summary>
+            Returns a line that ends the category.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.GetAllLines">
+            <summary>
+            Returns every line inside of the catalog (this specific category).
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.Override(System.Collections.Generic.List{WarWolfWorks.IO.CTS.Variable})">
+            <summary>
+            Overrides all current variables with a new list.
+            </summary>
+            <param name="variables"></param>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.CancelOverride">
+            <summary>
+            If this <see cref="T:WarWolfWorks.IO.CTS.Catalog"/> has been overriden it cancels it.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.GetIndex(System.String)">
+            <summary>
+            Returns the index of variable by name.
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.GetCount">
+            <summary>
+            Returns the count of all variables inside this <see cref="T:WarWolfWorks.IO.CTS.Catalog"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.Move(System.String,System.Int32)">
+            <summary>
+            Moves a variable into a given index.
+            </summary>
+            <param name="name"></param>
+            <param name="to"></param>
+            <returns></returns>
+        </member>
+        <member name="P:WarWolfWorks.IO.CTS.Catalog.Item(System.String)">
+            <summary>
+            Sets or gets a value based off of it's name. If the value retrieved does not exist it will return <see cref="F:System.String.Empty"/>
+            without adding it to the list. If the value set didn't exist previously it will be added to the list.
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.GetSafe(System.String,System.String)">
+            <summary>
+            Attempts to retrieve a variable under a given name; If the variable was not found, it will return the defaultValue instead.
+            </summary>
+            <param name="name"></param>
+            <param name="defaultValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.#ctor(System.String,System.String)">
+            <summary>
+            Creates a catalog with it's category and path.
+            </summary>
+            <param name="path"></param>
+            <param name="category"></param>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Creates a catalog with it's category and path.
+            </summary>
+            <param name="path"></param>
+            <param name="category"></param>
+            <param name="password"></param>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.Refresh">
+            <summary>
+            Updates the catalog to the current state of the file. If chages were made to this <see cref="T:WarWolfWorks.IO.CTS.Catalog"/>, they will be discarded.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.RemoveAll">
+            <summary>
+            Removes all variables inside this catalog.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.Remove(WarWolfWorks.IO.CTS.Variable)">
+            <summary>
+            Removes a specific variable from this catalog.
+            </summary>
+            <param name="variable"></param>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.Remove(System.String)">
+            <summary>
+            Attempts to remove a specific variable by it's name.
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.Find(System.Predicate{WarWolfWorks.IO.CTS.Variable})">
+            <summary>
+            Finds a specific line.
+            </summary>
+            <param name="match"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.RemoveAll(System.Predicate{WarWolfWorks.IO.CTS.Variable})">
+            <summary>
+            Removes all variables matching the given condition.
+            </summary>
+            <param name="match"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.Rename(System.String,System.String)">
+            <summary>
+            Attempts to rename a existing variable, and returns true if the attempt was successful.
+            </summary>
+            <param name="from"></param>
+            <param name="to"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.OrderBy(System.Func{WarWolfWorks.IO.CTS.Variable,System.Int32})">
+            <summary>
+            Reorders all variables inside this <see cref="T:WarWolfWorks.IO.CTS.Catalog"/> by the key selector.
+            </summary>
+            <param name="keySelector"></param>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.Reset">
+            <summary>
+            Reverts ALL changes that were made to this catalog.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Catalog.Apply">
+            <summary>
+            Saves all changes made to this catalog to it's file.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.IO.CTS.Variable">
+            <summary>
+            Used by <see cref="T:WarWolfWorks.IO.CTS.Catalog"/> 
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.IO.CTS.Variable.Name">
+            <summary>
+            The name of the variable.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.IO.CTS.Variable.Value">
+            <summary>
+            The value of the variable.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Variable.#ctor(System.String,System.String)">
+            <summary>
+            Creates a new variable.
+            </summary>
+            <param name="name"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Variable.ToString">
+            <summary>
+            Returns the entire line of a variable in a <see cref="T:WarWolfWorks.IO.CTS.Catalog"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.IO.CTS.Variable.Equals(System.String)">
+            <summary>
+            Returns true if this variable is equal to the given string.
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
