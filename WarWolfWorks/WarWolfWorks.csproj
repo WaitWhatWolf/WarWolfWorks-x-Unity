@@ -320,14 +320,14 @@
     <Reference Include="UnityEngine.XRModule">
       <HintPath>..\Library DLLs\UnityEngine.XRModule.dll</HintPath>
     </Reference>
-    <Reference Include="WarWolfWorks.IO.CTS">
-      <HintPath>..\Library DLLs\WarWolfWorks.IO.CTS.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WarWolfWorks.IO.CTS\WarWolfWorks.IO.CTS.csproj" />
   </ItemGroup>
 </Project>

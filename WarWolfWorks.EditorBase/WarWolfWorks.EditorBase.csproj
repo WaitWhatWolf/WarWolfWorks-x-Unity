@@ -23,6 +23,10 @@
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\WarWolfWorks.IO.CTS\WarWolfWorks.IO.CTS.csproj" />
+    <ProjectReference Include="..\WarWolfWorks\WarWolfWorks.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Microsoft.CSharp">
       <HintPath>..\Library DLLs\Microsoft.CSharp.dll</HintPath>
     </Reference>
@@ -319,9 +323,6 @@
     </Reference>
     <Reference Include="UnityEngine.XRModule">
       <HintPath>..\Library DLLs\UnityEngine.XRModule.dll</HintPath>
-    </Reference>
-    <Reference Include="WarWolfWorks.IO.CTS">
-      <HintPath>..\Library DLLs\WarWolfWorks.IO.CTS.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
