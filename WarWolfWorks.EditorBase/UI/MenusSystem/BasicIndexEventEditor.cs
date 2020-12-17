@@ -5,7 +5,7 @@ using UnityEngine;
 using WarWolfWorks.EditorBase.Utility;
 using WarWolfWorks.UI.MenusSystem.Assets;
 using static WarWolfWorks.EditorBase.Constants;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 using System.Linq;
 
 namespace WarWolfWorks.EditorBase.UI.MenusSystem

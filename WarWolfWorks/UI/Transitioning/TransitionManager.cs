@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 using UnityEngine;
 using WarWolfWorks.Interfaces.UnityMethods;
 using WarWolfWorks.Interfaces;

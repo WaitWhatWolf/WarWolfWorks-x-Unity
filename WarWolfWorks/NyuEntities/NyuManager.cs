@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 using WarWolfWorks.Interfaces.NyuEntities;
 using WarWolfWorks.Security;
 using WarWolfWorks.Utility;

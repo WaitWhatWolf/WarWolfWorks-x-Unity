@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using WarWolfWorks.Internal;
 using WarWolfWorks.Threading;
 using WarWolfWorks.Utility;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 
 namespace WarWolfWorks.UI
 {

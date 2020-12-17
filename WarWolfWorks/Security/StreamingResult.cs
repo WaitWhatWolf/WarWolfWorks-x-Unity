@@ -1,6 +1,6 @@
 ﻿using System;
 using static WarWolfWorks.Utility.Hooks.Streaming;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 
 namespace WarWolfWorks.Security
 {

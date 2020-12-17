@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using WarWolfWorks.Debugging;
 using WarWolfWorks.Utility;
 using static WarWolfWorks.AdvancedDebug;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 
 [assembly: InternalsVisibleTo("WarWolfWorks.EditorBase")]
 namespace WarWolfWorks.Internal

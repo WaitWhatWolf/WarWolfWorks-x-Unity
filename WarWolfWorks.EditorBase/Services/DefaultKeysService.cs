@@ -8,7 +8,7 @@ using WarWolfWorks.EditorBase.Interfaces;
 using WarWolfWorks.EditorBase.Utility;
 using WarWolfWorks.Utility;
 using static WarWolfWorks.EditorBase.Constants;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 using WarWolfWorks.IO.CTS;
 
 namespace WarWolfWorks.EditorBase.Services

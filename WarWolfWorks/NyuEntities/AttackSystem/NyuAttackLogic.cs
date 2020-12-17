@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using WarWolfWorks.Interfaces.NyuEntities;
 using WarWolfWorks.Interfaces.UnityMethods;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 
 namespace WarWolfWorks.NyuEntities.AttackSystem
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 using static WarWolfWorks.EditorBase.Constants;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 using UnityEditor;
 using UnityEngine;
 using WarWolfWorks.EditorBase.Interfaces;

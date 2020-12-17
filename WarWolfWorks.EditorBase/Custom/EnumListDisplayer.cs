@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using WarWolfWorks.IO.CTS;
 using WarWolfWorks.Utility;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 using static WarWolfWorks.EditorBase.Constants;
 
 namespace WarWolfWorks.EditorBase.Custom

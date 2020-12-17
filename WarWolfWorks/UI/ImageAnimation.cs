@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 
 namespace WarWolfWorks.UI
 {

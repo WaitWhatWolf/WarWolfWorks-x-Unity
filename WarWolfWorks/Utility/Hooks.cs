@@ -17,7 +17,7 @@ using WarWolfWorks.Debugging;
 using WarWolfWorks.Interfaces;
 using WarWolfWorks.Internal;
 using WarWolfWorks.Security;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 
 namespace WarWolfWorks.Utility
 {
@@ -983,45 +983,6 @@ namespace WarWolfWorks.Utility
             /// <returns></returns>
             public static string Decrypt(string input, string password, CipherMode mode, PaddingMode padding)
                 => DecryptInternal(input, password, mode, padding);
-        }
-
-        /// <summary>
-        /// Encryption class which uses <see cref="ProtectedData"/>.
-        /// NOTE: ONLY USE FOR LOCAL ENCRYPTION LIKE OFFLINE CONFIG/SAVE FILES; IF A STRING IS ENCRYPTED ON A MACHINE, IT CAN ONLY BE DECRYPTED BY THAT SAME MACHINE.
-        /// </summary>
-        public static class LocalEncryption
-        {
-            private static readonly byte[] Salt = new byte[]
-            {
-                243, 21, 75, 44,
-                21, 75, 44, 192,
-                75, 44, 192, 122,
-                44, 192, 122, 254,
-                192, 122, 254, 243,
-                122, 254, 243, 21,
-                254, 243, 21, 75,
-                11, 22, 33, 44
-            };
-
-            /// <summary>
-            /// Encrypts a string.
-            /// </summary>
-            /// <param name="input"></param>
-            /// <returns></returns>
-            public static string Encrypt(string input)
-            {
-                return Convert.ToBase64String(ProtectedData.Protect(Encoding.ASCII.GetBytes(input), Salt, DataProtectionScope.CurrentUser));
-            }
-
-            /// <summary>
-            /// Decrypts a string previously encrypted with <see cref="Encrypt(string)"/>.
-            /// </summary>
-            /// <param name="input"></param>
-            /// <returns></returns>
-            public static string Decrypt(string input)
-            {
-                return Encoding.ASCII.GetString(ProtectedData.Unprotect(Convert.FromBase64String(input), Salt, DataProtectionScope.CurrentUser));
-            }
         }
 
         /// <summary>
@@ -3610,7 +3571,7 @@ namespace WarWolfWorks.Utility
             /// <param name="value"></param>
             /// <returns></returns>
             public static bool IsKanji(string value)
-                => Constants.Expression_Kanji.IsMatch(value);
+                => WWWResources.Expression_Kanji.IsMatch(value);
 
             /// <summary>
             /// Returns true if the given string contains a Hiragana character.
@@ -3618,7 +3579,7 @@ namespace WarWolfWorks.Utility
             /// <param name="value"></param>
             /// <returns></returns>
             public static bool IsHiragana(string value)
-                => Constants.Expression_Hiragana.IsMatch(value);
+                => WWWResources.Expression_Hiragana.IsMatch(value);
 
             /// <summary>
             /// Returns true if the given string contains a Katakana character.
@@ -3626,7 +3587,7 @@ namespace WarWolfWorks.Utility
             /// <param name="value"></param>
             /// <returns></returns>
             public static bool IsKatakana(string value)
-               => Constants.Expression_Katakana.IsMatch(value);
+               => WWWResources.Expression_Katakana.IsMatch(value);
 
             /// <summary>
             /// Returns true if the given string contains either a Kanji, Hiragana or Katakana character.
@@ -3634,7 +3595,7 @@ namespace WarWolfWorks.Utility
             /// <param name="value"></param>
             /// <returns></returns>
             public static bool IsJapanese(string value)
-                => Constants.Expression_Japanese_Greedy.IsMatch(value);
+                => WWWResources.Expression_Japanese_Greedy.IsMatch(value);
 
             /// <summary>
             /// Cuts out a string between from and to in char values.

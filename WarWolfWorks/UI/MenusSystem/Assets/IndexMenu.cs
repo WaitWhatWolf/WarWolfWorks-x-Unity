@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 using WarWolfWorks.Attributes;
 using WarWolfWorks.Interfaces;
 using WarWolfWorks.Utility;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 
 namespace WarWolfWorks.UI.MenusSystem.Assets
 {

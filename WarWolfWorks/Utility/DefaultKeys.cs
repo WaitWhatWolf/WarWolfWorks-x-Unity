@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using WarWolfWorks.IO.CTS;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 
 [assembly: InternalsVisibleTo("WarWolfWorks.EditorBase")]
 namespace WarWolfWorks.Utility

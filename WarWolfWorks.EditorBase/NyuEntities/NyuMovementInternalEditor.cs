@@ -5,7 +5,7 @@ using UnityEngine;
 using WarWolfWorks.EditorBase.Interfaces;
 using WarWolfWorks.EditorBase.Utility;
 using WarWolfWorks.NyuEntities.MovementSystem;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 using static WarWolfWorks.EditorBase.Constants;
 
 namespace WarWolfWorks.EditorBase.NyuEntities

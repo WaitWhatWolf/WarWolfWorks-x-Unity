@@ -9,6 +9,8 @@ using WarWolfWorks.NyuEntities.ProjectileSystem;
 using WarWolfWorks.IO.CTS;
 using WarWolfWorks.Utility;
 using WarWolfWorks.Debugging;
+using WarWolfWorks.Enums;
+using WarWolfWorks.UI.MenusSystem.SlickMenu;
 
 [assembly: InternalsVisibleTo("WarWolfWorks.EditorBase.Services")]
 [assembly: InternalsVisibleTo("WarWolfWorks.EditorBase")]
@@ -17,7 +19,7 @@ namespace WarWolfWorks
     /// <summary>
     /// All constant and readonly values of the <see cref="WarWolfWorks"/> library.
     /// </summary>
-    public static class Constants
+    public static class WWWResources
     {
         #region Streaming
         internal const int STREAMING_FILE_ENCRYPTION_JUMPER = 85;
@@ -217,6 +219,58 @@ namespace WarWolfWorks
         internal static readonly Catalog CTS_Preferences_Misc = new Catalog(SV_Path_Preferences, SVCN_OTHER);
 
         internal static readonly Catalog CTS_DefaultKeys = new Catalog(SV_Path_DefaultKeys, SVCN_KEYS);
+        #endregion
+
+        #region UI
+        #region Slick UI
+#pragma warning disable 1591
+        public static Vector4 UI_Slick_Rect_Left = new Vector4(0, 0, 0f, 1f);
+        public static Vector4 UI_Slick_Rect_Right = new Vector4(1f, 0f, 1f, 1f);
+        public static Vector4 UI_Slick_Rect_Top = new Vector4(0f, 1f, 1f, 1f);
+        public static Vector4 UI_Slick_Rect_Bot = new Vector4(0f, 0f, 1f, 0f);
+        public const float UI_SLICK_OFFSET_X = 1f;
+        public const float UI_SLICK_OFFSET_Y = 1f;
+#pragma warning restore 1591
+        /// <summary>
+        /// The default transparency of slick UI elements.
+        /// </summary>
+        public const float UI_SLICK_BACK_TRANSPARENCY = 0.25f;
+
+        /// <summary>
+        /// The default color of slick UI elements.
+        /// </summary>
+        public static readonly Color UI_Slick_Color_Default = Hooks.Colors.Tangelo;
+        #endregion
+        #endregion
+
+        #region Runtime Resource Methods
+        /// <summary>
+        /// Used to apply offset to <see cref="SlickBorder"/> based on given flags.
+        /// </summary>
+        /// <param name="flags"></param>
+        /// <param name="rectTransform"></param>
+        public static void AdaptSlickAnchors(SlickBorderFlags flags, RectTransform rectTransform)
+        {
+            switch (flags)
+            {
+                case SlickBorderFlags.Left:
+                    rectTransform.offsetMin = new Vector2(-UI_SLICK_OFFSET_X, -UI_SLICK_OFFSET_Y);
+                    rectTransform.offsetMax = new Vector2(0, UI_SLICK_OFFSET_Y);
+                    break;
+                case SlickBorderFlags.Right:
+                    rectTransform.offsetMin = new Vector2(0, -UI_SLICK_OFFSET_Y);
+                    rectTransform.offsetMax = new Vector2(UI_SLICK_OFFSET_X, UI_SLICK_OFFSET_Y);
+                    break;
+                case SlickBorderFlags.Top:
+                    rectTransform.offsetMin = new Vector2(-UI_SLICK_OFFSET_X, 0);
+                    rectTransform.offsetMax = new Vector2(UI_SLICK_OFFSET_X, UI_SLICK_OFFSET_Y);
+                    break;
+                case SlickBorderFlags.Bot:
+                    rectTransform.offsetMin = new Vector2(-UI_SLICK_OFFSET_X, -UI_SLICK_OFFSET_Y);
+                    rectTransform.offsetMax = new Vector2(UI_SLICK_OFFSET_X, 0);
+                    break;
+            }
+        }
         #endregion
     }
 }

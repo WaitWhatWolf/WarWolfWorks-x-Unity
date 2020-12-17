@@ -4,7 +4,7 @@ using UnityEngine;
 using WarWolfWorks.Attributes;
 using WarWolfWorks.Interfaces.NyuEntities;
 using WarWolfWorks.Utility;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 
 namespace WarWolfWorks.NyuEntities.AttackSystemV2
 {

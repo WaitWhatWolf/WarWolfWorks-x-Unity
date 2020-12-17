@@ -17,11 +17,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants></DefineConstants>
     <DocumentationFile>WarWolfWorks.xml</DocumentationFile>
+	<Optimize>true</Optimize>
     <OutputPath></OutputPath>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.7.0" />
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp">
       <HintPath>..\Library DLLs\Microsoft.CSharp.dll</HintPath>
@@ -328,6 +326,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\WarWolfWorks.EditorBase\WarWolfWorks.EditorBase.csproj" />
     <ProjectReference Include="..\WarWolfWorks.IO.CTS\WarWolfWorks.IO.CTS.csproj" />
   </ItemGroup>
 </Project>

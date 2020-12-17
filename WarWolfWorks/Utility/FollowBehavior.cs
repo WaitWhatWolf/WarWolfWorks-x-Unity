@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using static WarWolfWorks.Utility.Hooks.MathF;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 using System.Collections.Generic;
 using System;
 

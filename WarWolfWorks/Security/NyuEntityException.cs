@@ -1,7 +1,7 @@
 ﻿using System;
 using WarWolfWorks.Interfaces.NyuEntities;
 using WarWolfWorks.NyuEntities;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 
 namespace WarWolfWorks.Security
 {

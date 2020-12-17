@@ -4,7 +4,7 @@ using WarWolfWorks.EditorBase.Interfaces;
 using WarWolfWorks.EditorBase.Services;
 using WarWolfWorks.IO.CTS;
 using WarWolfWorks.Utility;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 
 namespace WarWolfWorks.EditorBase
 {

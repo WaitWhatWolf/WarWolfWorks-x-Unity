@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using WarWolfWorks.Utility;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 using static WarWolfWorks.EditorBase.Constants;
 
 namespace WarWolfWorks.EditorBase.Utility

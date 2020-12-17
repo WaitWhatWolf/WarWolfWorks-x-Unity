@@ -6,7 +6,7 @@ using UnityEngine.Audio;
 using WarWolfWorks.Attributes;
 using WarWolfWorks.Interfaces.UnityMethods;
 using WarWolfWorks.Utility;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 
 namespace WarWolfWorks.AudioSystem
 {

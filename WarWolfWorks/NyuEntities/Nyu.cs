@@ -5,7 +5,7 @@ using WarWolfWorks.Interfaces;
 using WarWolfWorks.Interfaces.NyuEntities;
 using WarWolfWorks.NyuEntities.Statistics;
 using WarWolfWorks.Security;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 
 namespace WarWolfWorks.NyuEntities
 {

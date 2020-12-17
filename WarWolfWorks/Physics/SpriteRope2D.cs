@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine;
 using WarWolfWorks.Attributes;
 using WarWolfWorks.Utility;
-using static WarWolfWorks.Constants;
+using static WarWolfWorks.WWWResources;
 
 namespace WarWolfWorks.Physics
 {
