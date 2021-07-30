@@ -9,15 +9,6 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
     [CompleteNoS]
     public sealed class NyuProjectile2DManager : NyuProjectileManager<NyuProjectile2D>
     {
-        [SerializeField, Header("The size of the pool; Leave at 0 to Init the pool manually.")]
-        private int s_PoolSize;
-
-        private void Awake()
-        {
-            Instance = this;
-            if(s_PoolSize > 0) Init(s_PoolSize);
-        }
-
         /// <summary>
         /// <see cref="MeshFilter"/>と<see cref="MeshRenderer"/>を追加。
         /// </summary>
@@ -40,13 +31,15 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
         /// <param name="sprite"></param>
         /// <param name="behaviors"></param>
         /// <returns></returns>
-        public static NyuProjectile2D New(Nyu owner, Vector3 position, Quaternion rotation, Sprite sprite, params NyuProjectile.Behavior[] behaviors)
+        public NyuProjectile2D New(Nyu owner, Vector3 position, Quaternion rotation, Sprite sprite, params NyuProjectile.Behavior[] behaviors)
         {
-            New(owner, out NyuProjectile2D toReturn, position, rotation, behaviors);
+            if (New(owner, out NyuProjectile2D toReturn, position, rotation, behaviors))
+            {
+                toReturn.SpriteRenderer.sprite = sprite;
+                return toReturn;
+            }
 
-            toReturn.SpriteRenderer.sprite = sprite;
-
-            return toReturn;
+            return null;
         }
     }
 }

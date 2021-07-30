@@ -1,4 +1,5 @@
 ﻿using System;
+using WarWolfWorks.Enums;
 using WarWolfWorks.NyuEntities.Statistics;
 
 namespace WarWolfWorks.Attributes
@@ -23,7 +24,7 @@ namespace WarWolfWorks.Attributes
         /// </summary>
         public AsEnumStatAttribute(Type affectionType)
         {
-            StackingType = typeof(EWWWStacking);
+            StackingType = typeof(EDefaultNyuStacking);
             AffectionType = affectionType;
         }
         

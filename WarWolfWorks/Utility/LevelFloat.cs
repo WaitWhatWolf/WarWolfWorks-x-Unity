@@ -40,7 +40,7 @@ namespace WarWolfWorks.Utility
         }
 
         /// <summary>
-        /// Returns the final value of this <see cref="LevelFloat"/> based on it's <see cref="Level"/>.
+        /// Returns or sets the final value of this <see cref="LevelFloat"/> based on it's <see cref="Level"/>.
         /// </summary>
         public float Value
         {
@@ -62,6 +62,13 @@ namespace WarWolfWorks.Utility
                 {
                     return DefaultValue;
                 }
+            }
+            set
+            {
+                int lv = Level;
+                int index = Array.FindIndex(Values, v => v.Level == lv);
+                if (index != -1)
+                    Values[index] = new LevelValue(value, lv);
             }
         }
 

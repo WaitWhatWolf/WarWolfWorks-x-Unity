@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using WarWolfWorks.Interfaces;
 using WarWolfWorks.Interfaces.NyuEntities;
+using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.NyuEntities.Statistics
 {
     /// <summary>
     /// The class handling all statistics of an entity.
     /// </summary>
-    [System.Serializable]
     public sealed class Stats : INyuReferencable
     {
         /// <summary>
@@ -38,21 +40,81 @@ namespace WarWolfWorks.NyuEntities.Statistics
                 return CalculatedValue(toUse);
         }
 
-        [UnityEngine.SerializeField]
-        private Stacking stackingUsed;
+        /// <summary>
+        /// Pointer to <see cref="CacheableStacking"/>'s <see cref="INyuCacheableStacking.RefreshStatCache(INyuStat)"/>; 
+        /// Checks for null reference before accessing the cachable stacking.
+        /// </summary>
+        /// <param name="stat"></param>
+        public void RefreshStatCache(INyuStat stat)
+        {
+            if (pv_CachableStackingExists)
+                pv_CachableStacking.RefreshStatCache(stat);
+        }
+
+        /// <summary>
+        /// Pointer to <see cref="CacheableStacking"/>'s <see cref="INyuCacheableStacking.ClearStatsCache()"/>;
+        /// Checks for null reference before accessing the cachable stacking.
+        /// </summary>
+        public void ClearStatsCache()
+        {
+            if (pv_CachableStackingExists)
+                pv_CachableStacking.ClearStatsCache();
+        }
+
         /// <summary>
         /// The object which calculates all stats to return a final value.
         /// </summary>
-        public INyuStacking Stacking
+        public INyuStacking Stacking => pv_Stacking;
+
+        /// <summary>
+        /// If the current stacking implements a <see cref="INyuCacheableStacking"/>, it will return it as such.
+        /// </summary>
+        public INyuCacheableStacking CacheableStacking => pv_CachableStacking;
+
+        /// <summary>
+        /// Attempts to set a new <see cref="INyuStacking"/>.
+        /// </summary>
+        /// <param name="ofType">The type of the <see cref="INyuStacking"/>.</param>
+        /// <param name="args">Args to pass to the constructor of the given nyu stacking type.</param>
+        public bool SetStacking(Type ofType, params object[] args)
         {
-            get => stackingUsed;
-            set
+            try
             {
-                if (value is Stacking asStacking)
+                if (typeof(INyuStacking).IsAssignableFrom(ofType))
                 {
-                    stackingUsed = asStacking;
-                    asStacking.SetParent(this);
+                    object[] pass = args == null || args.Length == 0 ? new object[] { this } : new object[] { this, args };
+                    pv_Stacking = Activator.CreateInstance(ofType, pass) as INyuStacking;
+                    TrySetCachableStacking();
+                    return true;
                 }
+                return false;
+            }
+            catch (Exception e)
+            {
+                e.LogException();
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to set a new <see cref="INyuStacking"/> based on a given generic type.
+        /// </summary>
+        /// <typeparam name="T">Type of stacking.</typeparam>
+        /// <param name="args">Args passed to the constructor.</param>
+        /// <returns></returns>
+        public bool SetStacking<T>(params object[] args) where T : INyuStacking
+        {
+            try
+            {
+                object[] pass = args == null || args.Length == 0 ? new object[] { this } : new object[] { this, args };
+                pv_Stacking = Activator.CreateInstance(typeof(T), pass) as INyuStacking;
+                TrySetCachableStacking();
+                return true;
+            }
+            catch(Exception e)
+            {
+                e.LogException();
+                return false;
             }
         }
 
@@ -65,20 +127,20 @@ namespace WarWolfWorks.NyuEntities.Statistics
         /// Invoked when a stat is removed.
         /// </summary>
         public event Action<INyuStat> OnStatRemoved;
-        internal List<INyuStat> ns_Stats = new List<INyuStat>();
 
         /// <summary>
         /// Gets all stats returned in an array.
         /// </summary>
         /// <returns></returns>
-        public INyuStat[] GetAllStats() => ns_Stats.ToArray();
+        public INyuStat[] GetAllStats() => pv_Stats.ToArray();
+
         /// <summary>
         /// Adds an <see cref="INyuStat"/> to stats to be calculated.
         /// </summary>
         /// <param name="toAdd"></param>
         public void AddStat(INyuStat toAdd)
         {
-            ns_Stats.Add(toAdd);
+            pv_Stats.Add(toAdd);
             toAdd.OnAdded(this);
             OnStatAdded?.Invoke(toAdd);
         }
@@ -88,7 +150,7 @@ namespace WarWolfWorks.NyuEntities.Statistics
         /// <param name="toRemove"></param>
         public void RemoveStat(INyuStat toRemove)
         {
-            ns_Stats.Remove(toRemove);
+            pv_Stats.Remove(toRemove);
             OnStatRemoved?.Invoke(toRemove);
         }
         /// <summary>
@@ -97,15 +159,15 @@ namespace WarWolfWorks.NyuEntities.Statistics
         /// <param name="stats"></param>
         public void AddStats(IEnumerable<INyuStat> stats)
         {
-            ns_Stats.AddRange(stats);
-
-            if (OnStatAdded == null)
-                return;
-
-            foreach (INyuStat @is in stats)
+            foreach (INyuStat stat in stats)
             {
-                @is.OnAdded(this);
-                OnStatAdded.Invoke(@is);
+                pv_Stats.Add(stat);
+
+                if (OnStatAdded == null)
+                    continue;
+
+                stat.OnAdded(this);
+                OnStatAdded.Invoke(stat);
             }
         }
         /// <summary>
@@ -114,14 +176,16 @@ namespace WarWolfWorks.NyuEntities.Statistics
         /// <param name="stats"></param>
         public void RemoveStats(IEnumerable<INyuStat> stats)
         {
-            ns_Stats = ns_Stats.Except(stats).ToList();
-
-            if (OnStatRemoved == null)
-                return;
-
-            foreach (INyuStat @is in stats)
+            foreach (INyuStat stat in stats)
             {
-                OnStatRemoved.Invoke(@is);
+                if (pv_Stats.Remove(stat))
+                {
+                    if (OnStatRemoved == null)
+                        return;
+
+                    stat.OnRemoved(this);
+                    OnStatRemoved.Invoke(stat);
+                }
             }
         }
 
@@ -130,13 +194,29 @@ namespace WarWolfWorks.NyuEntities.Statistics
         /// </summary>
         /// <param name="stat"></param>
         /// <returns></returns>
-        public bool Contains(INyuStat stat) => ns_Stats.Contains(stat);
+        public bool Contains(INyuStat stat) => pv_Stats.Contains(stat);
 
         internal Stats(Nyu entity)
         {
             NyuMain = entity;
-            if (Stacking == null) Stacking = ScriptableObject.CreateInstance<WWWStacking>();
-            Stacking.SetParent(this);
+            if (Stacking == null) SetStacking<DefaultStacking>(null);
         }
+
+        private void TrySetCachableStacking()
+        {
+            pv_CachableStacking = null;
+            pv_CachableStackingExists = false;
+
+            if(pv_Stacking is INyuCacheableStacking cachable)
+            {
+                pv_CachableStacking = cachable;
+                pv_CachableStackingExists = true;
+            }
+        }
+
+        internal HashSet<INyuStat> pv_Stats = new();
+        private INyuStacking pv_Stacking;
+        private INyuCacheableStacking pv_CachableStacking;
+        private bool pv_CachableStackingExists;
     }
 }

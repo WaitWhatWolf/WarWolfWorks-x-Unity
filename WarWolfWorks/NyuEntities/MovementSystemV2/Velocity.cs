@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using WarWolfWorks.Interfaces;
 using WarWolfWorks.Interfaces.NyuEntities;
 using WarWolfWorks.NyuEntities.Statistics;
 
@@ -10,6 +11,11 @@ namespace WarWolfWorks.NyuEntities.MovementSystemV2
     [System.Serializable]
     public class Velocity : IVelocity
     {
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public Nyu NyuMain => Parent.NyuMain;
+
         private Vector3 Value;
         private Stat ValueX = new Stat(0, 0, 0);
         private Stat ValueY = new Stat(0, 0, 0);
@@ -27,8 +33,6 @@ namespace WarWolfWorks.NyuEntities.MovementSystemV2
         /// The parent of this velocity.
         /// </summary>
         public NyuMovement Parent { get; private set; }
-
-        public Nyu NyuMain => Parent.NyuMain;
 
         /// <summary>
         /// Retrieves the Vector3 value that will be applied.
@@ -52,9 +56,9 @@ namespace WarWolfWorks.NyuEntities.MovementSystemV2
         public void SetValue(Vector3 value)
         {
             Value = value;
-            ValueX.SetValue = value.x;
-            ValueY.SetValue = value.y;
-            ValueZ.SetValue = value.z;
+            ValueX.Value = value.x;
+            ValueY.Value = value.y;
+            ValueZ.Value = value.z;
         }
 
         /// <summary>

@@ -20,6 +20,9 @@
 	<Optimize>true</Optimize>
     <OutputPath></OutputPath>
   </PropertyGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /y &quot;$(TargetPath)&quot; &quot;C:\Users\WhiteWarriorWolf\Documents\GitHub\WarWolfWorks-x-Unity\zz-PackageSet\&quot;&#xD;&#xA;xcopy/y &quot;$(ProjectDir)$(OutDir)WarWolfWorks.xml&quot; &quot;C:\Users\WhiteWarriorWolf\Documents\GitHub\WarWolfWorks-x-Unity\zz-PackageSet\&quot;&#xD;&#xA;&#xD;&#xA;xcopy /y &quot;$(TargetPath)&quot; &quot;D:\ドキュメント\Unity Projects\DerRising\Assets\Plugins\&quot;&#xD;&#xA;xcopy/y &quot;$(ProjectDir)$(OutDir)WarWolfWorks.xml&quot; &quot;D:\ドキュメント\Unity Projects\DerRising\Assets\Plugins\&quot;&#xD;&#xA;&#xD;&#xA;xcopy /y &quot;$(TargetPath)&quot; &quot;D:\ドキュメント\Unity Projects\GoodGuysProject\Assets\Plugins\&quot;&#xD;&#xA;xcopy/y &quot;$(ProjectDir)$(OutDir)WarWolfWorks.xml&quot; &quot;D:\ドキュメント\Unity Projects\GoodGuysProject\Assets\Plugins\&quot;&#xD;&#xA;" />
+  </Target>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp">
       <HintPath>..\Library DLLs\Microsoft.CSharp.dll</HintPath>

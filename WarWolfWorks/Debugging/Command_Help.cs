@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.Debugging
 {
@@ -13,6 +14,16 @@ namespace WarWolfWorks.Debugging
         /// <inheritdoc/>
         /// </summary>
         public override string Recognition => "HELP";
+        
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public override string ArgumentHelper => string.Empty;
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public override string Description => "Displays a list of all usable commands.";
 
         /// <summary>
         /// <inheritdoc/>
@@ -25,7 +36,10 @@ namespace WarWolfWorks.Debugging
             Console.Write();
             foreach(Command command in commands)
             {
-                Console.Write(command.Recognition + '\n' + command.Description, MessageType.Info);
+                string flavorHelper = string.IsNullOrEmpty(command.ArgumentHelper) ? string.Empty : Hooks.Text.GetRichColoredText(command.ArgumentHelper, Hooks.Colors.FerrariRed);
+                Console.Write(Hooks.Text.GetRichColoredText(command.Recognition, Hooks.Colors.Crimson) + '/' +
+                    flavorHelper + '\n' + command.Description, MessageType.Info);
+                Console.Write();
             }
         }
     }

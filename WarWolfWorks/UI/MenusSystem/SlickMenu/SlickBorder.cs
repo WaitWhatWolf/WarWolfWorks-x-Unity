@@ -110,7 +110,7 @@ namespace WarWolfWorks.UI.MenusSystem.SlickMenu
                 Destroy(pr_Images[i].gameObject);
             }
 
-            Destroy(pr_Holder);
+            Destroy(pr_Holder.gameObject);
 
             pr_Images = null;
 

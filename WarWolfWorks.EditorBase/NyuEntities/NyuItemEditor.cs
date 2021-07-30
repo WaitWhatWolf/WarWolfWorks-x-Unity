@@ -31,6 +31,21 @@ namespace WarWolfWorks.EditorBase.NyuEntities.Itemization
         private bool RemovesS;
 
         private bool IsInResources = true;
+        private static NyuItem[] Items => Resources.LoadAll<NyuItem>(string.Empty);
+        /*{
+            get
+            {
+                if (pvsub_Items == null)
+                {
+                    pvsub_Items = Resources.LoadAll<NyuItem>(string.Empty);
+                }
+
+                return pvsub_Items;
+            }
+        }
+
+        private static NyuItem[] pvsub_Items;
+        */
 
         private void OnEnable()
         {
@@ -38,17 +53,16 @@ namespace WarWolfWorks.EditorBase.NyuEntities.Itemization
             sp_ID = serializedObject.FindProperty("s_ID");
             sp_Description = serializedObject.FindProperty("s_Description");
             sp_Sprite = serializedObject.FindProperty("s_Sprite");
-            NyuItem[] items = Resources.LoadAll<NyuItem>("/");
-            IsInResources = Array.Exists(items, item => item.GetInstanceID() == target.GetInstanceID());
+            IsInResources = Array.Exists(Items, item => item.GetInstanceID() == target.GetInstanceID());
 
             if (sp_ID.intValue == -1 && IsInResources)
             {
-                if (items.Length == 0)
+                if (Items.Length == 0)
                     sp_ID.intValue = 0;
                 else
-                    for (int i = 0; i < items.Length; i++)
+                    for (int i = 0; i < Items.Length; i++)
                     {
-                        if (Array.Exists(items, itm => itm.GetID() == i))
+                        if (Array.Exists(Items, itm => itm.GetID() == i))
                             continue;
 
                         sp_ID.intValue = i;
@@ -61,8 +75,8 @@ namespace WarWolfWorks.EditorBase.NyuEntities.Itemization
             try { RemovesS = target.GetType().GetCustomAttributes(typeof(CompleteNoS), true).Length > 0; }
             catch { RemovesS = false; }
             EditorHooks.GetAllVisibleProperties(serializedObject, false, out Properties, out PropertyContents, RemovesS);
-            Properties.RemoveRange(0, 3);
-            PropertyContents.RemoveRange(0, 3);
+            Properties.RemoveRange(0, 4);
+            PropertyContents.RemoveRange(0, 4);
         }
 
         /// <summary>

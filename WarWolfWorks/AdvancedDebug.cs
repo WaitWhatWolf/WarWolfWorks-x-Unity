@@ -68,9 +68,9 @@ namespace WarWolfWorks
         /// Logs an exception.
         /// </summary>
         /// <param name="exception"></param>
-        public static void LogException(Exception exception)
+        public static void LogException(this Exception exception)
         {
-            Debug.LogErrorFormat("<color=#{0}>{1}</color>\n{2}", Hooks.Text.GetConsoleHexColor(MessageType.Error),exception.Message, exception.StackTrace);
+            LogErrorFormat("{0}\n{1}", WWWResources.DEBUG_LAYER_EXCEPTIONS_INDEX, exception.Message, exception.StackTrace);
         }
 
         private static void InternalLog(object message, int layer, MessageType messageType)
@@ -90,6 +90,7 @@ namespace WarWolfWorks
                     break;
                 case Settings.DebugStyle.EDITOR_GAME_DEBUG:
                     UnityDebug(message, messageType);
+                    WarWolfWorks.Debugging.Console.Write(message, messageType);
                     break;
             }
         }
@@ -173,12 +174,14 @@ namespace WarWolfWorks
                 case Settings.DebugStyle.DISABLED:
                     break;
                 case Settings.DebugStyle.IN_GAME_DEBUG_ONLY:
+                    WarWolfWorks.Debugging.Console.WriteFormat(message, messageType, args);
                     break;
                 case Settings.DebugStyle.EDITOR_DEBUG_ONLY:
                     UnityFormatDebug(message, messageType, args);
                     break;
                 case Settings.DebugStyle.EDITOR_GAME_DEBUG:
                     UnityFormatDebug(message, messageType, args);
+                    WarWolfWorks.Debugging.Console.WriteFormat(message, messageType, args);
                     break;
             }
         }

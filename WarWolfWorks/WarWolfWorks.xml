@@ -163,7 +163,7 @@
         </member>
         <member name="M:WarWolfWorks.Attributes.AsEnumStatAttribute.#ctor(System.Type)">
             <summary>
-            Creates an <see cref="T:WarWolfWorks.Attributes.AsEnumStatAttribute"/> which has a custom <see cref="F:WarWolfWorks.Attributes.AsEnumStatAttribute.AffectionType"/> and <see cref="F:WarWolfWorks.Attributes.AsEnumStatAttribute.StackingType"/> set to <see cref="T:WarWolfWorks.NyuEntities.Statistics.EWWWStacking"/>.
+            Creates an <see cref="T:WarWolfWorks.Attributes.AsEnumStatAttribute"/> which has a custom <see cref="F:WarWolfWorks.Attributes.AsEnumStatAttribute.AffectionType"/> and <see cref="F:WarWolfWorks.Attributes.AsEnumStatAttribute.StackingType"/> set to <see cref="!:EWWWStacking"/>.
             </summary>
         </member>
         <member name="M:WarWolfWorks.Attributes.AsEnumStatAttribute.#ctor(System.Type,System.Type)">
@@ -179,6 +179,36 @@
         <member name="M:WarWolfWorks.Attributes.CompleteNoS.#ctor">
             <summary>
             Creates a new <see cref="T:WarWolfWorks.Attributes.CompleteNoS"/>.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.Attributes.ConsoleMethodMakerType">
+            <summary>
+            What kind of argument a auto-generated command through <see cref="T:WarWolfWorks.Attributes.ConsoleMethodMakerAttribute"/> accepts.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Attributes.ConsoleMethodMakerType.Void">
+            <summary>
+            No argument is passed.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Attributes.ConsoleMethodMakerType.String">
+            <summary>
+            <see cref="T:System.String"/> type.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Attributes.ConsoleMethodMakerType.Int">
+            <summary>
+            <see cref="T:System.Int32"/> type.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Attributes.ConsoleMethodMakerType.Float">
+            <summary>
+            <see cref="T:System.Single"/> type.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Attributes.ConsoleMethodMakerType.Bool">
+            <summary>
+            <see cref="T:System.Boolean"/> type.
             </summary>
         </member>
         <member name="T:WarWolfWorks.Attributes.NonEntityUsage">
@@ -391,14 +421,83 @@
             The string that needs to be input for the command to be used.
             </summary>
         </member>
+        <member name="P:WarWolfWorks.Debugging.Command.ArgumentHelper">
+            <summary>
+            Used in a console (usually in pair with <see cref="M:WarWolfWorks.Debugging.Console.GetClosestCommandsRecognition(System.String)"/>)
+            </summary>
+        </member>
         <member name="P:WarWolfWorks.Debugging.Command.Description">
             <summary>
             The description of the command.
             </summary>
         </member>
+        <member name="M:WarWolfWorks.Debugging.Command.CompareTo(WarWolfWorks.Debugging.Command)">
+            <summary>
+            Compares a command to another. (<see cref="T:System.IComparable`1"/> implementation)
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.Debugging.Command.OnPassed(System.String)">
             <summary>
             Called when the command is used.
+            </summary>
+            <param name="arg"></param>
+        </member>
+        <member name="T:WarWolfWorks.Debugging.Command_Console_Change_Color">
+            <summary>
+            Changes the color of <see cref="T:WarWolfWorks.UI.ConsoleMenu.ConsoleUI"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Debugging.Command_Console_Change_Color.Recognition">
+            <summary>
+            <inheritdoc/>
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Debugging.Command_Console_Change_Color.ArgumentHelper">
+            <summary>
+            Shows that it accepts a string value.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Debugging.Command_Console_Change_Color.Description">
+            <summary>
+            Displays all available colors.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Debugging.Command_Console_Change_Color.OnPassed(System.String)">
+            <summary>
+            <inheritdoc/>
+            </summary>
+            <param name="arg"></param>
+        </member>
+        <member name="M:WarWolfWorks.Debugging.Command_Console_Change_Color.#ctor">
+            <summary>
+            Base constructor.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.Debugging.Command_Console_Change_Size">
+            <summary>
+            Changes the size of <see cref="T:WarWolfWorks.UI.ConsoleMenu.ConsoleUI"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Debugging.Command_Console_Change_Size.Recognition">
+            <summary>
+            <inheritdoc/>
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Debugging.Command_Console_Change_Size.ArgumentHelper">
+            <summary>
+            Displays that it accepts an int value.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Debugging.Command_Console_Change_Size.Description">
+            <summary>
+            Displays all possible index values.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Debugging.Command_Console_Change_Size.OnPassed(System.String)">
+            <summary>
+            <inheritdoc/>
             </summary>
             <param name="arg"></param>
         </member>
@@ -408,6 +507,16 @@
             </summary>
         </member>
         <member name="P:WarWolfWorks.Debugging.Command_Help.Recognition">
+            <summary>
+            <inheritdoc/>
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Debugging.Command_Help.ArgumentHelper">
+            <summary>
+            <inheritdoc/>
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Debugging.Command_Help.Description">
             <summary>
             <inheritdoc/>
             </summary>
@@ -423,6 +532,37 @@
             A class used for an in-game console and commands.
             </summary>
         </member>
+        <member name="P:WarWolfWorks.Debugging.Console.On">
+            <summary>
+            The active state of the console.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Debugging.Console.DeveloperMode">
+            <summary>
+            Used by commands to determine if a command was destined to be controlled exclusively by the developper, not the player.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Debugging.Console.AllowCustomInput">
+            <summary>
+            If true, the auto-handled console input will be disabled so you can make your own custom input.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Debugging.Console.ConsoleKey">
+            <summary>
+            Console key used to active/deactivate the console; A gameobject under the name "ConsoleManager"
+            handles listening for the key.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Debugging.Console.Input">
+            <summary>
+            Text currently inside the input of the console.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Debugging.Console.PreviousInputs">
+            <summary>
+            The previously confirmed input.
+            </summary>
+        </member>
         <member name="P:WarWolfWorks.Debugging.Console.FullText">
             <summary>
             Full text of the console.
@@ -430,7 +570,12 @@
         </member>
         <member name="E:WarWolfWorks.Debugging.Console.OnWrite">
             <summary>
-            Invoked when text is added to the console.
+            Invoked when text is added to <see cref="P:WarWolfWorks.Debugging.Console.FullText"/>.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.Debugging.Console.OnInputConfirm">
+            <summary>
+            Invoked when the console <see cref="P:WarWolfWorks.Debugging.Console.Input"/> is confirmed. String value is the string value of the confirmed input.
             </summary>
         </member>
         <member name="E:WarWolfWorks.Debugging.Console.OnClear">
@@ -441,6 +586,21 @@
         <member name="E:WarWolfWorks.Debugging.Console.OnPassed">
             <summary>
             Invoked when a command is successfully passed.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.Debugging.Console.OnTurnOn">
+            <summary>
+            Invoked when the console is turned on.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.Debugging.Console.OnTurnOff">
+            <summary>
+            Invoked when the console is turned off.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.Debugging.Console.OnInputChanged">
+            <summary>
+            Invoked when <see cref="P:WarWolfWorks.Debugging.Console.Input"/>'s text changes in any way.
             </summary>
         </member>
         <member name="M:WarWolfWorks.Debugging.Console.GetCommands">
@@ -455,11 +615,23 @@
             </summary>
             <param name="command"></param>
         </member>
+        <member name="M:WarWolfWorks.Debugging.Console.AddCommands(WarWolfWorks.Debugging.Command[])">
+            <summary>
+            Adds multiple commands.
+            </summary>
+            <param name="commands"></param>
+        </member>
         <member name="M:WarWolfWorks.Debugging.Console.RemoveCommand(WarWolfWorks.Debugging.Command)">
             <summary>
             Removes a command from the list of available commands.
             </summary>
             <param name="command"></param>
+        </member>
+        <member name="M:WarWolfWorks.Debugging.Console.RemoveCommands(WarWolfWorks.Debugging.Command[])">
+            <summary>
+            Removes multiple commands.
+            </summary>
+            <param name="commands"></param>
         </member>
         <member name="M:WarWolfWorks.Debugging.Console.Write(System.Object,WarWolfWorks.Debugging.MessageType)">
             <summary>
@@ -467,18 +639,53 @@
             </summary>
             <param name="text"></param>
             <param name="messageType"></param>
+            <remarks>This method does not directly process commands; Input the command into <see cref="P:WarWolfWorks.Debugging.Console.Input"/> and call <see cref="M:WarWolfWorks.Debugging.Console.ConfirmInput"/> to
+            use commands.</remarks>
         </member>
-        <member name="M:WarWolfWorks.Debugging.Console.Write">
+        <member name="M:WarWolfWorks.Debugging.Console.WriteFormat(System.Object,WarWolfWorks.Debugging.MessageType,System.Object[])">
+            <summary>
+            Adds text to the console.
+            </summary>
+            <param name="text"></param>
+            <param name="messageType"></param>
+            <param name="args"></param>
+            <remarks>This method does not directly process commands; Input the command into <see cref="P:WarWolfWorks.Debugging.Console.Input"/> and call <see cref="M:WarWolfWorks.Debugging.Console.ConfirmInput"/> to
+            use commands.</remarks>
+        </member>
+        <member name="M:WarWolfWorks.Debugging.Console.Write(System.Boolean)">
             <summary>
             Adds a new line to the console text.
             </summary>
+            <param name="fromInput">If true, the input will be written first before attempting to write a new line.</param>
         </member>
         <member name="M:WarWolfWorks.Debugging.Console.Clear">
             <summary>
             Clears all console text.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Debugging.Console.GetClosestCommandRecognition(System.String)">
+        <member name="M:WarWolfWorks.Debugging.Console.ForceSetInput(System.String,System.String@)">
+            <summary>
+            Sets <see cref="P:WarWolfWorks.Debugging.Console.Input"/> to <paramref name="to"/> but returns it to <paramref name="from"/> beforehand.
+            </summary>
+            <param name="to"></param>
+            <param name="from"></param>
+        </member>
+        <member name="M:WarWolfWorks.Debugging.Console.ConfirmInput">
+            <summary>
+            Confirms the <see cref="P:WarWolfWorks.Debugging.Console.Input"/>, putting it in <see cref="P:WarWolfWorks.Debugging.Console.FullText"/> as well as calling <see cref="E:WarWolfWorks.Debugging.Console.OnInputConfirm"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Debugging.Console.TurnOn">
+            <summary>
+            Turns the console on.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Debugging.Console.TurnOff">
+            <summary>
+            Turns the console off.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Debugging.Console.GetClosestCommandsRecognition(System.String)">
             <summary>
             Returns the command with the closest recognition to the given text.
             </summary>
@@ -487,6 +694,17 @@
             Returns the command with the closest <see cref="P:WarWolfWorks.Debugging.Command.Recognition"/> to the given <paramref name="text"/>;
             If none were found to be any close, null is returned.
             </returns>
+        </member>
+        <member name="M:WarWolfWorks.Debugging.Console.GetClosestCommandsRecognition">
+            <summary>
+            Calls <see cref="M:WarWolfWorks.Debugging.Console.GetClosestCommandsRecognition(System.String)"/> where the argument is <see cref="P:WarWolfWorks.Debugging.Console.Input"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:WarWolfWorks.Debugging.DeveloperCommandAttribute">
+            <summary>
+            Attribute used on <see cref="T:WarWolfWorks.Debugging.Command"/> classes which can only be used when <see cref="F:WarWolfWorks.Debugging.Console.DeveloperMode"/> is true.
+            </summary>
         </member>
         <member name="T:WarWolfWorks.Debugging.EnumFlagsAttribute">
             <summary>
@@ -547,6 +765,17 @@
         <member name="F:WarWolfWorks.Enums.Direction.Backward">
             <summary>
             Z Axis -
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.Enums.EDefaultNyuStacking">
+            <summary>
+            Stacking applied by <see cref="T:WarWolfWorks.NyuEntities.Statistics.DefaultStacking"/> represented in an enum. For a detailed description of all
+            stacking interactions, see <see cref="T:WarWolfWorks.NyuEntities.Statistics.DefaultStacking"/>'s constant values located in <see cref="T:WarWolfWorks.WWWResources"/>.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.Enums.ProjectileSearch">
+            <summary>
+            Which projectiles will utility methods 
             </summary>
         </member>
         <member name="T:WarWolfWorks.Enums.SlickBorderFlags">
@@ -784,19 +1013,9 @@
             Basic interface for implementing a Health class.
             </summary>
         </member>
-        <member name="E:WarWolfWorks.Interfaces.IHealth.OnDeath">
-            <summary>
-            Invoked when <see cref="P:WarWolfWorks.Interfaces.IHealth.CurrentHealth"/> reaches 0.
-            </summary>
-        </member>
-        <member name="E:WarWolfWorks.Interfaces.IHealth.OnHealthAdded">
-            <summary>
-            Invoked when <see cref="M:WarWolfWorks.Interfaces.IHealth.AddHealth(System.Single)"/> is invoked. Float value is the health added.
-            </summary>
-        </member>
         <member name="P:WarWolfWorks.Interfaces.IHealth.MaxHealth">
             <summary>
-            Value that clamps <see cref="P:WarWolfWorks.Interfaces.IHealth.CurrentHealth"/>.
+            Max value which <see cref="P:WarWolfWorks.Interfaces.IHealth.CurrentHealth"/> can reach.
             </summary>
         </member>
         <member name="P:WarWolfWorks.Interfaces.IHealth.CurrentHealth">
@@ -804,17 +1023,28 @@
             The current health.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.Interfaces.IHealth.AddHealth(System.Single)">
+        <member name="M:WarWolfWorks.Interfaces.IHealth.AddHealth(System.Single,System.Single@)">
             <summary>
-            Adds to <see cref="P:WarWolfWorks.Interfaces.IHealth.CurrentHealth"/>.
+            Attempts to add the given amount to the current health.
             </summary>
-            <param name="amount"></param>
+            <param name="amount">Amount used.</param>
+            <param name="added">
+            The added amount of health; 
+            As an example, if <see cref="P:WarWolfWorks.Interfaces.IHealth.CurrentHealth"/> is at 980 and <see cref="P:WarWolfWorks.Interfaces.IHealth.MaxHealth"/> is at 1000,
+            but the amount given is 100, the amount added will be 20 instead of 100.
+            </param>
+            <returns>True if addition was successful.</returns>
         </member>
-        <member name="M:WarWolfWorks.Interfaces.IHealth.RemoveHealth(System.Single)">
+        <member name="M:WarWolfWorks.Interfaces.IHealth.RemoveHealth(System.Single,System.Single@)">
             <summary>
-            Removes from <see cref="P:WarWolfWorks.Interfaces.IHealth.CurrentHealth"/>.
+            Attempts to remove the given amount from <see cref="P:WarWolfWorks.Interfaces.IHealth.CurrentHealth"/>.
             </summary>
-            <param name="amount"></param>
+            <param name="amount">Amount used.</param>
+            <param name="removed">
+            The removed amount of health; As an example, 
+            if <see cref="P:WarWolfWorks.Interfaces.IHealth.CurrentHealth"/> is at 100 but amount given is 120, the amount removed will be 100 instead of 120.
+            </param>
+            <returns>True if removal was successful.</returns>
         </member>
         <member name="T:WarWolfWorks.Interfaces.IHealthDamage">
             <summary>
@@ -1220,6 +1450,27 @@
             Invoked when the parent <see cref="T:WarWolfWorks.NyuEntities.Nyu"/> is initiated.
             </summary>
         </member>
+        <member name="T:WarWolfWorks.Interfaces.NyuEntities.INyuCacheableStacking">
+            <summary>
+            A <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStacking"/> which uses a cache system for it's calculations.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Interfaces.NyuEntities.INyuCacheableStacking.Cached">
+            <summary>
+            Returns the cache.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Interfaces.NyuEntities.INyuCacheableStacking.RefreshStatCache(WarWolfWorks.Interfaces.NyuEntities.INyuStat)">
+            <summary>
+            Removes a specified stat's cache so it can be re-calcuated. Should be called when a property stat's value(s) are changed.
+            </summary>
+            <param name="stat"></param>
+        </member>
+        <member name="M:WarWolfWorks.Interfaces.NyuEntities.INyuCacheableStacking.ClearStatsCache">
+            <summary>
+            Clears the cache of all previously calculated stats.
+            </summary>
+        </member>
         <member name="T:WarWolfWorks.Interfaces.NyuEntities.INyuComponent">
             <summary>
             Core interface for implementing a Nyu component outside of <see cref="T:WarWolfWorks.NyuEntities.NyuComponent"/>.
@@ -1437,17 +1688,6 @@
             <param name="stat"></param>
             <returns></returns>
         </member>
-        <member name="P:WarWolfWorks.Interfaces.NyuEntities.INyuStacking.Parent">
-            <summary>
-            Who's stats should this stacking calculate.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Interfaces.NyuEntities.INyuStacking.SetParent(WarWolfWorks.NyuEntities.Statistics.Stats)">
-            <summary>
-            Sets the <see cref="P:WarWolfWorks.Interfaces.NyuEntities.INyuStacking.Parent"/>.
-            </summary>
-            <param name="to"></param>
-        </member>
         <member name="T:WarWolfWorks.Interfaces.NyuEntities.INyuStart">
             <summary>
             Used on a <see cref="T:WarWolfWorks.NyuEntities.NyuComponent"/>, a <see cref="T:WarWolfWorks.NyuEntities.Nyu"/> entity or sub-component to indicate that it has a Start method.
@@ -1468,11 +1708,6 @@
             <see cref="T:System.Single"/> Value returned by this stat.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.Interfaces.NyuEntities.INyuStat.SetValue">
-            <summary>
-            Used to set the base value of the Stat.
-            </summary>
-        </member>
         <member name="P:WarWolfWorks.Interfaces.NyuEntities.INyuStat.Affections">
             <summary>
             Which other stats will it interact with.
@@ -1480,12 +1715,18 @@
         </member>
         <member name="P:WarWolfWorks.Interfaces.NyuEntities.INyuStat.Stacking">
             <summary>
-            How the value should be calculated.
+            How the value is calculated by a <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStacking"/>.
             </summary>
         </member>
         <member name="M:WarWolfWorks.Interfaces.NyuEntities.INyuStat.OnAdded(WarWolfWorks.NyuEntities.Statistics.Stats)">
             <summary>
-            Invoked when added to <see cref="T:WarWolfWorks.NyuEntities.Statistics.Stats"/> with <see cref="M:WarWolfWorks.NyuEntities.Statistics.Stats.AddStat(WarWolfWorks.Interfaces.NyuEntities.INyuStat)"/>.
+            Invoked when this <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStat"/> is added to <see cref="T:WarWolfWorks.NyuEntities.Statistics.Stats"/>.
+            </summary>
+            <param name="to"></param>
+        </member>
+        <member name="M:WarWolfWorks.Interfaces.NyuEntities.INyuStat.OnRemoved(WarWolfWorks.NyuEntities.Statistics.Stats)">
+            <summary>
+            Invoked when this <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStat"/> is removed from <see cref="T:WarWolfWorks.NyuEntities.Statistics.Stats"/>.
             </summary>
             <param name="to"></param>
         </member>
@@ -1509,6 +1750,40 @@
             The final value applied to this velocity.
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:WarWolfWorks.Interfaces.UI.MenusSystem.SlickMenu.IFront`2">
+            <summary>
+            Indicates a slick cell with a front graphic element.
+            </summary>
+            <typeparam name="T">The type of graphic used as front.</typeparam>
+            <typeparam name="TCont">The type of data assigned to <typeparamref name="T"/>.</typeparam>
+        </member>
+        <member name="P:WarWolfWorks.Interfaces.UI.MenusSystem.SlickMenu.IFront`2.Front">
+            <summary>
+            The front graphic.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Interfaces.UI.MenusSystem.SlickMenu.IFront`2.FrontContent">
+            <summary>
+            The content assigned to <see cref="P:WarWolfWorks.Interfaces.UI.MenusSystem.SlickMenu.IFront`2.Front"/>.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.Interfaces.UI.MenusSystem.SlickMenu.IOverlay`2">
+            <summary>
+            Indicates a slick cell with an overlay graphic element.
+            </summary>
+            <typeparam name="T">The type of graphic used as overlay.</typeparam>
+            <typeparam name="TCont">The type of data assigned to <typeparamref name="T"/>.</typeparam>
+        </member>
+        <member name="P:WarWolfWorks.Interfaces.UI.MenusSystem.SlickMenu.IOverlay`2.Overlay">
+            <summary>
+            The graphic element.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.Interfaces.UI.MenusSystem.SlickMenu.IOverlay`2.OverlayContent">
+            <summary>
+            The content assigned to <see cref="P:WarWolfWorks.Interfaces.UI.MenusSystem.SlickMenu.IOverlay`2.Overlay"/>.
+            </summary>
         </member>
         <member name="T:WarWolfWorks.Interfaces.UnityMethods.IAwake">
             <summary>
@@ -2070,6 +2345,12 @@
         <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler.AddOdin(WarWolfWorks.NyuEntities.AttackSystemV2.Odin)">
             <summary>
             Adds an odin to be handled.
+            </summary>
+            <param name="odin"></param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.AttackSystemV2.NyuOdinHandler.RemoveOdin(WarWolfWorks.NyuEntities.AttackSystemV2.Odin)">
+            <summary>
+            Removes an odin at the specified index.
             </summary>
             <param name="odin"></param>
         </member>
@@ -2674,6 +2955,142 @@
             Unity's Update method called by NyuComponent.
             </summary>
         </member>
+        <member name="T:WarWolfWorks.NyuEntities.HealthSystemV2.Damage">
+            <summary>
+            Record used by <see cref="T:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth"/> to damage health.
+            </summary>
+            <remarks>This should not be used in a production-ready environment as use of this
+            requires implementing a custom C#9 compiler in your project which might be unstable;
+            If you're working in a production-ready environment, use <see cref="N:WarWolfWorks.NyuEntities.HealthSystem"/> instead
+            or go to <see href="https://github.com/WaitWhatWolf/WarWolfWorks-x-Unity/tree/master/WarWolfWorks/NyuEntities">
+            the WarWolfWorks-x-Unity library</see>
+            and copy-paste the HealthSystemV2 folder in your own project, then make the Damage record into
+            a class.</remarks>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.HealthSystemV2.Damage.NyuMain">
+            <summary>
+            The entity which created this damage.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.HealthSystemV2.Damage.Final(WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth)">
+            <summary>
+            Applies this value as "damage" to <see cref="P:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.CurrentHealth"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.HealthSystemV2.Damage.#ctor(WarWolfWorks.NyuEntities.Nyu)">
+            <summary>
+            Creates a base damage record.
+            </summary>
+            <param name="nyuMain">The entity responsible for "dealing" this damage; Can be null.</param>
+        </member>
+        <member name="T:WarWolfWorks.NyuEntities.HealthSystemV2.ImmunitableDamage">
+            <summary>
+            A <see cref="T:WarWolfWorks.NyuEntities.HealthSystemV2.Damage"/> class which is able to trigger an immunity state on <see cref="T:WarWolfWorks.NyuEntities.HealthSystemV2.NyuImmunitableHealth"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.NyuEntities.HealthSystemV2.ImmunitableDamage.TriggersImmunity">
+            <summary>
+            If true, it will trigger immunity on <see cref="T:WarWolfWorks.NyuEntities.HealthSystemV2.NyuImmunitableHealth"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.HealthSystemV2.ImmunitableDamage.#ctor(WarWolfWorks.NyuEntities.Nyu,System.Boolean)">
+            <summary>
+            Uses base constructor and sets <see cref="F:WarWolfWorks.NyuEntities.HealthSystemV2.ImmunitableDamage.TriggersImmunity"/>.
+            </summary>
+            <param name="nyuMain"></param>
+            <param name="triggersImmunity"></param>
+        </member>
+        <member name="T:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth">
+            <summary>
+            Base class used as the health component.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.CurrentHealth">
+            <summary>
+            The current health of this entity. (overridable)
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.MaxHealth">
+            <summary>
+            The maximum amount that <see cref="P:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.CurrentHealth"/> can reach; By default, it does not set the value if it is at or below 0. (overridable)
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.AddHealth(System.Single,System.Single@)">
+            <summary>
+            Attempts to add the given amount to <see cref="P:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.CurrentHealth"/>.
+            </summary>
+            <param name="amount">Amount used.</param>
+            <param name="added">
+            The added amount of health; 
+            As an example, if <see cref="P:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.CurrentHealth"/> is at 980 and <see cref="P:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.MaxHealth"/> is at 1000,
+            but the amount given is 100, the amount added will be 20 instead of 100.
+            </param>
+            <remarks>If the final amount added does not change health, it will return false.</remarks>
+            <returns>True if addition was successful.</returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.RemoveHealth(System.Single,System.Single@)">
+            <summary>
+            Attempts to remove the given amount from <see cref="P:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.CurrentHealth"/>.
+            </summary>
+            <param name="amount">Amount used.</param>
+            <param name="removed">
+            The removed amount of health; As an example, 
+            if <see cref="P:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.CurrentHealth"/> is at 100 but amount given is 120, the amount removed will be 100 instead of 120.
+            </param>
+            <remarks>If the final amount removed does not change health, it will return false.</remarks>
+            <returns>True if removal was successful.</returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.DamageHealth(WarWolfWorks.NyuEntities.HealthSystemV2.Damage,System.Single@)">
+            <summary>
+            Attempts to remove an amount from <see cref="P:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.CurrentHealth"/> based on <see cref="M:WarWolfWorks.NyuEntities.HealthSystemV2.Damage.Final(WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth)"/>.
+            </summary>
+            <param name="damage">The value used for removal; Any damage type is acceptable, but specific handling can only be done by classes which support it.</param>
+            <param name="used">If successfully damaged, returns the final amount used to remove health.</param>
+            <returns>0 if value removal was successful, -1 otherwise.</returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.NyuAwake">
+            <summary>
+            Sets the <see cref="P:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.CurrentHealth"/> to <see cref="P:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.MaxHealth"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.PreviousDamage">
+            <summary>
+            The previous damage used in <see cref="M:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.DamageHealth(WarWolfWorks.NyuEntities.HealthSystemV2.Damage,System.Single@)"/> which successfully triggered.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.pr_BaseCurrentHealth">
+            <summary>
+            The base value used by <see cref="P:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.CurrentHealth"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.pr_BaseMaxHealth">
+            <summary>
+            The base value used by <see cref="P:WarWolfWorks.NyuEntities.HealthSystemV2.NyuHealth.MaxHealth"/>.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.NyuEntities.HealthSystemV2.NyuImmunitableHealth">
+            <summary>
+            A nyu health with an immunity functionnality.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.HealthSystemV2.NyuImmunitableHealth.DamageHealth(WarWolfWorks.NyuEntities.HealthSystemV2.Damage,System.Single@)">
+            <summary>
+            <inheritdoc/>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.HealthSystemV2.NyuImmunitableHealth.TriggerImmunity">
+            <summary>
+            Triggers the immunity, or more specifically, set the immunity timer to <see cref="P:WarWolfWorks.NyuEntities.HealthSystemV2.NyuImmunitableHealth.ImmunityTime"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.HealthSystemV2.NyuImmunitableHealth.NyuUpdate">
+            <summary>
+            Counts down the immunity, Called automatically; When overriding, make sure to include "base.NyuUpdate();" otherwise
+            immunity time will be infinite.
+            </summary>
+        </member>
         <member name="T:WarWolfWorks.NyuEntities.HealthSystem.DefaultHealthDamage">
             <summary>
             Default health damage set on <see cref="T:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth"/> when <see cref="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.Calculator"/> is null. 
@@ -2828,22 +3245,22 @@
         </member>
         <member name="E:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.OnAnyHealthAdded">
             <summary>
-            Invoked when any <see cref="T:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth"/> invokes <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.AddHealth(System.Single)"/> successfully.
+            Invoked when any <see cref="T:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth"/> invokes <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.AddHealth(System.Single,System.Single@)"/> successfully.
             </summary>
         </member>
         <member name="E:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.OnAnyHealthRemoved">
             <summary>
-            Invoked when any <see cref="T:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth"/> invokes <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.RemoveHealth(System.Single)"/> successfully.
+            Invoked when any <see cref="T:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth"/> invokes <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.RemoveHealth(System.Single,System.Single@)"/> successfully.
             </summary>
         </member>
         <member name="E:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.OnHealthAdded">
             <summary>
-            Ivoked when <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.AddHealth(System.Single)"/> is called. Float value is the amount of health that was added.
+            Ivoked when <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.AddHealth(System.Single,System.Single@)"/> is called. Float value is the amount of health that was added.
             </summary>
         </member>
         <member name="E:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.OnHealthRemoved">
             <summary>
-            Invoked when <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.RemoveHealth(System.Single)"/> is called. Float value is the amount of health that was added.
+            Invoked when <see cref="!:RemoveHealth(float)"/> is called. Float value is the amount of health that was added.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.CurrentHealth">
@@ -2894,7 +3311,7 @@
         </member>
         <member name="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.PreviousHealthRemoved">
             <summary>
-            The amount that was successfully removed using <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.RemoveHealth(System.Single)"/> on it's most recent use.
+            The amount that was successfully removed using <see cref="!:RemoveHealth(float)"/> on it's most recent use.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.PreviousHeal">
@@ -2904,14 +3321,13 @@
         </member>
         <member name="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.PreviousHealthAdded">
             <summary>
-            The amount that was successfully added using <see cref="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.AddHealth(System.Single)"/> on it's most recent use.
+            The amount that was successfully added using <see cref="!:AddHealth(float)"/> on it's most recent use.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.AddHealth(System.Single)">
+        <member name="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.AddHealth(System.Single,System.Single@)">
             <summary>
-            Adds the specified amount to <see cref="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.CurrentHealth"/>.
+            <inheritdoc/>
             </summary>
-            <param name="amount"></param>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.HealHealth(System.Object)">
             <summary>
@@ -2919,11 +3335,10 @@
             </summary>
             <param name="heal"></param>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.RemoveHealth(System.Single)">
+        <member name="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.RemoveHealth(System.Single,System.Single@)">
             <summary>
-            Removes the specified amount from <see cref="P:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.CurrentHealth"/>.
+            <inheritdoc/>
             </summary>
-            <param name="amount"></param>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.HealthSystem.NyuHealth.DamageHealth(System.Object)">
             <summary>
@@ -3521,6 +3936,11 @@
             A basic <see cref="T:WarWolfWorks.Interfaces.NyuEntities.IVelocity"/> which can either take a simple Vector3 value or a Vector3 value with affections.
             </summary>
         </member>
+        <member name="P:WarWolfWorks.NyuEntities.MovementSystemV2.Velocity.NyuMain">
+            <summary>
+            <inheritdoc/>
+            </summary>
+        </member>
         <member name="P:WarWolfWorks.NyuEntities.MovementSystemV2.Velocity.Initiated">
             <summary>
             Is this velocity currently residing in a NyuMovement?
@@ -4089,18 +4509,18 @@
             Manages all entities, as well as provides a substantial amount of utility methods to retrieve entities.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.NyuManager.IC_Update">
+        <member name="M:WarWolfWorks.NyuEntities.NyuManager.Event_NyuUpdate">
             <summary>
             Invokes the update method of all entities.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.NyuManager.IC_FixedUpdate">
+        <member name="M:WarWolfWorks.NyuEntities.NyuManager.Event_NyuFixedUpdate">
             <summary>
             Invokes the FixedUpdate method of all entities.
             </summary>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.NyuManager.IC_LateUpdate">
+        <member name="M:WarWolfWorks.NyuEntities.NyuManager.Event_NyuLateUpdate">
             <summary>
             Invokes the LateUpdate method of all entities.
             </summary>
@@ -4394,9 +4814,25 @@
             and <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnDestroy"/>)
             </summary>
         </member>
+        <member name="P:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.Behavior.NyuMain">
+            <summary>
+            Pointer to Parent.NyuMain.
+            </summary>
+        </member>
         <member name="P:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.Behavior.Parent">
             <summary>
             The parent of this behavior.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.Behavior.GetDuplicate">
+            <summary>
+            Returns a copy of this <see cref="T:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.Behavior"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.Behavior.Finalize">
+            <summary>
+            Calls <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnDestroy"/> if implemented.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.Tag">
@@ -4436,20 +4872,22 @@
             The velocity of the projectile; Usually assigned to a rigidbody's velocity.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.Behaviors">
-            <summary>
-            All behaviors affecting this projectile.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.GetBehaviors">
-            <summary>
-            Returns all behaviors currently affecting this projectile.
-            </summary>
-            <returns></returns>
-        </member>
         <member name="P:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.NyuMain">
             <summary>
             The parent of this <see cref="T:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.Behaviors">
+            <summary>
+            All behaviors this <see cref="T:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile"/> is currently using.
+            When setting this array or any of it's elements to a new object, make sure to call <see cref="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.RefreshUpdateLists"/>
+            to update all update lists, otherwise any <see cref="T:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.Behavior"/> implementations of <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuUpdate"/>,
+            <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuFixedUpdate"/> or <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuLateUpdate"/> will not work.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.RefreshUpdateLists">
+            <summary>
+            Refreshes all behavior update lists.
             </summary>
         </member>
         <member name="E:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.OnLocked">
@@ -4565,12 +5003,12 @@
             <summary>
             Creates a new <see cref="T:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile3D"/>. (Queues an inactive projectile into the pool of active projectiles)
             </summary>
-            <param name="owner"></param>
-            <param name="position"></param>
-            <param name="rotation"></param>
-            <param name="mesh"></param>
-            <param name="materials"></param>
-            <param name="behaviors"></param>
+            <param name="owner">The owner of the projectile.</param>
+            <param name="position">Spawn position of the projectile.</param>
+            <param name="rotation">Spawn rotation of the projectile.</param>
+            <param name="mesh">The physical mesh of the projectile.</param>
+            <param name="materials">Materials applied to the mesh of the projectile.</param>
+            <param name="behaviors">All behaviors applied to this projectile.</param>
             <returns></returns>
         </member>
         <member name="T:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1">
@@ -4578,19 +5016,9 @@
             The manager of all <see cref="T:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile"/> objects.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Instance">
+        <member name="P:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Initiated">
             <summary>
-            Singleton instance of the manager; Set in inheriting classes.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Populated">
-            <summary>
-            Returns true if <see cref="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Init(System.Int32)"/> was previously called.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.ProjectileHolder">
-            <summary>
-            The transform which groups all projectiles together.
+            <inheritdoc/>
             </summary>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Init(System.Int32)">
@@ -4608,11 +5036,11 @@
             <summary>
             Use this method at the beginning of your creation method to retrieve a projectile from the pool.
             </summary>
-            <param name="owner"></param>
-            <param name="projectile"></param>
-            <param name="position"></param>
-            <param name="rotation"></param>
-            <param name="behaviors"></param>
+            <param name="owner">The owner of the projectile.</param>
+            <param name="position">Spawn position of the projectile.</param>
+            <param name="rotation">Spawn rotation of the projectile.</param>
+            <param name="projectile">The projectile which can be used when New returns true.</param>
+            <param name="behaviors">All behaviors applied to this projectile.</param>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.End(WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile)">
             <summary>
@@ -4630,23 +5058,67 @@
         </member>
         <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Update">
             <summary>
-            When overriding, make sure to include base.Update() as it calls all <see cref="M:WarWolfWorks.Interfaces.UnityMethods.IUpdate.Update"/> methods
+            When overriding, make sure to include "base.Update();" as it calls all <see cref="M:WarWolfWorks.Interfaces.NyuEntities.INyuUpdate.NyuUpdate"/> methods
             in applicable <see cref="T:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.Behavior"/> components.
             </summary>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.FixedUpdate">
             <summary>
-            When overriding, make sure to include base.FixedUpdate() as it calls all <see cref="M:WarWolfWorks.Interfaces.UnityMethods.IFixedUpdate.FixedUpdate"/> methods
+            When overriding, make sure to include "base.FixedUpdate();" as it calls all <see cref="M:WarWolfWorks.Interfaces.NyuEntities.INyuFixedUpdate.NyuFixedUpdate"/> methods
             in applicable <see cref="T:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.Behavior"/> components.
             </summary>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.LateUpdate">
             <summary>
-            When overriding, make sure to include base.LateUpdate() as it calls all <see cref="M:WarWolfWorks.Interfaces.UnityMethods.ILateUpdate.LateUpdate"/> methods
+            When overriding, make sure to include "base.LateUpdate();" as it calls all <see cref="M:WarWolfWorks.Interfaces.NyuEntities.INyuLateUpdate.NyuLateUpdate"/> methods
             in applicable <see cref="T:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectile.Behavior"/> components.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Projectiles">
+        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Start">
+            <summary>
+            Calls <see cref="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Init(System.Int32)"/> using <see cref="F:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.s_PoolSize"/> as argument.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.GetAllProjectiles">
+            <summary>
+            Returns a collection of all projectiles.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.GetActiveProjectiles">
+            <summary>
+            Returns a collection of all active projectiles.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.GetInactiveProjectiles">
+            <summary>
+            Returns a collection of all inactive projectiles.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.FindAll(System.Predicate{`0},WarWolfWorks.Enums.ProjectileSearch)">
+            <summary>
+            Finds all projectiles matching the given condition.
+            </summary>
+            <param name="match"></param>
+            <param name="searchIn"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Find(System.Predicate{`0},WarWolfWorks.Enums.ProjectileSearch)">
+            <summary>
+            Returns the first projectile matching the given condition.
+            </summary>
+            <param name="match"></param>
+            <param name="searchIn"></param>
+            <returns></returns>
+        </member>
+        <member name="F:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.s_PoolSize">
+            <summary>
+            Used by <see cref="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Start"/> for <see cref="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Init(System.Int32)"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.AllProjectiles">
             <summary>
             All projectiles.
             </summary>
@@ -4659,43 +5131,6 @@
         <member name="F:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.InactiveProjectiles">
             <summary>
             List of all inactive projectiles.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.GetActiveProjectiles">
-            <summary>
-            Returns an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of all active projectiles.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.GetInactiveProjectiles">
-            <summary>
-            Returns an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of all inactive projectiles.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.Find(System.Predicate{`0})">
-            <summary>
-            Finds the first projectile that matches the given condition.
-            </summary>
-            <param name="match"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.FindAll(System.Predicate{`0})">
-            <summary>
-            Returns all projectiles which match the given condition.
-            </summary>
-            <param name="match"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.EnumeratorMoveNext">
-            <summary>
-            Enumerator-like implementation for getting a new projectile for instantiation.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.NyuEntities.ProjectileSystem.NyuProjectileManager`1.EnumeratorReset">
-            <summary>
-            Enumerator-like implementation to reset the itteration.
             </summary>
         </member>
         <member name="T:WarWolfWorks.NyuEntities.SerializedProjectiles.Behavior">
@@ -4715,16 +5150,16 @@
             The projectile which uses this behavior.
             </summary>
         </member>
-        <member name="T:WarWolfWorks.NyuEntities.SerializedProjectiles.Search">
-            <summary>
-            Which projectiles will utility methods 
-            </summary>
-        </member>
         <member name="T:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile">
             <summary>
             Base class for serializable projectiles. Supported interfaces:
             <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuAwake"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStart"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuUpdate"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuFixedUpdate"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuLateUpdate"/>,
             <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnDestroyQueued"/>, <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuOnDestroy"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.NyuMain">
+            <summary>
+            The parent of this projectile.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.Tag">
@@ -4797,11 +5232,6 @@
             The locked state of this <see cref="T:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile"/>. (<see cref="T:WarWolfWorks.Interfaces.ILockable"/> implementation)
             </summary>
         </member>
-        <member name="P:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.NyuMain">
-            <summary>
-            The parent of this projectile.
-            </summary>
-        </member>
         <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile.SetLock(System.Boolean)">
             <summary>
             Attempts to set the locked state of this <see cref="T:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectile"/>. (<see cref="T:WarWolfWorks.Interfaces.ILockable"/> implementation)
@@ -4814,19 +5244,9 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="F:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.s_PoolSize">
-            <summary>
-            Used by <see cref="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Awake"/> for <see cref="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Init(System.Int32)"/>.
-            </summary>
-        </member>
         <member name="P:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Initiated">
             <summary>
             The initiated state of this projectile manager.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Awake">
-            <summary>
-            Calls <see cref="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Init(System.Int32)"/> when <see cref="F:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.s_PoolSize"/> is higher than 0.
             </summary>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Init(System.Int32)">
@@ -4839,7 +5259,7 @@
             <summary>
             Call this at the beginning of your projectile instantiation method, and continue the initiation when it returns true.
             </summary>
-            <param name="parent">The caster of this projectile.</param>
+            <param name="owner">The caster of this projectile.</param>
             <param name="position">Starting position of the projectile.</param>
             <param name="rotation">Starting rotation of the projectile.</param>
             <param name="projectile">Returns the projectile used.</param>
@@ -4877,19 +5297,30 @@
             in applicable <see cref="T:WarWolfWorks.NyuEntities.SerializedProjectiles.Behavior"/> components.
             </summary>
         </member>
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Start">
+            <summary>
+            Calls <see cref="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Init(System.Int32)"/> using <see cref="F:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.s_PoolSize"/> as argument.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.GetAllProjectiles">
+            <summary>
+            Returns a collection of all projectiles.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.GetActiveProjectiles">
             <summary>
-            Returns an array of all active projectiles.
+            Returns a collection of all active projectiles.
             </summary>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.GetInactiveProjectiles">
             <summary>
-            Returns an array of all inactive projectiles.
+            Returns a collection of all inactive projectiles.
             </summary>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.FindAll(System.Predicate{`0},WarWolfWorks.NyuEntities.SerializedProjectiles.Search)">
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.FindAll(System.Predicate{`0},WarWolfWorks.Enums.ProjectileSearch)">
             <summary>
             Finds all projectiles matching the given condition.
             </summary>
@@ -4897,7 +5328,7 @@
             <param name="searchIn"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Find(System.Predicate{`0},WarWolfWorks.NyuEntities.SerializedProjectiles.Search)">
+        <member name="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Find(System.Predicate{`0},WarWolfWorks.Enums.ProjectileSearch)">
             <summary>
             Returns the first projectile matching the given condition.
             </summary>
@@ -4905,24 +5336,44 @@
             <param name="searchIn"></param>
             <returns></returns>
         </member>
+        <member name="F:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.s_PoolSize">
+            <summary>
+            Used by <see cref="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Start"/> for <see cref="M:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.Init(System.Int32)"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.AllProjectiles">
+            <summary>
+            All projectiles.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.ActiveProjectiles">
+            <summary>
+            List of all active projectiles.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.NyuEntities.SerializedProjectiles.SProjectileManager`1.InactiveProjectiles">
+            <summary>
+            List of all inactive projectiles.
+            </summary>
+        </member>
         <member name="T:WarWolfWorks.NyuEntities.Statistics.CountdownStat">
             <summary>
             <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStat"/> which is removed after a given countdown.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.NyuEntities.Statistics.CountdownStat.SetValue">
+        <member name="P:WarWolfWorks.NyuEntities.Statistics.CountdownStat.Value">
             <summary>
-            Use this value to set the base value of this stat. (Set-Only)
+            Gets or sets the value of this stat.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.Statistics.CountdownStat.Stacking">
             <summary>
-            How the Stat should be calculated.
+            How this <see cref="T:WarWolfWorks.NyuEntities.Statistics.CountdownStat"/> is calculated by a <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStacking"/>.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.Statistics.CountdownStat.Affections">
             <summary>
-            Which stats will this stat interact with.
+            Stats with which this <see cref="T:WarWolfWorks.NyuEntities.Statistics.CountdownStat"/> will interact with.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.Statistics.CountdownStat.Countdown">
@@ -4959,6 +5410,12 @@
             <param name="other"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.NyuEntities.Statistics.CountdownStat.ToString">
+            <summary>
+            Returns the <see cref="T:WarWolfWorks.NyuEntities.Statistics.CountdownStat"/>'s value in string.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:WarWolfWorks.NyuEntities.Statistics.CountdownStat.op_Implicit(WarWolfWorks.NyuEntities.Statistics.CountdownStat)~System.Single">
             <summary>
             Returns the Stat's value implicitly.
@@ -4977,60 +5434,50 @@
             </summary>
             <param name="stat"></param>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.Statistics.CountdownStat.ToString">
+        <member name="T:WarWolfWorks.NyuEntities.Statistics.DefaultStacking">
             <summary>
-            Returns the <see cref="T:WarWolfWorks.NyuEntities.Statistics.CountdownStat"/>'s value in string.
+            Default stacking which is used if <see cref="P:WarWolfWorks.NyuEntities.Statistics.Stats.Stacking"/> is not set.
             </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.Statistics.DefaultStacking.Cached">
+            <summary>
+            <inheritdoc/>
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.Statistics.DefaultStacking.CalculatedValue(WarWolfWorks.Interfaces.NyuEntities.INyuStat)">
+            <summary>
+            Returns the calculated value. See <see cref="T:WarWolfWorks.NyuEntities.Statistics.DefaultStacking"/>'s constant values located in <see cref="T:WarWolfWorks.WWWResources"/> for more info.
+            </summary>
+            <param name="BaseStat"></param>
             <returns></returns>
         </member>
-        <member name="T:WarWolfWorks.NyuEntities.Statistics.EWWWStacking">
+        <member name="M:WarWolfWorks.NyuEntities.Statistics.DefaultStacking.RefreshStatCache(WarWolfWorks.Interfaces.NyuEntities.INyuStat)">
             <summary>
-            Enum value depicting <see cref="T:WarWolfWorks.NyuEntities.Statistics.WWWStacking"/>'s stacking values. Useful when used with Editor's Enum List Displayer.
+            Refreshes an existing stat, effectively removing it's cache. Should be called when a property stat's
+            value(s) have been changed.
+            Note: Does not need to be called when a stat is added/removed, as this is taken care of automatically.
+            </summary>
+            <param name="stat"></param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.Statistics.DefaultStacking.ClearStatsCache">
+            <summary>
+            Clears the calculation cache of all stats previously passed through <see cref="M:WarWolfWorks.NyuEntities.Statistics.DefaultStacking.CalculatedValue(WarWolfWorks.Interfaces.NyuEntities.INyuStat)"/>.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.NyuEntities.Statistics.EWWWStacking.Original">
+        <member name="M:WarWolfWorks.NyuEntities.Statistics.DefaultStacking.#ctor(WarWolfWorks.NyuEntities.Statistics.Stats)">
             <summary>
-            Stacking index: Used as base value.
+            Base constructor of the default stacking.
             </summary>
-        </member>
-        <member name="F:WarWolfWorks.NyuEntities.Statistics.EWWWStacking.Adder">
-            <summary>
-            Stacking index: All stats tagged will be added onto the original value.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.NyuEntities.Statistics.EWWWStacking.StackingOriginalMultiplier">
-            <summary>
-            Stacking index: All stats tagged will stack on themselves to form a final value, which will then multiply the original.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.NyuEntities.Statistics.EWWWStacking.StackingMultiplier">
-            <summary>
-            Stacking index: tagged will muliply the original value and Adder value. (Applies before StackingOriginalMultiplier)
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.NyuEntities.Statistics.EWWWStacking.OriginalMultiplier">
-            <summary>
-            Stacking index: Multiplies the original immediatly without stacking.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.NyuEntities.Statistics.EWWWStacking.Multiplier">
-            <summary>
-            Stacking index: Multiplies the original with adder values immediatly without stacking.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.NyuEntities.Statistics.EWWWStacking.StackingFullMultiplier">
-            <summary>
-            Stacking index: All stats tagged will stack on themselves to form a final value, which will then multiply the total value after all multiplications (excluding FullMultiplier)
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.NyuEntities.Statistics.EWWWStacking.FullMultiplier">
-            <summary>
-            Stacking index: Absolute multiplier.
-            </summary>
+            <param name="parent"></param>
         </member>
         <member name="T:WarWolfWorks.NyuEntities.Statistics.LevelStat">
             <summary>
             Stat which uses <see cref="T:WarWolfWorks.Utility.LevelFloat"/> as value.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.Statistics.LevelStat.Value">
+            <summary>
+            Gets or sets a value based on the level.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.Statistics.LevelStat.Level">
@@ -5043,19 +5490,19 @@
             All LevelValues of this stat.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.NyuEntities.Statistics.LevelStat.SetValue">
+        <member name="P:WarWolfWorks.NyuEntities.Statistics.LevelStat.SetDefaultValue">
             <summary>
             Sets the default value of the <see cref="T:WarWolfWorks.Utility.LevelFloat"/> contained by this <see cref="T:WarWolfWorks.NyuEntities.Statistics.LevelStat"/>.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.Statistics.LevelStat.Stacking">
             <summary>
-            How is this LevelStat calculated.
+            How this <see cref="T:WarWolfWorks.NyuEntities.Statistics.LevelStat"/> is calculated by a <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStacking"/>.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.Statistics.LevelStat.Affections">
             <summary>
-            Which stats will this LevelStat interact with.
+            Stats with which this <see cref="T:WarWolfWorks.NyuEntities.Statistics.LevelStat"/> will interact with.
             </summary>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.Statistics.LevelStat.#ctor(System.Single,System.Int32,System.Int32,System.Int32[])">
@@ -5082,30 +5529,6 @@
             <param name="levelStat"></param>
             <param name="level"></param>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.Statistics.LevelStat.op_Implicit(WarWolfWorks.NyuEntities.Statistics.LevelStat)~System.Single">
-            <summary>
-            Returns the <see cref="T:WarWolfWorks.NyuEntities.Statistics.LevelStat"/>'s value implicitly.
-            </summary>
-            <param name="stat"></param>
-        </member>
-        <member name="M:WarWolfWorks.NyuEntities.Statistics.LevelStat.op_Implicit(WarWolfWorks.NyuEntities.Statistics.LevelStat)~System.Int32">
-            <summary>
-            Returns the <see cref="T:WarWolfWorks.NyuEntities.Statistics.LevelStat"/>'s value implicitly as int.
-            </summary>
-            <param name="stat"></param>
-        </member>
-        <member name="M:WarWolfWorks.NyuEntities.Statistics.LevelStat.op_Implicit(WarWolfWorks.NyuEntities.Statistics.LevelStat)~WarWolfWorks.NyuEntities.Statistics.Stat">
-            <summary>
-            Returns an equivalent Stat to this <see cref="T:WarWolfWorks.NyuEntities.Statistics.LevelStat"/>.
-            </summary>
-            <param name="stat"></param>
-        </member>
-        <member name="M:WarWolfWorks.NyuEntities.Statistics.LevelStat.op_Explicit(WarWolfWorks.NyuEntities.Statistics.LevelStat)~WarWolfWorks.Utility.LevelFloat">
-            <summary>
-            Returns explicitly the <see cref="T:WarWolfWorks.NyuEntities.Statistics.LevelStat"/>'s <see cref="T:WarWolfWorks.Utility.LevelFloat"/> value.
-            </summary>
-            <param name="stat"></param>
-        </member>
         <member name="M:WarWolfWorks.NyuEntities.Statistics.LevelStat.ToString">
             <summary>
             Returns the <see cref="T:WarWolfWorks.NyuEntities.Statistics.LevelStat"/>'s value in string.
@@ -5121,29 +5544,53 @@
         </member>
         <member name="M:WarWolfWorks.NyuEntities.Statistics.LevelStat.Equals(WarWolfWorks.NyuEntities.Statistics.Stat)">
             <summary>
-            Returns true if all <see cref="!:IStat"/> variables from this LevelStat equals to all <see cref="!:IStat"/> variables from other.
+            Returns true if all <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStat"/> variables from this <see cref="T:WarWolfWorks.NyuEntities.Statistics.LevelStat"/> equals to all <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStat"/> variables from other.
             </summary>
             <param name="other"></param>
             <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.Statistics.LevelStat.op_Implicit(WarWolfWorks.NyuEntities.Statistics.LevelStat)~System.Single">
+            <summary>
+            Returns the <see cref="T:WarWolfWorks.NyuEntities.Statistics.LevelStat"/>'s value implicitly.
+            </summary>
+            <param name="stat"></param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.Statistics.LevelStat.op_Explicit(WarWolfWorks.NyuEntities.Statistics.LevelStat)~System.Int32">
+            <summary>
+            Returns the <see cref="T:WarWolfWorks.NyuEntities.Statistics.LevelStat"/>'s value implicitly as int.
+            </summary>
+            <param name="stat"></param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.Statistics.LevelStat.op_Explicit(WarWolfWorks.NyuEntities.Statistics.LevelStat)~WarWolfWorks.NyuEntities.Statistics.Stat">
+            <summary>
+            Returns an equivalent Stat to this <see cref="T:WarWolfWorks.NyuEntities.Statistics.LevelStat"/>.
+            </summary>
+            <param name="stat"></param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.Statistics.LevelStat.op_Explicit(WarWolfWorks.NyuEntities.Statistics.LevelStat)~WarWolfWorks.Utility.LevelFloat">
+            <summary>
+            Returns explicitly the <see cref="T:WarWolfWorks.NyuEntities.Statistics.LevelStat"/>'s <see cref="T:WarWolfWorks.Utility.LevelFloat"/> value.
+            </summary>
+            <param name="stat"></param>
         </member>
         <member name="T:WarWolfWorks.NyuEntities.Statistics.RecordStat">
             <summary>
             A <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStat"/> which uses the record reference type from C#9.0.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.NyuEntities.Statistics.RecordStat.SetValue">
+        <member name="P:WarWolfWorks.NyuEntities.Statistics.RecordStat.Value">
             <summary>
-            Use this value to set the base value of this stat. (Set-Only)
+            Gets or sets the value of this stat.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.Statistics.RecordStat.Stacking">
             <summary>
-            How the Stat should be calculated.
+            How this <see cref="T:WarWolfWorks.NyuEntities.Statistics.RecordStat"/> is calculated by a <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStacking"/>.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.Statistics.RecordStat.Affections">
             <summary>
-            Which stats will this stat interact with.
+            Stats with which this <see cref="T:WarWolfWorks.NyuEntities.Statistics.RecordStat"/> will interact with.
             </summary>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.Statistics.RecordStat.#ctor(System.Single,System.Int32,System.Int32[])">
@@ -5186,7 +5633,7 @@
             </summary>
             <param name="s"></param>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.Statistics.RecordStat.op_Implicit(WarWolfWorks.NyuEntities.Statistics.RecordStat)~System.Int32">
+        <member name="M:WarWolfWorks.NyuEntities.Statistics.RecordStat.op_Explicit(WarWolfWorks.NyuEntities.Statistics.RecordStat)~System.Int32">
             <summary>
             Returns the Stat's value implicitly as int.
             </summary>
@@ -5195,11 +5642,6 @@
         <member name="T:WarWolfWorks.NyuEntities.Statistics.Stacking">
             <summary>
             Base class to use to apply to a <see cref="P:WarWolfWorks.NyuEntities.Statistics.Stats.Stacking"/>.
-            </summary>
-        </member>
-        <member name="P:WarWolfWorks.NyuEntities.Statistics.Stacking.AllStats">
-            <summary>
-            All stats of the parent <see cref="T:WarWolfWorks.NyuEntities.Statistics.Stats"/> class.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.Statistics.Stacking.Parent">
@@ -5244,24 +5686,35 @@
             <param name="stacking"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.NyuEntities.Statistics.Stacking.#ctor(WarWolfWorks.NyuEntities.Statistics.Stats)">
+            <summary>
+            Base constructor of the stacking class.
+            </summary>
+            <param name="parent"></param>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.Statistics.Stacking.AllStats">
+            <summary>
+            All stats of the parent <see cref="T:WarWolfWorks.NyuEntities.Statistics.Stats"/> class.
+            </summary>
+        </member>
         <member name="T:WarWolfWorks.NyuEntities.Statistics.Stat">
             <summary>
             Base class used for all <see cref="T:WarWolfWorks.NyuEntities.Nyu"/> statistics.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.NyuEntities.Statistics.Stat.SetValue">
+        <member name="P:WarWolfWorks.NyuEntities.Statistics.Stat.Value">
             <summary>
-            Use this value to set the base value of this stat. (Set-Only)
+            Gets or sets the value of this stat.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.Statistics.Stat.Stacking">
             <summary>
-            How the Stat should be calculated.
+            How this <see cref="T:WarWolfWorks.NyuEntities.Statistics.Stat"/> is calculated by a <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStacking"/>.
             </summary>
         </member>
         <member name="P:WarWolfWorks.NyuEntities.Statistics.Stat.Affections">
             <summary>
-            Which stats will this stat interact with.
+            Stats with which this <see cref="T:WarWolfWorks.NyuEntities.Statistics.Stat"/> will interact with.
             </summary>
         </member>
         <member name="M:WarWolfWorks.NyuEntities.Statistics.Stat.#ctor(System.Single,System.Int32,System.Int32[])">
@@ -5285,13 +5738,6 @@
             <param name="stat"></param>
             <param name="value"></param>
         </member>
-        <member name="M:WarWolfWorks.NyuEntities.Statistics.Stat.Equals(System.Single)">
-            <summary>
-            Returns true if the Stat's value returns other.
-            </summary>
-            <param name="other"></param>
-            <returns></returns>
-        </member>
         <member name="M:WarWolfWorks.NyuEntities.Statistics.Stat.ToString">
             <summary>
             Returns the value in string.
@@ -5309,6 +5755,19 @@
             Returns the Stat's value implicitly as int.
             </summary>
             <param name="s"></param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.Statistics.Stat.Equals(WarWolfWorks.NyuEntities.Statistics.Stat)">
+            <summary>
+            Returns true if this <see cref="T:WarWolfWorks.NyuEntities.Statistics.Stat"/> is equal to another.
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.Statistics.Stat.GetHashCode">
+            <summary>
+            <inheritdoc/>
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:WarWolfWorks.NyuEntities.Statistics.Stats">
             <summary>
@@ -5335,10 +5794,43 @@
             <param name="affections"></param>
             <returns></returns>
         </member>
+        <member name="M:WarWolfWorks.NyuEntities.Statistics.Stats.RefreshStatCache(WarWolfWorks.Interfaces.NyuEntities.INyuStat)">
+            <summary>
+            Pointer to <see cref="P:WarWolfWorks.NyuEntities.Statistics.Stats.CacheableStacking"/>'s <see cref="M:WarWolfWorks.Interfaces.NyuEntities.INyuCacheableStacking.RefreshStatCache(WarWolfWorks.Interfaces.NyuEntities.INyuStat)"/>; 
+            Checks for null reference before accessing the cachable stacking.
+            </summary>
+            <param name="stat"></param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.Statistics.Stats.ClearStatsCache">
+            <summary>
+            Pointer to <see cref="P:WarWolfWorks.NyuEntities.Statistics.Stats.CacheableStacking"/>'s <see cref="M:WarWolfWorks.Interfaces.NyuEntities.INyuCacheableStacking.ClearStatsCache"/>;
+            Checks for null reference before accessing the cachable stacking.
+            </summary>
+        </member>
         <member name="P:WarWolfWorks.NyuEntities.Statistics.Stats.Stacking">
             <summary>
             The object which calculates all stats to return a final value.
             </summary>
+        </member>
+        <member name="P:WarWolfWorks.NyuEntities.Statistics.Stats.CacheableStacking">
+            <summary>
+            If the current stacking implements a <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuCacheableStacking"/>, it will return it as such.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.Statistics.Stats.SetStacking(System.Type,System.Object[])">
+            <summary>
+            Attempts to set a new <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStacking"/>.
+            </summary>
+            <param name="ofType">The type of the <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStacking"/>.</param>
+            <param name="args">Args to pass to the constructor of the given nyu stacking type.</param>
+        </member>
+        <member name="M:WarWolfWorks.NyuEntities.Statistics.Stats.SetStacking``1(System.Object[])">
+            <summary>
+            Attempts to set a new <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStacking"/> based on a given generic type.
+            </summary>
+            <typeparam name="T">Type of stacking.</typeparam>
+            <param name="args">Args passed to the constructor.</param>
+            <returns></returns>
         </member>
         <member name="E:WarWolfWorks.NyuEntities.Statistics.Stats.OnStatAdded">
             <summary>
@@ -5385,58 +5877,6 @@
             Returns true if the given <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStat"/> was inside the calculated stats list.
             </summary>
             <param name="stat"></param>
-            <returns></returns>
-        </member>
-        <member name="T:WarWolfWorks.NyuEntities.Statistics.WWWStacking">
-            <summary>
-            Default stacking which is used if <see cref="P:WarWolfWorks.NyuEntities.Statistics.Stats.Stacking"/> is not set.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.NyuEntities.Statistics.WWWStacking.Original">
-            <summary>
-            Stacking index: Used as base value.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.NyuEntities.Statistics.WWWStacking.Adder">
-            <summary>
-            Stacking index: All stats tagged will be added onto the original value.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.NyuEntities.Statistics.WWWStacking.StackingOriginalMultiplier">
-            <summary>
-            Stacking index: All stats tagged will stack on themselves to form a final value, which will then multiply the original.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.NyuEntities.Statistics.WWWStacking.StackingMultiplier">
-            <summary>
-            Stacking index: tagged will muliply the original value and Adder value. (Applies before StackingOriginalMultiplier)
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.NyuEntities.Statistics.WWWStacking.OriginalMultiplier">
-            <summary>
-            Stacking index: Multiplies the original immediatly without stacking.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.NyuEntities.Statistics.WWWStacking.Multiplier">
-            <summary>
-            Stacking index: Multiplies the original with adder values immediatly without stacking.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.NyuEntities.Statistics.WWWStacking.StackingFullMultiplier">
-            <summary>
-            Stacking index: All stats tagged will stack on themselves to form a final value, which will then multiply the total value after all multiplications (excluding FullMultiplier)
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.NyuEntities.Statistics.WWWStacking.FullMultiplier">
-            <summary>
-            Stacking index: Absolute multiplier.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.NyuEntities.Statistics.WWWStacking.CalculatedValue(WarWolfWorks.Interfaces.NyuEntities.INyuStat)">
-            <summary>
-            Returns the calculated value. See <see cref="T:WarWolfWorks.NyuEntities.Statistics.WWWStacking"/>'s constant values for more info.
-            </summary>
-            <param name="BaseStat"></param>
             <returns></returns>
         </member>
         <member name="T:WarWolfWorks.NyuEntities.YharonSystem.CountdownYharon">
@@ -5944,18 +6384,18 @@
         </member>
         <member name="M:WarWolfWorks.Security.NyuProjectileException.#ctor(System.Int32)">
             <summary>
-            <list type="number">
+            <list type="bullet">
+            <item>
+            <term>0:</term>
+            <description>Unknown or undescribed exception.</description>
+            </item>
             <item>
             <term>1:</term>
-            <see cref="!:NyuProjectileManager.Initiate(int)"/> was given a value less than 1.
+            <description>Projectile Manager's Init(int) was given a value of less than 1.</description>
             </item>
             <item>
             <term>2:</term>
-            <see cref="!:NyuProjectileManager.Initiate(int)"/> was called when it's singleton instance was null.
-            </item>
-            <item>
-            <term>3:</term>
-            NyuProjectileManager.New or NyuProjectileManager.End was called when it's singleton instance was null.
+            <description>Projectile Manager's New or End method was called without being initiated.</description>
             </item>
             </list>
             </summary>
@@ -6078,10 +6518,173 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="T:WarWolfWorks.UI.ConsoleUI">
+        <member name="T:WarWolfWorks.UI.ConsoleMenu.ConsoleCell">
             <summary>
-            A UI menu used to display the <see cref="T:WarWolfWorks.Debugging.Console"/>.
+            A cell element used in <see cref="T:WarWolfWorks.UI.ConsoleMenu.ConsoleUI"/>.
             </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.ConsoleMenu.ConsoleCell.CellCommand">
+            <summary>
+            The command this cell displays.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.ConsoleMenu.ConsoleCell.OverlayContent">
+            <summary>
+            Displays the command's recognition and argument helper.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.ConsoleMenu.ConsoleCell.BorderFlags">
+            <summary>
+            Returns <see cref="F:WarWolfWorks.Enums.SlickBorderFlags.All"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleCell.#ctor(WarWolfWorks.UI.ConsoleMenu.ConsoleUI,System.Int32,UnityEngine.EventSystems.EventTrigger,UnityEngine.UI.Image,TMPro.TextMeshProUGUI,WarWolfWorks.Debugging.Command)">
+            <summary>
+            Base <see cref="T:WarWolfWorks.UI.ConsoleMenu.ConsoleCell"/> constructor.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.UI.ConsoleMenu.ConsoleUI">
+            <summary>
+            An UI menu used to display the <see cref="T:WarWolfWorks.Debugging.Console"/>.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.ConsoleColor">
+            <summary>
+            Color of the console.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.ThemeColor">
+            <summary>
+            <inheritdoc/>
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.CellsRange">
+            <summary>
+            Returns a range of -1 to <see cref="F:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.pv_Cells"/> length.
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.NavigationType">
+            <summary>
+            Returns <see cref="F:WarWolfWorks.Enums.SlickNavigationType.Standard"/>.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.SetConsoleSize(UnityEngine.Vector4)">
+            <summary>
+            Sets the size of the console, using anchored sizing.
+            </summary>
+            <param name="size"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.GetConsoleAnchoredSize">
+            <summary>
+            Returns the size of the console in anchored size.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.Awake">
+            <summary>
+            <inheritdoc/>
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.Refresh">
+            <summary>
+            Refreshes the color of the console to be up-to-date.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.OnActivate">
+            <summary>
+            Starts a refresh checker.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.OnDeactivate">
+            <summary>
+            Stops the refresh checker.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.OnNavigationUse(WarWolfWorks.Enums.Direction)">
+            <summary>
+            <inheritdoc/>
+            </summary>
+            <param name="direction"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.OnSelectionAccepted(System.Int32)">
+            <summary>
+            Sets index to selection index if type is 0 (left mouse click).
+            </summary>
+            <param name="type"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.GetNavigationCells">
+            <summary>
+            <inheritdoc/>
+            </summary>
+            <returns>Returns built cells.</returns>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.GetRefreshCells">
+            <summary>
+            All refresh cells are navigation cells.
+            </summary>
+            <returns><see cref="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.GetNavigationCells"/></returns>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.BuildUI">
+            <summary>
+            Builds all cells.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.CreateCell(System.Int32,System.Object[])">
+            <summary>
+            Creates a console cell.
+            </summary>
+            <param name="index"></param>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.DestroyUI">
+            <summary>
+            Destroys all cells.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.NavigatesUp">
+            <summary>
+            <inheritdoc/>
+            </summary>
+            <returns>True if uparrow is pressed down.</returns>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.NavigatesDown">
+            <summary>
+            <inheritdoc/>
+            </summary>
+            <returns>True if downarrow is pressed down.</returns>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.NavigatesLeft">
+            <summary>
+            <inheritdoc/>
+            </summary>
+            <returns>Always returns false.</returns>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.NavigatesRight">
+            <summary>
+            <inheritdoc/>
+            </summary>
+            <returns>Always returns false.</returns>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.NavigateAccepts(System.Int32@)">
+            <summary>
+            Might do this later
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.Event_Cell_OnPointerEnter(WarWolfWorks.UI.ConsoleMenu.ConsoleCell)">
+            <summary>
+            <inheritdoc/>
+            </summary>
+            <param name="cell"></param>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.Event_Cell_OnPointerExit(WarWolfWorks.UI.ConsoleMenu.ConsoleCell)">
+            <summary>
+            <inheritdoc/>
+            </summary>
+            <param name="cell"></param>
         </member>
         <member name="T:WarWolfWorks.UI.FillableMarker">
             <summary>
@@ -7114,7 +7717,7 @@
             <typeparam name="TCell"></typeparam>
             <typeparam name="TBorder"></typeparam>
         </member>
-        <member name="P:WarWolfWorks.UI.MenusSystem.SlickMenu.SCItem`3.Text">
+        <member name="P:WarWolfWorks.UI.MenusSystem.SlickMenu.SCItem`3.Overlay">
             <summary>
             The text of this cell. (Ordered in front of <see cref="P:WarWolfWorks.UI.MenusSystem.SlickMenu.SCItem`3.Front"/> by default)
             </summary>
@@ -7129,9 +7732,9 @@
             The sprite that is applied to <see cref="P:WarWolfWorks.UI.MenusSystem.SlickMenu.SCItem`3.Front"/> on refresh.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.UI.MenusSystem.SlickMenu.SCItem`3.TextContent">
+        <member name="P:WarWolfWorks.UI.MenusSystem.SlickMenu.SCItem`3.OverlayContent">
             <summary>
-            The string that is applied to <see cref="P:WarWolfWorks.UI.MenusSystem.SlickMenu.SCItem`3.Text"/> on refresh.
+            The string that is applied to <see cref="P:WarWolfWorks.UI.MenusSystem.SlickMenu.SCItem`3.Overlay"/> on refresh.
             </summary>
         </member>
         <member name="M:WarWolfWorks.UI.MenusSystem.SlickMenu.SCItem`3.Refresh">
@@ -7158,12 +7761,12 @@
             <typeparam name="TCell">The type of the cells serviced.</typeparam>
             <typeparam name="TBorder">The type of the border used.</typeparam>
         </member>
-        <member name="P:WarWolfWorks.UI.MenusSystem.SlickMenu.SCText`3.TextContent">
+        <member name="P:WarWolfWorks.UI.MenusSystem.SlickMenu.SCText`3.OverlayContent">
             <summary>
-            The string that is applied to <see cref="P:WarWolfWorks.UI.MenusSystem.SlickMenu.SCText`3.Text"/> on refresh.
+            The string that is applied to <see cref="P:WarWolfWorks.UI.MenusSystem.SlickMenu.SCText`3.Overlay"/> on refresh.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.UI.MenusSystem.SlickMenu.SCText`3.Text">
+        <member name="P:WarWolfWorks.UI.MenusSystem.SlickMenu.SCText`3.Overlay">
             <summary>
             The text of this cell.
             </summary>
@@ -7333,19 +7936,10 @@
             The color theme if this cell; Points to the parent's ThemeColor by default.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.UI.MenusSystem.SlickMenu.SlickCell`3.GetSelectionType(System.Int32,System.Int32,System.Int32)">
-            <summary>
-            Returns the <see cref="T:WarWolfWorks.Enums.SlickSelectionType"/> enum based on index values given.
-            </summary>
-            <param name="index">The index of the cell.</param>
-            <param name="hoverIndex">The current hover index of the parent.</param>
-            <param name="selectIndex">The current select index of the parent.</param>
-            <returns></returns>
-        </member>
         <member name="M:WarWolfWorks.UI.MenusSystem.SlickMenu.SlickCell`3.GetSelectionType">
             <summary>
             Returns the <see cref="T:WarWolfWorks.Enums.SlickSelectionType"/> enum based on index values of this cell and it's parent;
-            Uses the static <see cref="M:WarWolfWorks.UI.MenusSystem.SlickMenu.SlickCell`3.GetSelectionType(System.Int32,System.Int32,System.Int32)"/> as base.
+            Uses the static <see cref="M:WarWolfWorks.Utility.Hooks.UserInterface.GetSelectionType(System.Int32,System.Int32,System.Int32)"/> as base.
             </summary>
             <returns></returns>
         </member>
@@ -7377,6 +7971,16 @@
             <typeparam name="TParent">The type of the menu itself.</typeparam>
             <typeparam name="TCell">The type of the cells serviced.</typeparam>
             <typeparam name="TBorder">The type of the border used.</typeparam>
+        </member>
+        <member name="E:WarWolfWorks.UI.MenusSystem.SlickMenu.SlickMenu`3.OnIndexChanged">
+            <summary>
+            Invoked when <see cref="P:WarWolfWorks.UI.MenusSystem.SlickMenu.SlickMenu`3.Index"/> is changed. Value passed is the previous value.
+            </summary>
+        </member>
+        <member name="E:WarWolfWorks.UI.MenusSystem.SlickMenu.SlickMenu`3.OnSelectionIndexChanged">
+            <summary>
+            Invoked when <see cref="P:WarWolfWorks.UI.MenusSystem.SlickMenu.SlickMenu`3.SelectionIndex"/> is changed. Value passed is the previous value.
+            </summary>
         </member>
         <member name="P:WarWolfWorks.UI.MenusSystem.SlickMenu.SlickMenu`3.ThemeColor">
             <summary>
@@ -7442,12 +8046,11 @@
             Destroys all UI elements initiated by <see cref="M:WarWolfWorks.UI.MenusSystem.SlickMenu.SlickMenu`3.BuildUI"/>.
             </summary>
         </member>
-        <member name="M:WarWolfWorks.UI.MenusSystem.SlickMenu.SlickMenu`3.CreateCell(System.Int32,WarWolfWorks.Utility.LanguageString,System.Object[])">
+        <member name="M:WarWolfWorks.UI.MenusSystem.SlickMenu.SlickMenu`3.CreateCell(System.Int32,System.Object[])">
             <summary>
             Creates a cell.
             </summary>
             <param name="index">Index to be assigned to the cell.</param>
-            <param name="name">Name to be used for the cell.</param>
             <param name="args">Additional arguments.</param>
             <returns></returns>
         </member>
@@ -7456,6 +8059,11 @@
             Creates a holder that is the child of the menu's holder.
             </summary>
             <param name="name">The name of the holder GameObject.</param>
+            <param name="xMin">Value assigned to anchorMin.x</param>
+            <param name="yMin">Value assigned to anchorMin.y</param>
+            <param name="xMax">Value assigned to anchorMax.x</param>
+            <param name="yMax">Value assigned to anchorMax.y</param>
+            <param name="holder">If not null, the returned holder will be a child of the given RectTransform.</param>
             <returns></returns>
         </member>
         <member name="M:WarWolfWorks.UI.MenusSystem.SlickMenu.SlickMenu`3.Event_Cell_OnPointerEnter(`1)">
@@ -7470,12 +8078,14 @@
             </summary>
             <param name="cell"></param>
         </member>
-        <member name="M:WarWolfWorks.UI.MenusSystem.SlickMenu.SlickMenu`3.Awake">
-            <summary><inheritdoc/></summary>
-        </member>
         <member name="M:WarWolfWorks.UI.MenusSystem.SlickMenu.SlickMenu`3.Start">
             <summary>
             Calls <see cref="M:WarWolfWorks.UI.MenusSystem.SlickMenu.SlickMenu`3.BuildUI"/> and assigns their events; Make sure to include "base.Start();" when overriding.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.UI.MenusSystem.SlickMenu.SlickMenu`3.ForceBuildUI">
+            <summary>
+            Forces the UI to build, regardless of the menu's state.
             </summary>
         </member>
         <member name="M:WarWolfWorks.UI.MenusSystem.SlickMenu.SlickMenu`3.Update">
@@ -8254,6 +8864,26 @@
             Sets the camera size to it's initial value.
             </summary>
         </member>
+        <member name="M:WarWolfWorks.Utility.CameraManager2D.Awake">
+            <summary>
+            Sets internal components; Make sure to include "base.Awake();" when overriding.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.CameraManager2D.Start">
+            <summary>
+            Sets the camera's orthographic size to the default size.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.CameraManager2D.Update">
+            <summary>
+            Sets the camera's orthoghraphic size progressively towards <see cref="F:WarWolfWorks.Utility.CameraManager2D.CameraDestinationSize"/> based on <see cref="F:WarWolfWorks.Utility.CameraManager2D.CameraResizeSpeed"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Utility.CameraManager2D.pr_FuckUnity">
+            <summary>
+            The internal value (middleman value) which applies the progression of the orthographic camera's size based on <see cref="F:WarWolfWorks.Utility.CameraManager2D.CameraResizeSpeed"/> and <see cref="F:WarWolfWorks.Utility.CameraManager2D.CameraDestinationSize"/>.
+            </summary>
+        </member>
         <member name="T:WarWolfWorks.Utility.CameraManagerFPS">
             <summary>
             Camera manager for an FPS game.
@@ -8727,6 +9357,20 @@
             <param name="name"></param>
             <param name="value"></param>
         </member>
+        <member name="M:WarWolfWorks.Utility.DefaultKeys.ChangeKeyValue(System.String,UnityEngine.KeyCode)">
+            <summary>
+            Changes an existing key's value.
+            </summary>
+            <param name="name"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.DefaultKeys.ForceChangeKeyValue(System.String,UnityEngine.KeyCode)">
+            <summary>
+            Forces <see cref="T:WarWolfWorks.Utility.DefaultKeys"/> to change the given key inside the database even if optimization mode is active.
+            </summary>
+            <param name="name"></param>
+            <param name="value"></param>
+        </member>
         <member name="M:WarWolfWorks.Utility.DefaultKeys.ForceAddKey(WarWolfWorks.Utility.DefaultKeys.WKey)">
             <summary>
             Forces <see cref="T:WarWolfWorks.Utility.DefaultKeys"/> to add/change a key inside the database even if optimization mode is active.
@@ -8821,6 +9465,14 @@
             <summary>
             Creates a new <see cref="T:WarWolfWorks.Utility.FloatRange"/> with <see cref="F:WarWolfWorks.Utility.FloatRange.Min"/> and <see cref="F:WarWolfWorks.Utility.FloatRange.Max"/> set to the same value.
             </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.FloatRange.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:WarWolfWorks.Utility.IntRange"/> based on a string.
+            </summary>
+            <example>"0,5-53,6", will set <see cref="F:WarWolfWorks.Utility.FloatRange.Min"/> to 0.5f and <see cref="F:WarWolfWorks.Utility.FloatRange.Max"/> to 53.6f. Any form of brackets such as {0-53} or [0-53,7] is also acceptable. Negative values are acceptable, as long as the "-" character precedes a number.</example>
+            <param name="range">The string to pass, it shouldn't contain any special characters outside of one '-' or ','.</param>
+            <exception cref="T:System.FormatException"/>
         </member>
         <member name="M:WarWolfWorks.Utility.FloatRange.GetHashCode">
             <summary>
@@ -8975,7 +9627,7 @@
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.SetAnchoredUI(UnityEngine.RectTransform,UnityEngine.Vector4)">
             <summary>
-            Extention method. Points to <see cref="M:WarWolfWorks.Utility.Hooks.MathF.SetAnchoredUI(UnityEngine.RectTransform,UnityEngine.Vector4)"/>.
+            Extention method. Points to <see cref="M:WarWolfWorks.Utility.Hooks.UserInterface.SetAnchoredUI(UnityEngine.RectTransform,UnityEngine.Vector4)"/>.
             </summary>
             <param name="rt"></param>
             <param name="Position"></param>
@@ -8983,7 +9635,7 @@
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.SetAnchoredUI(UnityEngine.RectTransform,UnityEngine.Vector2,UnityEngine.Vector2)">
             <summary>
-            Extention method. Points to <see cref="M:WarWolfWorks.Utility.Hooks.MathF.SetAnchoredUI(UnityEngine.RectTransform,UnityEngine.Vector2,UnityEngine.Vector2)"/>.
+            Extention method. Points to <see cref="M:WarWolfWorks.Utility.Hooks.UserInterface.SetAnchoredUI(UnityEngine.RectTransform,UnityEngine.Vector2,UnityEngine.Vector2)"/>.
             </summary>
             <param name="rt"></param>
             <param name="min"></param>
@@ -8991,7 +9643,7 @@
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.SetAnchoredUI(UnityEngine.RectTransform,System.Single,System.Single,System.Single,System.Single)">
             <summary>
-            Extention method. Points to <see cref="M:WarWolfWorks.Utility.Hooks.MathF.SetAnchoredUI(UnityEngine.RectTransform,System.Single,System.Single,System.Single,System.Single)"/>.
+            Extention method. Points to <see cref="M:WarWolfWorks.Utility.Hooks.UserInterface.SetAnchoredUI(UnityEngine.RectTransform,System.Single,System.Single,System.Single,System.Single)"/>.
             </summary>
             <param name="rt"></param>
             <param name="minX"></param>
@@ -9241,6 +9893,83 @@
             <param name="routine"></param>
             <param name="isRunningBool"></param>
         </member>
+        <member name="T:WarWolfWorks.Utility.Hooks.UserInterface">
+            <summary>
+            Subclass with all utility methods tied to user interface (UI).
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.UserInterface.GetSelectionType(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Returns the <see cref="T:WarWolfWorks.Enums.SlickSelectionType"/> enum based on index values given.
+            </summary>
+            <param name="index">The index of the cell.</param>
+            <param name="hoverIndex">The current hover index of the parent.</param>
+            <param name="selectIndex">The current select index of the parent.</param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.UserInterface.GetAnchoredPosition(UnityEngine.RectTransform)">
+            <summary>
+            Returns the Anchored position of a RectTransform in Vector4,
+            where x = anchorMin.x, y = anchorMin.y, z = anchorMax.x, w = anchorMax.y.
+            </summary>
+            <param name="rt"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.UserInterface.SetAnchoredUI(UnityEngine.RectTransform,UnityEngine.Vector4)">
+            <summary>
+            Sets the anchored position of an RectTransform with it's offset set to 0.
+            Vector4 use: x = anchorMin.x, y = anchorMin.y, z = anchorMax.x, w = anchorMax.y.
+            </summary>
+            <param name="rt"></param>
+            <param name="Position"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.UserInterface.SetAnchoredUI(UnityEngine.RectTransform,UnityEngine.Vector2,UnityEngine.Vector2)">
+            <summary>
+            Sets the anchored position of an RectTransform with it's offset set to 0.
+            </summary>
+            <param name="rt"></param>
+            <param name="min"></param>
+            <param name="max"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.UserInterface.SetAnchoredUI(UnityEngine.RectTransform,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Sets the anchored position of an RectTransform with it's offset set to 0.
+            </summary>
+            <param name="rt"></param>
+            <param name="minX"></param>
+            <param name="minY"></param>
+            <param name="maxX"></param>
+            <param name="maxY"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.UserInterface.SetAllAnchoredUIFitHorizontal(System.Collections.Generic.IEnumerable{UnityEngine.RectTransform})">
+            <summary>
+            Fits all RectTransforms given inside a parent horizontally, where anchorMin.y = 0 and anchorMax.y = 1.
+            </summary>
+            <param name="rts"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.UserInterface.SetAllAnchoredUIFitHorizontal(System.Collections.Generic.IEnumerable{UnityEngine.RectTransform},System.Single)">
+            <summary>
+            Fits all RectTransforms given inside a parent horizontally, where anchorMin.y = 0 and anchorMax.y = 1, with x values being limited from 0 to maxSize01.
+            </summary>
+            <param name="rts"></param>
+            <param name="maxSize01"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.UserInterface.SetAllAnchoredUIFitVertical(System.Collections.Generic.IEnumerable{UnityEngine.RectTransform})">
+            <summary>
+            Fits all RectTransforms given inside a parent horizontally, where anchorMin.x = 0 and anchorMax.x = 1.
+            </summary>
+            <param name="rts"></param>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.UserInterface.SetAllAnchoredUIFitVertical(System.Collections.Generic.IEnumerable{UnityEngine.RectTransform},System.Single)">
+            <summary>
+            Fits all RectTransforms given inside a parent horizontally, where anchorMin.y = 0 and anchorMax.y = 1, with x values being limited from 0 to maxSize01.
+            </summary>
+            <param name="rts"></param>
+            <param name="maxSize01"></param>
+        </member>
         <member name="T:WarWolfWorks.Utility.Hooks.Random">
             <summary>
             Subclass with all utility methods for use of a random factor.
@@ -9255,6 +9984,18 @@
             <summary>
             Returns anything between Vector3.zero and Vector3.one.
             </summary>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Random.GetRandomSingleSign">
+            <summary>
+            Returns a random sign in float value.
+            </summary>
+            <returns>Either -1f, or 1f.</returns>
+        </member>
+        <member name="M:WarWolfWorks.Utility.Hooks.Random.GetRandomSign">
+            <summary>
+            Returns a random sign.
+            </summary>
+            <returns>Either -1, or 1.</returns>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.Random.GetRandomVector2(System.Boolean)">
             <summary>
@@ -9997,69 +10738,6 @@
             <summary>
             Returns in order: Vector2.up, Vector2.down
             </summary>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.MathF.GetAnchoredPosition(UnityEngine.RectTransform)">
-            <summary>
-            Returns the Anchored position of a RectTransform in Vector4,
-            where x = anchorMin.x, y = anchorMin.y, z = anchorMax.x, w = anchorMax.y.
-            </summary>
-            <param name="rt"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.MathF.SetAnchoredUI(UnityEngine.RectTransform,UnityEngine.Vector4)">
-            <summary>
-            Sets the anchored position of an RectTransform with it's offset set to 0.
-            Vector4 use: x = anchorMin.x, y = anchorMin.y, z = anchorMax.x, w = anchorMax.y.
-            </summary>
-            <param name="rt"></param>
-            <param name="Position"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.MathF.SetAnchoredUI(UnityEngine.RectTransform,UnityEngine.Vector2,UnityEngine.Vector2)">
-            <summary>
-            Sets the anchored position of an RectTransform with it's offset set to 0.
-            </summary>
-            <param name="rt"></param>
-            <param name="min"></param>
-            <param name="max"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.MathF.SetAnchoredUI(UnityEngine.RectTransform,System.Single,System.Single,System.Single,System.Single)">
-            <summary>
-            Sets the anchored position of an RectTransform with it's offset set to 0.
-            </summary>
-            <param name="rt"></param>
-            <param name="minX"></param>
-            <param name="minY"></param>
-            <param name="maxX"></param>
-            <param name="maxY"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.MathF.SetAllAnchoredUIFitHorizontal(System.Collections.Generic.IEnumerable{UnityEngine.RectTransform})">
-            <summary>
-            Fits all RectTransforms given inside a parent horizontally, where anchorMin.y = 0 and anchorMax.y = 1.
-            </summary>
-            <param name="rts"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.MathF.SetAllAnchoredUIFitHorizontal(System.Collections.Generic.IEnumerable{UnityEngine.RectTransform},System.Single)">
-            <summary>
-            Fits all RectTransforms given inside a parent horizontally, where anchorMin.y = 0 and anchorMax.y = 1, with x values being limited from 0 to maxSize01.
-            </summary>
-            <param name="rts"></param>
-            <param name="maxSize01"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.MathF.SetAllAnchoredUIFitVertical(System.Collections.Generic.IEnumerable{UnityEngine.RectTransform})">
-            <summary>
-            Fits all RectTransforms given inside a parent horizontally, where anchorMin.x = 0 and anchorMax.x = 1.
-            </summary>
-            <param name="rts"></param>
-        </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.MathF.SetAllAnchoredUIFitVertical(System.Collections.Generic.IEnumerable{UnityEngine.RectTransform},System.Single)">
-            <summary>
-            Fits all RectTransforms given inside a parent horizontally, where anchorMin.y = 0 and anchorMax.y = 1, with x values being limited from 0 to maxSize01.
-            </summary>
-            <param name="rts"></param>
-            <param name="maxSize01"></param>
         </member>
         <member name="M:WarWolfWorks.Utility.Hooks.MathF.GetAspectRatio">
             <summary>
@@ -11064,7 +11742,7 @@
             <param name="match"></param>
             <returns></returns>
         </member>
-        <member name="M:WarWolfWorks.Utility.Hooks.GetChildren(UnityEngine.Transform,System.Predicate{UnityEngine.GameObject})">
+        <member name="M:WarWolfWorks.Utility.Hooks.GetChildren(UnityEngine.GameObject,System.Predicate{UnityEngine.GameObject})">
             <summary>
             Gets all children of a parent who match a specified condition.
             </summary>
@@ -11208,6 +11886,14 @@
             Creates a new <see cref="T:WarWolfWorks.Utility.IntRange"/> with <see cref="F:WarWolfWorks.Utility.IntRange.Min"/> and <see cref="F:WarWolfWorks.Utility.IntRange.Max"/> set to the same value.
             </summary>
         </member>
+        <member name="M:WarWolfWorks.Utility.IntRange.#ctor(System.String)">
+            <summary>
+            Creates a new <see cref="T:WarWolfWorks.Utility.IntRange"/> based on a string.
+            </summary>
+            <example>"0-53", will set <see cref="F:WarWolfWorks.Utility.IntRange.Min"/> to 0 and <see cref="F:WarWolfWorks.Utility.IntRange.Max"/> to 53. "0,53" is also acceptable; Any form of brackets such as {0,53} or [0-53] is also acceptable. Negative values are acceptable, as long as the "-" character precedes a number.</example>
+            <param name="range">The string to pass, it shouldn't contain any special characters outside of one '-' or ','.</param>
+            <exception cref="T:System.FormatException"/>
+        </member>
         <member name="M:WarWolfWorks.Utility.IntRange.GetHashCode">
             <summary>
             <inheritdoc/>
@@ -11328,7 +12014,7 @@
         </member>
         <member name="P:WarWolfWorks.Utility.LevelFloat.Value">
             <summary>
-            Returns the final value of this <see cref="T:WarWolfWorks.Utility.LevelFloat"/> based on it's <see cref="F:WarWolfWorks.Utility.LevelFloat.Level"/>.
+            Returns or sets the final value of this <see cref="T:WarWolfWorks.Utility.LevelFloat"/> based on it's <see cref="F:WarWolfWorks.Utility.LevelFloat.Level"/>.
             </summary>
         </member>
         <member name="F:WarWolfWorks.Utility.LevelFloat.DefaultValue">
@@ -11906,7 +12592,17 @@
             All constant and readonly values of the <see cref="N:WarWolfWorks"/> library.
             </summary>
         </member>
-        <member name="F:WarWolfWorks.WWWResources.SV_Path_Preferences">
+        <member name="P:WarWolfWorks.WWWResources.OnBeforeSceneLoadCalls">
+            <summary>
+            Calls all events inside this dictionary on before scene load based on their int value (priority).
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.WWWResources.OnAfterSceneLoadCalls">
+            <summary>
+            Calls all events inside this dictionary on after scene load based on their int value (priority).
+            </summary>
+        </member>
+        <member name="P:WarWolfWorks.WWWResources.SV_Path_Preferences">
             <summary>
             Path to personal preferences of this library.
             </summary>
@@ -11962,6 +12658,16 @@
             Matches katakana, hiragana and kanji; Note: Can have ambiguity with Chinese, to avoid such behavior use <see cref="F:WarWolfWorks.WWWResources.Expression_Japanese"/> instead.
             </summary>
         </member>
+        <member name="F:WarWolfWorks.WWWResources.Expression_IntRange_Range">
+            <summary>
+            Matches a <see cref="T:WarWolfWorks.Utility.IntRange"/> constructor string.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.WWWResources.Expression_FloatRange_Range">
+            <summary>
+            Matches a <see cref="T:WarWolfWorks.Utility.FloatRange"/> constructor string.
+            </summary>
+        </member>
         <member name="F:WarWolfWorks.WWWResources.SVCN_CORECANVAS">
             <summary>
             Name of the category given to the <see cref="P:WarWolfWorks.Internal.Settings.UtilityCanvas"/> Settings in WWWSettings.ini.
@@ -11995,6 +12701,66 @@
         <member name="F:WarWolfWorks.WWWResources.VN_NYUMANAGER">
             <summary>
             Name of the <see cref="T:WarWolfWorks.NyuEntities.NyuManager"/>.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.WWWResources.NYU_STATS_STACKING_BASE">
+            <summary>
+            Base stacking index of the default stacking calculation. Stats with this stacking will be used as the base value for calculation.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.WWWResources.NYU_STATS_STACKING_OVERRIDER">
+            <summary>
+            Overrider stacking index of the default stacking calculation. Stats with this stacking will override the base value with it's own. (useful for weapons or items if they have base stats)
+            Calculation: Base = Overrider
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.WWWResources.NYU_STATS_STACKING_ADDITIVE">
+            <summary>
+            Additive stacking index of the default stacking calculation. Stats with this stacking will add themselves on top of the base value.
+            Calculation: Base + Value
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.WWWResources.NYU_STATS_STACKING_BASEMULT">
+            <summary>
+            Base Multiplier stacking index of the default stacking calculation. Stats with this stacking will multiply the BASE value by their own.
+            Calculation: Base * (Value + 1)
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.WWWResources.NYU_STATS_STACKING_TOTALMULT">
+            <summary>
+            Total Multiplier stacking index of the default stacking calculation. Stats with this stacking will multiply the TOTAL value by their own.
+            Calculation: (Base + All Value Calculations) * (Value + 1)
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.WWWResources.NYU_STATS_STACKING_PWNER">
+            <summary>
+            Pwner stacking index of the default stacking calculation. Stats with this stacking will ignore any calculation and return their own value.
+            Calculation: (Base + All Value Calculation) = Value
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.WWWResources.CONVAR_SYSTEM">
+            <summary>
+            Systematic console variables will usually start with this string.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.WWWResources.CONVAR_INGAME">
+            <summary>
+            In-game console variables will usually start with this string.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.WWWResources.CONVAR_UI">
+            <summary>
+            User-Interface console variables will usually start with this string.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.WWWResources.CONVAR_SETTINGS">
+            <summary>
+            Settings console variables will usually start with this string.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.WWWResources.CONVAR_STREAMING">
+            <summary>
+            Streaming console variables will usually start with this string.
             </summary>
         </member>
         <member name="F:WarWolfWorks.WWWResources.DEBUG_LAYER_EXCEPTIONS_INDEX">

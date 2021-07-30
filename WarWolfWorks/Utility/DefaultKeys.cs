@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using WarWolfWorks.Attributes;
 using WarWolfWorks.IO.CTS;
 using static WarWolfWorks.WWWResources;
 
@@ -59,13 +60,6 @@ namespace WarWolfWorks.Utility
         {
             get;
             private set;
-        }
-
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Startup()
-        {
-            Optimize();
-            Application.quitting += Unoptimize;
         }
 
         /// <summary>
@@ -290,6 +284,53 @@ namespace WarWolfWorks.Utility
         }
 
         /// <summary>
+        /// Changes an existing key's value.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        public static void ChangeKeyValue(string name, KeyCode value)
+        {
+            if (!IsOptimizedCheck())
+            {
+                try
+                {
+                    Hooks.Streaming.CreateFolder(SV_Path_DefaultKeys);
+                    if (!string.IsNullOrEmpty(CTS_DefaultKeys[name]))
+                    {
+                        CTS_DefaultKeys[name] = value.ToString();
+                        CTS_DefaultKeys.Apply();
+                        DebugKeyAddition(name, value);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AdvancedDebug.Log($"A problem occured trying to save {name} key. (Error: {ex.Message})", DEBUG_LAYER_EXCEPTIONS_INDEX);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Forces <see cref="DefaultKeys"/> to change the given key inside the database even if optimization mode is active.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        public static void ForceChangeKeyValue(string name, KeyCode value)
+        {
+            bool wasOptimized = IsOptimized;
+            if (wasOptimized)
+            {
+                Unoptimize();
+            }
+
+            ChangeKeyValue(name, value);
+
+            if (wasOptimized)
+            {
+                Optimize();
+            }
+        }
+
+        /// <summary>
         /// Forces <see cref="DefaultKeys"/> to add/change a key inside the database even if optimization mode is active.
         /// </summary>
         /// <param name="key"></param>
@@ -330,7 +371,7 @@ namespace WarWolfWorks.Utility
                 return true;
             }
 
-            AdvancedDebug.LogWarning($"{from}'s name couldn't be changed! Make sure a key under the given name exists and the new key name is not the same.", DEBUG_LAYER_WWW_INDEX);
+            AdvancedDebug.LogWarning($"{from}'s name couldn't be changed! Make sure a key under the given name exists, that the new key name is not the same and that optimization state is not active.", DEBUG_LAYER_WWW_INDEX);
             return false;
         }
 
@@ -372,6 +413,12 @@ namespace WarWolfWorks.Utility
         public static void Apply()
         {
             CTS_DefaultKeys.Apply();
+        }
+
+        static DefaultKeys()
+        {
+            Optimize();
+            Application.quitting += Unoptimize;
         }
     }
 }

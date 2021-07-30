@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using WarWolfWorks.Interfaces.NyuEntities;
 
@@ -8,23 +9,28 @@ namespace WarWolfWorks.NyuEntities.Statistics
     /// Base class used for all <see cref="Nyu"/> statistics.
     /// </summary>
     [Serializable]
-    public sealed class Stat : INyuStat
+    public sealed class Stat : INyuStat, IEquatable<Stat>
     {
+        #region Unity Serialized
         [SerializeField]
         private float s_Value;
-        float INyuStat.Value => s_Value;
-        /// <summary>
-        /// Use this value to set the base value of this stat. (Set-Only)
-        /// </summary>
-        public float SetValue
-        {
-            set => this.s_Value = value;
-        }
-
         [SerializeField]
         private int s_Stacking;
+        [SerializeField]
+        private int[] s_Affections;
+        #endregion
+
         /// <summary>
-        /// How the Stat should be calculated.
+        /// Gets or sets the value of this stat.
+        /// </summary>
+        public float Value
+        {
+            get => s_Value;
+            set => s_Value = value;
+        }
+
+        /// <summary>
+        /// How this <see cref="Stat"/> is calculated by a <see cref="INyuStacking"/>.
         /// </summary>
         public int Stacking
         {
@@ -32,10 +38,8 @@ namespace WarWolfWorks.NyuEntities.Statistics
             set => s_Stacking = value;
         }
 
-        [SerializeField]
-        private int[] s_Affections;
         /// <summary>
-        /// Which stats will this stat interact with.
+        /// Stats with which this <see cref="Stat"/> will interact with.
         /// </summary>
         public int[] Affections
         {
@@ -43,7 +47,6 @@ namespace WarWolfWorks.NyuEntities.Statistics
             set => s_Affections = value;
         }
 
-        void INyuStat.OnAdded(Stats to) { }
 
         /// <summary>
         /// Create a Stat.
@@ -82,13 +85,6 @@ namespace WarWolfWorks.NyuEntities.Statistics
         }
 
         /// <summary>
-        /// Returns true if the Stat's value returns other.
-        /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        public bool Equals(float other) => s_Value == other;
-
-        /// <summary>
         /// Returns the value in string.
         /// </summary>
         /// <returns></returns>
@@ -115,5 +111,33 @@ namespace WarWolfWorks.NyuEntities.Statistics
         /// <param name="s"></param>
         public static implicit operator int(Stat s) => (int)s.s_Value;
 
+        void INyuStat.OnAdded(Stats to) { }
+        void INyuStat.OnRemoved(Stats to) { }
+
+        /// <summary>
+        /// Returns true if this <see cref="Stat"/> is equal to another.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool Equals(Stat other)
+        {
+            return other != null &&
+                   Value == other.Value &&
+                   Stacking == other.Stacking &&
+                   EqualityComparer<int[]>.Default.Equals(Affections, other.Affections);
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            int hashCode = -1432848062;
+            hashCode = hashCode * -1521134295 + Value.GetHashCode();
+            hashCode = hashCode * -1521134295 + Stacking.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<int[]>.Default.GetHashCode(Affections);
+            return hashCode;
+        }
     }
 }

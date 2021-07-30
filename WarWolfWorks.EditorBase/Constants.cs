@@ -2,6 +2,7 @@
 using UnityEngine;
 using WarWolfWorks.EditorBase.Interfaces;
 using WarWolfWorks.EditorBase.Services;
+using WarWolfWorks.Interfaces.NyuEntities;
 using WarWolfWorks.IO.CTS;
 using WarWolfWorks.Utility;
 using static WarWolfWorks.WWWResources;
@@ -46,11 +47,11 @@ namespace WarWolfWorks.EditorBase
 
         #region Properties
         /// <summary>
-        /// Display name of a <see cref="IStat"/>'s Stacking.
+        /// Display name of a <see cref="INyuStat"/>'s Stacking.
         /// </summary>
         public const string EVN_STAT_STACKING = "Stacking";
         /// <summary>
-        /// Display name of a <see cref="IStat"/>'s Affections.
+        /// Display name of a <see cref="INyuStat"/>'s Affections.
         /// </summary>
         public const string EVN_STAT_AFFECTIONS = "Affections";
         #endregion

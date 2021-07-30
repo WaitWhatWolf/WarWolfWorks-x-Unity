@@ -1,6 +1,7 @@
 ﻿using WarWolfWorks.Interfaces;
 using UnityEngine;
 using WarWolfWorks.Interfaces.NyuEntities;
+using System;
 
 namespace WarWolfWorks.NyuEntities.ProjectileSystem
 {
@@ -17,12 +18,32 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
         /// <see cref="INyuOnTriggerExit2D"/> (conditional), <see cref="INyuOnTriggerExit2D"/> (conditional),
         /// and <see cref="INyuOnDestroy"/>)
         /// </summary>
-        public abstract class Behavior : IParentable<NyuProjectile>
+        public abstract class Behavior : IParentable<NyuProjectile>, INyuReferencable
         {
+            /// <summary>
+            /// Pointer to Parent.NyuMain.
+            /// </summary>
+            public Nyu NyuMain => Parent.NyuMain;
+
             /// <summary>
             /// The parent of this behavior.
             /// </summary>
             public NyuProjectile Parent { get; internal set; }
+
+            /// <summary>
+            /// Returns a copy of this <see cref="Behavior"/>.
+            /// </summary>
+            /// <returns></returns>
+            public abstract Behavior GetDuplicate();
+
+            /// <summary>
+            /// Calls <see cref="INyuOnDestroy"/> if implemented.
+            /// </summary>
+            ~Behavior()
+            {
+                if (this is INyuOnDestroy dest)
+                    dest.NyuOnDestroy();
+            }
         }
     }
 }

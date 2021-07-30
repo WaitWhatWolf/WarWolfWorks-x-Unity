@@ -9,11 +9,13 @@ namespace WarWolfWorks.Utility
     /// To use with a specified language, use an indexer.
     /// (Example: ItemName = LanguageItemName[<see cref="SystemLanguage.Polish"/>])
     /// </summary>
+    [System.Serializable]
     public struct LanguageString
     {
         /// <summary>
         /// Returned by default.
         /// </summary>
+        [TextArea]
         public string English;
 
         /// <summary>

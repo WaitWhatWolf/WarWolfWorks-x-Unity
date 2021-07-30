@@ -11,12 +11,12 @@
         </member>
         <member name="F:WarWolfWorks.EditorBase.Constants.EVN_STAT_STACKING">
             <summary>
-            Display name of a <see cref="!:IStat"/>'s Stacking.
+            Display name of a <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStat"/>'s Stacking.
             </summary>
         </member>
         <member name="F:WarWolfWorks.EditorBase.Constants.EVN_STAT_AFFECTIONS">
             <summary>
-            Display name of a <see cref="!:IStat"/>'s Affections.
+            Display name of a <see cref="T:WarWolfWorks.Interfaces.NyuEntities.INyuStat"/>'s Affections.
             </summary>
         </member>
         <member name="F:WarWolfWorks.EditorBase.Constants.EV_ITEM_NAME_WIDTH_DIV">

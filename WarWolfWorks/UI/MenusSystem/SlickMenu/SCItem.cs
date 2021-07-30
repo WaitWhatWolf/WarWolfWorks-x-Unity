@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using WarWolfWorks.Interfaces.UI.MenusSystem.SlickMenu;
 using WarWolfWorks.Security;
 
 namespace WarWolfWorks.UI.MenusSystem.SlickMenu
@@ -13,7 +14,7 @@ namespace WarWolfWorks.UI.MenusSystem.SlickMenu
     /// <typeparam name="TParent"></typeparam>
     /// <typeparam name="TCell"></typeparam>
     /// <typeparam name="TBorder"></typeparam>
-    public abstract class SCItem<TParent, TCell, TBorder> : SlickCell<TParent, TCell, TBorder>
+    public abstract class SCItem<TParent, TCell, TBorder> : SlickCell<TParent, TCell, TBorder>, IFront<Image, Sprite>, IOverlay<TextMeshProUGUI, string>
         where TParent : SlickMenu<TParent, TCell, TBorder>
         where TCell : SCItem<TParent, TCell, TBorder>
         where TBorder : SlickBorder
@@ -21,7 +22,7 @@ namespace WarWolfWorks.UI.MenusSystem.SlickMenu
         /// <summary>
         /// The text of this cell. (Ordered in front of <see cref="Front"/> by default)
         /// </summary>
-        public TextMeshProUGUI Text { get; }
+        public TextMeshProUGUI Overlay { get; }
 
         /// <summary>
         /// The front image of this cell.
@@ -34,9 +35,9 @@ namespace WarWolfWorks.UI.MenusSystem.SlickMenu
         public abstract Sprite FrontContent { get; }
 
         /// <summary>
-        /// The string that is applied to <see cref="Text"/> on refresh.
+        /// The string that is applied to <see cref="Overlay"/> on refresh.
         /// </summary>
-        public abstract string TextContent { get; }
+        public abstract string OverlayContent { get; }
 
         /// <summary>
         /// <inheritdoc/>
@@ -46,7 +47,7 @@ namespace WarWolfWorks.UI.MenusSystem.SlickMenu
             Selection = GetSelectionType();
             Background.color = GetSelectionColor();
             Front.sprite = FrontContent;
-            Text.text = TextContent;
+            Overlay.text = OverlayContent;
         }
 
         /// <summary>
@@ -63,8 +64,8 @@ namespace WarWolfWorks.UI.MenusSystem.SlickMenu
         {
             Front = front ? front : throw new WWWException(45, this, "front field given on constructor is null.");
             Front.transform.SetAsLastSibling();
-            Text = text ? text : throw new WWWException(45, this, "text field given on constructor is null.");
-            Text.transform.SetAsLastSibling();
+            Overlay = text ? text : throw new WWWException(45, this, "text field given on constructor is null.");
+            Overlay.transform.SetAsLastSibling();
         }
     }
 }

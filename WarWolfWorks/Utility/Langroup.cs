@@ -5,11 +5,13 @@ namespace WarWolfWorks.Utility
     /// <summary>
     /// Used by <see cref="LanguageString"/>.
     /// </summary>
+    [System.Serializable]
     public struct Langroup
     {
         /// <summary>
         /// Value of this group in string.
         /// </summary>
+        [TextArea]
         public string Value;
         /// <summary>
         /// What language is this value used for.

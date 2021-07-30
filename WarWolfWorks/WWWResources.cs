@@ -11,6 +11,7 @@ using WarWolfWorks.Utility;
 using WarWolfWorks.Debugging;
 using WarWolfWorks.Enums;
 using WarWolfWorks.UI.MenusSystem.SlickMenu;
+using System.Collections.Generic;
 
 [assembly: InternalsVisibleTo("WarWolfWorks.EditorBase.Services")]
 [assembly: InternalsVisibleTo("WarWolfWorks.EditorBase")]
@@ -21,17 +22,62 @@ namespace WarWolfWorks
     /// </summary>
     public static class WWWResources
     {
+        #region Initialization
+        /// <summary>
+        /// Calls all events inside this dictionary on before scene load based on their int value (priority).
+        /// </summary>
+        internal static SortedDictionary<int, Action> OnBeforeSceneLoadCalls { get; private set; } = new SortedDictionary<int, Action>();
+        /// <summary>
+        /// Calls all events inside this dictionary on after scene load based on their int value (priority).
+        /// </summary>
+        internal static SortedDictionary<int, Action> OnAfterSceneLoadCalls { get; private set; } = new SortedDictionary<int, Action>();
+
+        internal static WarWolfWorksMonoManager MonoManager { get; private set; }
+
+        internal static Action MonoManager_OnStart;
+        internal static Action MonoManager_OnUpdate;
+        internal static Action MonoManager_OnFixedUpdate;
+        internal static Action MonoManager_OnLateUpdate;
+        internal static Action MonoManager_OnDestroyed;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void InitBeforeSceneLoad()
+        {
+            MonoManager = new GameObject(nameof(WarWolfWorksMonoManager)).AddComponent<WarWolfWorksMonoManager>();
+            MonoBehaviour.DontDestroyOnLoad(MonoManager);
+
+            for (int i = 0; i < OnBeforeSceneLoadCalls.Count; i++)
+                OnBeforeSceneLoadCalls[i]();
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void InitAfterSceneLoad()
+        {
+            for (int i = 0; i < OnAfterSceneLoadCalls.Count; i++)
+                OnAfterSceneLoadCalls[i]();
+        }
+        #endregion
+
         #region Streaming
         internal const int STREAMING_FILE_ENCRYPTION_JUMPER = 85;
 
         /// <summary>
         /// Path to personal preferences of this library.
         /// </summary>
-        public static readonly string SV_Path_Preferences =
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+        public static string SV_Path_Preferences
+        {
+            get
+            {
+                string product;
+                try { product = Application.productName; } //Man, I fucking hate this dogshit engine.
+                catch { product = "Default"; }
+
+                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 @"WarWolfWorks\",
-                Application.productName,
+                product,
                 "Preferences.cts");
+            }
+        }
         /// <summary>
         /// Path to the WWWSettings.cts file.
         /// </summary>
@@ -77,6 +123,15 @@ namespace WarWolfWorks
         /// Matches katakana, hiragana and kanji; Note: Can have ambiguity with Chinese, to avoid such behavior use <see cref="Expression_Japanese"/> instead.
         /// </summary>
         public static readonly Regex Expression_Japanese_Greedy = new Regex(@"([\u3400-\u4DB5\u4E00-\u9FCB\uF900-\uFA6A]|[\u3041-\u3096]|[\u30A0-\u30FF])+");
+
+        /// <summary>
+        /// Matches a <see cref="IntRange"/> constructor string.
+        /// </summary>
+        internal static readonly Regex Expression_IntRange_Range = new Regex(@"^[\[\(\{\<]?-?\d+[\-\,]-?\d+[\]\)\}\>]?$");
+        /// <summary>
+        /// Matches a <see cref="FloatRange"/> constructor string.
+        /// </summary>
+        internal static readonly Regex Expression_FloatRange_Range = new Regex(@"^[\[\(\{\<]?-?\d+(\,)?\d+?[\-]-?\d+(\,)?\d+?[\]\)\}\>]?$");
         #endregion
 
         #region WarWolfWorks Settings
@@ -183,6 +238,38 @@ namespace WarWolfWorks
         /// Name of the <see cref="NyuManager"/>.
         /// </summary>
         public const string VN_NYUMANAGER = "NyuManager";
+
+        #region Stacking
+        /// <summary>
+        /// Base stacking index of the default stacking calculation. Stats with this stacking will be used as the base value for calculation.
+        /// </summary>
+        public const int NYU_STATS_STACKING_BASE = -1;
+        /// <summary>
+        /// Overrider stacking index of the default stacking calculation. Stats with this stacking will override the base value with it's own. (useful for weapons or items if they have base stats)
+        /// Calculation: Base = Overrider
+        /// </summary>
+        public const int NYU_STATS_STACKING_OVERRIDER = 0;
+        /// <summary>
+        /// Additive stacking index of the default stacking calculation. Stats with this stacking will add themselves on top of the base value.
+        /// Calculation: Base + Value
+        /// </summary>
+        public const int NYU_STATS_STACKING_ADDITIVE = 1;
+        /// <summary>
+        /// Base Multiplier stacking index of the default stacking calculation. Stats with this stacking will multiply the BASE value by their own.
+        /// Calculation: Base * (Value + 1)
+        /// </summary>
+        public const int NYU_STATS_STACKING_BASEMULT = 2;
+        /// <summary>
+        /// Total Multiplier stacking index of the default stacking calculation. Stats with this stacking will multiply the TOTAL value by their own.
+        /// Calculation: (Base + All Value Calculations) * (Value + 1)
+        /// </summary>
+        public const int NYU_STATS_STACKING_TOTALMULT = 3;
+        /// <summary>
+        /// Pwner stacking index of the default stacking calculation. Stats with this stacking will ignore any calculation and return their own value.
+        /// Calculation: (Base + All Value Calculation) = Value
+        /// </summary>
+        public const int NYU_STATS_STACKING_PWNER = 42;
+        #endregion
         #endregion
 
         #region Misc
@@ -193,6 +280,27 @@ namespace WarWolfWorks
         #endregion
 
         #region Debugging
+        /// <summary>
+        /// Systematic console variables will usually start with this string.
+        /// </summary>
+        public const string CONVAR_SYSTEM = "SYS_";
+        /// <summary>
+        /// In-game console variables will usually start with this string.
+        /// </summary>
+        public const string CONVAR_INGAME = "IG_";
+        /// <summary>
+        /// User-Interface console variables will usually start with this string.
+        /// </summary>
+        public const string CONVAR_UI = "UI_";
+        /// <summary>
+        /// Settings console variables will usually start with this string.
+        /// </summary>
+        public const string CONVAR_SETTINGS = "STG_";
+        /// <summary>
+        /// Streaming console variables will usually start with this string.
+        /// </summary>
+        public const string CONVAR_STREAMING = "S_";
+
         /// <summary>
         /// Layer at which exceptions are handled.
         /// </summary>

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace WarWolfWorks.Debugging
+namespace WarWolfWorks.Attributes
 {
     /// <summary>
     /// Displays an enum value inside the inspector as Flags.

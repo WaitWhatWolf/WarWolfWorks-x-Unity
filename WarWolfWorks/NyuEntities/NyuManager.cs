@@ -16,42 +16,6 @@ namespace WarWolfWorks.NyuEntities
     public static class NyuManager
     {
         #region Multi-Threading
-        private class MonoUpdateSimulate : MonoBehaviour
-        {
-            [HideInInspector]
-            private bool GeneratesError = true;
-
-            private void Awake()
-            {
-                Application.quitting += Event_StopErrorGenerate;
-            }
-
-            private void Event_StopErrorGenerate()
-            {
-                GeneratesError = false;
-                Application.quitting -= Event_StopErrorGenerate;
-            }
-
-            private void OnDestroy()
-            {
-                if (GeneratesError)
-                    throw new NyuEntityException(6);
-            }
-        }
-
-        private static MonoUpdateSimulate UpdateInvoker;
-        
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Init()
-        {
-            GameObject gUpdateInvoker = new GameObject(VN_NYUMANAGER);
-            UpdateInvoker = gUpdateInvoker.AddComponent<MonoUpdateSimulate>();
-            UnityEngine.Object.DontDestroyOnLoad(UpdateInvoker);
-            UpdateInvoker.StartCoroutine(IC_Update());
-            UpdateInvoker.StartCoroutine(IC_FixedUpdate());
-            UpdateInvoker.StartCoroutine(IC_LateUpdate());
-        }
-
         private static void WarningDebugNRE(string interfaceName, string objectName, Exception exception)
         {
             AdvancedDebug.LogWarningFormat("Couldn't call {0} of {1} as there was an exception; Aborting...", DEBUG_LAYER_WWW_INDEX
@@ -62,75 +26,66 @@ namespace WarWolfWorks.NyuEntities
         /// <summary>
         /// Invokes the update method of all entities.
         /// </summary>
-        private static IEnumerator IC_Update()
+        private static void Event_NyuUpdate()
         {
-            while (true)
+            for (int i = 0; i < AllUpdates.Count; i++)
             {
-                yield return null;
+                if (!AllUpdates[i].Item1.enabled || AllUpdates[i].Item1.ns_DestroyedCorrectly)
+                    continue;
 
-                for (int i = 0; i < AllUpdates.Count; i++)
+                try
                 {
-                    if (!AllUpdates[i].Item1.enabled || AllUpdates[i].Item1.ns_DestroyedCorrectly)
-                        continue;
-
-                    try
-                    {
-                        AllUpdates[i].Item2.NyuUpdate();
-                    }
-                    catch(Exception e)
-                    {
-                        WarningDebugNRE(nameof(INyuUpdate), AllEntities[i].GetType().Name, e);
-                    }
+                    AllUpdates[i].Item2.NyuUpdate();
                 }
-
-                for (int j = 0; j < ComponentsUpdate.Count; j++)
+                catch (Exception e)
                 {
-                    try
-                    {
-                        ComponentsUpdate[j].NyuUpdate();
-                    }
-                    catch (Exception e)
-                    {
-                        WarningDebugNRE(nameof(INyuUpdate), ComponentsUpdate[j].GetType().Name, e);
-                    }
+                    WarningDebugNRE(nameof(INyuUpdate), AllEntities[i].GetType().Name, e);
+                }
+            }
+
+            for (int j = 0; j < ComponentsUpdate.Count; j++)
+            {
+                try
+                {
+                    ComponentsUpdate[j].NyuUpdate();
+                }
+                catch (Exception e)
+                {
+                    WarningDebugNRE(nameof(INyuUpdate), ComponentsUpdate[j].GetType().Name, e);
                 }
             }
         }
+
         /// <summary>
         /// Invokes the FixedUpdate method of all entities.
         /// </summary>
         /// <returns></returns>
-        private static IEnumerator IC_FixedUpdate()
+        private static void Event_NyuFixedUpdate()
         {
-            while (true)
+            for (int i = 0; i < AllFixedUpdates.Count; i++)
             {
-                yield return FixedUpdateWaiter;
+                if (!AllFixedUpdates[i].Item1.enabled)
+                    continue;
 
-                for (int i = 0; i < AllFixedUpdates.Count; i++)
+                try
                 {
-                    if (!AllFixedUpdates[i].Item1.enabled)
-                        continue;
-
-                    try
-                    {
-                        AllFixedUpdates[i].Item2.NyuFixedUpdate();
-                    }
-                    catch (Exception e)
-                    {
-                        WarningDebugNRE(nameof(INyuFixedUpdate), AllEntities[i].GetType().Name, e);
-                    }
+                    AllFixedUpdates[i].Item2.NyuFixedUpdate();
                 }
-
-                for (int j = 0; j < ComponentsFixedUpdate.Count; j++)
+                catch (Exception e)
                 {
-                    try
-                    {
-                        ComponentsFixedUpdate[j].NyuFixedUpdate();
-                    }
-                    catch (Exception e)
-                    {
-                        WarningDebugNRE(nameof(INyuFixedUpdate), ComponentsFixedUpdate[j].GetType().Name, e);
-                    }
+                    WarningDebugNRE(nameof(INyuFixedUpdate), AllEntities[i].GetType().Name, e);
+                }
+            }
+
+            for (int j = 0; j < ComponentsFixedUpdate.Count; j++)
+            {
+                try
+                {
+                    ComponentsFixedUpdate[j].NyuFixedUpdate();
+                }
+                catch (Exception e)
+                {
+                    WarningDebugNRE(nameof(INyuFixedUpdate), ComponentsFixedUpdate[j].GetType().Name, e);
                 }
             }
         }
@@ -138,37 +93,32 @@ namespace WarWolfWorks.NyuEntities
         /// Invokes the LateUpdate method of all entities.
         /// </summary>
         /// <returns></returns>
-        private static IEnumerator IC_LateUpdate()
+        private static void Event_NyuLateUpdate()
         {
-            while (true)
+            for (int i = 0; i < AllLateUpdates.Count; i++)
             {
-                yield return LateUpdateWaiter;
+                if (!AllLateUpdates[i].Item1.enabled)
+                    continue;
 
-                for (int i = 0; i < AllLateUpdates.Count; i++)
+                try
                 {
-                    if (!AllLateUpdates[i].Item1.enabled)
-                        continue;
-
-                    try
-                    {
-                        AllLateUpdates[i].Item2.NyuLateUpdate();
-                    }
-                    catch (Exception e)
-                    {
-                        WarningDebugNRE(nameof(INyuLateUpdate), AllEntities[i].GetType().Name, e);
-                    }
+                    AllLateUpdates[i].Item2.NyuLateUpdate();
                 }
-
-                for (int j = 0; j < ComponentsLateUpdate.Count; j++)
+                catch (Exception e)
                 {
-                    try
-                    {
-                        ComponentsLateUpdate[j].NyuLateUpdate();
-                    }
-                    catch (Exception e)
-                    {
-                        WarningDebugNRE(nameof(INyuLateUpdate), ComponentsLateUpdate[j].GetType().Name, e);
-                    }
+                    WarningDebugNRE(nameof(INyuLateUpdate), AllEntities[i].GetType().Name, e);
+                }
+            }
+
+            for (int j = 0; j < ComponentsLateUpdate.Count; j++)
+            {
+                try
+                {
+                    ComponentsLateUpdate[j].NyuLateUpdate();
+                }
+                catch (Exception e)
+                {
+                    WarningDebugNRE(nameof(INyuLateUpdate), ComponentsLateUpdate[j].GetType().Name, e);
                 }
             }
         }
@@ -943,5 +893,12 @@ namespace WarWolfWorks.NyuEntities
             return true;
         }
         #endregion
+
+        static NyuManager()
+        {
+            WWWResources.MonoManager_OnUpdate += Event_NyuUpdate;
+            WWWResources.MonoManager_OnFixedUpdate += Event_NyuFixedUpdate;
+            WWWResources.MonoManager_OnLateUpdate += Event_NyuLateUpdate;
+        }
     }
 }

@@ -6,7 +6,7 @@ namespace WarWolfWorks.Interfaces.NyuEntities
     /// <summary>
     /// Interface used for calculating stats inside an <see cref="Nyu"/>'s <see cref="Stats"/>.
     /// </summary>
-    public interface INyuStacking
+    public interface INyuStacking : IParentable<Stats>
     {
         /// <summary>
         /// Final value that will be returned.
@@ -14,16 +14,5 @@ namespace WarWolfWorks.Interfaces.NyuEntities
         /// <param name="stat"></param>
         /// <returns></returns>
         float CalculatedValue(INyuStat stat);
-
-        /// <summary>
-        /// Who's stats should this stacking calculate.
-        /// </summary>
-        Stats Parent { get; }
-
-        /// <summary>
-        /// Sets the <see cref="Parent"/>.
-        /// </summary>
-        /// <param name="to"></param>
-        void SetParent(Stats to);
     }
 }

@@ -28,7 +28,7 @@ namespace WarWolfWorks.NyuEntities.AttackSystemV2
         /// <summary>
         /// The index of this geri in it's parent.
         /// </summary>
-        public int Index { get; internal set; }
+        public int Index { get; internal set; } = -1;
 
         /// <summary>
         /// Returns true when the condition of this <see cref="Geri"/> is met.

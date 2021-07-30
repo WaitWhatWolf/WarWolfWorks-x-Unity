@@ -13,6 +13,11 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
     /// </summary>
     public abstract class SProjectile : MonoBehaviour, ILockable, INyuReferencable
     {
+        /// <summary>
+        /// The parent of this projectile.
+        /// </summary>
+        public Nyu NyuMain { get; internal set; }
+
         #region Runtime and Initializing
         /// <summary>
         /// The current tag of this projectile.
@@ -66,7 +71,7 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
 
         internal void SetSProjectileUpdates()
         {
-            if(this is INyuUpdate update)
+            if (this is INyuUpdate update)
             {
                 AsUpdate = update;
                 IsUpdate = true;
@@ -142,11 +147,6 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
         /// The locked state of this <see cref="SProjectile"/>. (<see cref="ILockable"/> implementation)
         /// </summary>
         public bool Locked { get; private set; }
-
-        /// <summary>
-        /// The parent of this projectile.
-        /// </summary>
-        public Nyu NyuMain { get; internal set; }
 
         /// <summary>
         /// Attempts to set the locked state of this <see cref="SProjectile"/>. (<see cref="ILockable"/> implementation)

@@ -11,21 +11,26 @@ namespace WarWolfWorks.NyuEntities.Statistics
     /// </summary>
     public sealed record RecordStat : INyuStat
     {
+        #region Unity Serialized
         [SerializeField]
         private float s_Value;
-        float INyuStat.Value => s_Value;
-        /// <summary>
-        /// Use this value to set the base value of this stat. (Set-Only)
-        /// </summary>
-        public float SetValue
-        {
-            set => this.s_Value = value;
-        }
-
         [SerializeField]
         private int s_Stacking;
+        [SerializeField]
+        private int[] s_Affections;
+        #endregion
+
         /// <summary>
-        /// How the Stat should be calculated.
+        /// Gets or sets the value of this stat.
+        /// </summary>
+        public float Value
+        {
+            get => s_Value;
+            set => s_Value = value;
+        }
+
+        /// <summary>
+        /// How this <see cref="RecordStat"/> is calculated by a <see cref="INyuStacking"/>.
         /// </summary>
         public int Stacking
         {
@@ -33,18 +38,14 @@ namespace WarWolfWorks.NyuEntities.Statistics
             set => s_Stacking = value;
         }
 
-        [SerializeField]
-        private int[] s_Affections;
         /// <summary>
-        /// Which stats will this stat interact with.
+        /// Stats with which this <see cref="RecordStat"/> will interact with.
         /// </summary>
         public int[] Affections
         {
             get => s_Affections;
             set => s_Affections = value;
         }
-
-        void INyuStat.OnAdded(Stats to) { }
 
         /// <summary>
         /// Create a Stat.
@@ -110,6 +111,9 @@ namespace WarWolfWorks.NyuEntities.Statistics
         /// Returns the Stat's value implicitly as int.
         /// </summary>
         /// <param name="s"></param>
-        public static implicit operator int(RecordStat s) => (int)s.s_Value;
+        public static explicit operator int(RecordStat s) => (int)s.s_Value;
+
+        void INyuStat.OnRemoved(Stats to) { }
+        void INyuStat.OnAdded(Stats to) { }
     }
 }

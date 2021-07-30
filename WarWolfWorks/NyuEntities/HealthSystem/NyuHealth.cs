@@ -14,6 +14,19 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
     /// </summary>
     public sealed class NyuHealth : NyuComponent, IAdvancedHealth, INyuPreAwake
     {
+        #region Unity Serialized
+        [SerializeField]
+        private Stat s_MaxHealth = new Stat(0, 0, 0);
+        [SerializeField]
+        private bool s_DamageParent = true;
+        [SerializeField]
+        private Stat s_ImmnunityDuration = new Stat(0, 0, 0);
+        [SerializeField]
+        private bool s_UsesImmunity;
+        [SerializeField]
+        private bool s_DestroyOnDeath;
+        #endregion
+
         /// <summary>
         /// Invoked when <see cref="DamageHealth(object)"/> is successfully invoked.
         /// </summary>
@@ -40,16 +53,16 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
         public static event Action<NyuHealth> OnAnyHealed;
 
         /// <summary>
-        /// Invoked when any <see cref="NyuHealth"/> invokes <see cref="AddHealth(float)"/> successfully.
+        /// Invoked when any <see cref="NyuHealth"/> invokes <see cref="AddHealth(float, out float)"/> successfully.
         /// </summary>
         public static event Action<NyuHealth> OnAnyHealthAdded;
         /// <summary>
-        /// Invoked when any <see cref="NyuHealth"/> invokes <see cref="RemoveHealth(float)"/> successfully.
+        /// Invoked when any <see cref="NyuHealth"/> invokes <see cref="RemoveHealth(float, out float)"/> successfully.
         /// </summary>
         public static event Action<NyuHealth> OnAnyHealthRemoved;
 
         /// <summary>
-        /// Ivoked when <see cref="AddHealth(float)"/> is called. Float value is the amount of health that was added.
+        /// Ivoked when <see cref="AddHealth(float, out float)"/> is called. Float value is the amount of health that was added.
         /// </summary>
         public event Action<IHealth, float> OnHealthAdded;
         /// <summary>
@@ -62,19 +75,16 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
         /// </summary>
         public float CurrentHealth { get; private set; }
 
-        [SerializeField]
-        private Stat s_MaxHealth = new Stat(0, 0, 0);
+        
         /// <summary>
         /// The maximum value at which <see cref="CurrentHealth"/> can be.
         /// </summary>
         public float MaxHealth
         {
             get => NyuMain.Stats.CalculatedValue(s_MaxHealth);
-            set => s_MaxHealth.SetValue = value;
+            set => s_MaxHealth.Value = value;
         }
 
-        [SerializeField]
-        private bool s_DamageParent = true;
         /// <summary>
         /// If true and this component's <see cref="Nyu"/> is <see cref="INyuEntityParentable"/>,
         /// it will damage the parent's Health instead.
@@ -113,22 +123,15 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
             NyuManager.Destroy(NyuMain);
         }
 
-        [SerializeField]
-        private Stat s_ImmnunityDuration = new Stat(0, 0, 0);
         /// <summary>
         /// Duration in which the <see cref="Nyu"/> is unable to take damage. (Only works if <see cref="UsesImmunity"/> is true)
         /// </summary>
         public float ImmunityDuration => NyuMain.Stats.CalculatedValue(s_ImmnunityDuration);
 
-        [SerializeField]
-        private bool s_UsesImmunity;
         /// <summary>
         /// Determines if the <see cref="Nyu"/> can use the immunity system.
         /// </summary>
         public bool UsesImmunity => s_UsesImmunity;
-
-        [SerializeField]
-        private bool s_DestroyOnDeath;
 
         /// <summary>
         /// Is the <see cref="Nyu"/> currently immune?
@@ -167,20 +170,30 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
         public float PreviousHealthAdded { get; private set; }
 
         /// <summary>
-        /// Adds the specified amount to <see cref="CurrentHealth"/>.
+        /// <inheritdoc/>
         /// </summary>
-        /// <param name="amount"></param>
-        public void AddHealth(float amount)
+        public bool AddHealth(float amount, out float added)
         {
-            amount = amount.ToPositive();
-            float prevHealth = CurrentHealth;
-            CurrentHealth = Mathf.Clamp(CurrentHealth + amount, 0, MaxHealth);
-            float added = CurrentHealth - prevHealth;
-            if (added > 0)
+            try
             {
-                PreviousHealthAdded = added;
-                OnHealthAdded?.Invoke(this, added);
-                OnAnyHealthAdded?.Invoke(this);
+                amount = amount.ToPositive();
+                float prevHealth = CurrentHealth;
+                CurrentHealth = Mathf.Clamp(CurrentHealth + amount, 0, MaxHealth);
+                added = CurrentHealth - prevHealth;
+                if (added > 0)
+                {
+                    PreviousHealthAdded = added;
+                    OnHealthAdded?.Invoke(this, added);
+                    OnAnyHealthAdded?.Invoke(this);
+                    return true;
+                }
+
+                return false;
+            }
+            catch
+            {
+                added = 0;
+                return false;
             }
         }
 
@@ -194,7 +207,7 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
             {
                 if (Calculator.AcceptableHealValue(heal))
                 {
-                    Used.AddHealth(Calculator.FinalHeal(heal, this));
+                    Used.AddHealth(Calculator.FinalHeal(heal, this), out _);
                     PreviousHeal = heal;
 
                     if (Used == (IAdvancedHealth)this)
@@ -214,16 +227,24 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
         }
 
         /// <summary>
-        /// Removes the specified amount from <see cref="CurrentHealth"/>.
+        /// <inheritdoc/>
         /// </summary>
-        /// <param name="amount"></param>
-        public void RemoveHealth(float amount)
+        public bool RemoveHealth(float amount, out float removed)
         {
-            float actAmount = amount > CurrentHealth ? CurrentHealth : amount;
-            CurrentHealth -= actAmount;
-            PreviousHealthRemoved = CurrentHealth;
-            OnHealthRemoved?.Invoke(this, actAmount);
-            OnAnyHealthRemoved?.Invoke(this);
+            try
+            {
+                removed = amount > CurrentHealth ? CurrentHealth : amount;
+                CurrentHealth -= removed;
+                PreviousHealthRemoved = CurrentHealth;
+                OnHealthRemoved?.Invoke(this, removed);
+                OnAnyHealthRemoved?.Invoke(this);
+                return true;
+            }
+            catch
+            {
+                removed = 0;
+                return false;
+            }
         }
 
         /// <summary>
@@ -236,7 +257,7 @@ namespace WarWolfWorks.NyuEntities.HealthSystem
             {
                 if (!IsImmune && Calculator.AcceptableValue(damage))
                 {
-                    Used.RemoveHealth(Calculator.FinalValue(damage, this, out bool triggerImmunity));
+                    Used.RemoveHealth(Calculator.FinalValue(damage, this, out bool triggerImmunity), out _);
                     PreviousDamage = damage;
                     if (triggerImmunity && UsesImmunity) TriggerImmunity(ImmunityDuration);
 

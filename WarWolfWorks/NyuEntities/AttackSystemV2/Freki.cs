@@ -34,7 +34,7 @@ namespace WarWolfWorks.NyuEntities.AttackSystemV2
         /// <summary>
         /// The index of this attack in it's <see cref="NyuOdinHandler"/>.
         /// </summary>
-        public int Index { get; internal set; }
+        public int Index { get; internal set; } = -1;
 
         /// <summary>
         /// The parent which handles this attack.

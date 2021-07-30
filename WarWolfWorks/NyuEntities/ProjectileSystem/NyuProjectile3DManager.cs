@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using WarWolfWorks.Utility;
 
 namespace WarWolfWorks.NyuEntities.ProjectileSystem
 {
@@ -7,15 +8,6 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
     /// </summary>
     public sealed class NyuProjectile3DManager : NyuProjectileManager<NyuProjectile3D>
     {
-        [SerializeField, Header("The size of the pool; Leave at 0 to Init the pool manually.")]
-        private int s_PoolSize;
-
-        private void Awake()
-        {
-            Instance = this;
-            if (s_PoolSize > 0) Init(s_PoolSize);
-        }
-
         /// <summary>
         /// <see cref="MeshFilter"/>と<see cref="MeshRenderer"/>を追加。
         /// </summary>
@@ -33,21 +25,23 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
         /// <summary>
         /// Creates a new <see cref="NyuProjectile3D"/>. (Queues an inactive projectile into the pool of active projectiles)
         /// </summary>
-        /// <param name="owner"></param>
-        /// <param name="position"></param>
-        /// <param name="rotation"></param>
-        /// <param name="mesh"></param>
-        /// <param name="materials"></param>
-        /// <param name="behaviors"></param>
+        /// <param name="owner">The owner of the projectile.</param>
+        /// <param name="position">Spawn position of the projectile.</param>
+        /// <param name="rotation">Spawn rotation of the projectile.</param>
+        /// <param name="mesh">The physical mesh of the projectile.</param>
+        /// <param name="materials">Materials applied to the mesh of the projectile.</param>
+        /// <param name="behaviors">All behaviors applied to this projectile.</param>
         /// <returns></returns>
-        public static NyuProjectile3D New(Nyu owner, Vector3 position, Quaternion rotation, Mesh mesh, Material[] materials, params NyuProjectile.Behavior[] behaviors)
+        public NyuProjectile3D New(Nyu owner, Vector3 position, Quaternion rotation, Mesh mesh, Material[] materials, params NyuProjectile.Behavior[] behaviors)
         {
-            New(owner, out NyuProjectile3D toReturn, position, rotation, behaviors);
+            if (New(owner, out NyuProjectile3D toReturn, position, rotation, behaviors))
+            {
+                toReturn.MeshFilter.mesh = mesh;
+                toReturn.MeshRenderer.materials = materials;
 
-            toReturn.MeshFilter.mesh = mesh;
-            toReturn.MeshRenderer.materials = materials;
-
-            return toReturn;
+                return toReturn;
+            }
+            return null;
         }
     }
 }

@@ -8,30 +8,33 @@ namespace WarWolfWorks.Interfaces
 	public interface IHealth
 	{
         /// <summary>
-        /// Invoked when <see cref="CurrentHealth"/> reaches 0.
+        /// Max value which <see cref="CurrentHealth"/> can reach.
         /// </summary>
-        event Action<IHealth> OnDeath;
-        /// <summary>
-        /// Invoked when <see cref="IHealth.AddHealth(float)"/> is invoked. Float value is the health added.
-        /// </summary>
-        event Action<IHealth, float> OnHealthAdded;
-        /// <summary>
-        /// Value that clamps <see cref="CurrentHealth"/>.
-        /// </summary>
-        float MaxHealth { get; set; }
+        float MaxHealth { get; }
         /// <summary>
         /// The current health.
         /// </summary>
         float CurrentHealth { get; }
         /// <summary>
-        /// Adds to <see cref="CurrentHealth"/>.
+        /// Attempts to add the given amount to the current health.
         /// </summary>
-        /// <param name="amount"></param>
-        void AddHealth(float amount);
+        /// <param name="amount">Amount used.</param>
+        /// <param name="added">
+        /// The added amount of health; 
+        /// As an example, if <see cref="CurrentHealth"/> is at 980 and <see cref="MaxHealth"/> is at 1000,
+        /// but the amount given is 100, the amount added will be 20 instead of 100.
+        /// </param>
+        /// <returns>True if addition was successful.</returns>
+        bool AddHealth(float amount, out float added);
         /// <summary>
-        /// Removes from <see cref="CurrentHealth"/>.
+        /// Attempts to remove the given amount from <see cref="CurrentHealth"/>.
         /// </summary>
-        /// <param name="amount"></param>
-        void RemoveHealth(float amount);
+        /// <param name="amount">Amount used.</param>
+        /// <param name="removed">
+        /// The removed amount of health; As an example, 
+        /// if <see cref="CurrentHealth"/> is at 100 but amount given is 120, the amount removed will be 100 instead of 120.
+        /// </param>
+        /// <returns>True if removal was successful.</returns>
+        bool RemoveHealth(float amount, out float removed);
 	}
 }

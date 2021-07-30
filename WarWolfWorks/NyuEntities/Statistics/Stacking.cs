@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using WarWolfWorks.Interfaces;
 using WarWolfWorks.Interfaces.NyuEntities;
 
 namespace WarWolfWorks.NyuEntities.Statistics
@@ -8,27 +9,20 @@ namespace WarWolfWorks.NyuEntities.Statistics
     /// <summary>
     /// Base class to use to apply to a <see cref="Stats.Stacking"/>.
     /// </summary>
-    public abstract class Stacking : ScriptableObject, INyuStacking
+    public abstract class Stacking : INyuStacking
     {
-        /// <summary>
-        /// All stats of the parent <see cref="Stats"/> class.
-        /// </summary>
-        protected List<INyuStat> AllStats => Parent.ns_Stats;
         /// <summary>
         /// The parent stats to be handled.
         /// </summary>
-        public Stats Parent { get; private set; }
+        public Stats Parent { get; }
+
         /// <summary>
         /// What will be used inside <see cref="Stats"/>.
         /// </summary>
         /// <param name="stat"></param>
         /// <returns></returns>
         public abstract float CalculatedValue(INyuStat stat);
-        internal void SetParent(Stats parent)
-        {
-            Parent = parent;
-        }
-
+        
         /// <summary>
         /// Gets all <see cref="INyuStat"/> with the given affections from <see cref="AllStats"/>.
         /// </summary>
@@ -75,10 +69,18 @@ namespace WarWolfWorks.NyuEntities.Statistics
             return toReturn.ToArray();
         }
 
-        void INyuStacking.SetParent(Stats to)
+        /// <summary>
+        /// Base constructor of the stacking class.
+        /// </summary>
+        /// <param name="parent"></param>
+        public Stacking(Stats parent)
         {
-            if(Parent == null)
-                Parent = to;
+            Parent = parent;
         }
+
+        /// <summary>
+        /// All stats of the parent <see cref="Stats"/> class.
+        /// </summary>
+        protected HashSet<INyuStat> AllStats => Parent.pv_Stats;
     }
 }

@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿#pragma warning disable IDE0044
+#pragma warning disable 0649
+
+using UnityEngine;
 using UnityEngine.Serialization;
 using WarWolfWorks.Attributes;
 using WarWolfWorks.Interfaces;
@@ -12,13 +15,13 @@ namespace WarWolfWorks.NyuEntities.Itemization
     public abstract class NyuItem : ScriptableObject, IItem
 	{
         #region Unity Serialized
-        [FormerlySerializedAs("itemName"), SerializeField]
+        [SerializeField]
         private string s_Name;
-        [FormerlySerializedAs("description"), SerializeField, TextArea]
+        [SerializeField, TextArea]
         private string s_Description;
-        [FormerlySerializedAs("sprite"), SerializeField]
+        [SerializeField]
         private Sprite s_Sprite;
-        [SerializeField, HideInInspector]
+        [SerializeField]
         private int s_ID = -1;
         #endregion
 

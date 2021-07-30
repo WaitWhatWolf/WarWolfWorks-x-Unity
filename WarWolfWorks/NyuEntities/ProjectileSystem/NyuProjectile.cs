@@ -2,6 +2,7 @@
 using UnityEngine;
 using System;
 using WarWolfWorks.Interfaces;
+using System.Collections.Generic;
 
 namespace WarWolfWorks.NyuEntities.ProjectileSystem
 {
@@ -58,24 +59,73 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
         /// </summary>
         public abstract Vector3 Velocity { get; set; }
 
-        internal Behavior[] ns_Behaviors = new Behavior[0];
-        /// <summary>
-        /// All behaviors affecting this projectile.
-        /// </summary>
-        [System.Obsolete("Use GetBehaviors() instead.")]
-        public Behavior[] Behaviors { get => ns_Behaviors; }
-
-        /// <summary>
-        /// Returns all behaviors currently affecting this projectile.
-        /// </summary>
-        /// <returns></returns>
-        public Behavior[] GetBehaviors() => ns_Behaviors;
-
         /// <summary>
         /// The parent of this <see cref="NyuProjectile"/>.
         /// </summary>
         public Nyu NyuMain { get; internal set; }
         #endregion
+
+        /// <summary>
+        /// All behaviors this <see cref="NyuProjectile"/> is currently using.
+        /// When setting this array or any of it's elements to a new object, make sure to call <see cref="RefreshUpdateLists"/>
+        /// to update all update lists, otherwise any <see cref="Behavior"/> implementations of <see cref="INyuUpdate"/>,
+        /// <see cref="INyuFixedUpdate"/> or <see cref="INyuLateUpdate"/> will not work.
+        /// </summary>
+        public Behavior[] Behaviors = new Behavior[0];
+
+
+        #region Internal
+        internal List<INyuUpdate> Behaviors_Updates = new List<INyuUpdate>();
+        internal List<INyuFixedUpdate> Behaviors_FixedUpdates = new List<INyuFixedUpdate>();
+        internal List<INyuLateUpdate> Behaviors_LateUpdates = new List<INyuLateUpdate>();
+
+        internal bool IsUpdate;
+        internal bool IsFixedUpdate;
+        internal bool IsLateUpdate;
+
+        internal INyuUpdate AsUpdate;
+        internal INyuFixedUpdate AsFixedUpdate;
+        internal INyuLateUpdate AsLateUpdate;
+
+        internal void SetSProjectileUpdates()
+        {
+            if (this is INyuUpdate update)
+            {
+                AsUpdate = update;
+                IsUpdate = true;
+            }
+            if (this is INyuFixedUpdate fixedUpdate)
+            {
+                AsFixedUpdate = fixedUpdate;
+                IsFixedUpdate = true;
+            }
+            if (this is INyuLateUpdate lateUpdate)
+            {
+                AsLateUpdate = lateUpdate;
+                IsLateUpdate = true;
+            }
+        }
+        #endregion
+
+        /// <summary>
+        /// Refreshes all behavior update lists.
+        /// </summary>
+        public void RefreshUpdateLists()
+        {
+            Behaviors_Updates.Clear();
+            Behaviors_FixedUpdates.Clear();
+            Behaviors_LateUpdates.Clear();
+
+            for (int i = 0; i < Behaviors.Length; i++)
+            {
+                if (Behaviors[i] is INyuUpdate nyuUpdate)
+                    Behaviors_Updates.Add(nyuUpdate);
+                if (Behaviors[i] is INyuFixedUpdate nyuFixedUpdate)
+                    Behaviors_FixedUpdates.Add(nyuFixedUpdate);
+                if (Behaviors[i] is INyuLateUpdate nyuLateUpdate)
+                    Behaviors_LateUpdates.Add(nyuLateUpdate);
+            }
+        }
 
         #region ILockable Implementation
         /// <summary>

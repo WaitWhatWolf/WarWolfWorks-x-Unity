@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using WarWolfWorks.Security;
+using WarWolfWorks.Interfaces.UI.MenusSystem.SlickMenu;
 
 namespace WarWolfWorks.UI.MenusSystem.SlickMenu
 {
@@ -12,7 +13,7 @@ namespace WarWolfWorks.UI.MenusSystem.SlickMenu
     /// <typeparam name="TParent">The type of the menu itself.</typeparam>
     /// <typeparam name="TCell">The type of the cells serviced.</typeparam>
     /// <typeparam name="TBorder">The type of the border used.</typeparam>
-    public abstract class SCFront<TParent, TCell, TBorder> : SlickCell<TParent, TCell, TBorder>
+    public abstract class SCFront<TParent, TCell, TBorder> : SlickCell<TParent, TCell, TBorder>, IFront<Image, Sprite>
         where TParent : SlickMenu<TParent, TCell, TBorder>
         where TCell : SCFront<TParent, TCell, TBorder>
         where TBorder : SlickBorder

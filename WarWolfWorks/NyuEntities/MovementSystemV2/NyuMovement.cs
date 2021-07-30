@@ -195,7 +195,16 @@ namespace WarWolfWorks.NyuEntities.MovementSystemV2
 
                 for (int i = 0; i < ns_Velocities.Count; i++)
                 {
-                    try { toReturn += ns_Velocities[i].GetValue(); } catch { }
+                    try 
+                    {
+                        Vector3 toAdd = ns_Velocities[i].GetValue();
+                        toReturn += toAdd; 
+                    } 
+                    catch(Exception e) 
+                    { 
+                        AdvancedDebug.LogWarning("Skipped the calculation of a velocity as it generated an exception.");
+                        e.LogException();
+                    }
                 }
 
                 return toReturn;

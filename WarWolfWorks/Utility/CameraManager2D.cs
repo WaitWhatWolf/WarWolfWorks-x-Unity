@@ -8,7 +8,7 @@ namespace WarWolfWorks.Utility
     /// Camera Manager for 2D use. Can be explicitly converted to FollowBehaviour, TransformLimiter and Camera.
     /// </summary>
     [AddComponentMenu(IN_ASSETMENU_WARWOLFWORKS + IN_ASSETMENU_UTILITY + nameof(CameraManager2D)), RequireComponent(typeof(FollowBehavior), typeof(PositionLimiter), typeof(Camera))]
-    public sealed class CameraManager2D : MonoBehaviour, IPosition, IEulerAngles, IRotation
+    public class CameraManager2D : MonoBehaviour, IPosition, IEulerAngles, IRotation
     {
         /// <summary>
         /// Explicitly returns the <see cref="CameraManager2D"/>'s <see cref="h_FollowBehavior"/>.
@@ -50,10 +50,10 @@ namespace WarWolfWorks.Utility
         /// <summary>
         /// Current size of the camera.
         /// </summary>
-        public float CurrentSize
+        public virtual float CurrentSize
         {
             get => h_Camera.orthographicSize;
-            private set => h_Camera.orthographicSize = value;
+            protected set => h_Camera.orthographicSize = value;
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace WarWolfWorks.Utility
         /// other components which override the camera size in lateupdates.
         /// </summary>
         /// <returns></returns>
-        public float GetCurrentlyAppliedSize() => pv_FuckUnity;
+        public float GetCurrentlyAppliedSize() => pr_FuckUnity;
 
         /// <summary>
         /// Pointer to transform.position.
@@ -97,7 +97,10 @@ namespace WarWolfWorks.Utility
         /// </summary>
         public void SetCameraSizeDefault() => CameraDestinationSize = CameraDefaultSize;
 
-        private void Awake()
+        /// <summary>
+        /// Sets internal components; Make sure to include "base.Awake();" when overriding.
+        /// </summary>
+        protected virtual void Awake()
         {
             h_FollowBehavior = GetComponent<FollowBehavior>();
             h_TransformLimiter = GetComponent<PositionLimiter>();
@@ -106,21 +109,31 @@ namespace WarWolfWorks.Utility
             h_Camera.orthographic = true;
         }
 
+        /// <summary>
+        /// Sets the camera's orthographic size to the default size.
+        /// </summary>
+        protected virtual void Start()
+        {
+            h_Camera.orthographicSize = pr_FuckUnity = CameraDefaultSize;
+        }
+
+        /// <summary>
+        /// Sets the camera's orthoghraphic size progressively towards <see cref="CameraDestinationSize"/> based on <see cref="CameraResizeSpeed"/>.
+        /// </summary>
+        protected virtual void Update()
+        {
+            pr_FuckUnity = Mathf.MoveTowards(pr_FuckUnity, CameraDestinationSize, CameraResizeSpeed * Time.deltaTime);
+            CurrentSize = pr_FuckUnity;
+        }
+
+        /// <summary>
+        /// The internal value (middleman value) which applies the progression of the orthographic camera's size based on <see cref="CameraResizeSpeed"/> and <see cref="CameraDestinationSize"/>.
+        /// </summary>
+        protected float pr_FuckUnity = 0;
+
         internal FollowBehavior h_FollowBehavior;
         internal PositionLimiter h_TransformLimiter;
         internal Camera h_Camera;
 
-        private void Start()
-        {
-            h_Camera.orthographicSize = pv_FuckUnity = CameraDefaultSize;
-        }
-
-        private void Update()
-        {
-            pv_FuckUnity = Mathf.MoveTowards(pv_FuckUnity, CameraDestinationSize, CameraResizeSpeed * Time.deltaTime);
-            h_Camera.orthographicSize = pv_FuckUnity;
-        }
-
-        private float pv_FuckUnity = 0;
     }
 }

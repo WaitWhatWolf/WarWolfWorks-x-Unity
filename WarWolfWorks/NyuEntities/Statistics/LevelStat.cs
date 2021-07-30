@@ -12,10 +12,24 @@ namespace WarWolfWorks.NyuEntities.Statistics
     [Serializable]
     public sealed class LevelStat : INyuStat, IEquatable<Stat>
     {
+        #region Unity Serialized
         [SerializeField]
         private LevelFloat s_Value;
+        [SerializeField]
+        private int s_Stacking;
+        [SerializeField]
+        private int[] s_Affections;
+        #endregion
 
-        float INyuStat.Value => s_Value;
+        /// <summary>
+        /// Gets or sets a value based on the level.
+        /// </summary>
+        public float Value
+        {
+            get => s_Value.Value;
+            set => s_Value.Value = value; 
+        }
+
         /// <summary>
         /// This stat's level.
         /// </summary>
@@ -33,24 +47,20 @@ namespace WarWolfWorks.NyuEntities.Statistics
             get => s_Value.Values;
             set => this.s_Value.Values = value;
         }
+
         /// <summary>
         /// Sets the default value of the <see cref="LevelFloat"/> contained by this <see cref="LevelStat"/>.
         /// </summary>
-        public float SetValue { set => this.s_Value.DefaultValue = value; }
+        public float SetDefaultValue { set => this.s_Value.DefaultValue = value; }
 
-        void INyuStat.OnAdded(Stats to) { }
-
-        [SerializeField]
-        private int s_Stacking;
         /// <summary>
-        /// How is this LevelStat calculated.
+        /// How this <see cref="LevelStat"/> is calculated by a <see cref="INyuStacking"/>.
         /// </summary>
         public int Stacking { get => s_Stacking; set => s_Stacking = value; }
 
-        [SerializeField]
-        private int[] s_Affections;
+        
         /// <summary>
-        /// Which stats will this LevelStat interact with.
+        /// Stats with which this <see cref="LevelStat"/> will interact with.
         /// </summary>
         public int[] Affections { get => s_Affections; set => s_Affections = value; }
 
@@ -95,27 +105,6 @@ namespace WarWolfWorks.NyuEntities.Statistics
         }
 
         /// <summary>
-        /// Returns the <see cref="LevelStat"/>'s value implicitly.
-        /// </summary>
-        /// <param name="stat"></param>
-        public static implicit operator float(LevelStat stat) => stat.s_Value;
-        /// <summary>
-        /// Returns the <see cref="LevelStat"/>'s value implicitly as int.
-        /// </summary>
-        /// <param name="stat"></param>
-        public static implicit operator int(LevelStat stat) => (int)stat.s_Value;
-        /// <summary>
-        /// Returns an equivalent Stat to this <see cref="LevelStat"/>.
-        /// </summary>
-        /// <param name="stat"></param>
-        public static implicit operator Stat(LevelStat stat) => new Stat(stat.s_Value, stat.Stacking, stat.Affections);
-        /// <summary>
-        /// Returns explicitly the <see cref="LevelStat"/>'s <see cref="LevelFloat"/> value.
-        /// </summary>
-        /// <param name="stat"></param>
-        public static explicit operator LevelFloat(LevelStat stat) => stat.s_Value;
-
-        /// <summary>
         /// Returns the <see cref="LevelStat"/>'s value in string.
         /// </summary>
         /// <returns></returns>
@@ -143,7 +132,7 @@ namespace WarWolfWorks.NyuEntities.Statistics
         }
 
         /// <summary>
-        /// Returns true if all <see cref="IStat"/> variables from this LevelStat equals to all <see cref="IStat"/> variables from other.
+        /// Returns true if all <see cref="INyuStat"/> variables from this <see cref="LevelStat"/> equals to all <see cref="INyuStat"/> variables from other.
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
@@ -155,5 +144,29 @@ namespace WarWolfWorks.NyuEntities.Statistics
                 compared.Stacking == comparing.Stacking &&
                 compared.Affections == comparing.Affections;
         }
+
+        /// <summary>
+        /// Returns the <see cref="LevelStat"/>'s value implicitly.
+        /// </summary>
+        /// <param name="stat"></param>
+        public static implicit operator float(LevelStat stat) => stat.s_Value;
+        /// <summary>
+        /// Returns the <see cref="LevelStat"/>'s value implicitly as int.
+        /// </summary>
+        /// <param name="stat"></param>
+        public static explicit operator int(LevelStat stat) => (int)stat.s_Value;
+        /// <summary>
+        /// Returns an equivalent Stat to this <see cref="LevelStat"/>.
+        /// </summary>
+        /// <param name="stat"></param>
+        public static explicit operator Stat(LevelStat stat) => new Stat(stat.s_Value, stat.Stacking, stat.Affections);
+        /// <summary>
+        /// Returns explicitly the <see cref="LevelStat"/>'s <see cref="LevelFloat"/> value.
+        /// </summary>
+        /// <param name="stat"></param>
+        public static explicit operator LevelFloat(LevelStat stat) => stat.s_Value;
+
+        void INyuStat.OnAdded(Stats to) { }
+        void INyuStat.OnRemoved(Stats to) { }
     }
 }

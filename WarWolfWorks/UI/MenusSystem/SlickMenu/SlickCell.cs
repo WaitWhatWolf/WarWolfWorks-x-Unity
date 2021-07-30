@@ -114,30 +114,11 @@ namespace WarWolfWorks.UI.MenusSystem.SlickMenu
 
         #region Utility
         /// <summary>
-        /// Returns the <see cref="SlickSelectionType"/> enum based on index values given.
-        /// </summary>
-        /// <param name="index">The index of the cell.</param>
-        /// <param name="hoverIndex">The current hover index of the parent.</param>
-        /// <param name="selectIndex">The current select index of the parent.</param>
-        /// <returns></returns>
-        public static SlickSelectionType GetSelectionType(int index, int hoverIndex, int selectIndex)
-        {
-            if (index == hoverIndex && index == selectIndex)
-                return SlickSelectionType.SelectedHovered;
-            else if (index == selectIndex)
-                return SlickSelectionType.Selected;
-            else if (index == hoverIndex)
-                return SlickSelectionType.Hovered;
-
-            return SlickSelectionType.Unselected;
-        }
-
-        /// <summary>
         /// Returns the <see cref="SlickSelectionType"/> enum based on index values of this cell and it's parent;
-        /// Uses the static <see cref="GetSelectionType(int, int, int)"/> as base.
+        /// Uses the static <see cref="Hooks.UserInterface.GetSelectionType(int, int, int)"/> as base.
         /// </summary>
         /// <returns></returns>
-        public SlickSelectionType GetSelectionType() => GetSelectionType(Index, Parent.Index, Parent.SelectionIndex);
+        public SlickSelectionType GetSelectionType() => Hooks.UserInterface.GetSelectionType(Index, Parent.Index, Parent.SelectionIndex);
 
         /// <summary>
         /// Gets the appropriate color based on a menu's selection.
@@ -145,7 +126,7 @@ namespace WarWolfWorks.UI.MenusSystem.SlickMenu
         /// <param name="color">The base color.</param>
         /// <param name="alpha">The transparency of the color.</param>
         /// <returns></returns>
-        public Color GetSelectionColor(Color color, float alpha)
+        public virtual Color GetSelectionColor(Color color, float alpha)
         {
             Color toReturn = Selection switch
             {

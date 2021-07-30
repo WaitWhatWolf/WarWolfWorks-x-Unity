@@ -14,6 +14,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using WarWolfWorks.Debugging;
+using WarWolfWorks.Enums;
 using WarWolfWorks.Interfaces;
 using WarWolfWorks.Internal;
 using WarWolfWorks.Security;
@@ -114,23 +115,23 @@ namespace WarWolfWorks.Utility
         /// <returns></returns>
         public static Color ToNegative(this Color value) => Colors.ToNegative(value);
         /// <summary>
-        /// Extention method. Points to <see cref="MathF.SetAnchoredUI(RectTransform, Vector4)"/>.
+        /// Extention method. Points to <see cref="UserInterface.SetAnchoredUI(RectTransform, Vector4)"/>.
         /// </summary>
         /// <param name="rt"></param>
         /// <param name="Position"></param>
         /// <returns></returns>
         public static void SetAnchoredUI(this RectTransform rt, Vector4 Position)
-            => MathF.SetAnchoredUI(rt, Position);
+            => UserInterface.SetAnchoredUI(rt, Position);
         /// <summary>
-        /// Extention method. Points to <see cref="MathF.SetAnchoredUI(RectTransform, Vector2, Vector2)"/>.
+        /// Extention method. Points to <see cref="UserInterface.SetAnchoredUI(RectTransform, Vector2, Vector2)"/>.
         /// </summary>
         /// <param name="rt"></param>
         /// <param name="min"></param>
         /// <param name="max"></param>
         public static void SetAnchoredUI(this RectTransform rt, Vector2 min, Vector2 max)
-            => MathF.SetAnchoredUI(rt, min, max);
+            => UserInterface.SetAnchoredUI(rt, min, max);
         /// <summary>
-        /// Extention method. Points to <see cref="MathF.SetAnchoredUI(RectTransform, float, float, float, float)"/>.
+        /// Extention method. Points to <see cref="UserInterface.SetAnchoredUI(RectTransform, float, float, float, float)"/>.
         /// </summary>
         /// <param name="rt"></param>
         /// <param name="minX"></param>
@@ -139,14 +140,14 @@ namespace WarWolfWorks.Utility
         /// <param name="maxY"></param>
         /// <returns></returns>
         public static void SetAnchoredUI(this RectTransform rt, float minX, float minY, float maxX, float maxY)
-            => MathF.SetAnchoredUI(rt, minX, minY, maxX, maxY);
+            => UserInterface.SetAnchoredUI(rt, minX, minY, maxX, maxY);
         /// <summary>
         /// Returns the anchored position of a <see cref="RectTransform"/> in <see cref="Vector4"/>: X = minX, Y = minY, z = maxX, W = maxY.
         /// </summary>
         /// <param name="rt"></param>
         /// <returns></returns>
         public static Vector4 GetAnchoredPosition(this RectTransform rt)
-            => MathF.GetAnchoredPosition(rt);
+            => UserInterface.GetAnchoredPosition(rt);
         /// <summary>
         /// Returns true if the given position is within the bounds given. (<see cref="Vector4"/> bounds: X = minX, Y = minY, z = maxX, W = maxY)
         /// </summary>
@@ -511,6 +512,151 @@ namespace WarWolfWorks.Utility
         }
         #endregion
 
+        /// <summary>
+        /// Subclass with all utility methods tied to user interface (UI).
+        /// </summary>
+        public static class UserInterface
+        {
+            /// <summary>
+            /// Returns the <see cref="SlickSelectionType"/> enum based on index values given.
+            /// </summary>
+            /// <param name="index">The index of the cell.</param>
+            /// <param name="hoverIndex">The current hover index of the parent.</param>
+            /// <param name="selectIndex">The current select index of the parent.</param>
+            /// <returns></returns>
+            public static SlickSelectionType GetSelectionType(int index, int hoverIndex, int selectIndex)
+            {
+                if (index == hoverIndex && index == selectIndex)
+                    return SlickSelectionType.SelectedHovered;
+                else if (index == selectIndex)
+                    return SlickSelectionType.Selected;
+                else if (index == hoverIndex)
+                    return SlickSelectionType.Hovered;
+
+                return SlickSelectionType.Unselected;
+            }
+
+            /// <summary>
+            /// Returns the Anchored position of a RectTransform in Vector4,
+            /// where x = anchorMin.x, y = anchorMin.y, z = anchorMax.x, w = anchorMax.y.
+            /// </summary>
+            /// <param name="rt"></param>
+            /// <returns></returns>
+            public static Vector4 GetAnchoredPosition(RectTransform rt)
+            {
+                Vector2 anchorMin = rt.anchorMin;
+                Vector2 anchorMax = rt.anchorMax;
+                return new Vector4(anchorMin.x, anchorMin.y, anchorMax.x, anchorMax.y);
+            }
+
+            /// <summary>
+            /// Sets the anchored position of an RectTransform with it's offset set to 0.
+            /// Vector4 use: x = anchorMin.x, y = anchorMin.y, z = anchorMax.x, w = anchorMax.y.
+            /// </summary>
+            /// <param name="rt"></param>
+            /// <param name="Position"></param>
+            /// <returns></returns>
+            public static void SetAnchoredUI(RectTransform rt, Vector4 Position)
+            {
+                rt.anchorMin = new Vector2(Position.x, Position.y);
+                rt.anchorMax = new Vector2(Position.z, Position.w);
+                rt.offsetMin = rt.offsetMax = Vector2.zero;
+            }
+
+            /// <summary>
+            /// Sets the anchored position of an RectTransform with it's offset set to 0.
+            /// </summary>
+            /// <param name="rt"></param>
+            /// <param name="min"></param>
+            /// <param name="max"></param>
+            /// <returns></returns>
+            public static void SetAnchoredUI(RectTransform rt, Vector2 min, Vector2 max)
+            {
+                rt.anchorMin = min;
+                rt.anchorMax = max;
+                rt.offsetMin = rt.offsetMax = Vector2.zero;
+            }
+
+            /// <summary>
+            /// Sets the anchored position of an RectTransform with it's offset set to 0.
+            /// </summary>
+            /// <param name="rt"></param>
+            /// <param name="minX"></param>
+            /// <param name="minY"></param>
+            /// <param name="maxX"></param>
+            /// <param name="maxY"></param>
+            /// <returns></returns>
+            public static void SetAnchoredUI(RectTransform rt, float minX, float minY, float maxX, float maxY)
+            {
+                rt.anchorMin = new Vector2(minX, minY);
+                rt.anchorMax = new Vector2(maxX, maxY);
+                rt.offsetMin = rt.offsetMax = Vector2.zero;
+            }
+
+            /// <summary>
+            /// Fits all RectTransforms given inside a parent horizontally, where anchorMin.y = 0 and anchorMax.y = 1.
+            /// </summary>
+            /// <param name="rts"></param>
+            public static void SetAllAnchoredUIFitHorizontal(IEnumerable<RectTransform> rts)
+            {
+                RectTransform[] transforms = rts.ToArray();
+                int size = transforms.Length;
+                for (int i = 0; i < transforms.Length; i++)
+                {
+                    float か = (i + 1);
+                    transforms[i].SetAnchoredUI((1f / size) * i, 0, (1f / size) * か, 1);
+                }
+            }
+
+            /// <summary>
+            /// Fits all RectTransforms given inside a parent horizontally, where anchorMin.y = 0 and anchorMax.y = 1, with x values being limited from 0 to maxSize01.
+            /// </summary>
+            /// <param name="rts"></param>
+            /// <param name="maxSize01"></param>
+            public static void SetAllAnchoredUIFitHorizontal(IEnumerable<RectTransform> rts, float maxSize01)
+            {
+                RectTransform[] transforms = rts.ToArray();
+                float size = maxSize01;
+                int collectionSize = transforms.Length;
+                for (int i = 0; i < transforms.Length; i++)
+                {
+                    float か = (i + 1);
+                    transforms[i].SetAnchoredUI((size / collectionSize) * i, 0, (size / collectionSize) * か, 1);
+                }
+            }
+
+            /// <summary>
+            /// Fits all RectTransforms given inside a parent horizontally, where anchorMin.x = 0 and anchorMax.x = 1.
+            /// </summary>
+            /// <param name="rts"></param>
+            public static void SetAllAnchoredUIFitVertical(IEnumerable<RectTransform> rts)
+            {
+                RectTransform[] transforms = rts.ToArray();
+                int size = transforms.Length;
+                for (int i = 0; i < transforms.Length; i++)
+                {
+                    float か = (i + 1);
+                    transforms[i].SetAnchoredUI(0, (1f / size) * i, 1, (1f / size) * か);
+                }
+            }
+
+            /// <summary>
+            /// Fits all RectTransforms given inside a parent horizontally, where anchorMin.y = 0 and anchorMax.y = 1, with x values being limited from 0 to maxSize01.
+            /// </summary>
+            /// <param name="rts"></param>
+            /// <param name="maxSize01"></param>
+            public static void SetAllAnchoredUIFitVertical(IEnumerable<RectTransform> rts, float maxSize01)
+            {
+                RectTransform[] transforms = rts.ToArray();
+                float size = maxSize01;
+                int collectionSize = transforms.Length;
+                for (int i = 0; i < transforms.Length; i++)
+                {
+                    float か = (i + 1);
+                    transforms[i].SetAnchoredUI(0, (size / collectionSize) * i, 1, (size / collectionSize) * か);
+                }
+            }
+        }
 
         /// <summary>
         /// Subclass with all utility methods for use of a random factor.
@@ -526,6 +672,26 @@ namespace WarWolfWorks.Utility
             /// Returns anything between Vector3.zero and Vector3.one.
             /// </summary>
             public static Vector3 RandomVector01 => new Vector3(UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f));
+
+            /// <summary>
+            /// Returns a random sign in float value.
+            /// </summary>
+            /// <returns>Either -1f, or 1f.</returns>
+            public static float GetRandomSingleSign()
+            {
+                float range = UnityEngine.Random.Range(-1f, 1f);
+                return range >= 0 ? 1f : -1f;
+            }
+
+            /// <summary>
+            /// Returns a random sign.
+            /// </summary>
+            /// <returns>Either -1, or 1.</returns>
+            public static int GetRandomSign()
+            {
+                int range = UnityEngine.Random.Range(0, 2);
+                return range == 0 ? -1 : 1;
+            }
 
             /// <summary>
             /// Returns a random vector2 with a magniture of 1.
@@ -1670,6 +1836,7 @@ namespace WarWolfWorks.Utility
         public static class MathF
         {
             #region Vectors
+#pragma warning disable 1591
             public static readonly Vector3 Up = new Vector3(0f, 1f, 0f);
             public static readonly Vector3 Down = new Vector3(0f, -1f, 0f);
             public static readonly Vector3 Left = new Vector3(-1f, 0f, 0f);
@@ -1685,6 +1852,7 @@ namespace WarWolfWorks.Utility
             public static readonly Vector2 Right2 = new Vector2(1f, 0f);
             public static readonly Vector2 One2 = new Vector2(1f, 1f);
             public static readonly Vector2 Zero2 = new Vector2(0f, 0f);
+#pragma warning restore 1591
 
             /// <summary>
             ///   <para>Moves a point current towards target.</para>
@@ -1873,127 +2041,6 @@ namespace WarWolfWorks.Utility
                 Vector2.up,
                 Vector2.down
             };
-
-            /// <summary>
-            /// Returns the Anchored position of a RectTransform in Vector4,
-            /// where x = anchorMin.x, y = anchorMin.y, z = anchorMax.x, w = anchorMax.y.
-            /// </summary>
-            /// <param name="rt"></param>
-            /// <returns></returns>
-            public static Vector4 GetAnchoredPosition(RectTransform rt)
-            {
-                Vector2 anchorMin = rt.anchorMin;
-                Vector2 anchorMax = rt.anchorMax;
-                return new Vector4(anchorMin.x, anchorMin.y, anchorMax.x, anchorMax.y);
-            }
-
-            /// <summary>
-            /// Sets the anchored position of an RectTransform with it's offset set to 0.
-            /// Vector4 use: x = anchorMin.x, y = anchorMin.y, z = anchorMax.x, w = anchorMax.y.
-            /// </summary>
-            /// <param name="rt"></param>
-            /// <param name="Position"></param>
-            /// <returns></returns>
-            public static void SetAnchoredUI(RectTransform rt, Vector4 Position)
-            {
-                rt.anchorMin = new Vector2(Position.x, Position.y);
-                rt.anchorMax = new Vector2(Position.z, Position.w);
-                rt.offsetMin = rt.offsetMax = Vector2.zero;
-            }
-
-            /// <summary>
-            /// Sets the anchored position of an RectTransform with it's offset set to 0.
-            /// </summary>
-            /// <param name="rt"></param>
-            /// <param name="min"></param>
-            /// <param name="max"></param>
-            /// <returns></returns>
-            public static void SetAnchoredUI(RectTransform rt, Vector2 min, Vector2 max)
-            {
-                rt.anchorMin = min;
-                rt.anchorMax = max;
-                rt.offsetMin = rt.offsetMax = Vector2.zero;
-            }
-
-            /// <summary>
-            /// Sets the anchored position of an RectTransform with it's offset set to 0.
-            /// </summary>
-            /// <param name="rt"></param>
-            /// <param name="minX"></param>
-            /// <param name="minY"></param>
-            /// <param name="maxX"></param>
-            /// <param name="maxY"></param>
-            /// <returns></returns>
-            public static void SetAnchoredUI(RectTransform rt, float minX, float minY, float maxX, float maxY)
-            {
-                rt.anchorMin = new Vector2(minX, minY);
-                rt.anchorMax = new Vector2(maxX, maxY);
-                rt.offsetMin = rt.offsetMax = Vector2.zero;
-            }
-
-            /// <summary>
-            /// Fits all RectTransforms given inside a parent horizontally, where anchorMin.y = 0 and anchorMax.y = 1.
-            /// </summary>
-            /// <param name="rts"></param>
-            public static void SetAllAnchoredUIFitHorizontal(IEnumerable<RectTransform> rts)
-            {
-                RectTransform[] transforms = rts.ToArray();
-                int size = transforms.Length;
-                for (int i = 0; i < transforms.Length; i++)
-                {
-                    float か = (i + 1);
-                    transforms[i].SetAnchoredUI((1f / size) * i, 0, (1f / size) * か, 1);
-                }
-            }
-
-            /// <summary>
-            /// Fits all RectTransforms given inside a parent horizontally, where anchorMin.y = 0 and anchorMax.y = 1, with x values being limited from 0 to maxSize01.
-            /// </summary>
-            /// <param name="rts"></param>
-            /// <param name="maxSize01"></param>
-            public static void SetAllAnchoredUIFitHorizontal(IEnumerable<RectTransform> rts, float maxSize01)
-            {
-                RectTransform[] transforms = rts.ToArray();
-                float size = maxSize01;
-                int collectionSize = transforms.Length;
-                for (int i = 0; i < transforms.Length; i++)
-                {
-                    float か = (i + 1);
-                    transforms[i].SetAnchoredUI((size / collectionSize) * i, 0, (size / collectionSize) * か, 1);
-                }
-            }
-
-            /// <summary>
-            /// Fits all RectTransforms given inside a parent horizontally, where anchorMin.x = 0 and anchorMax.x = 1.
-            /// </summary>
-            /// <param name="rts"></param>
-            public static void SetAllAnchoredUIFitVertical(IEnumerable<RectTransform> rts)
-            {
-                RectTransform[] transforms = rts.ToArray();
-                int size = transforms.Length;
-                for (int i = 0; i < transforms.Length; i++)
-                {
-                    float か = (i + 1);
-                    transforms[i].SetAnchoredUI(0, (1f / size) * i, 1, (1f / size) * か);
-                }
-            }
-
-            /// <summary>
-            /// Fits all RectTransforms given inside a parent horizontally, where anchorMin.y = 0 and anchorMax.y = 1, with x values being limited from 0 to maxSize01.
-            /// </summary>
-            /// <param name="rts"></param>
-            /// <param name="maxSize01"></param>
-            public static void SetAllAnchoredUIFitVertical(IEnumerable<RectTransform> rts, float maxSize01)
-            {
-                RectTransform[] transforms = rts.ToArray();
-                float size = maxSize01;
-                int collectionSize = transforms.Length;
-                for (int i = 0; i < transforms.Length; i++)
-                {
-                    float か = (i + 1);
-                    transforms[i].SetAnchoredUI(0, (size / collectionSize) * i, 1, (size / collectionSize) * か);
-                }
-            }
 
             /// <summary>
             /// Gets the aspect ratio of the game in Vector2.
@@ -3884,12 +3931,12 @@ namespace WarWolfWorks.Utility
         /// <param name="parent"></param>
         /// <param name="match"></param>
         /// <returns></returns>
-        public static List<GameObject> GetChildren(Transform parent, Predicate<GameObject> match)
+        public static List<GameObject> GetChildren(GameObject parent, Predicate<GameObject> match)
         {
             List<GameObject> toReturn = new List<GameObject>();
-            List<Transform> used = new List<Transform>(parent.childCount);
+            List<Transform> used = new List<Transform>(parent.transform.childCount);
 
-            GetAllChildren(parent, ref used);
+            GetAllChildren(parent.transform, ref used);
 
             foreach (Transform transform in used)
             {

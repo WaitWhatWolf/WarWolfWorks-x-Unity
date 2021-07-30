@@ -150,7 +150,12 @@ namespace WarWolfWorks.Utility
 
         private void Update()
         {
-            try { pv_IRotatable.SetRotation(GetMouseRotation()); }
+            try 
+            {
+                Vector3 rotation = GetMouseRotation();
+                if (rotation != Hooks.MathF.Zero)
+                    pv_IRotatable.SetRotation(rotation); 
+            }
             catch (NullReferenceException)
             {
                 AdvancedDebug.LogError($"No IRotation component was found in {gameObject.name}, " +

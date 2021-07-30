@@ -325,4 +325,7 @@
       <HintPath>..\WarWolfWorks\bin\Release\netstandard2.0\WarWolfWorks.IO.CTS.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /y &quot;$(TargetPath)&quot; &quot;C:\Users\WhiteWarriorWolf\Documents\GitHub\WarWolfWorks-x-Unity\zz-PackageSet\Editor\&quot;&#xD;&#xA;xcopy/y &quot;$(ProjectDir)$(OutDir)WarWolfWorks.EditorBase.xml&quot; &quot;C:\Users\WhiteWarriorWolf\Documents\GitHub\WarWolfWorks-x-Unity\zz-PackageSet\Editor\&quot;&#xD;&#xA;&#xD;&#xA;xcopy /y &quot;$(TargetPath)&quot; &quot;D:\ドキュメント\Unity Projects\DerRising\Assets\Plugins\Editor\&quot;&#xD;&#xA;xcopy/y &quot;$(ProjectDir)$(OutDir)WarWolfWorks.EditorBase.xml&quot; &quot;D:\ドキュメント\Unity Projects\DerRising\Assets\Plugins\Editor\&quot;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;xcopy /y &quot;$(TargetPath)&quot; &quot;D:\ドキュメント\Unity Projects\GoodGuysProject\Assets\Plugins\Editor\&quot;&#xD;&#xA;xcopy/y &quot;$(ProjectDir)$(OutDir)WarWolfWorks.EditorBase.xml&quot; &quot;D:\ドキュメント\Unity Projects\GoodGuysProject\Assets\Plugins\Editor\&quot;" />
+  </Target>
 </Project>

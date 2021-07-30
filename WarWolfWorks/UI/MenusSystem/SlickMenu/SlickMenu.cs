@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using WarWolfWorks.Enums;
 using WarWolfWorks.Interfaces;
 using WarWolfWorks.Utility;
+using static WarWolfWorks.WWWResources;
 
 namespace WarWolfWorks.UI.MenusSystem.SlickMenu
 {
@@ -19,9 +21,18 @@ namespace WarWolfWorks.UI.MenusSystem.SlickMenu
         where TBorder : SlickBorder
 	{
         /// <summary>
+        /// Invoked when <see cref="Index"/> is changed. Value passed is the previous value.
+        /// </summary>
+        public event Action<int> OnIndexChanged;
+        /// <summary>
+        /// Invoked when <see cref="SelectionIndex"/> is changed. Value passed is the previous value.
+        /// </summary>
+        public event Action<int> OnSelectionIndexChanged;
+
+        /// <summary>
         /// The color theme of this menu.
         /// </summary>
-        public virtual Color ThemeColor { get; } = Hooks.Colors.Tangelo;
+        public virtual Color ThemeColor { get; } = UI_Slick_Color_Default;
 
 		/// <summary>
 		/// Navigation type of this menu; Used to make the menu visual-only or interactible.
@@ -51,7 +62,11 @@ namespace WarWolfWorks.UI.MenusSystem.SlickMenu
                 if (pr_Index == value)
                     return;
 
+                int prev = pr_Index;
                 pr_Index = value;
+
+                OnIndexChanged?.Invoke(prev);
+
                 Refresh();
             }
         }
@@ -68,7 +83,11 @@ namespace WarWolfWorks.UI.MenusSystem.SlickMenu
                 if (pr_SelectionIndex == value)
                     return;
 
+                int prev = pr_SelectionIndex;
                 pr_SelectionIndex = value;
+
+                OnSelectionIndexChanged?.Invoke(prev);
+
                 Refresh();
             }
         }
@@ -115,17 +134,21 @@ namespace WarWolfWorks.UI.MenusSystem.SlickMenu
         /// Creates a cell.
         /// </summary>
         /// <param name="index">Index to be assigned to the cell.</param>
-        /// <param name="name">Name to be used for the cell.</param>
         /// <param name="args">Additional arguments.</param>
         /// <returns></returns>
-        protected abstract TCell CreateCell(int index, LanguageString name, params object[] args);
+        protected virtual TCell CreateCell(int index, params object[] args) { return default(TCell); }
 
         /// <summary>
-		/// Creates a holder that is the child of the menu's holder.
-		/// </summary>
-		/// <param name="name">The name of the holder GameObject.</param>
-		/// <returns></returns>
-		protected virtual RectTransform CreateHolder(string name, float xMin = 0f, float yMin = 0f, float xMax = 1f, float yMax = 1f, RectTransform holder = null)
+        /// Creates a holder that is the child of the menu's holder.
+        /// </summary>
+        /// <param name="name">The name of the holder GameObject.</param>
+        /// <param name="xMin">Value assigned to anchorMin.x</param>
+        /// <param name="yMin">Value assigned to anchorMin.y</param>
+        /// <param name="xMax">Value assigned to anchorMax.x</param>
+        /// <param name="yMax">Value assigned to anchorMax.y</param>
+        /// <param name="holder">If not null, the returned holder will be a child of the given RectTransform.</param>
+        /// <returns></returns>
+        protected virtual RectTransform CreateHolder(string name, float xMin = 0f, float yMin = 0f, float xMax = 1f, float yMax = 1f, RectTransform holder = null)
         {
             GameObject obj_Holder = new GameObject(name);
             if (holder == null)
@@ -151,16 +174,18 @@ namespace WarWolfWorks.UI.MenusSystem.SlickMenu
         protected virtual void Event_Cell_OnPointerExit(TCell cell)
             => Index = -1;
 
-        /// <summary><inheritdoc/></summary>
-        protected override void Awake()
-        {
-            base.Awake();
-        }
-
         /// <summary>
         /// Calls <see cref="BuildUI"/> and assigns their events; Make sure to include "base.Start();" when overriding.
         /// </summary>
         protected virtual void Start()
+        {
+            ForceBuildUI();
+        }
+
+        /// <summary>
+        /// Forces the UI to build, regardless of the menu's state.
+        /// </summary>
+        protected void ForceBuildUI()
         {
             foreach (TCell cell in BuildUI())
             {

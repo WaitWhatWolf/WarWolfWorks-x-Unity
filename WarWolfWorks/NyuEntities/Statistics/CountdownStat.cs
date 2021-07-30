@@ -11,21 +11,29 @@ namespace WarWolfWorks.NyuEntities.Statistics
     [Serializable]
     public sealed class CountdownStat : INyuStat
     {
+        #region Unity Serialized
         [SerializeField]
         private float s_Value;
-        float INyuStat.Value => s_Value;
+        [SerializeField]
+        private int s_Stacking;
+        [SerializeField]
+        private int[] s_Affections;
+        [SerializeField]
+        private float s_Countdown;
+        #endregion
+
         /// <summary>
-        /// Use this value to set the base value of this stat. (Set-Only)
+        /// Gets or sets the value of this stat.
         /// </summary>
-        public float SetValue
+        public float Value
         {
+            get => s_Value = Value;
             set => this.s_Value = value;
         }
 
-        [SerializeField]
-        private int s_Stacking;
+        
         /// <summary>
-        /// How the Stat should be calculated.
+        /// How this <see cref="CountdownStat"/> is calculated by a <see cref="INyuStacking"/>.
         /// </summary>
         public int Stacking
         {
@@ -33,10 +41,8 @@ namespace WarWolfWorks.NyuEntities.Statistics
             set => s_Stacking = value;
         }
 
-        [SerializeField]
-        private int[] s_Affections;
         /// <summary>
-        /// Which stats will this stat interact with.
+        /// Stats with which this <see cref="CountdownStat"/> will interact with.
         /// </summary>
         public int[] Affections
         {
@@ -44,8 +50,6 @@ namespace WarWolfWorks.NyuEntities.Statistics
             set => s_Affections = value;
         }
 
-        [SerializeField]
-        private float s_Countdown;
         /// <summary>
         /// Starting countdown.
         /// </summary>
@@ -97,15 +101,21 @@ namespace WarWolfWorks.NyuEntities.Statistics
         /// <returns></returns>
         public bool Equals(float other) => s_Value == other;
 
-        void INyuStat.OnAdded(Stats to)
+        /// <summary>
+        /// Returns the <see cref="CountdownStat"/>'s value in string.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
         {
-            to.NyuMain.StartCoroutine(IStartCountdown(to));
-        }
-
-        private IEnumerator IStartCountdown(Stats stats)
-        {
-            yield return new WaitForSeconds(s_Countdown);
-            stats.RemoveStat(this);
+            string baseText = $"{s_Value}|{Stacking}|";
+            for (int i = 0; i < Affections.Length; i++)
+            {
+                baseText += $"{Affections[i]}";
+                if (i != Affections.Length - 1)
+                    baseText += ',';
+            }
+            baseText += $"|{Countdown}";
+            return baseText;
         }
 
         /// <summary>
@@ -124,22 +134,20 @@ namespace WarWolfWorks.NyuEntities.Statistics
         /// <param name="stat"></param>
         public static implicit operator Stat(CountdownStat stat) => new Stat(stat.s_Value, stat.Stacking, stat.Affections);
 
-
-        /// <summary>
-        /// Returns the <see cref="CountdownStat"/>'s value in string.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        void INyuStat.OnAdded(Stats to)
         {
-            string baseText = $"{s_Value}|{Stacking}|";
-            for (int i = 0; i < Affections.Length; i++)
-            {
-                baseText += $"{Affections[i]}";
-                if (i != Affections.Length - 1)
-                    baseText += ',';
-            }
-            baseText += $"|{Countdown}";
-            return baseText;
+            to.NyuMain.StartCoroutine(IStartCountdown(to));
+        }
+
+        void INyuStat.OnRemoved(Stats to)
+        {
+            to.NyuMain.StopCoroutine(IStartCountdown(to));
+        }
+
+        private IEnumerator IStartCountdown(Stats stats)
+        {
+            yield return new WaitForSeconds(s_Countdown);
+            stats.RemoveStat(this);
         }
     }
 }

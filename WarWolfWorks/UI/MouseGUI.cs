@@ -130,7 +130,6 @@ namespace WarWolfWorks.UI
         /// <returns></returns>
         public static TextMeshProUGUI GetMouseTMP() => MouseText;
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 #pragma warning disable IDE0051
         private static void InitializeThread()
 #pragma warning restore IDE0051
@@ -146,6 +145,7 @@ namespace WarWolfWorks.UI
             MouseImage.raycastTarget = false;
             MouseImage.rectTransform.SetAnchoredUI(0, 0, 1, 1);
             MouseImage.transform.localScale = Vector3.one;
+            MouseImage.preserveAspect = true;
 
             GameObject textGO = new GameObject("MouseText");
             textGO.transform.SetParent(MouseGUIHolder);
@@ -252,6 +252,10 @@ namespace WarWolfWorks.UI
             }
         }
 
-
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void MouseGUIInit()
+        {
+            WWWResources.OnBeforeSceneLoadCalls.Add(0, InitializeThread);
+        }
     }
 }

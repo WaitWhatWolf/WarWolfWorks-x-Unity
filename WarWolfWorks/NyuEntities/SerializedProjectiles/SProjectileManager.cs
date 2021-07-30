@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using WarWolfWorks.Attributes;
+using WarWolfWorks.Enums;
 using WarWolfWorks.Interfaces;
 using WarWolfWorks.Interfaces.NyuEntities;
+using WarWolfWorks.Security;
 using WarWolfWorks.Utility;
 using static WarWolfWorks.WWWResources;
 
@@ -18,31 +20,9 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
     public abstract class SProjectileManager<T> : MonoBehaviour, IInitiated where T : SProjectile
     {
         /// <summary>
-        /// Used by <see cref="Awake"/> for <see cref="Init(int)"/>.
-        /// </summary>
-        [SerializeField, Tooltip("The pool size of projectiles. If at less than 1, the pool will not be initiated.")]
-        protected int s_PoolSize;
-
-        private T[] AllProjectiles;
-        private List<T> InactiveProjectiles;
-        private List<T> ActiveProjectiles;
-
-        /// <summary>
         /// The initiated state of this projectile manager.
         /// </summary>
         public bool Initiated { get; private set; }
-        
-        /// <summary>
-        /// Calls <see cref="Init(int)"/> when <see cref="s_PoolSize"/> is higher than 0.
-        /// </summary>
-        protected virtual void Awake()
-        {
-            if(s_PoolSize > 0)
-            {
-                Init(s_PoolSize);
-            }
-        }
-
 
         /// <summary>
         /// Initiates the projectile manager.
@@ -50,7 +30,10 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
         /// <param name="poolSize"></param>
         public void Init(int poolSize)
         {
-            if(Initiated)
+            if (poolSize < 1)
+                throw new NyuProjectileException(1);
+
+            if (Initiated)
             {
                 for(int i = 0; i < AllProjectiles.Length; i++)
                 {
@@ -62,29 +45,38 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
             InactiveProjectiles = new List<T>(poolSize);
             ActiveProjectiles = new List<T>(poolSize);
 
-            for(int i = 0; i < poolSize; i++)
+            lock (AllProjectiles)
             {
-                GameObject p = new GameObject(VN_PROJECTILE);
-                p.transform.SetParent(transform);
-                p.SetActive(false);
-                AllProjectiles[i] = p.AddComponent<T>();
-                AllProjectiles[i].SetSProjectileUpdates();
-                AllProjectiles[i].OnInit(this);
-                InactiveProjectiles.Add(AllProjectiles[i]);
+                for (int i = 0; i < poolSize; i++)
+                {
+                    GameObject p = new GameObject(VN_PROJECTILE);
+                    p.transform.SetParent(transform);
+                    p.SetActive(false);
+                    AllProjectiles[i] = p.AddComponent<T>();
+                    AllProjectiles[i].SetSProjectileUpdates();
+                    AllProjectiles[i].OnInit(this);
+                    InactiveProjectiles.Add(AllProjectiles[i]);
+                }
+
+                DontDestroyOnLoad(this);
+                Initiated = true;
             }
         }
 
         /// <summary>
         /// Call this at the beginning of your projectile instantiation method, and continue the initiation when it returns true.
         /// </summary>
-        /// <param name="parent">The caster of this projectile.</param>
+        /// <param name="owner">The caster of this projectile.</param>
         /// <param name="position">Starting position of the projectile.</param>
         /// <param name="rotation">Starting rotation of the projectile.</param>
         /// <param name="projectile">Returns the projectile used.</param>
         /// <param name="behaviors">Behaviors set to the projectile. (All behaviors are instantiated before being used to avoid overriding resources.)</param>
         /// <returns></returns>
-        protected bool New(Nyu parent, Vector3 position, Quaternion rotation, out T projectile, IEnumerable<Behavior> behaviors)
+        protected bool New(Nyu owner, Vector3 position, Quaternion rotation, out T projectile, IEnumerable<Behavior> behaviors)
         {
+            if (!Initiated)
+                throw new NyuProjectileException(2);
+
             if(InactiveProjectiles.Count == 0)
             {
                 projectile = null;
@@ -94,7 +86,7 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
             projectile = InactiveProjectiles[0];
             projectile.transform.position = position;
             projectile.transform.rotation = rotation;
-            projectile.NyuMain = parent;
+            projectile.NyuMain = owner;
             projectile.Behaviors = behaviors.RemoveNull().ToArray();
 
             InactiveProjectiles.RemoveAt(0);
@@ -136,7 +128,10 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
         /// <param name="projectile"></param>
         public bool End(T projectile)
         {
-            if(ActiveProjectiles.Contains(projectile))
+            if (!Initiated)
+                throw new NyuProjectileException(2);
+
+            if (ActiveProjectiles.Contains(projectile))
             {
                 if (projectile is INyuOnDestroyQueued destroyQueued)
                     destroyQueued.NyuOnDestroyQueued();
@@ -170,6 +165,9 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
         /// <returns></returns>
         public bool End(SProjectile projectile)
         {
+            if (!Initiated)
+                throw new NyuProjectileException(2);
+
             if (projectile is T tProj && ActiveProjectiles.Contains(tProj))
             {
                 for (int j = 0; j < projectile.Behaviors.Length; j++)
@@ -248,19 +246,33 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
                     ActiveProjectiles[i].Behaviors_LateUpdates[j].NyuLateUpdate();
             }
         }
+
+        /// <summary>
+        /// Calls <see cref="Init(int)"/> using <see cref="s_PoolSize"/> as argument.
+        /// </summary>
+        protected virtual void Start()
+        {
+            if(s_PoolSize > 0)
+                Init(s_PoolSize);
+        }
         #endregion
 
         #region Utility
         /// <summary>
-        /// Returns an array of all active projectiles.
+        /// Returns a collection of all projectiles.
         /// </summary>
         /// <returns></returns>
-        public T[] GetActiveProjectiles() => ActiveProjectiles.ToArray();
+        public IReadOnlyCollection<T> GetAllProjectiles() => AllProjectiles;
         /// <summary>
-        /// Returns an array of all inactive projectiles.
+        /// Returns a collection of all active projectiles.
         /// </summary>
         /// <returns></returns>
-        public T[] GetInactiveProjectiles() => InactiveProjectiles.ToArray();
+        public IReadOnlyCollection<T> GetActiveProjectiles() => ActiveProjectiles.ToArray();
+        /// <summary>
+        /// Returns a collection of all inactive projectiles.
+        /// </summary>
+        /// <returns></returns>
+        public IReadOnlyCollection<T> GetInactiveProjectiles() => InactiveProjectiles.ToArray();
 
         /// <summary>
         /// Finds all projectiles matching the given condition.
@@ -268,17 +280,14 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
         /// <param name="match"></param>
         /// <param name="searchIn"></param>
         /// <returns></returns>
-        public T[] FindAll(Predicate<T> match, Search searchIn)
+        public T[] FindAll(Predicate<T> match, ProjectileSearch searchIn)
         {
-            switch(searchIn)
+            return searchIn switch
             {
-                default:
-                    return Array.FindAll(AllProjectiles, match);
-                case Search.ActiveProjectiles:
-                    return ActiveProjectiles.FindAll(match).ToArray();
-                case Search.InactiveProjectiles:
-                    return InactiveProjectiles.FindAll(match).ToArray();
-            }
+                ProjectileSearch.ActiveProjectiles => ActiveProjectiles.FindAll(match).ToArray(),
+                ProjectileSearch.InactiveProjectiles => InactiveProjectiles.FindAll(match).ToArray(),
+                _ => Array.FindAll(AllProjectiles, match),
+            };
         }
 
         /// <summary>
@@ -287,18 +296,34 @@ namespace WarWolfWorks.NyuEntities.SerializedProjectiles
         /// <param name="match"></param>
         /// <param name="searchIn"></param>
         /// <returns></returns>
-        public T Find(Predicate<T> match, Search searchIn)
+        public T Find(Predicate<T> match, ProjectileSearch searchIn)
         {
-            switch (searchIn)
+            return searchIn switch
             {
-                default:
-                    return Array.Find(AllProjectiles, match);
-                case Search.ActiveProjectiles:
-                    return ActiveProjectiles.Find(match);
-                case Search.InactiveProjectiles:
-                    return InactiveProjectiles.Find(match);
-            }
+                ProjectileSearch.ActiveProjectiles => ActiveProjectiles.Find(match),
+                ProjectileSearch.InactiveProjectiles => InactiveProjectiles.Find(match),
+                _ => Array.Find(AllProjectiles, match),
+            };
         }
         #endregion
+
+        /// <summary>
+        /// Used by <see cref="Start"/> for <see cref="Init(int)"/>.
+        /// </summary>
+        [SerializeField, Tooltip("The pool size of projectiles."), Range(1, 10000)]
+        private int s_PoolSize;
+
+        /// <summary>
+        /// All projectiles.
+        /// </summary>
+        private static T[] AllProjectiles;
+        /// <summary>
+        /// List of all active projectiles.
+        /// </summary>
+        private static List<T> ActiveProjectiles;
+        /// <summary>
+        /// List of all inactive projectiles.
+        /// </summary>
+        private static List<T> InactiveProjectiles;
     }
 }

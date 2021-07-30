@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using static WarWolfWorks.Utility.Hooks;
+using static WarWolfWorks.WWWResources;
 
 namespace WarWolfWorks.Utility
 {
@@ -65,8 +67,8 @@ namespace WarWolfWorks.Utility
         /// </summary>
         public FloatRange(float min, float max)
         {
-            Min = min;
-            Max = max;
+            Min = Math.Min(min, max);
+            Max = Math.Max(min, max);
         }
 
         /// <summary>
@@ -76,6 +78,32 @@ namespace WarWolfWorks.Utility
         {
             Min = value;
             Max = value;
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="IntRange"/> based on a string.
+        /// </summary>
+        /// <example>"0,5-53,6", will set <see cref="Min"/> to 0.5f and <see cref="Max"/> to 53.6f. Any form of brackets such as {0-53} or [0-53,7] is also acceptable. Negative values are acceptable, as long as the "-" character precedes a number.</example>
+        /// <param name="range">The string to pass, it shouldn't contain any special characters outside of one '-' or ','.</param>
+        /// <exception cref="FormatException"/>
+        public FloatRange(string range)
+        {
+            Match match = Expression_FloatRange_Range.Match(range);
+            if (match == null || !match.Success)
+                throw new FormatException(range + "is invalid.");
+
+            int rangeType = 0;
+
+            string[] splits = rangeType switch //Still keeping this in in case I want to add more range separators, doesn't really cost any performance so why not
+            {
+                _ => range.Split('-')
+            };
+
+            float val0 = Convert.ToSingle(splits[0]);
+            float val1 = Convert.ToSingle(splits[1]);
+
+            Min = Math.Min(val0, val1);
+            Max = Math.Max(val0, val1);
         }
 
         public static implicit operator IntRange(FloatRange range)

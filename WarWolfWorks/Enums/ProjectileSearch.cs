@@ -1,9 +1,9 @@
-﻿namespace WarWolfWorks.NyuEntities.SerializedProjectiles
-{
+﻿namespace WarWolfWorks.Enums
+{ 
     /// <summary>
     /// Which projectiles will utility methods 
     /// </summary>
-    public enum Search
+    public enum ProjectileSearch
     {
 #pragma warning disable CS1591 // 公開されている型またはメンバーの XML コメントがありません
         ActiveProjectiles,

@@ -31,36 +31,36 @@ namespace WarWolfWorks.NyuEntities.ProjectileSystem
         #region Interface Calling
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            for (int i = 0; i < ns_Behaviors.Length; i++)
+            for (int i = 0; i < Behaviors.Length; i++)
             {
-                if (ns_Behaviors[i] is INyuOnTriggerEnter2D nyuEnter2D)
+                if (Behaviors[i] is INyuOnTriggerEnter2D nyuEnter2D)
                     nyuEnter2D.NyuOnTriggerEnter2D(collision);
             }
         }
 
         private void OnTriggerExit2D(Collider2D collision)
         {
-            for (int i = 0; i < ns_Behaviors.Length; i++)
+            for (int i = 0; i < Behaviors.Length; i++)
             {
-                if (ns_Behaviors[i] is INyuOnTriggerExit2D nyuExit2D)
+                if (Behaviors[i] is INyuOnTriggerExit2D nyuExit2D)
                     nyuExit2D.NyuOnTriggerExit2D(collision);
             }
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            for (int i = 0; i < ns_Behaviors.Length; i++)
+            for (int i = 0; i < Behaviors.Length; i++)
             {
-                if (ns_Behaviors[i] is INyuOnCollisionEnter2D nyuEnter2D)
+                if (Behaviors[i] is INyuOnCollisionEnter2D nyuEnter2D)
                     nyuEnter2D.NyuOnCollisionEnter2D(collision);
             }
         }
 
         private void OnCollisionExit2D(Collision2D collision)
         {
-            for (int i = 0; i < ns_Behaviors.Length; i++)
+            for (int i = 0; i < Behaviors.Length; i++)
             {
-                if (ns_Behaviors[i] is INyuOnCollisionExit2D nyuExit2D)
+                if (Behaviors[i] is INyuOnCollisionExit2D nyuExit2D)
                     nyuExit2D.NyuOnCollisionExit2D(collision);
             }
         }

@@ -68,6 +68,7 @@ namespace WarWolfWorks.NyuEntities.AttackSystemV2
             {
                 throw new NullReferenceException("Cannot set-up a null odin object. Aborting...");
             }
+
             odin.Index = toIndex;
             odin.Parent = this;
             odin.SetRespectiveParents();
@@ -79,6 +80,19 @@ namespace WarWolfWorks.NyuEntities.AttackSystemV2
                 geriAwake.NyuAwake();
 
             odin.SetUpdates();
+        }
+
+        private void DeinitOdin(Odin odin)
+        {
+            if (odin.GetFreki() is INyuOnDestroy destroy)
+                destroy.NyuOnDestroy();
+
+            if (odin.GetGeri() is INyuOnDestroy geriDestroy)
+                geriDestroy.NyuOnDestroy();
+
+            odin.Index = -1;
+            odin.Parent = null;
+            odin.RemoveRespectiveParents();
         }
         
         /// <summary>
@@ -109,11 +123,25 @@ namespace WarWolfWorks.NyuEntities.AttackSystemV2
         /// <summary>
         /// Removes an odin at the specified index.
         /// </summary>
+        /// <param name="odin"></param>
+        public void RemoveOdin(Odin odin)
+        {
+            if (!s_Odins.Contains(odin))
+                return;
+
+            DeinitOdin(odin);
+
+            s_Odins.Remove(odin);
+            RefreshOdins();
+        }
+
+        /// <summary>
+        /// Removes an odin at the specified index.
+        /// </summary>
         /// <param name="index"></param>
         public void RemoveOdin(int index)
         {
-            if (s_Odins[index].GetFreki() is INyuOnDestroy destroy)
-                destroy.NyuOnDestroy();
+            DeinitOdin(s_Odins[index]);
 
             s_Odins.RemoveAt(index);
             RefreshOdins();
@@ -160,6 +188,7 @@ namespace WarWolfWorks.NyuEntities.AttackSystemV2
                     DEBUG_LAYER_WWW_INDEX);
                 return;
             }
+
             s_Odins[index] = to;
             InitOdin(s_Odins[index], index);
         }
