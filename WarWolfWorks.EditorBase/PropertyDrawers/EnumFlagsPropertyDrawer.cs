@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using WarWolfWorks.Debugging;
+using WarWolfWorks.Attributes;
 
 namespace WarWolfWorks.EditorBase.PropertyDrawers
 {
