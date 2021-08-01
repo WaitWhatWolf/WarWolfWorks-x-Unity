@@ -140,6 +140,7 @@ namespace WarWolfWorks
         /// </summary>
         internal const string SVCN_CORECANVAS = "ユチリテイキャンバス";
         internal const string VN_DEFAULT_CANVAS = "WWWCanvas";
+        internal const string SVCN_CONSOLE = "Console";
         internal const string SVCN_OTHER = "その他";
         internal const string SVCN_NYUENTITIES = "ニューエンチチズ";
         internal const string SVN_SETTINGS_LANGUAGE = "言語";
@@ -324,6 +325,7 @@ namespace WarWolfWorks
         internal static readonly Catalog CTS_Settings_AdvancedDebug = new Catalog(SV_Path_Settings, SVCN_DEBUG);
         internal static readonly Catalog CTS_Settings_Misc = new Catalog(SV_Path_Settings, SVCN_OTHER);
         internal static readonly Catalog CTS_Preferences_AdvancedDebug = new Catalog(SV_Path_Preferences, SVCN_DEBUG);
+        internal static readonly Catalog CTS_Preferences_Console = new Catalog(SV_Path_Preferences, SVCN_CONSOLE);
         internal static readonly Catalog CTS_Preferences_Misc = new Catalog(SV_Path_Preferences, SVCN_OTHER);
 
         internal static readonly Catalog CTS_DefaultKeys = new Catalog(SV_Path_DefaultKeys, SVCN_KEYS);

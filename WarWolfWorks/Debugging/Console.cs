@@ -6,8 +6,10 @@ using System.Text;
 using UnityEngine;
 using WarWolfWorks.Attributes;
 using WarWolfWorks.Internal;
+using WarWolfWorks.IO.CTS;
 using WarWolfWorks.Security;
 using WarWolfWorks.Utility;
+using static WarWolfWorks.WWWResources;
 
 namespace WarWolfWorks.Debugging
 {
@@ -275,7 +277,10 @@ namespace WarWolfWorks.Debugging
             Write(prevInput);
             OnInputConfirm?.Invoke(prevInput);
 
+            pv_PrevEntVariables.Add(new Variable(PreviousInputs.Count.ToString(), prevInput));
             PreviousInputs.Insert(0, prevInput);
+            CTS_Preferences_Console.Override(pv_PrevEntVariables);
+            CTS_Preferences_Console.Apply();
 
             in_PreviousInputSelectionIndex = -1;
         }
@@ -302,6 +307,17 @@ namespace WarWolfWorks.Debugging
 
             On = false;
             OnTurnOff?.Invoke();
+        }
+
+        /// <summary>
+        /// Removes all <see cref="PreviousInputs"/> and removes all saved inputs from the disk.
+        /// </summary>
+        public static void ResetPreviousInputs()
+        {
+            PreviousInputs.Clear();
+            pv_PrevEntVariables.Clear();
+            CTS_Preferences_Console.Override(pv_PrevEntVariables);
+            CTS_Preferences_Console.Apply();
         }
 
         /// <summary>
@@ -425,7 +441,15 @@ namespace WarWolfWorks.Debugging
 
             pv_Commands.Sort();
 
-            WWWResources.MonoManager_OnUpdate += Event_OnUpdate;
+            IReadOnlyList<Variable> variables = CTS_Preferences_Console.GetAllLines();
+
+            foreach(Variable variable in variables)
+            {
+                PreviousInputs.Insert(0, variable.Value);
+                pv_PrevEntVariables.Add(variable);
+            }
+
+            MonoManager_OnUpdate += Event_OnUpdate;
         }
 
         [Obsolete]
@@ -454,6 +478,7 @@ namespace WarWolfWorks.Debugging
         }
 
         internal static int in_PreviousInputSelectionIndex = -1;
+        private static List<Variable> pv_PrevEntVariables = new List<Variable>();
         private static string pv_Input = string.Empty;
     }
 }

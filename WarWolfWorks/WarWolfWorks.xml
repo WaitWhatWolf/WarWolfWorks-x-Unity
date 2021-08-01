@@ -211,6 +211,32 @@
             <see cref="T:System.Boolean"/> type.
             </summary>
         </member>
+        <member name="T:WarWolfWorks.Attributes.DeveloperCommandAttribute">
+            <summary>
+            Attribute used on <see cref="!:Command"/> classes which can only be used when <see cref="!:Console.DeveloperMode"/> is true.
+            </summary>
+        </member>
+        <member name="T:WarWolfWorks.Attributes.EnumFlagsAttribute">
+            <summary>
+            Displays an enum value inside the inspector as Flags.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.Attributes.EnumFlagsAttribute.enumName">
+            <summary>
+            Custom name of the enum value.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Attributes.EnumFlagsAttribute.#ctor">
+            <summary>
+            Displays an enum value inside the inspector as Flags.
+            </summary>
+        </member>
+        <member name="M:WarWolfWorks.Attributes.EnumFlagsAttribute.#ctor(System.String)">
+            <summary>
+            Displays an enum value inside the inspector as Flags with a custom name.
+            </summary>
+            <param name="name"></param>
+        </member>
         <member name="T:WarWolfWorks.Attributes.NonEntityUsage">
             <summary>
             Use this attribute if a Stat isn't always owned by an Entity.
@@ -685,6 +711,11 @@
             Turns the console off.
             </summary>
         </member>
+        <member name="M:WarWolfWorks.Debugging.Console.ResetPreviousInputs">
+            <summary>
+            Removes all <see cref="P:WarWolfWorks.Debugging.Console.PreviousInputs"/> and removes all saved inputs from the disk.
+            </summary>
+        </member>
         <member name="M:WarWolfWorks.Debugging.Console.GetClosestCommandsRecognition(System.String)">
             <summary>
             Returns the command with the closest recognition to the given text.
@@ -700,32 +731,6 @@
             Calls <see cref="M:WarWolfWorks.Debugging.Console.GetClosestCommandsRecognition(System.String)"/> where the argument is <see cref="P:WarWolfWorks.Debugging.Console.Input"/>.
             </summary>
             <returns></returns>
-        </member>
-        <member name="T:WarWolfWorks.Debugging.DeveloperCommandAttribute">
-            <summary>
-            Attribute used on <see cref="T:WarWolfWorks.Debugging.Command"/> classes which can only be used when <see cref="F:WarWolfWorks.Debugging.Console.DeveloperMode"/> is true.
-            </summary>
-        </member>
-        <member name="T:WarWolfWorks.Debugging.EnumFlagsAttribute">
-            <summary>
-            Displays an enum value inside the inspector as Flags.
-            </summary>
-        </member>
-        <member name="F:WarWolfWorks.Debugging.EnumFlagsAttribute.enumName">
-            <summary>
-            Custom name of the enum value.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Debugging.EnumFlagsAttribute.#ctor">
-            <summary>
-            Displays an enum value inside the inspector as Flags.
-            </summary>
-        </member>
-        <member name="M:WarWolfWorks.Debugging.EnumFlagsAttribute.#ctor(System.String)">
-            <summary>
-            Displays an enum value inside the inspector as Flags with a custom name.
-            </summary>
-            <param name="name"></param>
         </member>
         <member name="T:WarWolfWorks.Enums.Direction">
             <summary>
@@ -3074,6 +3079,11 @@
             A nyu health with an immunity functionnality.
             </summary>
         </member>
+        <member name="P:WarWolfWorks.NyuEntities.HealthSystemV2.NyuImmunitableHealth.ImmunityTime">
+            <summary>
+            Length of the immunity in seconds.
+            </summary>
+        </member>
         <member name="M:WarWolfWorks.NyuEntities.HealthSystemV2.NyuImmunitableHealth.DamageHealth(WarWolfWorks.NyuEntities.HealthSystemV2.Damage,System.Single@)">
             <summary>
             <inheritdoc/>
@@ -3089,6 +3099,11 @@
             <summary>
             Counts down the immunity, Called automatically; When overriding, make sure to include "base.NyuUpdate();" otherwise
             immunity time will be infinite.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.NyuEntities.HealthSystemV2.NyuImmunitableHealth.pr_CurrentImmunityTime">
+            <summary>
+            The current immunity time left.
             </summary>
         </member>
         <member name="T:WarWolfWorks.NyuEntities.HealthSystem.DefaultHealthDamage">
