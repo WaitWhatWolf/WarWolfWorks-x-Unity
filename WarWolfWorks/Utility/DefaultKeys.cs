@@ -415,10 +415,17 @@ namespace WarWolfWorks.Utility
             CTS_DefaultKeys.Apply();
         }
 
-        static DefaultKeys()
+#pragma warning disable IDE0051
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void Init()
         {
-            Optimize();
-            Application.quitting += Unoptimize;
+            //Priority doesn't need to be high.
+            OnBeforeSceneLoadCalls.Add(10, () => 
+            {
+                Optimize();
+                Application.quitting += Unoptimize;
+            });
         }
+#pragma warning restore IDE0051
     }
 }

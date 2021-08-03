@@ -29,6 +29,34 @@ namespace WarWolfWorks.Internal
         }
 
         /// <summary>
+        /// Sets the name of the product to a custom one instead of <see cref="Application.productName"/>;
+        /// Used for streaming by the <see cref="WarWolfWorks"/> library.
+        /// </summary>
+        public static string GameTitle
+        {
+            get
+            {
+                string toReturn = CTS_Settings_Misc.GetSafe("CustomProductName", string.Empty);
+                if (string.IsNullOrEmpty(toReturn))
+                {
+                    try { toReturn = Application.productName; GameTitle = toReturn; } //The GameTitle setting line is there just in case
+                    catch { LogWarning("Couldn't retrieve Application.productName; Using \"Default\" instead.", DEBUG_LAYER_WWW_INDEX); toReturn = "Default"; }
+                }
+
+                return toReturn;
+            }
+            set
+            {
+                if (pv_GameTitle != value)
+                {
+                    pv_GameTitle = value;
+                    CTS_Settings_Misc["CustomProductName"] = value;
+                    CTS_Settings_Misc.Apply();
+                }
+            }
+        }
+
+        /// <summary>
         /// Canvas which is created under the name UtilitiesCanvas if no canvas was present on the scene.
         /// </summary>
         public static Canvas UtilityCanvas
@@ -388,6 +416,6 @@ namespace WarWolfWorks.Internal
         #endregion
 
         private static Canvas utilCanvas = null;
-
+        private static string pv_GameTitle = string.Empty;
     }
 }

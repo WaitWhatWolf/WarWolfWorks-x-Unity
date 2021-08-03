@@ -1973,6 +1973,12 @@
             Applies all changes made to their respective files (CTS).
             </summary>
         </member>
+        <member name="P:WarWolfWorks.Internal.Settings.GameTitle">
+            <summary>
+            Sets the name of the product to a custom one instead of <see cref="P:UnityEngine.Application.productName"/>;
+            Used for streaming by the <see cref="N:WarWolfWorks"/> library.
+            </summary>
+        </member>
         <member name="P:WarWolfWorks.Internal.Settings.UtilityCanvas">
             <summary>
             Canvas which is created under the name UtilitiesCanvas if no canvas was present on the scene.
@@ -6563,11 +6569,6 @@
             An UI menu used to display the <see cref="T:WarWolfWorks.Debugging.Console"/>.
             </summary>
         </member>
-        <member name="P:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.ConsoleColor">
-            <summary>
-            Color of the console.
-            </summary>
-        </member>
         <member name="P:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.ThemeColor">
             <summary>
             <inheritdoc/>
@@ -6583,6 +6584,12 @@
             Returns <see cref="F:WarWolfWorks.Enums.SlickNavigationType.Standard"/>.
             </summary>
         </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.SetConsoleColor(UnityEngine.Color)">
+            <summary>
+            Sets the console to a given color.
+            </summary>
+            <param name="color"></param>
+        </member>
         <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.SetConsoleSize(UnityEngine.Vector4)">
             <summary>
             Sets the size of the console, using anchored sizing.
@@ -6592,6 +6599,12 @@
         <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.GetConsoleAnchoredSize">
             <summary>
             Returns the size of the console in anchored size.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WarWolfWorks.UI.ConsoleMenu.ConsoleUI.GetConsoleColor">
+            <summary>
+            Returns the console's current color.
             </summary>
             <returns></returns>
         </member>
@@ -12806,6 +12819,16 @@
         <member name="F:WarWolfWorks.WWWResources.UI_Slick_Color_Default">
             <summary>
             The default color of slick UI elements.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.WWWResources.UI_Console_Size">
+            <summary>
+            The default size of the console.
+            </summary>
+        </member>
+        <member name="F:WarWolfWorks.WWWResources.UI_Console_Color">
+            <summary>
+            The default color of the console.
             </summary>
         </member>
         <member name="M:WarWolfWorks.WWWResources.AdaptSlickAnchors(WarWolfWorks.Enums.SlickBorderFlags,UnityEngine.RectTransform)">

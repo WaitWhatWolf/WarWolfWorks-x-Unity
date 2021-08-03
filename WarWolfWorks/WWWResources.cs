@@ -46,15 +46,17 @@ namespace WarWolfWorks
             MonoManager = new GameObject(nameof(WarWolfWorksMonoManager)).AddComponent<WarWolfWorksMonoManager>();
             MonoBehaviour.DontDestroyOnLoad(MonoManager);
 
-            for (int i = 0; i < OnBeforeSceneLoadCalls.Count; i++)
-                OnBeforeSceneLoadCalls[i]();
+            IEnumerable<Action> actions = OnBeforeSceneLoadCalls.Values;
+            foreach (Action action in actions)
+                action();
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void InitAfterSceneLoad()
         {
-            for (int i = 0; i < OnAfterSceneLoadCalls.Count; i++)
-                OnAfterSceneLoadCalls[i]();
+            IEnumerable<Action> actions = OnAfterSceneLoadCalls.Values;
+            foreach (Action action in actions)
+                action();
         }
         #endregion
 
@@ -68,14 +70,13 @@ namespace WarWolfWorks
         {
             get
             {
-                string product;
-                try { product = Application.productName; } //Man, I fucking hate this dogshit engine.
-                catch { product = "Default"; }
-
-                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                string product = Settings.GameTitle;
+                string toReturn = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 @"WarWolfWorks\",
                 product,
                 "Preferences.cts");
+                Debug.Log(toReturn);
+                return toReturn;
             }
         }
         /// <summary>
@@ -350,6 +351,17 @@ namespace WarWolfWorks
         /// The default color of slick UI elements.
         /// </summary>
         public static readonly Color UI_Slick_Color_Default = Hooks.Colors.Tangelo;
+        #endregion
+
+        #region Console
+        /// <summary>
+        /// The default size of the console.
+        /// </summary>
+        public static readonly Vector4 UI_Console_Size = new Vector4(0f, 0f, 1f, 0.25f);
+        /// <summary>
+        /// The default color of the console.
+        /// </summary>
+        public static readonly Color UI_Console_Color = Hooks.Colors.Tangelo;
         #endregion
         #endregion
 

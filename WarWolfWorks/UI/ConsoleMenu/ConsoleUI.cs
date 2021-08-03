@@ -13,6 +13,7 @@ using WarWolfWorks.Interfaces;
 using WarWolfWorks.UI.MenusSystem;
 using WarWolfWorks.UI.MenusSystem.SlickMenu;
 using WarWolfWorks.Utility;
+using static WarWolfWorks.WWWResources;
 
 namespace WarWolfWorks.UI.ConsoleMenu
 {
@@ -23,22 +24,9 @@ namespace WarWolfWorks.UI.ConsoleMenu
     public sealed class ConsoleUI : SlickMenu<ConsoleUI, ConsoleCell, SlickBorder>, IRefreshable
     {
         /// <summary>
-        /// Color of the console.
-        /// </summary>
-        public Color ConsoleColor
-        {
-            get => s_ConsoleColor;
-            set
-            {
-                s_ConsoleColor = value;
-                Refresh();
-            }
-        }
-
-        /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public override Color ThemeColor => ConsoleColor;
+        public override Color ThemeColor => s_ConsoleColor;
 
         /// <summary>
         /// Returns a range of -1 to <see cref="pv_Cells"/> length.
@@ -48,6 +36,18 @@ namespace WarWolfWorks.UI.ConsoleMenu
         /// Returns <see cref="SlickNavigationType.Standard"/>.
         /// </summary>
         public override SlickNavigationType NavigationType => SlickNavigationType.Standard;
+        
+        /// <summary>
+        /// Sets the console to a given color.
+        /// </summary>
+        /// <param name="color"></param>
+        public void SetConsoleColor(Color color)
+        {
+            s_ConsoleColor = color;
+            CTS_Preferences_Console[nameof(UI_Console_Color)] = '#' + ColorUtility.ToHtmlStringRGB(s_ConsoleColor);
+            CTS_Preferences_Console.Apply();
+            Refresh();
+        }
 
         /// <summary>
         /// Sets the size of the console, using anchored sizing.
@@ -56,6 +56,9 @@ namespace WarWolfWorks.UI.ConsoleMenu
         public void SetConsoleSize(Vector4 size)
         {
             pv_Background.rectTransform.SetAnchoredUI(size);
+
+            CTS_Preferences_Console[nameof(UI_Console_Size)] = $"{size.x} {size.y} {size.z} {size.w}";
+            CTS_Preferences_Console.Apply();
         }
 
         /// <summary>
@@ -63,6 +66,12 @@ namespace WarWolfWorks.UI.ConsoleMenu
         /// </summary>
         /// <returns></returns>
         public Vector4 GetConsoleAnchoredSize() => pv_Background.rectTransform.GetAnchoredPosition();
+
+        /// <summary>
+        /// Returns the console's current color.
+        /// </summary>
+        /// <returns></returns>
+        public Color GetConsoleColor() => s_ConsoleColor;
 
         /// <summary>
         /// <inheritdoc/>
@@ -85,8 +94,8 @@ namespace WarWolfWorks.UI.ConsoleMenu
             GameObject backgroundGO = new GameObject("Background");
             backgroundGO.transform.SetParent(GetHolder());
             pv_Background = backgroundGO.AddComponent<Image>();
-            pv_Background.color = new Color(ConsoleColor.r * 0.1f, ConsoleColor.g * 0.1f, ConsoleColor.b * 0.1f, ConsoleColor.a);
-            pv_Background.rectTransform.SetAnchoredUI(0f, 0f, 1f, 0.25f);
+            pv_Background.color = new Color(s_ConsoleColor.r * 0.1f, s_ConsoleColor.g * 0.1f, s_ConsoleColor.b * 0.1f, s_ConsoleColor.a);
+            pv_Background.rectTransform.SetAnchoredUI(0f, 0f, 1f, 1f);
 
             pv_BackgroundBorder = backgroundGO.AddComponent<SlickBorder>();
             pv_BackgroundBorder.Color = s_ConsoleColor;
@@ -110,9 +119,9 @@ namespace WarWolfWorks.UI.ConsoleMenu
             textAreaMask.padding = new Vector4(-8, -8, -5, -5);
             pv_InputText.textViewport = textArea;
             pv_BackInputText = CreateHolder("Text", 0f, 0f, 1f, 1f, textArea).gameObject.AddComponent<TextMeshProUGUI>();
-            pv_BackInputText.color = ConsoleColor;
+            pv_BackInputText.color = s_ConsoleColor;
             pv_InputText.textComponent = pv_BackInputText;
-            pv_InputText.textComponent.color = ConsoleColor;
+            pv_InputText.textComponent.color = s_ConsoleColor;
             pv_InputText.textComponent.enableAutoSizing = true;
             pv_InputText.textComponent.fontSizeMin = 12f;
             pv_InputText.textComponent.fontSizeMax = 120f;
@@ -132,7 +141,7 @@ namespace WarWolfWorks.UI.ConsoleMenu
             pv_FullText = fullTextRect.gameObject.AddComponent<TextMeshProUGUI>();
             pv_FullText.enableWordWrapping = true;
             pv_FullText.rectTransform.SetAnchoredUI(0f, 0f, 1f, 0f);
-            pv_FullText.color = ConsoleColor;
+            pv_FullText.color = s_ConsoleColor;
             pv_FullText.enableAutoSizing = false;
             pv_FullText.fontSize = pv_FullTextFontSize;
 
@@ -145,6 +154,20 @@ namespace WarWolfWorks.UI.ConsoleMenu
 
             pv_CellsRect = CreateHolder("Cells Rect", 0f, 0.1f, 1f, 1f, pv_Background.rectTransform);
             #endregion
+
+            string readSize = CTS_Preferences_Console.GetSafe(nameof(UI_Console_Size), "0 0 1 0.25");
+            string[] rSizes = readSize.Split(' ');
+            Vector4 size = new Vector4(System.Convert.ToSingle(rSizes[0]), 
+                System.Convert.ToSingle(rSizes[1]), 
+                System.Convert.ToSingle(rSizes[2]), 
+                System.Convert.ToSingle(rSizes[3]));
+            SetConsoleSize(size);
+
+            string rHex = CTS_Preferences_Console.GetSafe(nameof(UI_Console_Color), '#' + UnityEngine.ColorUtility.ToHtmlStringRGB(UI_Console_Color));
+            if (ColorUtility.TryParseHtmlString(rHex, out Color color))
+            {
+                SetConsoleColor(color);
+            }
         }
 
         /// <summary>
@@ -152,17 +175,22 @@ namespace WarWolfWorks.UI.ConsoleMenu
         /// </summary>
         public override void Refresh()
         {
-            base.Refresh();
+            IEnumerable<ConsoleCell> cells = GetRefreshCells();
+            if(cells != null)
+                foreach (ConsoleCell cell in cells)
+                {
+                    cell.Refresh();
+                }
 
             pv_BackgroundBorder.Color = s_ConsoleColor;
             pv_BackgroundBorder.Refresh();
             pv_InputBorder.Color = s_ConsoleColor;
             pv_InputBorder.Refresh();
 
-            pv_Background.color = new Color(ConsoleColor.r * 0.1f, ConsoleColor.g * 0.1f, ConsoleColor.b * 0.1f, ConsoleColor.a);
+            pv_Background.color = new Color(s_ConsoleColor.r * 0.1f, s_ConsoleColor.g * 0.1f, s_ConsoleColor.b * 0.1f, s_ConsoleColor.a);
             pv_InputText.image.color = pv_Background.color;
-            pv_InputText.textComponent.color = ConsoleColor;
-            pv_FullText.color = ConsoleColor;
+            pv_InputText.textComponent.color = s_ConsoleColor;
+            pv_FullText.color = s_ConsoleColor;
         }
 
         /// <summary>

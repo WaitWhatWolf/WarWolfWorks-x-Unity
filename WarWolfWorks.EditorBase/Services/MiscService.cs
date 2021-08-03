@@ -12,6 +12,9 @@ namespace WarWolfWorks.EditorBase.Services
     {
         public string Name => ELS_Misc;
 
+        private readonly LanguageString LS_OGameTitle =
+            new LanguageString("Game Title", ("Tytuł gry", SystemLanguage.Polish), ("ゲーム題名", SystemLanguage.Japanese));
+
         private readonly LanguageString LS_OLanguage =
             new LanguageString("Language", ("Język", SystemLanguage.Polish), ("言語", SystemLanguage.Japanese));
 
@@ -25,12 +28,14 @@ namespace WarWolfWorks.EditorBase.Services
                 ("Domyślnie wyświetlany typ Affections", SystemLanguage.Polish), 
                 ("デフォルトのアフェクシィオン表示タイプ", SystemLanguage.Japanese));
 
+        private string GameTitle;
         private SystemLanguage Language;
         private string StackingName;
         private string AffectionsName;
 
         public void OnEnable()
         {
+            GameTitle = Settings.GameTitle;
             Language = Settings.LibraryLanguage;
             StackingName = Settings.DefaultStackingType?.ToString();
             AffectionsName = Settings.DefaultAffectionsType?.ToString();
@@ -38,6 +43,8 @@ namespace WarWolfWorks.EditorBase.Services
 
         public void Draw()
         {
+            GameTitle = EditorGUILayout.TextField(LS_OGameTitle, GameTitle);
+
             Language = (SystemLanguage)EditorGUILayout.EnumPopup(LS_OLanguage, Language);
             if (Language != Settings.LibraryLanguage)
                 Settings.LibraryLanguage = Language; //Saved automatically.

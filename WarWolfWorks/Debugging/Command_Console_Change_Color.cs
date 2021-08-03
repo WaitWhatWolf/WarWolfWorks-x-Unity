@@ -70,7 +70,7 @@ namespace WarWolfWorks.Debugging
                 return;
             }
 
-            consoleUI.ConsoleColor = foundColor;
+            consoleUI.SetConsoleColor(foundColor);
         }
 
         private Dictionary<string, Color> pv_ColorFields = new();
